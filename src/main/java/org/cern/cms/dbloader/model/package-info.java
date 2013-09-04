@@ -1,0 +1,9 @@
+/**
+ * Model super-types
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+package org.cern.cms.dbloader.model;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
