@@ -42,6 +42,16 @@ public class DbLoader {
 
 			final PropertiesManager props = new PropertiesManager(args);
 
+			if (props.printVersion()) {
+				return;
+			}
+			
+			if (props.printHelp()) {
+				return;
+			}
+			
+			Logger.getRootLogger().setLevel(props.getLogLevel());
+
 			/**
 			 * Modify individual classes. This routine must be run before 
 			 * the class loader tries to access the to-be-modified classes!
@@ -59,16 +69,6 @@ public class DbLoader {
 	        });
 			
 	        ResourceFactory rf = injector.getInstance(ResourceFactory.class);
-	        
-			if (props.printVersion()) {
-				return;
-			}
-			
-			if (props.printHelp()) {
-				return;
-			}
-			
-			Logger.getRootLogger().setLevel(props.getLogLevel());
 			
 			if (props.isSchema()) {
 				XmlManager xmlm = injector.getInstance(XmlManager.class);
