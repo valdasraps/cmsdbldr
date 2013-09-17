@@ -4,7 +4,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.cern.cms.dbloader.model.condition.CondBase;
-import org.w3c.dom.Element;
 
 public class CondBaseAdapter extends XmlAdapter<Object, CondBase> {
 

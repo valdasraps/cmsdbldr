@@ -9,9 +9,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.cern.cms.dbloader.manager.xml.DateAdapter;
 
 import lombok.Getter;
 import lombok.Setter;

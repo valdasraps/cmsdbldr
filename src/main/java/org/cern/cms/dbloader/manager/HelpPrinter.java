@@ -6,7 +6,6 @@ import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
-import org.cern.cms.dbloader.model.condition.CondBase;
 
 public class HelpPrinter {
 	

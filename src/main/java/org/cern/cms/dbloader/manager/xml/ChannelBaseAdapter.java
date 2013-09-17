@@ -4,7 +4,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.cern.cms.dbloader.model.condition.ChannelBase;
-import org.w3c.dom.Element;
 
 public class ChannelBaseAdapter extends XmlAdapter<Object, ChannelBase> {
 	
