@@ -22,6 +22,9 @@ import org.apache.log4j.Level;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.util.PropertiesException;
 
+import com.google.inject.Singleton;
+
+@Singleton
 @SuppressWarnings("static-access")
 public class PropertiesManager {
 

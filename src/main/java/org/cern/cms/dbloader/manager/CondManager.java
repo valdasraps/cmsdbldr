@@ -15,7 +15,11 @@ import org.apache.log4j.Level;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 @Log4j
+@Singleton
 public class CondManager {
 
 	private final static String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
@@ -25,6 +29,7 @@ public class CondManager {
 	private Map<String, CondEntityHandler> conditions = new HashMap<>();
 	private Map<String, ChannelEntityHandler> channels = new HashMap<>();
 	
+	@Inject
 	public CondManager(PropertiesManager props) throws Exception {
 		
 		Class.forName(ORACLE_DRIVER);

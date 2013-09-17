@@ -8,7 +8,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.cern.cms.dbloader.manager.HbmManager;
-import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.ChannelMap;
 import org.cern.cms.dbloader.model.condition.CondBase;
@@ -25,6 +24,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 @Log4j
 public class CondDao extends DaoBase {
 
@@ -32,8 +34,9 @@ public class CondDao extends DaoBase {
     private static final String NO_RUN_MODE = "no-run";
     private static final long DEFAULT_EMAP_RUN_ID = 10000000L;
 
-    public CondDao(PropertiesManager props, HbmManager hbm) {
-		super(props, hbm);
+    @Inject
+    public CondDao(@Assisted HbmManager hbm) {
+		super(hbm);
     }
     
     public void saveCondition(Root root, AuditLog alog) throws Exception {

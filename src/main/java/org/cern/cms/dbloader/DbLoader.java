@@ -11,18 +11,23 @@ import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.app.CondApp;
 import org.cern.cms.dbloader.dao.AuditDao;
 import org.cern.cms.dbloader.manager.CondHbmManager;
-import org.cern.cms.dbloader.manager.CondManager;
 import org.cern.cms.dbloader.manager.EntityModificationManager;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.FilesManager.DataFile;
 import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
+import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.xml.Root;
 import org.cern.cms.dbloader.util.PropertiesException;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 @Log4j
 public class DbLoader {
@@ -34,9 +39,27 @@ public class DbLoader {
         SLF4JBridgeHandler.install();
 		
 		try {
+
+			final PropertiesManager props = new PropertiesManager(args);
+
+			/**
+			 * Modify individual classes. This routine must be run before 
+			 * the class loader tries to access the to-be-modified classes!
+			 */
+			EntityModificationManager.modify(props);
 			
-			PropertiesManager props = new PropertiesManager(args);
+	        Injector injector = Guice.createInjector(new AbstractModule() {
+				@Override
+				protected void configure() {
+					
+					bind(PropertiesManager.class).toInstance(props);
+					install(new FactoryModuleBuilder().build(ResourceFactory.class));
+					
+				}
+	        });
 			
+	        ResourceFactory rf = injector.getInstance(ResourceFactory.class);
+	        
 			if (props.printVersion()) {
 				return;
 			}
@@ -47,20 +70,13 @@ public class DbLoader {
 			
 			Logger.getRootLogger().setLevel(props.getLogLevel());
 			
-			/**
-			 * Modify individual classes. This routine must be run before 
-			 * the class loader tries to access the to-be-modified classes!
-			 */
-			EntityModificationManager.modify(props);
-
 			if (props.isSchema()) {
-				XmlManager xmlm = new XmlManager();
-				xmlm.generateSchema(props.getSchemaParent());
+				XmlManager xmlm = injector.getInstance(XmlManager.class);
+				xmlm.generateSchema();
 				return;
 			}
 			
-			CondManager condm = new CondManager(props);
-			CondApp condApp = new CondApp(props, condm);
+			CondApp condApp = injector.getInstance(CondApp.class);
 			
 			if (condApp.handleInfo()) {
 				return;
@@ -70,9 +86,9 @@ public class DbLoader {
 				throw new IllegalArgumentException("No input files provided");
 			}
 			
-			try (HbmManager hbm = new CondHbmManager(props, condm)) {
+			try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
 				
-				AuditDao auditDao = new AuditDao(props, hbm);
+				AuditDao auditDao = rf.createAuditDao(hbm);
 				for (DataFile df: FilesManager.getFiles(props)) {
 					
 					AuditLog alog = new AuditLog();					
@@ -84,7 +100,7 @@ public class DbLoader {
 						auditDao.saveAuditRecord(alog);
 						
 						log.info(String.format("Processing %s", df));
-						XmlManager xmlm = new XmlManager();
+						XmlManager xmlm = injector.getInstance(XmlManager.class);
 						Root root = xmlm.unmarshal(df.getData());
 						
 						if (log.isDebugEnabled()) {

@@ -3,9 +3,12 @@ package org.cern.cms.dbloader.manager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 
+import com.google.inject.Inject;
+
 public class CondHbmManager extends HbmManager {
 
-	public CondHbmManager(final PropertiesManager props, final CondManager condm) throws Exception  {
+	@Inject
+	public CondHbmManager(PropertiesManager props, CondManager condm) throws Exception  {
 		super(props);
 		for (CondEntityHandler eh: condm.getConditionHandlers()) {
 			addEntityClass(eh.getEntityClass().getC());

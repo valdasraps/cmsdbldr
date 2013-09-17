@@ -18,7 +18,14 @@ import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.manager.xml.EventHandler;
 import org.cern.cms.dbloader.model.xml.Root;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
+@Singleton
 public class XmlManager {
+	
+	@Inject
+	private PropertiesManager props;
 	
 	private JAXBContext jaxb;
 	private Set<Class<?>> boundedClasses = new HashSet<>();
@@ -53,10 +60,10 @@ public class XmlManager {
 		return (Root) ums.unmarshal(file);
 	}
 	
-	public void generateSchema(final String parentPath) throws Exception {
+	public void generateSchema() throws Exception {
 		getJAXBContext().generateSchema(new SchemaOutputResolver() {
 			
-			private File parent = new File(parentPath);
+			private File parent = new File(props.getSchemaParent());
 			
 			@Override
 			public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {

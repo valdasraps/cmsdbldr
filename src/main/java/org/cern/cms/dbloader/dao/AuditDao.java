@@ -3,15 +3,18 @@ package org.cern.cms.dbloader.dao;
 import java.util.Date;
 
 import org.cern.cms.dbloader.manager.HbmManager;
-import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
 public class AuditDao extends DaoBase {
 	
-	public AuditDao(PropertiesManager props, HbmManager hbm) {
-		super(props, hbm);
+	@Inject
+	public AuditDao(@Assisted HbmManager hbm) {
+		super(hbm);
 	}
 
 	public void saveAuditRecord(AuditLog alog) throws Exception {

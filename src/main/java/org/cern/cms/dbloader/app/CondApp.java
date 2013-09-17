@@ -4,7 +4,6 @@ import java.io.File;
 
 import javax.management.modelmbean.XMLParseException;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.dao.CondDao;
@@ -13,6 +12,7 @@ import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.manager.HelpPrinter;
 import org.cern.cms.dbloader.manager.PropertiesManager;
+import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
@@ -22,13 +22,22 @@ import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.xml.Header;
 import org.cern.cms.dbloader.model.xml.Root;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 @Log4j
-@RequiredArgsConstructor
+@Singleton
 public class CondApp extends AppBase {
 
-	private final PropertiesManager props;
-	private final CondManager condm;
+	@Inject
+	private PropertiesManager props;
+	
+	@Inject
+	private CondManager condm;
 
+	@Inject
+	private ResourceFactory rf;
+	
 	public boolean handleInfo() throws Exception {
 		
 		if (props.isConditionsList()) {
@@ -138,7 +147,7 @@ public class CondApp extends AppBase {
 			root = (Root) xmlm.unmarshal(file);
 			
 			// Try to load the file!
-			CondDao dao = new CondDao(props, hbm);
+			CondDao dao = rf.createCondDao(hbm);
 			dao.saveCondition(root, auditlog);
 				
 			return true;
