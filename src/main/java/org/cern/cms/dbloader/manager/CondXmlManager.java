@@ -113,4 +113,44 @@ public class CondXmlManager extends XmlManager {
 		
 	}
 	
+	public void printDatasetDataXML(Dataset datasetS, List<? extends CondBase> data2) throws Exception {
+		Root root = new Root();
+		
+		Header header = new Header();
+		root.setHeader(header);
+		
+		KindOfCondition kindOfCondition = new KindOfCondition();
+		header.setKindOfCondition(kindOfCondition);
+		kindOfCondition.setName(datasetS.getKindOfCondition().getName());
+		kindOfCondition.setExtensionTable(datasetS.getKindOfCondition().getExtensionTable());
+		
+		Run run = new Run();
+		header.setRun(run);
+		run.setNumber(datasetS.getRun().getId().toString());
+		run.setBeginTime(datasetS.getRun().getBeginTime());
+		run.setInitiatedByUser(datasetS.getRun().getInitiatedByUser());
+		run.setLocation(datasetS.getRun().getLocation());
+		run.setComment(datasetS.getRun().getComment());
+		
+		root.setDatasets(new ArrayList<Dataset>());
+
+		Dataset dataset = new Dataset();
+		root.getDatasets().add(dataset);
+		dataset.setVersion(datasetS.getVersion());
+		dataset.setComment(datasetS.getComment());
+		Part part = new Part();
+		part.setKindOfPartName(datasetS.getPart().getKindOfPart().getName());
+		part.setBarcode(datasetS.getPart().getBarcode());
+		dataset.setPart(part);
+
+		dataset.setData(data2);
+
+		Marshaller ms = getJAXBContext().createMarshaller();
+		ms.setEventHandler(new EventHandler());
+		ms.setAdapter(new DateAdapter());
+		ms.setAdapter(CondBaseAdapter.class, new CondBaseAdapter(getJAXBContext(), condeh.getEntityClass().getC()));
+		ms.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		ms.marshal(root, System.out);
+	}
+	
 }

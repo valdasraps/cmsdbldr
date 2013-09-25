@@ -2,6 +2,7 @@ package org.cern.cms.dbloader;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
 
@@ -10,14 +11,23 @@ import lombok.extern.log4j.Log4j;
 import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.app.CondApp;
 import org.cern.cms.dbloader.dao.AuditDao;
+import org.cern.cms.dbloader.dao.CondDao;
+import org.cern.cms.dbloader.dao.DatasetDao;
 import org.cern.cms.dbloader.manager.CondHbmManager;
+import org.cern.cms.dbloader.manager.CondManager;
 import org.cern.cms.dbloader.manager.EntityModificationManager;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.FilesManager.DataFile;
+import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.HbmManager;
+import org.cern.cms.dbloader.manager.HelpPrinter;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.XmlManager;
+import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.cern.cms.dbloader.metadata.EntityHandler;
+import org.cern.cms.dbloader.model.condition.CondBase;
+import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.xml.Root;
@@ -81,6 +91,53 @@ public class DbLoader {
 			if (condApp.handleInfo()) {
 				return;
 			}
+			
+			if (props.isCondDatasets()) {
+				String condName = props.getCondDatasets();
+				CondManager cm = injector.getInstance(CondManager.class);
+				
+				EntityHandler<CondBase> tm = cm.getConditionHandler(condName);
+				if (tm == null) {
+					throw new IllegalArgumentException(String.format("%s condition not found!", condName));
+				}
+				
+				try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
+					CondDao dao = rf.createCondDao(hbm);		
+					HelpPrinter.outputConditionDatasets(System.out, dao.getCondDatasets(tm));
+				}
+				
+				return;
+			}
+	
+			if (props.isCondDataset()) {
+
+				Long dataSetId = Long.valueOf(props.getCondDataset());
+				CondManager cm = injector.getInstance(CondManager.class);
+				
+				try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
+					DatasetDao dao = rf.createDatasetDao(hbm);	
+					Dataset dataset = dao.getDataset(dataSetId);
+					String kocName = dataset.getKindOfCondition().getName();
+					CondEntityHandler ceh = cm.getConditionHandler(kocName);
+					if (ceh == null) {
+						throw new IllegalArgumentException(String.format("%s dataset not found!", dataSetId));
+					}
+					
+					List<? extends CondBase> dataSetData = dao.getDatasetData(ceh, dataSetId);
+					if (dataSetData.isEmpty()) {
+						throw new IllegalArgumentException(String.format("%s dataset data not found!", dataSetId));
+					}
+					
+					CondXmlManager xmlm = new CondXmlManager(ceh);
+					xmlm.printDatasetDataXML(dao.getDataset(dataSetId), dataSetData);
+				}
+				
+				return;
+			}
+			
+			/**
+			 * Processing files from here!
+			 */
 			
 			if (props.getArgs().isEmpty()) {
 				throw new IllegalArgumentException("No input files provided");

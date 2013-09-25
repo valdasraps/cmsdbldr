@@ -1,13 +1,14 @@
 package org.cern.cms.dbloader.dao;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
-
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.cern.cms.dbloader.manager.HbmManager;
+import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.ChannelMap;
 import org.cern.cms.dbloader.model.condition.CondBase;
@@ -22,6 +23,7 @@ import org.cern.cms.dbloader.model.xml.Root;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;
@@ -37,6 +39,21 @@ public class CondDao extends DaoBase {
     @Inject
     public CondDao(@Assisted HbmManager hbm) {
 		super(hbm);
+    }
+    
+    @SuppressWarnings("unchecked")
+	public List<Dataset> getCondDatasets(EntityHandler<CondBase> tm) throws Exception {
+		Session session = hbm.getSession();
+		Transaction tx = session.beginTransaction();
+		System.out.println(tm.getEntityClass().getC());
+		try {
+			return (List<Dataset>) session.createCriteria(tm.getEntityClass().getC())
+					        .setProjection(Projections.distinct(Projections.property("dataset")))
+							.list();
+		} finally {
+			tx.rollback();
+			session.close();
+		}
     }
     
     public void saveCondition(Root root, AuditLog alog) throws Exception {

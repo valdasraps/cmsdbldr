@@ -51,7 +51,7 @@ public class PropertiesManager {
 		PASSWORD("database password", true, true),
 		
 		CONSTRUCT_CORE_SCHEMA("CONSTRUCT: core schema name", true, true),
-		CONSTRUCT_EXT_SCHEMA("CONTRUCT: extension schema name", true, true),
+		CONSTRUCT_EXT_SCHEMA("CONSTRUCT: extension schema name", true, true),
 		CONDITION_CORE_SCHEMA("CONDITION: core schema name", true, true),
 		CONDITION_EXT_SCHEMA("CONDITION: extension schema name", true, true),
 		MANAGEMNT_CORE_SCHEMA("MANAGEMNT: core schema name", true, true),
@@ -62,6 +62,8 @@ public class PropertiesManager {
 		COND_DESC("describe single condition", true, false),
 		COND_XML("print condition XML example", true, false),
 		COND_CLASS("print generated condition class", true, false),
+		COND_DATASETS("list condition datasets", true, false),
+		COND_DATASET("get XML stream data", true, false),
 
 		CHANNEL_LIST("list available channels", false, false),
 		CHANNEL_DESC("describe single channel", true, false),
@@ -203,6 +205,22 @@ public class PropertiesManager {
 	
 	public String getChannelDesc() {
 		return this.values.get(UserOption.CHANNEL_DESC);
+	}
+	
+	public boolean isCondDatasets() {
+		return this.values.containsKey(UserOption.COND_DATASETS);
+	}
+	
+	public String getCondDatasets() {
+		return this.values.get(UserOption.COND_DATASETS);
+	}
+	
+	public boolean isCondDataset() {
+		return this.values.containsKey(UserOption.COND_DATASET);
+	}
+	
+	public String getCondDataset() {
+		return this.values.get(UserOption.COND_DATASET);
 	}
 	
 	public boolean isConditionClass() {
