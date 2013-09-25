@@ -41,21 +41,6 @@ public class CondDao extends DaoBase {
 		super(hbm);
     }
     
-    @SuppressWarnings("unchecked")
-	public List<Dataset> getCondDatasets(EntityHandler<CondBase> tm) throws Exception {
-		Session session = hbm.getSession();
-		Transaction tx = session.beginTransaction();
-		System.out.println(tm.getEntityClass().getC());
-		try {
-			return (List<Dataset>) session.createCriteria(tm.getEntityClass().getC())
-					        .setProjection(Projections.distinct(Projections.property("dataset")))
-							.list();
-		} finally {
-			tx.rollback();
-			session.close();
-		}
-    }
-    
     public void saveCondition(Root root, AuditLog alog) throws Exception {
 		Session session = hbm.getSession();
 		Transaction tx = session.beginTransaction();

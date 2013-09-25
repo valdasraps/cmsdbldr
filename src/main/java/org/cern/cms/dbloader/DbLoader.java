@@ -11,7 +11,6 @@ import lombok.extern.log4j.Log4j;
 import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.app.CondApp;
 import org.cern.cms.dbloader.dao.AuditDao;
-import org.cern.cms.dbloader.dao.CondDao;
 import org.cern.cms.dbloader.dao.DatasetDao;
 import org.cern.cms.dbloader.manager.CondHbmManager;
 import org.cern.cms.dbloader.manager.CondManager;
@@ -102,7 +101,7 @@ public class DbLoader {
 				}
 				
 				try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
-					CondDao dao = rf.createCondDao(hbm);		
+					DatasetDao dao = rf.createDatasetDao(hbm);		
 					HelpPrinter.outputConditionDatasets(System.out, dao.getCondDatasets(tm));
 				}
 				
@@ -123,7 +122,7 @@ public class DbLoader {
 						throw new IllegalArgumentException(String.format("%s dataset not found!", dataSetId));
 					}
 					
-					List<? extends CondBase> dataSetData = dao.getDatasetData(ceh, dataSetId);
+					List<? extends CondBase> dataSetData = dao.getDatasetData(ceh, dataset);
 					if (dataSetData.isEmpty()) {
 						throw new IllegalArgumentException(String.format("%s dataset data not found!", dataSetId));
 					}
