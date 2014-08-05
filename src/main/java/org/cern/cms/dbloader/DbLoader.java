@@ -16,13 +16,13 @@ import org.cern.cms.dbloader.manager.CondHbmManager;
 import org.cern.cms.dbloader.manager.CondManager;
 import org.cern.cms.dbloader.manager.EntityModificationManager;
 import org.cern.cms.dbloader.manager.FilesManager;
-import org.cern.cms.dbloader.manager.FilesManager.DataFile;
 import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.manager.HelpPrinter;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.XmlManager;
+import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.model.condition.CondBase;
@@ -75,7 +75,7 @@ public class DbLoader {
 					install(new FactoryModuleBuilder().build(ResourceFactory.class));
 					
 				}
-	        });
+	              });
 			
 	        ResourceFactory rf = injector.getInstance(ResourceFactory.class);
 			

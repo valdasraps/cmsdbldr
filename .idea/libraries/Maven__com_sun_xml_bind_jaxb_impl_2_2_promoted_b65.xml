@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.sun.xml.bind:jaxb-impl:2.2-promoted-b65">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/sun/xml/bind/jaxb-impl/2.2-promoted-b65/jaxb-impl-2.2-promoted-b65.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/sun/xml/bind/jaxb-impl/2.2-promoted-b65/jaxb-impl-2.2-promoted-b65-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/sun/xml/bind/jaxb-impl/2.2-promoted-b65/jaxb-impl-2.2-promoted-b65-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

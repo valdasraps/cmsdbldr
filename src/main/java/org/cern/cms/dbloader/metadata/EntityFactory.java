@@ -71,7 +71,7 @@ public abstract class EntityFactory<T> {
         
         modifyClass(cb);
 
-        EntityClass<T> ec = new EntityClass<T>(cb.getCc(), cb.getCf(), (Class<? extends T>) cb.build());
+        EntityClass<T> ec = new EntityClass<>(cb.getCc(), cb.getCf(), (Class<? extends T>) cb.build());
         loadedClasses.put(tmd.getClassName(), ec);
         
 		return ec;
