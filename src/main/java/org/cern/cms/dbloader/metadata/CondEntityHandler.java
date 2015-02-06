@@ -18,10 +18,13 @@ import org.cern.cms.dbloader.model.condition.CondBase;
 public class CondEntityHandler extends EntityHandler<CondBase> {
 
 	protected final String name;
+	protected final String id;
 	
-	public CondEntityHandler(String name, String schema, String tableName, ResultSetMetaData md) throws Exception {
+	// added id
+	public CondEntityHandler(String id, String name, String schema, String tableName, ResultSetMetaData md) throws Exception {
 		super(schema, tableName, md);
 		
+		this.id = id;
 		this.name = name;
 		
 		// Check columns
@@ -32,7 +35,7 @@ public class CondEntityHandler extends EntityHandler<CondBase> {
 			} else
 			if (cmd.getColumnName().equals("CONDITION_DATA_SET_ID")) {
 				conditionDataSetId = cmd;
-			}	
+			}
 		}
 		
 		if (recordId == null) throw new SQLException("Mandatory column RECORD_ID not found?");

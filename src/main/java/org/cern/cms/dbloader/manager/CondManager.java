@@ -23,7 +23,8 @@ import com.google.inject.Singleton;
 public class CondManager {
 
 	private final static String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
-	private final static String KINDS_OF_CONDITIONS_SQL = "select NAME, EXTENSION_TABLE_NAME from %s.KINDS_OF_CONDITIONS WHERE IS_RECORD_DELETED = 'F'";
+	// ADDED TO QUERY KIND_OF_CONDITION_ID
+	private final static String KINDS_OF_CONDITIONS_SQL = "select KIND_OF_CONDITION_ID, NAME, EXTENSION_TABLE_NAME from %s.KINDS_OF_CONDITIONS WHERE IS_RECORD_DELETED = 'F'";
 	private final static String CHANNELS_SQL = "select distinct EXTENSION_TABLE_NAME from %s.CHANNEL_MAPS_BASE WHERE IS_RECORD_DELETED = 'F'";
 	
 	private Map<String, CondEntityHandler> conditions = new HashMap<>();
@@ -40,14 +41,15 @@ public class CondManager {
 				try (ResultSet rs = stmt.executeQuery()) {
 					while (rs.next()) {
 						
-						String conditionName = rs.getString(1);
-						String extensionTable = rs.getString(2);
+						String conditionID = rs.getString(1);
+						String conditionName = rs.getString(2);
+						String extensionTable = rs.getString(3);
 						String extensionTableWithSchema = props.getExtConditionTable(extensionTable);
 						
 						try (PreparedStatement stmt1 = conn.prepareStatement("select * from ".concat(extensionTableWithSchema))) {
 							ResultSetMetaData md = stmt1.getMetaData();
 							
-							CondEntityHandler t = new CondEntityHandler(conditionName, props.getExtConditionSchemaName(), extensionTable, md);
+							CondEntityHandler t = new CondEntityHandler(conditionID, conditionName, props.getExtConditionSchemaName(), extensionTable, md);
 							conditions.put(conditionName, t);
 							
 						} catch (Exception ex) {
