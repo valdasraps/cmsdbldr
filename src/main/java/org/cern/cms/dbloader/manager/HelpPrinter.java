@@ -16,12 +16,14 @@ public class HelpPrinter {
 		TableBuilder tb = new TableBuilder();
 		for (CondEntityHandler ceh: mdm.getConditionHandlers()) {
 			tb.startRow()
+			  .col(ceh.getId()) 
 			  .col(ceh.getName())
 			  .col(ceh.getTableName())
 			  .col(ceh.getClassName())
 			  .col(ceh.getProperties().size());
 		}
         tb.startFirstRow()
+          .colTitle("ID")
 		  .colTitle("Title")
 		  .colTitle("ORACLE table")
 		  .colTitle("JAVA class")
