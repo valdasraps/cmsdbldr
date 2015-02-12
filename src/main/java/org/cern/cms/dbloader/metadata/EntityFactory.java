@@ -59,7 +59,7 @@ public abstract class EntityFactory<T> {
 	        
 	        if (cmd.isTemporal()) {
 	        	pb.newFieldAnnotation(Temporal.class).addMember("value", TemporalType.TIMESTAMP).build();
-	        	pb.newFieldAnnotation(XmlJavaTypeAdapter.class).addMember("value", DateAdapter.class.getName()).build();
+	        	pb.newFieldAnnotation(XmlJavaTypeAdapter.class).addMember("value", DateAdapter.class).build();
 	        }
 
 	        pb.build();

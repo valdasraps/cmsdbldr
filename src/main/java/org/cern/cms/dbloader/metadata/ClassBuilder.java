@@ -13,6 +13,7 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.ClassMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
 import lombok.Getter;
@@ -199,6 +200,17 @@ public class ClassBuilder {
 		 */
 		public AnnBuilder<T> addMember(String name, String value) {
 	        a.addMemberValue(name, new StringMemberValue(value, cb.cpool));
+	        return this;
+		}
+		
+		/**
+		 * Add annotation Class attribute member
+		 * @param name
+		 * @param value
+		 * @return Annotation builder
+		 */
+		public AnnBuilder<T> addMember(String name, Class<?> value) {
+	        a.addMemberValue(name, new ClassMemberValue(value.getName(), cb.cpool));
 	        return this;
 		}
 		
