@@ -5,6 +5,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.cern.cms.dbloader.manager.xml.DateAdapter;
+
 import lombok.Getter;
 import lombok.ToString;
 
@@ -33,6 +35,9 @@ public class PropertyHandler {
 			if (tn.equals("CLOB")) {
 				this.className = "java.lang.String";
 				this.lob = true;
+			} else if (tn.equals("BLOB")) {
+				this.className = String.valueOf("[B");
+				this.lob = true;	
 			} else {
 				this.className = md.getColumnClassName(i);
 				this.lob = false;
