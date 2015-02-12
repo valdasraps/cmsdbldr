@@ -22,6 +22,10 @@ public class DateAdapter extends XmlAdapter<String, Date> {
     	if (v == null) {
     		return null;
     	}
+//    	if (!v.contains("T")) {
+//    		String temp = v.replaceAll(" ", "T").trim();
+//    		return dateFormat.parse(temp);
+//    	}
         return dateFormat.parse(v);
     }
 
