@@ -53,4 +53,13 @@ public abstract class EntityHandler<T> {
 		return entityClass;
 	}
 	
+	public PropertyHandler getPropertyByName(String name) {
+		for (PropertyHandler p: properties) {
+			if (p.getName().equals(name)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
 }

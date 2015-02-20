@@ -163,7 +163,7 @@ public class DbLoader {
 							log.debug(root);
 						}
 
-						boolean loaded = condApp.handleData(df.getData(), hbm, root, alog);
+						boolean loaded = condApp.handleData(df, hbm, root, alog);
 
 						if (loaded) {
 							alog.setStatus(UploadStatus.Success);

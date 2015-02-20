@@ -1,18 +1,16 @@
 package org.cern.cms.dbloader.app;
 
-import java.io.File;
-
 import javax.management.modelmbean.XMLParseException;
-
 import lombok.extern.log4j.Log4j;
-
 import org.cern.cms.dbloader.dao.CondDao;
 import org.cern.cms.dbloader.manager.CondManager;
 import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.manager.HelpPrinter;
+import org.cern.cms.dbloader.manager.LobManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
+import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
@@ -107,7 +105,7 @@ public class CondApp extends AppBase {
 	}
 
 	@Override
-	public boolean handleData(File file, HbmManager hbm, Root root, AuditLog auditlog) throws Exception {
+	public boolean handleData(DataFile file, HbmManager hbm, Root root, AuditLog auditlog) throws Exception {
 		if (root.getHeader() != null && root.getDatasets() != null) {
 			
 			Header h = root.getHeader();
@@ -144,7 +142,11 @@ public class CondApp extends AppBase {
 			log.info(String.format("%s with %d datasets and %s channel map to be processed", condeh.getName(), root.getDatasets().size(), chaneh));
 
 			CondXmlManager xmlm = new CondXmlManager(condeh, chaneh);
-			root = (Root) xmlm.unmarshal(file);
+			root = (Root) xmlm.unmarshal(file.getData());
+			
+			// Use Guice ???
+			LobManager lobManager = new LobManager();
+			lobManager.lobParser(root, condeh, file);
 			
 			// Try to load the file!
 			CondDao dao = rf.createCondDao(hbm);

@@ -1,14 +1,17 @@
 package org.cern.cms.dbloader.metadata;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.cern.cms.dbloader.manager.xml.DateAdapter;
-
 import lombok.Getter;
 import lombok.ToString;
+
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.cern.cms.dbloader.manager.PropertyType;
+import org.cern.cms.dbloader.model.condition.CondBase;
 
 
 @Getter
@@ -19,28 +22,24 @@ public class PropertyHandler {
 	private final String columnName;
 	private final String typeName;
 	private final String className;
-	private final boolean temporal;
-	private final boolean lob;
-		
+	private final PropertyType type;
+	
 	public PropertyHandler(ResultSetMetaData md, int i) throws SQLException {
 		this.columnName = md.getColumnName(i);
 		String tn = md.getColumnTypeName(i);
-		
 		if (tn.contains("TIMESTAMP")) {
 			this.className = "java.util.Date";
-			this.temporal = true;
-			this.lob = false;
+			this.type = PropertyType.TEMPORAL;
 		} else {
-			this.temporal = false;
 			if (tn.equals("CLOB")) {
 				this.className = "java.lang.String";
-				this.lob = true;
+				this.type = PropertyType.CLOB;
 			} else if (tn.equals("BLOB")) {
 				this.className = String.valueOf("[B");
-				this.lob = true;	
+				this.type = PropertyType.BLOB;
 			} else {
 				this.className = md.getColumnClassName(i);
-				this.lob = false;
+				this.type = PropertyType.OTHER;
 			}
 		}
 
@@ -69,4 +68,11 @@ public class PropertyHandler {
 		return null;
 	}
 	
+	public <T extends CondBase> Object getValue(T data) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		return BeanUtilsBean.getInstance().getPropertyUtils().getProperty(data, this.name);
+	}
+	
+	public <T extends CondBase, V> void setValue(T data,V value) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		BeanUtilsBean.getInstance().getPropertyUtils().setProperty(data, this.name, value);
+	}
 }
