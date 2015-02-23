@@ -2,6 +2,7 @@ package org.cern.cms.dbloader.model.condition;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -14,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -35,6 +38,7 @@ import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.iov.Iov;
 
 @Entity
 @Table(name="COND_DATA_SETS")
@@ -153,4 +157,11 @@ public class Dataset extends DeleteableBase {
 	@XmlJavaTypeAdapter(value = CondBaseAdapter.class)
 	private List<? extends CondBase> data;
 	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "COND_DATASET2IOV_MAPS", 
+		joinColumns = {	@JoinColumn(name = "COND_IOV_RECORD_ID") }, 
+		inverseJoinColumns = { @JoinColumn(name = "CONDITION_DATASET_ID") })
+	@XmlTransient
+	private Set<Iov> iovs;
+        
 }

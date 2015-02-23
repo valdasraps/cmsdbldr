@@ -32,6 +32,7 @@ public class PropertiesManager {
 	public static final String CONSTRUCT_PACKAGE = MODEL_PACKAGE.concat(".construct");
 	public static final String CONDITION_CORE_PACKAGE = MODEL_PACKAGE.concat(".condition");
 	public static final String MANAGEMNT_CORE_PACKAGE = MODEL_PACKAGE.concat(".managemnt");
+        public static final String IOV_CORE_PACKAGE = MODEL_PACKAGE.concat(".iov");
 	public static final String CONDITION_EXT_PACKAGE = CONDITION_CORE_PACKAGE.concat(".ext");
 	public static final String CONDITION_XML_PACKAGE = MODEL_PACKAGE.concat(".xml");
 	
@@ -55,6 +56,7 @@ public class PropertiesManager {
 		CONDITION_CORE_SCHEMA("CONDITION: core schema name", true, true),
 		CONDITION_EXT_SCHEMA("CONDITION: extension schema name", true, true),
 		MANAGEMNT_CORE_SCHEMA("MANAGEMNT: core schema name", true, true),
+                IOV_CORE_SCHEMA("MANAGEMNT: iov schema name", true, true),
 		
 		SCHEMA("save XML schema files to path", true, false),
 		
@@ -310,6 +312,10 @@ public class PropertiesManager {
 	
 	public String getCoreManagemntSchemaName() {
 		return this.values.get(UserOption.MANAGEMNT_CORE_SCHEMA);
+	}
+	
+	public String getIovCoreSchemaName() {
+		return this.values.get(UserOption.IOV_CORE_SCHEMA);
 	}
 	
 	public String getCoreConstructTable(String tableName) {

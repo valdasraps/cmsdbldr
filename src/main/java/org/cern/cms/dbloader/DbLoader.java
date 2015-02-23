@@ -40,160 +40,159 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 @Log4j
 public class DbLoader {
-	
-	public static void main(String[] args) {
-		
+
+    public static void main(String[] args) {
+
         // Install SLF4J logger to direct all java.util.logging messages to log4j
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-		
-		try {
 
-			final PropertiesManager props = new PropertiesManager(args);
+        try {
 
-			if (props.printVersion()) {
-				return;
-			}
-			
-			if (props.printHelp()) {
-				return;
-			}
-			
-			Logger.getRootLogger().setLevel(props.getLogLevel());
+            final PropertiesManager props = new PropertiesManager(args);
 
-			/**
-			 * Modify individual classes. This routine must be run before 
-			 * the class loader tries to access the to-be-modified classes!
-			 */
-			EntityModificationManager.modify(props);
-			
-	        Injector injector = Guice.createInjector(new AbstractModule() {
-				@Override
-				protected void configure() {
-					
-					bind(PropertiesManager.class).toInstance(props);
-					install(new FactoryModuleBuilder().build(ResourceFactory.class));
-					
-				}
-	              });
-			
-	        ResourceFactory rf = injector.getInstance(ResourceFactory.class);
-			
-			if (props.isSchema()) {
-				XmlManager xmlm = injector.getInstance(XmlManager.class);
-				xmlm.generateSchema();
-				return;
-			}
-			
-			CondApp condApp = injector.getInstance(CondApp.class);
-			
-			if (condApp.handleInfo()) {
-				return;
-			}
-			
-			if (props.isCondDatasets()) {
-				String condName = props.getCondDatasets();
-				CondManager cm = injector.getInstance(CondManager.class);
-				
-				EntityHandler<CondBase> tm = cm.getConditionHandler(condName);
-				if (tm == null) {
-					throw new IllegalArgumentException(String.format("%s condition not found!", condName));
-				}
-				
-				try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
-					DatasetDao dao = rf.createDatasetDao(hbm);		
-					HelpPrinter.outputConditionDatasets(System.out, dao.getCondDatasets(tm));
-				}
-				
-				return;
-			}
-	
-			if (props.isCondDataset()) {
+            if (props.printVersion()) {
+                return;
+            }
 
-				Long dataSetId = Long.valueOf(props.getCondDataset());
-				CondManager cm = injector.getInstance(CondManager.class);
-				
-				try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
-					DatasetDao dao = rf.createDatasetDao(hbm);	
-					Dataset dataset = dao.getDataset(dataSetId);
-					String kocName = dataset.getKindOfCondition().getName();
-					CondEntityHandler ceh = cm.getConditionHandler(kocName);
-					if (ceh == null) {
-						throw new IllegalArgumentException(String.format("%s dataset not found!", dataSetId));
-					}
-					
-					List<? extends CondBase> dataSetData = dao.getDatasetData(ceh, dataset);
-					if (dataSetData.isEmpty()) {
-						throw new IllegalArgumentException(String.format("%s dataset data not found!", dataSetId));
-					}
-					
-					CondXmlManager xmlm = new CondXmlManager(ceh);
-					xmlm.printDatasetDataXML(dao.getDataset(dataSetId), dataSetData);
-				}
-				
-				return;
-			}
-			
-			/**
-			 * Processing files from here!
-			 */
-			
-			if (props.getArgs().isEmpty()) {
-				throw new IllegalArgumentException("No input files provided");
-			}
-			
-			try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
-				
-				AuditDao auditDao = rf.createAuditDao(hbm);
-				for (DataFile df: FilesManager.getFiles(props)) {
-					
-					AuditLog alog = new AuditLog();					
-					try {
-						
-						alog.setArchiveFileName(df.getArchive().getName());
-						alog.setDataFileName(df.getData().getName());
-						alog.setDataFileChecksum(df.getMd5());
-						auditDao.saveAuditRecord(alog);
-						
-						log.info(String.format("Processing %s", df));
-						XmlManager xmlm = injector.getInstance(XmlManager.class);
-						Root root = xmlm.unmarshal(df.getData());
-						
-						if (log.isDebugEnabled()) {
-							log.debug(root);
-						}
+            if (props.printHelp()) {
+                return;
+            }
 
-						boolean loaded = condApp.handleData(df, hbm, root, alog);
+            Logger.getRootLogger().setLevel(props.getLogLevel());
 
-						if (loaded) {
-							alog.setStatus(UploadStatus.Success);
-						} else {
-							throw new XMLParseException("XML file not recognized by handlers");
-						}
-						
-					} catch (Exception ex) {
-						
-						StringWriter sw = new StringWriter();
-						ex.printStackTrace(new PrintWriter(sw));
-						alog.setUploadLogTrace(sw.toString());
-						alog.setStatus(UploadStatus.Failure);
-						
-						log.error(ex.getMessage(), ex);
-						
-					}
-					
-					auditDao.saveAuditRecord(alog);
-					
-				}
+            /**
+             * Modify individual classes. This routine must be run before the
+             * class loader tries to access the to-be-modified classes!
+             */
+            EntityModificationManager.modify(props);
 
-			}
-			
-		} catch (PropertiesException ex) {
-			System.err.println("ERROR: " + ex.getMessage());
-		} catch (Exception ex) {
-			ex.printStackTrace(System.err);
-		}
+            Injector injector = Guice.createInjector(new AbstractModule() {
+                @Override
+                protected void configure() {
 
-	}
-		
+                    bind(PropertiesManager.class).toInstance(props);
+                    install(new FactoryModuleBuilder().build(ResourceFactory.class));
+
+                }
+            });
+
+            ResourceFactory rf = injector.getInstance(ResourceFactory.class);
+
+            if (props.isSchema()) {
+                XmlManager xmlm = injector.getInstance(XmlManager.class);
+                xmlm.generateSchema();
+                return;
+            }
+
+            CondApp condApp = injector.getInstance(CondApp.class);
+
+            if (condApp.handleInfo()) {
+                return;
+            }
+
+            if (props.isCondDatasets()) {
+                String condName = props.getCondDatasets();
+                CondManager cm = injector.getInstance(CondManager.class);
+
+                EntityHandler<CondBase> tm = cm.getConditionHandler(condName);
+                if (tm == null) {
+                    throw new IllegalArgumentException(String.format("%s condition not found!", condName));
+                }
+
+                try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
+                    DatasetDao dao = rf.createDatasetDao(hbm);
+                    HelpPrinter.outputConditionDatasets(System.out, dao.getCondDatasets(tm));
+                }
+
+                return;
+            }
+
+            if (props.isCondDataset()) {
+
+                Long dataSetId = Long.valueOf(props.getCondDataset());
+                CondManager cm = injector.getInstance(CondManager.class);
+
+                try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
+                    DatasetDao dao = rf.createDatasetDao(hbm);
+                    Dataset dataset = dao.getDataset(dataSetId);
+                    String kocName = dataset.getKindOfCondition().getName();
+                    CondEntityHandler ceh = cm.getConditionHandler(kocName);
+                    if (ceh == null) {
+                        throw new IllegalArgumentException(String.format("%s dataset not found!", dataSetId));
+                    }
+
+                    List<? extends CondBase> dataSetData = dao.getDatasetData(ceh, dataset);
+                    if (dataSetData.isEmpty()) {
+                        throw new IllegalArgumentException(String.format("%s dataset data not found!", dataSetId));
+                    }
+
+                    CondXmlManager xmlm = new CondXmlManager(ceh);
+                    xmlm.printDatasetDataXML(dao.getDataset(dataSetId), dataSetData);
+                }
+
+                return;
+            }
+
+            /**
+             * Processing files from here!
+             */
+            if (props.getArgs().isEmpty()) {
+                throw new IllegalArgumentException("No input files provided");
+            }
+
+            try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
+
+                AuditDao auditDao = rf.createAuditDao(hbm);
+                for (DataFile df : FilesManager.getFiles(props)) {
+
+                    AuditLog alog = new AuditLog();
+                    try {
+
+                        alog.setArchiveFileName(df.getArchive().getName());
+                        alog.setDataFileName(df.getData().getName());
+                        alog.setDataFileChecksum(df.getMd5());
+                        auditDao.saveAuditRecord(alog);
+
+                        log.info(String.format("Processing %s", df));
+                        XmlManager xmlm = injector.getInstance(XmlManager.class);
+                        Root root = xmlm.unmarshal(df.getData());
+
+                        if (log.isDebugEnabled()) {
+                            log.debug(root);
+                        }
+
+                        boolean loaded = condApp.handleData(df, hbm, root, alog);
+
+                        if (loaded) {
+                            alog.setStatus(UploadStatus.Success);
+                        } else {
+                            throw new XMLParseException("XML file not recognized by handlers");
+                        }
+
+                    } catch (Exception ex) {
+
+                        StringWriter sw = new StringWriter();
+                        ex.printStackTrace(new PrintWriter(sw));
+                        alog.setUploadLogTrace(sw.toString());
+                        alog.setStatus(UploadStatus.Failure);
+
+                        log.error(ex.getMessage(), ex);
+
+                    }
+
+                    auditDao.saveAuditRecord(alog);
+
+                }
+
+            }
+
+        } catch (PropertiesException ex) {
+            System.err.println("ERROR: " + ex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+        }
+
+    }
+
 }

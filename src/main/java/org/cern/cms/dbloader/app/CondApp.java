@@ -138,6 +138,14 @@ public class CondApp extends AppBase {
 				}
 			}
 			
+                        if (root.getElements() != null) {
+                            
+                            // Check each IOV (id, begin, end)
+                            // Check each Tag (id, name)
+                            // Map IOVs and Tags
+                            
+                        }
+                        
 			// So far - success!
 			log.info(String.format("%s with %d datasets and %s channel map to be processed", condeh.getName(), root.getDatasets().size(), chaneh));
 
