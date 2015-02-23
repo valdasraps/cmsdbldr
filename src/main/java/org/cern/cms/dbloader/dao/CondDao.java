@@ -1,14 +1,13 @@
 package org.cern.cms.dbloader.dao;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
+
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.cern.cms.dbloader.manager.HbmManager;
-import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.ChannelMap;
 import org.cern.cms.dbloader.model.condition.CondBase;
@@ -23,7 +22,6 @@ import org.cern.cms.dbloader.model.xml.Root;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;
@@ -80,9 +78,9 @@ public class CondDao extends DaoBase {
 				
 				 // Resolving Part or Channel
 
-				if ((ds.getPart() == null && ds.getChannel() == null)) {
-					throw new XMLParseException(String.format("Part or Channel must be defined for dataset %s", ds));
-				}
+//				if ((ds.getPart() == null && ds.getChannel() == null)) {
+//					throw new XMLParseException(String.format("Part or Channel must be defined for dataset %s", ds));
+//				}
 				
 				if ((ds.getPart() != null && ds.getChannel() != null)) {
 					throw new XMLParseException(String.format("Both Part and Channel can not be defined for dataset %s", ds));
@@ -103,7 +101,7 @@ public class CondDao extends DaoBase {
 						}
 					}
 
-				} else {
+				} else if (ds.getChannel() != null) {
 					
 					resolveChannelMap(session, ds);
 					
@@ -127,7 +125,6 @@ public class CondDao extends DaoBase {
 				alog.setDatasetRecordCount(alog.getDatasetRecordCount() + ds.getData().size());
 				for (CondBase cb: ds.getData()) {
 					cb.setDataset(ds);
-					log.info(String.format("Saving: %s", cb));
 					session.save(cb);
 				}
 				

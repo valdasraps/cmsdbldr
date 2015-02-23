@@ -1,13 +1,10 @@
 package org.cern.cms.dbloader.metadata;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
 import javassist.CtMethod;
 import javassist.CtNewMethod;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +17,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import lombok.extern.log4j.Log4j;
 
+import org.cern.cms.dbloader.manager.PropertyType;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.metadata.ClassBuilder.PropertyBuilder;
 
@@ -53,11 +51,11 @@ public abstract class EntityFactory<T> {
         	  .newFieldAnnotation(Column.class).addMember("name", cmd.getColumnName()).build()
 	          .newFieldAnnotation(XmlElement.class).addMember("name", cmd.getColumnName()).build();
 
-	        if (cmd.isLob()) {
+	        if (cmd.getType().equals(PropertyType.CLOB)) {
 	        	pb.newFieldAnnotation(Lob.class).build();
 	        }
 	        
-	        if (cmd.isTemporal()) {
+	        if (cmd.getType().equals(PropertyType.TEMPORAL)) {
 	        	pb.newFieldAnnotation(Temporal.class).addMember("value", TemporalType.TIMESTAMP).build();
 	        	pb.newFieldAnnotation(XmlJavaTypeAdapter.class).addMember("value", DateAdapter.class).build();
 	        }
