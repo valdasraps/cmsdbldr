@@ -69,7 +69,7 @@ public class LobManager {
    }
    
    private final String buildPath(String path, String replaceable, String replacement) {
-	   if (path == null || replacement == null) { 
+	   if (path == null || replacement == null || replaceable == null) { 
 		   return null;
 	   }
 	   return path.replace(replaceable, replacement);
