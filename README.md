@@ -6,7 +6,7 @@ CMS DB Loader application V2
 Uploads XML files to Oracle DB. XML files can be found in exmaple folder.
 
 #### Help
-
+```
 usage: org.cern.cms.dbloader.DbLoader
     --channel-class <arg>           print generated channel class
     --channel-desc <arg>            describe single channel
@@ -37,4 +37,4 @@ usage: org.cern.cms.dbloader.DbLoader
     --url <arg>                     database connection URL
     --username <arg>                database username
     --version                       print version
-
+```
