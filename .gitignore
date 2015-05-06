@@ -1,2 +1,8 @@
-/target
 /.classpath
+/cmsdbldr.iml
+/.idea
+/.metadata
+/.project
+/.settings
+/target
+
