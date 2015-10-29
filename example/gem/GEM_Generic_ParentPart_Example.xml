@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ROOT>
+   <PARTS>
+	<PART mode="auto">
+	   <KIND_OF_PART>Generic GEM parent part</KIND_OF_PART>
+	   <BARCODE>AABCDEFGHIJK0123456</BARCODE>
+	   <SERIAL_NUMBER>GEM_Test_Parent</SERIAL_NUMBER>
+	   <NAME_LABEL> GEM_Test_Parent_Name</NAME_LABEL>
+	   <COMMENT_DESCRIPTION>GEM Generic Parent Part</COMMENT_DESCRIPTION>
+	   <LOCATION>TIF</LOCATION>
+	   <MANUFACTURER>IBM</MANUFACTURER>
+	   <RECORD_INSERTION_USER>Umesh</RECORD_INSERTION_USER>	
+          </PART>
+     </PARTS>
+</ROOT>
+

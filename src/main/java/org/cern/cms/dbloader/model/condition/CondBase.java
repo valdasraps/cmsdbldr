@@ -1,5 +1,7 @@
 package org.cern.cms.dbloader.model.condition;
 
+import java.math.BigInteger;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,7 +31,7 @@ public abstract class CondBase {
     @GeneratedValue(generator = "ANY_COND_RECORD_ID_SEQ", strategy = GenerationType.SEQUENCE)
 	@SequenceGenerator(name = "ANY_COND_RECORD_ID_SEQ", sequenceName = "ANY_COND_RECORD_ID_SEQ", allocationSize = 20)
 	@XmlTransient
-	private Long id;
+	private BigInteger id;
 	
 	@ManyToOne
 	@JoinColumn(name="CONDITION_DATA_SET_ID")

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <HEADER>
+    <TYPE>
+      <EXTENSION_TABLE_NAME>GEM_IV</EXTENSION_TABLE_NAME>
+      <NAME>IV</NAME>
+    </TYPE>
+    <RUN>
+      <RUN_NAME>6240</RUN_NAME>
+      <COMMENT_DESCRIPTION>HO CERN SX5 Burnin IV Scan Conditions Data</COMMENT_DESCRIPTION>
+    </RUN>
+  </HEADER>
+  <DATA_SET>
+    <COMMENT_DESCRIPTION>HO CERN SX5 Burnin IV Scan Conditions Data</COMMENT_DESCRIPTION>
+    <VERSION>6240</VERSION>
+    <PART>
+      <PART_ID>1000</PART_ID>
+      <KIND_OF_PART>HO SiPM Board</KIND_OF_PART>
+      <BARCODE>33301010000746</BARCODE>
+    </PART>
+    <DATA>
+    </DATA>
+  </DATA_SET>
+ </ROOT>

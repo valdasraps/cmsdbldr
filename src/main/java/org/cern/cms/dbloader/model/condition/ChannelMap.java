@@ -1,5 +1,7 @@
 package org.cern.cms.dbloader.model.condition;
 
+import java.math.BigInteger;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +27,7 @@ public class ChannelMap {
 	@Id
 	@Column(name="CHANNEL_MAP_ID")
 	@XmlTransient
-	private Long id;
+	private BigInteger id;
 	
 	@Basic
 	@Column(name="IS_RECORD_DELETED")

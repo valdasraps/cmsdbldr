@@ -1,6 +1,8 @@
 package org.cern.cms.dbloader.model.condition;
 
+import java.math.BigInteger;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -39,6 +42,7 @@ import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.iov.Iov;
+import org.cern.cms.dbloader.model.xml.part.PartAssembly;
 
 @Entity
 @Table(name="COND_DATA_SETS")
@@ -47,7 +51,7 @@ import org.cern.cms.dbloader.model.iov.Iov;
 	@AttributeOverride(name="lastUpdateTime", column=@Column(name="RECORD_DEL_FLAG_TIME")),
 	@AttributeOverride(name="lastUpdateUser", column=@Column(name="RECORD_DEL_FLAG_USER"))
 })
-@ToString
+@ToString(exclude = "iovs")
 @EqualsAndHashCode(callSuper=false, of={"id"})
 public class Dataset extends DeleteableBase {
 	
@@ -56,7 +60,7 @@ public class Dataset extends DeleteableBase {
 	@XmlAttribute(name = "id", required = false)
     @GeneratedValue(generator = "COND_DATA_SET_ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "COND_DATA_SET_ID_SEQ", sequenceName = "COND_DATA_SET_ID_SEQ", allocationSize = 20)
-	private Long id;
+	private BigInteger id;
 
 	@ManyToOne
 	@JoinColumn(name="PART_ID")
@@ -69,7 +73,7 @@ public class Dataset extends DeleteableBase {
 	private ChannelMap channelMap;
 	
 	@ManyToOne(fetch=FetchType.EAGER, cascade={CascadeType.ALL})
-	@JoinColumn(name="COND_RUN_ID")
+	@JoinColumn(name="COND_RUN_ID", nullable = false)
 	@XmlTransient
 	private Run run;
 	
@@ -153,15 +157,22 @@ public class Dataset extends DeleteableBase {
 	private ChannelBase channel;
 
 	@Transient
+	@XmlElement(name = "PART_ASSEMBLY")
+	private PartAssembly partAssembly;
+	
+	@Transient
 	@XmlElement(name = "DATA")
 	@XmlJavaTypeAdapter(value = CondBaseAdapter.class)
 	private List<? extends CondBase> data;
 	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
+    private Set<CondAttrList> attrList;
+	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "COND_DATASET2IOV_MAPS", 
-		joinColumns = {	@JoinColumn(name = "COND_IOV_RECORD_ID") }, 
-		inverseJoinColumns = { @JoinColumn(name = "CONDITION_DATASET_ID") })
+	@JoinTable(name = "COND_DATASET2IOV_MAPS",
+		joinColumns = {	@JoinColumn(name = "CONDITION_DATA_SET_ID")},
+		inverseJoinColumns = { @JoinColumn(name = "COND_IOV_RECORD_ID")})
 	@XmlTransient
-	private Set<Iov> iovs;
+	private Set<Iov> iovs = new HashSet<Iov>();
         
 }

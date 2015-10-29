@@ -11,44 +11,40 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 public class AuditDao extends DaoBase {
-	
-	@Inject
-	public AuditDao(@Assisted HbmManager hbm) {
-		super(hbm);
-	}
 
-	public void saveAuditRecord(AuditLog alog) throws Exception {
-		Session session = hbm.getSession();
-		Transaction tx = session.beginTransaction();
-		try {
+    @Inject
+    public AuditDao(@Assisted HbmManager hbm) {
+        super(hbm);
+    }
 
-			alog.setUploadTimeSeconds((System.currentTimeMillis() - alog.getInstanceCreateTime()) / 1000);
-			
-			alog.setCreatedByUser(props.getOsUser());
-			alog.setInsertUser(props.getOsUser());
-			alog.setCreateTimestamp(new Date());
-			alog.setInsertTime(new Date());
-			alog.setUploadHostName(props.getHostName());
-			alog.setUploadSoftware(props.getVersion());	
+    public void saveAuditRecord(AuditLog alog) throws Exception {
+        Session session = hbm.getSession();
+        Transaction tx = session.beginTransaction();
+        try {
 
-			session.saveOrUpdate(alog);
-			
-			if (props.isTest()) {
-				tx.rollback();
-			} else {
-				tx.commit();
-			}
-			
-		} catch (Exception ex) {
-			
-			tx.rollback();
-			throw ex;
-			
-		} finally {
-			
-			session.close();
-			
-		}
-	}
-	
+            alog.setUploadTimeSeconds((System.currentTimeMillis() - alog.getInstanceCreateTime()) / 1000);
+
+            alog.setCreatedByUser(props.getOsUser());
+            alog.setInsertUser(props.getOsUser());
+            alog.setCreateTimestamp(new Date());
+            alog.setInsertTime(new Date());
+            alog.setUploadHostName(props.getHostName());
+            alog.setUploadSoftware(props.getVersion());
+
+            session.saveOrUpdate(alog);
+
+            if (props.isTest()) {
+                tx.rollback();
+            } else {
+                tx.commit();
+            }
+
+        } catch (Exception ex) {
+            tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+    }
+
 }

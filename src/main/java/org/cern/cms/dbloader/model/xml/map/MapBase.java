@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter @Setter
 public abstract class MapBase {
 	
-	@XmlAttribute(name = "refid", required = true)
+	@XmlAttribute(name = "idref", required = true)
 	private Integer refid;
 }

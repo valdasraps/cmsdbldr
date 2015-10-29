@@ -1,6 +1,9 @@
 package org.cern.cms.dbloader.dao;
 
 import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.management.modelmbean.XMLParseException;
 
@@ -16,9 +19,16 @@ import org.cern.cms.dbloader.model.condition.KindOfCondition;
 import org.cern.cms.dbloader.model.condition.Run;
 import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.iov.Iov;
+import org.cern.cms.dbloader.model.iov.Tag;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
+import org.cern.cms.dbloader.model.xml.Elements;
 import org.cern.cms.dbloader.model.xml.Header;
 import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.xml.map.MapIov;
+import org.cern.cms.dbloader.model.xml.map.MapTag;
+import org.cern.cms.dbloader.model.xml.map.Maps;
+import org.cern.cms.dbloader.model.xml.part.PartAssembly;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -30,10 +40,6 @@ import com.google.inject.assistedinject.Assisted;
 @Log4j
 public class CondDao extends DaoBase {
 
-    private static final String DEFAULT_VERSION = "1.0";
-    private static final String NO_RUN_MODE = "no-run";
-    private static final long DEFAULT_EMAP_RUN_ID = 10000000L;
-
     @Inject
     public CondDao(@Assisted HbmManager hbm) {
         super(hbm);
@@ -43,6 +49,12 @@ public class CondDao extends DaoBase {
         Session session = hbm.getSession();
         Transaction tx = session.beginTransaction();
         try {
+
+            Map<BigInteger, Iov> iovMap = new HashMap<>();
+
+            if (root.getElements() != null && root.getMaps() != null) {
+                iovMap = mapIov2Tag(root.getElements(), root.getMaps(), session);
+            }
 
             KindOfCondition dbKoc = resolveKindOfCondition(session, root.getHeader());
 
@@ -57,6 +69,7 @@ public class CondDao extends DaoBase {
                     try {
                         alog.setRunNumber(Integer.parseInt(dbRun.getNumber()));
                     } catch (Exception ex) {
+                        // TO - DO ?
                     }
                 }
 
@@ -77,7 +90,16 @@ public class CondDao extends DaoBase {
                     ds.setVersion(DEFAULT_VERSION);
                 }
 
-				 // Resolving Part or Channel
+                if (!iovMap.isEmpty()) {
+//            		No dataset idref check provided
+                    mapIov2Datasets(ds, iovMap);
+                }
+
+                if (ds.getPartAssembly() != null) {
+                    resolvePartAssembly(ds, session);
+                }
+
+                // Resolving Part or Channel
 //				if ((ds.getPart() == null && ds.getChannel() == null)) {
 //					throw new XMLParseException(String.format("Part or Channel must be defined for dataset %s", ds));
 //				}
@@ -87,7 +109,8 @@ public class CondDao extends DaoBase {
 
                 if (ds.getPart() != null) {
 
-                    Part dbPart = resolvePart(session, ds);
+                    Part dbPart = resolvePart(session, ds.getPart());
+                    ds.setPart(dbPart);
 
                     if (alog.getSubdetectorName() == null) {
                         alog.setSubdetectorName(dbPart.getKindOfPart().getSubdetector().getName());
@@ -138,14 +161,22 @@ public class CondDao extends DaoBase {
             }
 
         } catch (Exception ex) {
-
             tx.rollback();
             throw ex;
-
         } finally {
-
             session.close();
+        }
+    }
 
+    public KindOfCondition getCondition(BigInteger id) throws Exception {
+        Session session = hbm.getSession();
+        try {
+            return (KindOfCondition) session.createCriteria(KindOfCondition.class)
+                    .add(Restrictions.eq("id", id))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+        } finally {
+            session.close();
         }
     }
 
@@ -210,10 +241,18 @@ public class CondDao extends DaoBase {
 
     }
 
-    private Part resolvePart(Session session, Dataset ds) throws Exception {
+    private Part resolvePart(Session session, Part part) throws Exception {
 
-        Part xmPart = ds.getPart();
+        Part xmPart = part;
         Part dbPart = null;
+
+        // Get the part based on id 
+        if (xmPart.getId() != null) {
+            dbPart = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("id", xmPart.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+        }
 
         // Get the part based on barcode
         if (xmPart.getBarcode() != null) {
@@ -252,8 +291,6 @@ public class CondDao extends DaoBase {
         }
 
         log.info(String.format("Resolved: %s", dbPart));
-        ds.setPart(dbPart);
-
         return dbPart;
 
     }
@@ -321,6 +358,47 @@ public class CondDao extends DaoBase {
         if (dbDs != null) {
             throw new XMLParseException(String.format("Dataset already exists: %s", dbDs));
         }
+
+    }
+
+    private void mapIov2Datasets(Dataset dataset, Map<BigInteger, Iov> iovMap) {
+        for (BigInteger key : iovMap.keySet()) {
+            dataset.getIovs().add(iovMap.get(key));
+        }
+    }
+
+    private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps, Session session) {
+
+        Map<BigInteger, Iov> mapIov = new HashMap<>();
+        Map<BigInteger, Tag> mapTag = new HashMap<>();
+
+        for (Tag tag : elements.getTags()) {
+            mapTag.put(tag.getId(), tag);
+        }
+
+        for (Iov iov : elements.getIovs()) {
+            mapIov.put(iov.getId(), iov);
+        }
+
+        for (MapTag mapT : maps.getTags()) {
+            Long tagId = Long.valueOf(mapT.getRefid());
+            Tag tag = mapTag.get(tagId);
+            for (MapIov mapI : mapT.getIovs()) {
+                Long iovId = Long.valueOf(mapI.getRefid());
+                Iov iov = mapIov.get(iovId);
+                session.save(iov);
+                tag.getIovs().add(iov);
+            }
+            session.save(tag);
+        }
+        return mapIov;
+    }
+
+    private void resolvePartAssembly(Dataset ds, Session session) throws Exception {
+        // TO - DO
+        PartAssembly pa = ds.getPartAssembly();
+        @SuppressWarnings("unused")
+        Part part = resolvePart(session, pa.getParentPart());
 
     }
 

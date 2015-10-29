@@ -1,0 +1,33 @@
+1. unpack cmsdbldr_v0.0.1.zip. It contains the following files:
+
+  - cmsdbldr.jar: application itself;
+  - cmsdbldr.sh: execution script;
+  - db.properties: main properties file;
+
+2. fix connection settings for your environment by editing db.properties. Mainly you will have to change URL, maybe something else.
+
+3. try execute: ./cmsdbldr.sh --properties=db.properties --help
+   This should give you the list of all available options. Note: options can be put into db.properties file or added to argument list.
+   If this line works than it means that JAVA is setup OK on your machine.
+
+4. try execute: ./cmsdbldr.sh --properties=db.properties --cond-list
+   This should give you the empty (?) list of conditions supported. Dont worry - we will add some later.
+   If this line works than it means that database connection is setup OK.
+
+5. unpack gem_examples.zip.
+
+6. carefully inspect gem_examples/01_construct.sql. It provides DML statements that inserts example GEM detector, some KIND_OF_PART and ROOT part.
+   This is needed because ROOT part and other information is mandatory BEFORE parts get loaded.
+
+7. gem_examples/02_construct.xml is the file with PARTS hierarchy ready to be loaded (if step 07 is completed).
+   Loading the file: ./cmsdbldr.sh --properties=db.properties gem_examples/02_construct.xml
+
+8. inspect gem_examples/03_condition.sql as it displays examples on how you can register KINDS_OF_CONDITIONS and CHANNELS. Once these are registered
+   properly than the command --cond-list should list them as supported!
+
+9. file gem_examples/04_condition.xml displays the sophisticated example of condition data that can be loaded into the database. It features TAG/IOV,
+   CHANNEL and RUN links to the dataset. Loading the file: ./cmsdbldr.sh --properties=db.properties gem_examples/04_condition.xml
+
+10. gem_examples/05_condition(.zip) is the folder and its zipped content to display LOB support. Basically, in gem_examples/03_condition.sql there is a
+    KIND_OF_CONDITION that has CLOB and BLOB columns. The zip file contains data - xml, binary and character files that can be loaded into the database.
+    Loading the file: ./cmsdbldr.sh --properties=db.properties gem_examples/05_condition.zip

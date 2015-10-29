@@ -1,5 +1,7 @@
 package org.cern.cms.dbloader.model.condition;
 
+import java.math.BigInteger;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -24,7 +26,7 @@ public abstract class ChannelBase {
 	@Id
 	@Column(name="CHANNEL_MAP_ID")
 	@XmlTransient
-	private Long id;
+	private BigInteger id;
 	
 	@Transient
 	@XmlElement(name = "EXTENSION_TABLE_NAME")

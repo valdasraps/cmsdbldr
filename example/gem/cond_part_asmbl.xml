@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <HEADER>
+    <TYPE>
+      <EXTENSION_TABLE_NAME>GEM_IV</EXTENSION_TABLE_NAME>
+      <NAME>IV</NAME>
+    </TYPE>
+    <RUN>
+      <RUN_NAME>test</RUN_NAME>
+      <COMMENT_DESCRIPTION>HO CERN SX5 Burnin IV Scan Conditions Data</COMMENT_DESCRIPTION>
+    </RUN>
+  </HEADER>
+  <DATA_SET>
+    <COMMENT_DESCRIPTION>HO CERN SX5 IV Scan LED Charge Data</COMMENT_DESCRIPTION>
+    <VERSION>6240</VERSION>
+    <PART_ASSEMBLY>
+      <PARENT_PART>
+        <KIND_OF_PART>HO SiPM Board</KIND_OF_PART>
+        <BARCODE>33301010000778</BARCODE>
+      </PARENT_PART>
+      <CHILD_UNIQUELY_IDENTIFIED_BY>
+        <ATTRIBUTE>
+          <NAME>GEM Position</NAME>
+          <VALUE>1</VALUE>
+        </ATTRIBUTE>
+      </CHILD_UNIQUELY_IDENTIFIED_BY>
+    </PART_ASSEMBLY>
+    <DATA>
+    </DATA>
+  </DATA_SET>
+</ROOT>

@@ -1,5 +1,6 @@
 package org.cern.cms.dbloader.model.condition;
 
+import java.math.BigInteger;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -32,7 +34,7 @@ public class KindOfCondition extends DeleteableBase {
 	@Id
 	@Column(name="KIND_OF_CONDITION_ID")
 	@XmlTransient
-	private Long id;
+	private BigInteger id;
 	
 	@Basic
 	@Column(name="NAME")

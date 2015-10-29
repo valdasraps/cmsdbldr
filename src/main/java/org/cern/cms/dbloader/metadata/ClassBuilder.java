@@ -13,6 +13,7 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+import javassist.bytecode.annotation.BooleanMemberValue;
 import javassist.bytecode.annotation.ClassMemberValue;
 import javassist.bytecode.annotation.EnumMemberValue;
 import javassist.bytecode.annotation.StringMemberValue;
@@ -211,6 +212,17 @@ public class ClassBuilder {
 		 */
 		public AnnBuilder<T> addMember(String name, Class<?> value) {
 	        a.addMemberValue(name, new ClassMemberValue(value.getName(), cb.cpool));
+	        return this;
+		}
+		
+		/**
+		 * Add annotation Boolean attribute member
+		 * @param name
+		 * @param value
+		 * @return Annotation builder
+		 */
+		public AnnBuilder<T> addMember(String name, boolean value) {
+	        a.addMemberValue(name, new BooleanMemberValue(value, cb.cpool));
 	        return this;
 		}
 		

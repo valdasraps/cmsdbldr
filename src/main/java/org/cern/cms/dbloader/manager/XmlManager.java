@@ -20,57 +20,58 @@ import org.cern.cms.dbloader.model.xml.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.cern.cms.dbloader.PropertiesManager;
 
 @Singleton
 public class XmlManager {
-	
-	@Inject
-	private PropertiesManager props;
-	
-	private JAXBContext jaxb;
-	private Set<Class<?>> boundedClasses = new HashSet<>();
-	
-	public XmlManager() {
-		this.boundedClasses.add(Root.class);
-	}
-	
-	protected JAXBContext getJAXBContext() throws JAXBException {
-		if (jaxb == null) {
-			this.jaxb = JAXBContext.newInstance(boundedClasses.toArray(new Class<?> []{}));
-		}
-		return this.jaxb;
-	}
-	
-	protected final void boundClass(Class<?> classToBound) throws Exception {
-		if (jaxb == null) {
-			boundedClasses.add(classToBound);
-		} else {
-			throw new Exception("JAXB Context already initialized!");
-		}
-	}
-	
-	public Root unmarshal(File file) throws Exception {
-		Unmarshaller ums = getJAXBContext().createUnmarshaller();
-		
-		ums.setEventHandler(new EventHandler());
-		ums.setAdapter(new DateAdapter());
-		ums.setAdapter(CondBaseAdapter.class, new CondBaseAdapter());
-		ums.setAdapter(ChannelBaseAdapter.class, new ChannelBaseAdapter());
-		
-		return (Root) ums.unmarshal(file);
-	}
-	
-	public void generateSchema() throws Exception {
-		getJAXBContext().generateSchema(new SchemaOutputResolver() {
-			
-			private File parent = new File(props.getSchemaParent());
-			
-			@Override
-			public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {
-				return new StreamResult(new File(parent, suggestedFileName));
-			}
-			
-		});
-	}
-	
+
+    @Inject
+    private PropertiesManager props;
+
+    private JAXBContext jaxb;
+    private Set<Class<?>> boundedClasses = new HashSet<>();
+
+    public XmlManager() {
+        this.boundedClasses.add(Root.class);
+    }
+
+    protected JAXBContext getJAXBContext() throws JAXBException {
+        if (jaxb == null) {
+            this.jaxb = JAXBContext.newInstance(boundedClasses.toArray(new Class<?>[]{}));
+        }
+        return this.jaxb;
+    }
+
+    protected final void boundClass(Class<?> classToBound) throws Exception {
+        if (jaxb == null) {
+            boundedClasses.add(classToBound);
+        } else {
+            throw new Exception("JAXB Context already initialized!");
+        }
+    }
+
+    public Root unmarshal(File file) throws Exception {
+        Unmarshaller ums = getJAXBContext().createUnmarshaller();
+
+        ums.setEventHandler(new EventHandler());
+        ums.setAdapter(new DateAdapter());
+        ums.setAdapter(CondBaseAdapter.class, new CondBaseAdapter());
+        ums.setAdapter(ChannelBaseAdapter.class, new ChannelBaseAdapter());
+
+        return (Root) ums.unmarshal(file);
+    }
+
+    public void generateSchema() throws Exception {
+        getJAXBContext().generateSchema(new SchemaOutputResolver() {
+
+            private File parent = new File(props.getSchemaParent());
+
+            @Override
+            public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {
+                return new StreamResult(new File(parent, suggestedFileName));
+            }
+
+        });
+    }
+
 }

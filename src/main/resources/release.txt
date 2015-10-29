@@ -1,0 +1,16 @@
+0.0.2_pre bugfix
+
+#470 Implement --cond-datasets, --cond-dataset output
+#469 Ignore empty elements in DATA section of XML
+#468 --parts-root-id parameter and auto assign new parts to ROOT
+#466 PART Location does not load
+#409 Resolve Part by ID
+#408 Fix --cond-xml
+#407 Fix --cond-datasets and --cond-dataset
+#406 Fix --cond-* option handling
+#405 Remove --subdetector option 
+
+0.0.1 first version
+
+- part loading
+- condition loading

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <HEADER>
+    <TYPE>
+      <EXTENSION_TABLE_NAME>GEM_FILES</EXTENSION_TABLE_NAME>
+      <NAME>FILES</NAME>
+    </TYPE>
+    <RUN>
+         <RUN_NUMBER>1</RUN_NUMBER>
+         <RUN_TYPE>1</RUN_TYPE>
+   	</RUN>
+  </HEADER>
+
+	<DATA_SET>
+		<COMMENT_DESCRIPTION>Testing LOB loading</COMMENT_DESCRIPTION>
+		<CREATE_TIMESTAMP>2011-06-17 00:00:00.0</CREATE_TIMESTAMP>
+		<CREATED_BY_USER>joshi</CREATED_BY_USER>
+		<VERSION>JUN_7_2011</VERSION>
+		<SUBVERSION>0</SUBVERSION>
+		<DATA>
+		    <GEM_TEXT_FILE>data.html</GEM_TEXT_FILE>
+			<GEM_MEDIA_FILE>picture.jpg</GEM_MEDIA_FILE>
+			<GEM_COMMENT>These are test files</GEM_COMMENT>
+		</DATA>
+		<DATA>
+		    <GEM_TEXT_FILE>data.html</GEM_TEXT_FILE>
+			<GEM_MEDIA_FILE>picture.png</GEM_MEDIA_FILE>
+			<GEM_COMMENT>These are test files</GEM_COMMENT>
+		</DATA>
+	</DATA_SET>
+
+</ROOT>

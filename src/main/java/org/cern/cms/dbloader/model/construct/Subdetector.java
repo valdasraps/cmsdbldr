@@ -1,5 +1,7 @@
 package org.cern.cms.dbloader.model.construct;
 
+import java.math.BigInteger;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +24,7 @@ public class Subdetector extends DeleteableBase {
 
 	@Id
 	@Column(name="SUBDETECTOR_ID")
-	private Long id;
+	private BigInteger id;
 
 	@Basic
 	@Column(name="SUBDETECTOR_NAME")

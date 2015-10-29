@@ -8,12 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
 import lombok.extern.log4j.Log4j;
+import org.cern.cms.dbloader.PropertiesManager;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
-import org.hibernate.service.ServiceRegistryBuilder;
 import org.reflections.Reflections;
 
 @Log4j
@@ -26,7 +27,7 @@ public class HbmManager implements AutoCloseable {
     private final PropertiesManager props;
     private final Configuration cfg;
     private SessionFactory sessionFactory;
-    private Set<Class<?>> classPool = new HashSet<>();
+    private final Set<Class<?>> classPool = new HashSet<>();
 
     public HbmManager(final PropertiesManager props) throws Exception {
         this.props = props;
@@ -59,8 +60,8 @@ public class HbmManager implements AutoCloseable {
 
             cfg.configure();
             cfg.buildSessionFactory(
-                    new ServiceRegistryBuilder().applySettings(
-                            cfg.getProperties()).buildServiceRegistry())
+                    new StandardServiceRegistryBuilder().applySettings(
+                            cfg.getProperties()).build())
                     .close();
 
             // Attach Entity class Table schema
@@ -88,12 +89,16 @@ public class HbmManager implements AutoCloseable {
                     pc.getTable().setSchema(props.getIovCoreSchemaName());
                 }
                 
+                if (pc.getEntityName().startsWith(PropertiesManager.CONDITION_XML_PACKAGE)) {
+                    pc.getTable().setSchema(props.getCoreAttributeSchemaName());
+                }
+                
             }
 
             cfg.setProperty("hibernate.show_sql", Boolean.toString(props.isPrintSQL()));
             this.sessionFactory = cfg.buildSessionFactory(
-                    new ServiceRegistryBuilder().applySettings(
-                            cfg.getProperties()).buildServiceRegistry());
+                    new StandardServiceRegistryBuilder().applySettings(
+                            cfg.getProperties()).build());
 
         }
 

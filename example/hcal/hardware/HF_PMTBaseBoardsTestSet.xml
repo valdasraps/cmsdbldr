@@ -3,7 +3,7 @@
   <PARTS>
 <!-- University of Iowa    Zhe Jia  -->
 
-   <PART mode="auto">
+    <PART mode="auto">
     <KIND_OF_PART>HF PMT Base Board</KIND_OF_PART>
     <SERIAL_NUMBER>PMTBaseBrd_025</SERIAL_NUMBER>
     <BARCODE>3040000000000311025</BARCODE>
@@ -52,6 +52,20 @@
     <LOCATION>University of Iowa</LOCATION>
     <INSTITUTION>University of Iowa</INSTITUTION>
    </PART>
-
+   
+<!--    <PART mode="auto">
+	<KIND_OF_PART>Ph1 Pixel TBM09</KIND_OF_PART>
+	<SERIAL_NUMBER>VG6C27X-1-1B</SERIAL_NUMBER>
+	<LOCATION>Kansas State University</LOCATION>
+	<MANUFACTURER>IBM</MANUFACTURER>
+	<RECORD_INSERTION_USER>Misha Makouski</RECORD_INSERTION_USER>
+	<PREDEFINED_ATTRIBUTES>
+		<ATTRIBUTE>
+			<NAME>Ph1 FPix TBM09 Number</NAME>
+			<VALUE>1-1B</VALUE>
+		</ATTRIBUTE>
+		</PREDEFINED_ATTRIBUTES>
+	</PART> -->
+   
   </PARTS>
 </ROOT>

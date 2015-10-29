@@ -1,5 +1,6 @@
 package org.cern.cms.dbloader.model.condition;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -38,7 +39,7 @@ public class Run extends DeleteableBase {
     @GeneratedValue(generator = "COND_RUN_ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "COND_RUN_ID_SEQ", sequenceName = "COND_RUN_ID_SEQ", allocationSize = 20)
 	@XmlTransient
-	private Long id;
+	private BigInteger id;
 	
 	@Basic
 	@Column(name="RUN_NUMBER")

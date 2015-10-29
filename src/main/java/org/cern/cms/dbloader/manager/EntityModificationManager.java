@@ -15,6 +15,7 @@ import javassist.bytecode.annotation.StringMemberValue;
 
 import javax.persistence.JoinTable;
 import javax.persistence.SequenceGenerator;
+import org.cern.cms.dbloader.PropertiesManager;
 
 public class EntityModificationManager {
 
@@ -22,18 +23,82 @@ public class EntityModificationManager {
         "org.cern.cms.dbloader.model.condition.CondBase",
         "org.cern.cms.dbloader.model.managemnt.AuditLog",
         "org.cern.cms.dbloader.model.condition.Dataset",
-        "org.cern.cms.dbloader.model.condition.Run",
+        "org.cern.cms.dbloader.model.condition.Run",};
+
+    private final static String[] SQGENERATOR_SCHEMA_CORE_IOV_MGMNT = new String[]{
         "org.cern.cms.dbloader.model.iov.Tag",
         "org.cern.cms.dbloader.model.iov.Iov"
     };
 
+    private final static String[] SQGENERATOR_SCHEMA_CONSTRUCT_CORE_SCHEMA_MGMNT = new String[]{
+        "org.cern.cms.dbloader.model.construct.KindOfPart",
+        "org.cern.cms.dbloader.model.construct.Part",
+        "org.cern.cms.dbloader.model.construct.Manufacturer",
+        "org.cern.cms.dbloader.model.construct.PartToAttrRltSh",
+        "org.cern.cms.dbloader.model.construct.PartAttrList",
+        "org.cern.cms.dbloader.model.construct.PartRelationship"
+
+    };
+
+    private final static String[] SQGENERATOR_SCHEMA_MANAGEMNT_CORE_SCHEMA = new String[]{
+        "org.cern.cms.dbloader.model.managemnt.Institution",
+        "org.cern.cms.dbloader.model.managemnt.Location"
+    };
+
+    private final static String[] SQGENERATOR_SCHEMA_CORE_ATTRIBUTE = new String[]{
+        "org.cern.cms.dbloader.model.xml.map.AttrBase",
+        "org.cern.cms.dbloader.model.xml.map.AttrCatalog"
+    };
+
     public static void modify(final PropertiesManager props) throws Exception {
 
-        for (String pc : SQGENERATOR_SCHEMA_CORECONDITION) {
+        for (String pc : SQGENERATOR_SCHEMA_CORE_ATTRIBUTE) {
+            new EntityModifier(pc) {
+                @Override
+                protected void modify() throws Exception {
+                    addFieldAnnotationAttribute("id", SequenceGenerator.class, "schema", props.getCoreAttributeSchemaName());
+                }
+            }.process();
+        }
+
+        for (final String pc : SQGENERATOR_SCHEMA_CORECONDITION) {
             new EntityModifier(pc) {
                 @Override
                 protected void modify() throws Exception {
                     addFieldAnnotationAttribute("id", SequenceGenerator.class, "schema", props.getCoreConditionSchemaName());
+                    if (pc.equals("org.cern.cms.dbloader.model.condition.Dataset")) {
+                        addFieldAnnotationAttribute("iovs", JoinTable.class, "schema", props.getIovCoreSchemaName());
+                    }
+                }
+            }.process();
+        }
+
+        for (final String pc : SQGENERATOR_SCHEMA_CORE_IOV_MGMNT) {
+            new EntityModifier(pc) {
+                @Override
+                protected void modify() throws Exception {
+                    addFieldAnnotationAttribute("id", SequenceGenerator.class, "schema", props.getIovCoreSchemaName());
+                    if (pc.equals("org.cern.cms.dbloader.model.iov.Tag")) {
+                        addFieldAnnotationAttribute("iovs", JoinTable.class, "schema", props.getIovCoreSchemaName());
+                    }
+                }
+            }.process();
+        }
+
+        for (String pc : SQGENERATOR_SCHEMA_CONSTRUCT_CORE_SCHEMA_MGMNT) {
+            new EntityModifier(pc) {
+                @Override
+                protected void modify() throws Exception {
+                    addFieldAnnotationAttribute("id", SequenceGenerator.class, "schema", props.getCoreConstructSchemaName());
+                }
+            }.process();
+        }
+
+        for (String pc : SQGENERATOR_SCHEMA_MANAGEMNT_CORE_SCHEMA) {
+            new EntityModifier(pc) {
+                @Override
+                protected void modify() throws Exception {
+                    addFieldAnnotationAttribute("id", SequenceGenerator.class, "schema", props.getCoreManagemntSchemaName());
                 }
             }.process();
         }
@@ -45,6 +110,19 @@ public class EntityModificationManager {
             }
         }.process();
 
+        /*        new EntityModifier("org.cern.cms.dbloader.model.condition.Dataset") {
+         @Override
+         protected void modify() throws Exception {
+         addFieldAnnotationAttribute("iovs", JoinTable.class, "schema", props.getCoreConditionSchemaName());
+         }
+         }.process();
+        
+         new EntityModifier("org.cern.cms.dbloader.model.iov.Tag") {
+         @Override
+         protected void modify() throws Exception {
+         addFieldAnnotationAttribute("iovs", JoinTable.class, "schema", props.getIovCoreSchemaName());
+         }
+         }.process();*/
     }
 
     private static abstract class EntityModifier {

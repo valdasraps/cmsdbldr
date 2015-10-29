@@ -1,0 +1,43 @@
+@params.sql
+
+drop user CMS_&det._CORE_ATTRIBUTE cascade;
+drop user CMS_&det._CORE_COND cascade;
+drop user CMS_&det._CORE_CONSTRUCT cascade;
+drop user CMS_&det._CORE_IOV_MGMNT cascade;
+drop user CMS_&det._CORE_MANAGEMNT cascade;
+drop user CMS_&det._PRTTYPE_&subdet._ADMIN cascade;
+drop user CMS_&det._PRTTYPE_&subdet._READER cascade;
+drop user CMS_&det._PRTTYPE_&subdet._WRITER cascade;
+drop user CMS_&det._&subdet._COND cascade;
+drop user CMS_&det._&subdet._CONSTRUCT cascade;
+drop user CMS_&det._&subdet._VIEW cascade;
+
+drop role CMS_&det._CORE_ATTRIBUTE_ADMIN;
+drop role CMS_&det._CORE_ATTRIBUTE_READER;
+drop role CMS_&det._CORE_ATTRIBUTE_WRITER;
+drop role CMS_&det._CORE_CONDITION_ADMIN;
+drop role CMS_&det._CORE_CONDITION_READER;
+drop role CMS_&det._CORE_CONDITION_WRITER;
+drop role CMS_&det._CORE_CONSTRUCT_ADMIN;
+drop role CMS_&det._CORE_CONSTRUCT_READER;
+drop role CMS_&det._CORE_CONSTRUCT_WRITER;
+drop role CMS_&det._CORE_IOV_MGMNT_ADMIN;
+drop role CMS_&det._CORE_IOV_MGMNT_READER;
+drop role CMS_&det._CORE_IOV_MGMNT_WRITER;
+drop role CMS_&det._CORE_MANAGEMNT_ADMIN;
+drop role CMS_&det._CORE_MANAGEMNT_READER;
+drop role CMS_&det._CORE_MANAGEMNT_WRITER;
+drop role CMS_&det._SCHEMA_OWNER_ROLE;
+drop role CMS_&det._SYS_PRIV_ROLE;
+drop role CMS_&det._&subdet._APP_ADMIN;
+drop role CMS_&det._&subdet._APP_READER;
+drop role CMS_&det._&subdet._APP_WRITER;
+drop role CMS_&det._&subdet._CONDITION_ADMIN;
+drop role CMS_&det._&subdet._CONDITION_READER;
+drop role CMS_&det._&subdet._CONDITION_WRITER;
+drop role CMS_&det._&subdet._CONSTRUCT_ADMIN;
+drop role CMS_&det._&subdet._CONSTRUCT_READER;
+drop role CMS_&det._&subdet._CONSTRUCT_WRITER;
+drop role CMS_&det._USER_ROLE;
+
+DROP TABLESPACE CMS_&det._PROCERNIT_DATA INCLUDING CONTENTS AND DATAFILES;

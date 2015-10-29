@@ -5,11 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -55,7 +53,6 @@ public class LobManagerT {
 	 * PRIVATE fileProcessBlob(), fileProcessClob()  test
 	 */
 	@Test
-	@SuppressWarnings("unused")
 	public void test2() throws NoSuchMethodException, SecurityException {
 		LobManager lob = new LobManager();
 		Method methodClob = lob.getClass().getDeclaredMethod("fileProcessClob", String.class);

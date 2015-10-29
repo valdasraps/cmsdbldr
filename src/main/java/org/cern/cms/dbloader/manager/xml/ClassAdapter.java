@@ -56,11 +56,9 @@ public class ClassAdapter <T> extends XmlAdapter<Object, T> {
 		if (el == null) {
 			return null;
 		}
-
 		DOMSource source = new DOMSource((Element) el);
 		Unmarshaller ums = jaxb.createUnmarshaller();
 		ums.setEventHandler(new EventHandler());
-
 		JAXBElement jaxbElement = ums.unmarshal(source, cbClass);
 		return (T) jaxbElement.getValue();
 	}

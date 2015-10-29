@@ -1,5 +1,7 @@
 package org.cern.cms.dbloader.util;
 
+import java.math.BigInteger;
+
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.Run;
 import org.cern.cms.dbloader.model.construct.KindOfPart;
@@ -9,10 +11,10 @@ import org.junit.Test;
 public class TablePrinterTest {
 
 	private static final Dataset[] DATASETS = new Dataset[] {
-		newDataset(1L, "v1", "myPart", "myKind", "myRun"),
-		newDataset(2L, "v1", "myPart", "myKind", "myRun"),
-		newDataset(3L, "v1", "myPart", "myKind", "myRun"),
-		newDataset(4L, "v1", "myPart", "myKind", "myRun")
+		newDataset(new BigInteger("1"), "v1", "myPart", "myKind", "myRun"),
+		newDataset(new BigInteger("2"), "v1", "myPart", "myKind", "myRun"),
+		newDataset(new BigInteger("3"), "v1", "myPart", "myKind", "myRun"),
+		newDataset(new BigInteger("4"), "v1", "myPart", "myKind", "myRun")
 	};
 	
 	@Test
@@ -39,7 +41,7 @@ public class TablePrinterTest {
 		
 	}
 
-	private static Dataset newDataset(Long id, String version, String partName, String kopName, String runName) {
+	private static Dataset newDataset(BigInteger id, String version, String partName, String kopName, String runName) {
 		Dataset d = new Dataset();
 		d.setId(id);
 		d.setVersion(version);

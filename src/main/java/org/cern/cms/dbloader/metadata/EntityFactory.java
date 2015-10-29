@@ -24,6 +24,11 @@ import org.cern.cms.dbloader.metadata.ClassBuilder.PropertyBuilder;
 @Log4j
 public abstract class EntityFactory<T> {
 
+	private static final String TO_STRING_METHOD = 
+			"public String toString() { "
+			+ "return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);	"
+		  + "}";
+	
 	private static Map<String, EntityClass<?>> loadedClasses = new HashMap<>();
 	
 	@SuppressWarnings("unchecked")
@@ -49,7 +54,7 @@ public abstract class EntityFactory<T> {
         	
         	pb.newFieldAnnotation(Basic.class).build()
         	  .newFieldAnnotation(Column.class).addMember("name", cmd.getColumnName()).build()
-	          .newFieldAnnotation(XmlElement.class).addMember("name", cmd.getColumnName()).build();
+	          .newFieldAnnotation(XmlElement.class).addMember("name", cmd.getColumnName()).addMember("nillable", true).build();
 
 	        if (cmd.getType().equals(PropertyType.CLOB)) {
 	        	pb.newFieldAnnotation(Lob.class).build();
@@ -64,8 +69,7 @@ public abstract class EntityFactory<T> {
 	        
         }
         
-        String toStringM = "public String toString() { return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);	}";
-        CtMethod m = CtNewMethod.make(toStringM, cb.getCc());
+        CtMethod m = CtNewMethod.make(TO_STRING_METHOD, cb.getCc());
         cb.getCc().addMethod(m);
 
         cb.newAnnotation(Entity.class).build()

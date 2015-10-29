@@ -1,5 +1,6 @@
 package org.cern.cms.dbloader.model.managemnt;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -37,7 +38,7 @@ public class AuditLog extends EntityBase {
 	@Column(name="RECORD_ID")
     @GeneratedValue(generator = "ANY_COND_RECORD_ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "ANY_COND_RECORD_ID_SEQ", sequenceName = "ANY_COND_RECORD_ID_SEQ", allocationSize = 20)
-	private Long id;
+	private BigInteger id;
 	
 	@Basic
 	@Column(name="ARCHVE_FILE_NAME", nullable=false)
@@ -121,11 +122,11 @@ public class AuditLog extends EntityBase {
 	
 	@Basic
 	@Column(name="INTERVAL_OF_VALIDITY_BEGIN")
-	private Integer intervalOfValidityBegin;
+	private BigInteger intervalOfValidityBegin;
 		
 	@Basic
 	@Column(name="INTERVAL_OF_VALIDITY_END")
-	private Integer intervalOfValidityEnd;
+	private BigInteger intervalOfValidityEnd;
 	
 	@Basic
 	@Column(name="DATASET_COUNT")
