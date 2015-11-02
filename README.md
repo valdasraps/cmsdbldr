@@ -1,6 +1,9 @@
 CMS DB Loader application V2
 =======
 
+[![Coverage Status](https://coveralls.io/repos/valdasraps/cmsdbldr/badge.svg?branch=master&service=github)](https://coveralls.io/github/valdasraps/cmsdbldr?branch=master)
+[![Build Status](https://travis-ci.org/valdasraps/cmsdbldr.svg?branch=master)](https://travis-ci.org/valdasraps/cmsdbldr)
+
 #### Overview
 
 Uploads XML files to Oracle DB. XML files can be found in exmaple folder.

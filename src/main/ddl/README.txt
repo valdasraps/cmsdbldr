@@ -1,8 +1,9 @@
-Process scripts in the following order:
+Creates all database objects.
 
-CMS_GEM_CORE_ATTRIBUTE
-CMS_GEM_CORE_MANAGEMNT
-CMS_GEM_CORE_CONSTRUCT
-CMS_GEM_CORE_COND
-CMS_GEM_CORE_IOV_MGMNT
+Steps:
 
+1. edit params.sql
+
+2. execute: sqlplus / as sysdba @create
+
+To remove everything execute: sqlplus / as sysdba @drop
