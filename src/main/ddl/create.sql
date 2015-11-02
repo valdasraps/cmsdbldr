@@ -62,3 +62,5 @@ connect CMS_&det._CORE_IOV_MGMNT/&owner_password
 @06-core_iov_mgmnt/04-seq
 @06-core_iov_mgmnt/05-trg
 @06-core_iov_mgmnt/06-gra
+
+quit
