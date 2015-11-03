@@ -1,6 +1,7 @@
 package org.cern.cms.dbloader.manager;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.cern.cms.dbloader.PropertiesManager;
 import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
@@ -42,6 +44,7 @@ public class CondXmlManager extends XmlManager {
         }
     }
 
+    @Override
     public Root unmarshal(File file) throws Exception {
         Unmarshaller ums = getJAXBContext().createUnmarshaller();
 
@@ -62,7 +65,7 @@ public class CondXmlManager extends XmlManager {
         return (Root) ums.unmarshal(file);
     }
 
-    public void printExample() throws Exception {
+    public void printExample(PropertiesManager props, OutputStream out) throws Exception {
         Root root = new Root();
 
         Header header = new Header();
@@ -76,6 +79,7 @@ public class CondXmlManager extends XmlManager {
         Run run = new Run();
         header.setRun(run);
         run.setNumber("123456");
+        run.setRunType("example");
         run.setBeginTime(new Date());
         run.setInitiatedByUser("John Data Uploader");
         run.setLocation("CERN, CH");
@@ -89,7 +93,7 @@ public class CondXmlManager extends XmlManager {
             dataset.setComment("Sample dataset");
             Part part = new Part();
             dataset.setPart(part);
-            part.setBarcode("0123456");
+            part.setId(props.getRootPartId());
 
             List<CondBase> data = new ArrayList<>();
             for (int j = 0; j < 3; j++) {
@@ -113,7 +117,7 @@ public class CondXmlManager extends XmlManager {
         ms.setEventHandler(new EventHandler());
         ms.setAdapter(new DateAdapter());
         ms.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        ms.marshal(root, System.out);
+        ms.marshal(root, out);
 
     }
 

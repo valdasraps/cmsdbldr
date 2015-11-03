@@ -12,9 +12,9 @@ import org.cern.cms.dbloader.PropertiesManager;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
+import org.hibernate.service.ServiceRegistryBuilder;
 import org.reflections.Reflections;
 
 @Log4j
@@ -60,8 +60,8 @@ public class HbmManager implements AutoCloseable {
 
             cfg.configure();
             cfg.buildSessionFactory(
-                    new StandardServiceRegistryBuilder().applySettings(
-                            cfg.getProperties()).build())
+                    new ServiceRegistryBuilder().applySettings(
+                            cfg.getProperties()).buildServiceRegistry())
                     .close();
 
             // Attach Entity class Table schema
@@ -84,21 +84,21 @@ public class HbmManager implements AutoCloseable {
                 if (pc.getEntityName().startsWith(PropertiesManager.MANAGEMNT_CORE_PACKAGE)) {
                     pc.getTable().setSchema(props.getCoreManagemntSchemaName());
                 }
-                
+
                 if (pc.getEntityName().startsWith(PropertiesManager.IOV_CORE_PACKAGE)) {
                     pc.getTable().setSchema(props.getIovCoreSchemaName());
                 }
-                
+
                 if (pc.getEntityName().startsWith(PropertiesManager.CONDITION_XML_PACKAGE)) {
                     pc.getTable().setSchema(props.getCoreAttributeSchemaName());
                 }
-                
+
             }
 
             cfg.setProperty("hibernate.show_sql", Boolean.toString(props.isPrintSQL()));
             this.sessionFactory = cfg.buildSessionFactory(
-                    new StandardServiceRegistryBuilder().applySettings(
-                            cfg.getProperties()).build());
+                    new ServiceRegistryBuilder().applySettings(
+                            cfg.getProperties()).buildServiceRegistry());
 
         }
 

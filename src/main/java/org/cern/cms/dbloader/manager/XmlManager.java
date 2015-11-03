@@ -29,7 +29,7 @@ public class XmlManager {
     private PropertiesManager props;
 
     private JAXBContext jaxb;
-    private Set<Class<?>> boundedClasses = new HashSet<>();
+    private final Set<Class<?>> boundedClasses = new HashSet<>();
 
     public XmlManager() {
         this.boundedClasses.add(Root.class);
@@ -61,10 +61,9 @@ public class XmlManager {
         return (Root) ums.unmarshal(file);
     }
 
-    public void generateSchema() throws Exception {
+    public void generateSchema(String folder) throws Exception {
+        final File parent = new File(folder);
         getJAXBContext().generateSchema(new SchemaOutputResolver() {
-
-            private File parent = new File(props.getSchemaParent());
 
             @Override
             public Result createOutput(String namespaceUri, String suggestedFileName) throws IOException {

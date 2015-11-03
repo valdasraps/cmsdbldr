@@ -21,7 +21,6 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "PART_TO_PART_RLTNSHPS")
-@SequenceGenerator(name = "ANY_RLTNSHP_ID_SEQ", schema = "CMS_GEM_CORE_ATTRIBUTE",  sequenceName = "ANY_RLTNSHP_ID_SEQ", allocationSize = 20)
 @Getter @Setter
 @ToString(exclude = {"partKop", "parentKop"})
 public class PartRelationship extends DeleteableBase {
@@ -29,6 +28,7 @@ public class PartRelationship extends DeleteableBase {
     @Id
     @Column(name ="RELATIONSHIP_ID")
     @GeneratedValue(generator = "ANY_RLTNSHP_ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ANY_RLTNSHP_ID_SEQ", sequenceName = "ANY_RLTNSHP_ID_SEQ", allocationSize = 20)
     private BigInteger id;
     
     @Column(name = "PRIORITY_NUMBER")

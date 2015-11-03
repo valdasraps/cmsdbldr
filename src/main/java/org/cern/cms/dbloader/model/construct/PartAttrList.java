@@ -27,12 +27,12 @@ import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "PART_ATTR_LISTS")
-@SequenceGenerator(name = "ANY_ATTR_LIST_REC_ID_SEQ",  schema = "CMS_GEM_CORE_ATTRIBUTE", sequenceName = "ANY_ATTR_LIST_REC_ID_SEQ", allocationSize = 20)
 @Getter @Setter
 public class PartAttrList {
 
     @Id
     @GeneratedValue(generator = "ANY_ATTR_LIST_REC_ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ANY_ATTR_LIST_REC_ID_SEQ",  sequenceName = "ANY_ATTR_LIST_REC_ID_SEQ", allocationSize = 20)
     @Column(name = "ATTR_LIST_RECORD_ID")
     @XmlTransient
     private BigInteger id;

@@ -117,10 +117,10 @@ public class CondDao extends DaoBase {
                     }
 
                     // If KindOfCondition limits part type - check it up
-                    if (dbKoc.getKindsOfParts() != null && !dbKoc.getKindsOfParts().isEmpty()) {
-                        if (!dbKoc.getKindsOfParts().contains(dbPart.getKindOfPart())) {
-                            throw new XMLParseException(String.format("%s is not allowed with %s", dbPart.getKindOfPart(), dbKoc));
-                        }
+                    if (dbKoc.getKindsOfParts() == null
+                            || dbKoc.getKindsOfParts().isEmpty()
+                            || !dbKoc.getKindsOfParts().contains(dbPart.getKindOfPart())) {
+                        throw new XMLParseException(String.format("%s is not allowed with %s", dbPart.getKindOfPart(), dbKoc));
                     }
 
                 } else if (ds.getChannel() != null) {
@@ -381,10 +381,10 @@ public class CondDao extends DaoBase {
         }
 
         for (MapTag mapT : maps.getTags()) {
-            Long tagId = Long.valueOf(mapT.getRefid());
+            BigInteger tagId = BigInteger.valueOf(mapT.getRefid());
             Tag tag = mapTag.get(tagId);
             for (MapIov mapI : mapT.getIovs()) {
-                Long iovId = Long.valueOf(mapI.getRefid());
+                BigInteger iovId = BigInteger.valueOf(mapI.getRefid());
                 Iov iov = mapIov.get(iovId);
                 session.save(iov);
                 tag.getIovs().add(iov);

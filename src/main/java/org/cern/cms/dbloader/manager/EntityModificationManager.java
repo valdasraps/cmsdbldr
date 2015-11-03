@@ -19,40 +19,41 @@ import org.cern.cms.dbloader.PropertiesManager;
 
 public class EntityModificationManager {
 
-    private final static String[] SQGENERATOR_SCHEMA_CORECONDITION = new String[]{
+    private final static String[] SQGENERATOR_SCHEMA_CORECONDITION = new String[] {
         "org.cern.cms.dbloader.model.condition.CondBase",
         "org.cern.cms.dbloader.model.managemnt.AuditLog",
         "org.cern.cms.dbloader.model.condition.Dataset",
-        "org.cern.cms.dbloader.model.condition.Run",};
+        "org.cern.cms.dbloader.model.condition.Run"
+    };
 
-    private final static String[] SQGENERATOR_SCHEMA_CORE_IOV_MGMNT = new String[]{
+    private final static String[] SQGENERATOR_SCHEMA_CORE_IOV_MGMNT = new String[] {
         "org.cern.cms.dbloader.model.iov.Tag",
         "org.cern.cms.dbloader.model.iov.Iov"
     };
 
-    private final static String[] SQGENERATOR_SCHEMA_CONSTRUCT_CORE_SCHEMA_MGMNT = new String[]{
+    private final static String[] SQGENERATOR_SCHEMA_CONSTRUCT_CORE_SCHEMA_MGMNT = new String[] {
         "org.cern.cms.dbloader.model.construct.KindOfPart",
         "org.cern.cms.dbloader.model.construct.Part",
         "org.cern.cms.dbloader.model.construct.Manufacturer",
-        "org.cern.cms.dbloader.model.construct.PartToAttrRltSh",
-        "org.cern.cms.dbloader.model.construct.PartAttrList",
-        "org.cern.cms.dbloader.model.construct.PartRelationship"
-
+        "org.cern.cms.dbloader.model.construct.PartToAttrRltSh"
     };
 
-    private final static String[] SQGENERATOR_SCHEMA_MANAGEMNT_CORE_SCHEMA = new String[]{
+    private final static String[] SQGENERATOR_SCHEMA_MANAGEMNT_CORE_SCHEMA = new String[] {
         "org.cern.cms.dbloader.model.managemnt.Institution",
         "org.cern.cms.dbloader.model.managemnt.Location"
     };
 
-    private final static String[] SQGENERATOR_SCHEMA_CORE_ATTRIBUTE = new String[]{
+    private final static String[] SQGENERATOR_SCHEMA_CORE_ATTRIBUTE = new String[] {
         "org.cern.cms.dbloader.model.xml.map.AttrBase",
-        "org.cern.cms.dbloader.model.xml.map.AttrCatalog"
+        "org.cern.cms.dbloader.model.xml.map.AttrCatalog",
+        "org.cern.cms.dbloader.model.condition.CondAttrList",
+        "org.cern.cms.dbloader.model.construct.PartAttrList",
+        "org.cern.cms.dbloader.model.construct.PartRelationship"
     };
 
     public static void modify(final PropertiesManager props) throws Exception {
 
-        for (String pc : SQGENERATOR_SCHEMA_CORE_ATTRIBUTE) {
+        for (final String pc : SQGENERATOR_SCHEMA_CORE_ATTRIBUTE) {
             new EntityModifier(pc) {
                 @Override
                 protected void modify() throws Exception {

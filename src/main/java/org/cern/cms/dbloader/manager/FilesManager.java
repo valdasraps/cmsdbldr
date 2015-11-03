@@ -7,11 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
-import org.cern.cms.dbloader.PropertiesManager;
 
 import org.cern.cms.dbloader.manager.file.DataFile;
 
@@ -22,10 +22,10 @@ public class FilesManager {
     private static final String XML_FILE = ".xml";
     private static final String ZIP_FILE = ".zip";
 
-    public static Set<DataFile> getFiles(PropertiesManager props) throws Exception {
+    public static Set<DataFile> getFiles(List<String> listOfFiles) throws Exception {
         Set<DataFile> files = new HashSet<>();
 
-        for (String fileName : props.getArgs()) {
+        for (String fileName : listOfFiles) {
             File f = new File(fileName);
             if (!processFile(f, f, files)) {
                 throw new IllegalArgumentException(String.format("unknown file type (%s). Only .zip and .xml files accepted", fileName));

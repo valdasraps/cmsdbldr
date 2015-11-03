@@ -22,7 +22,7 @@ import org.cern.cms.dbloader.model.construct.KindOfPart;
 
 @Entity
 @Table(name = "COND_TO_PART_RLTNSHPS")
-@SequenceGenerator(name = "ANY_RLTNSHP_HISTORY_ID_SEQ", schema="CMS_GEM_CORE_COND",sequenceName = "ANY_RLTNSHP_HISTORY_ID_SEQ", allocationSize = 20)
+@SequenceGenerator(name = "ANY_RLTNSHP_HISTORY_ID_SEQ", sequenceName = "ANY_RLTNSHP_HISTORY_ID_SEQ", allocationSize = 20)
 @Getter @Setter
 @ToString(exclude = {"kop", "koc"})
 public class CondToPart extends DeleteableBase {

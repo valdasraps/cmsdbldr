@@ -89,7 +89,7 @@ public class CondApp extends AppBase {
                 throw new IllegalArgumentException(String.format("[%s] condition not found!", optId.getName()));
             }
             CondXmlManager xmlm = new CondXmlManager(ceh, null);
-            xmlm.printExample();
+            xmlm.printExample(props, System.out);
             return true;
         }
 

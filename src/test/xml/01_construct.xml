@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+    <PARTS>
+        <PART>
+            <KIND_OF_PART>TEST ROOT</KIND_OF_PART>
+            <NAME_LABEL>ROOT</NAME_LABEL>
+            <CHILDREN>
+                <PART>
+                    <KIND_OF_PART>TEST Tower</KIND_OF_PART>
+                    <BARCODE>123000000001</BARCODE>
+                    <COMMENT_DESCRIPTION>TEST Tower 01</COMMENT_DESCRIPTION>
+                    <INSTALLED_DATE>2012-10-17 10:04:56</INSTALLED_DATE>
+                    <MANUFACTURER>IBM</MANUFACTURER>
+                    <LOCATION>University of Iowa</LOCATION>
+                    <INSTITUTION>University of Iowa</INSTITUTION>
+                    <CHILDREN>
+                        <PART>
+                            <KIND_OF_PART>TEST Pack</KIND_OF_PART>
+                            <SERIAL_NUMBER>serial 01</SERIAL_NUMBER>
+                            <CHILDREN>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B01</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>1</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B02</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>2</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B03</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>3</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                            </CHILDREN>
+                        </PART>
+                        <PART>
+                            <KIND_OF_PART>TEST Pack</KIND_OF_PART>
+                            <SERIAL_NUMBER>serial 02</SERIAL_NUMBER>
+                            <CHILDREN>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B04</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>4</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B05</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>5</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B06</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>6</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                            </CHILDREN>
+                        </PART>
+                        <PART>
+                            <KIND_OF_PART>TEST Pack</KIND_OF_PART>
+                            <SERIAL_NUMBER>serial 03</SERIAL_NUMBER>
+                            <CHILDREN>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B07</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>7</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B08</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>8</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                                <PART>
+                                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                                    <NAME_LABEL>B09</NAME_LABEL>
+                                    <PREDEFINED_ATTRIBUTES>
+                                        <ATTRIBUTE>   
+                                            <NAME>TEST Position</NAME>
+                                            <VALUE>9</VALUE>
+                                        </ATTRIBUTE>
+                                    </PREDEFINED_ATTRIBUTES> 
+                                </PART>
+                            </CHILDREN>
+                        </PART>
+                    </CHILDREN>
+                </PART>
+            </CHILDREN>
+        </PART>
+    </PARTS>
+</ROOT>

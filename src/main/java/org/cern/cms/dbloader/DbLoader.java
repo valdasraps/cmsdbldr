@@ -72,7 +72,7 @@ public class DbLoader {
 
         if (props.isSchema()) {
             XmlManager xmlm = injector.getInstance(XmlManager.class);
-            xmlm.generateSchema();
+            xmlm.generateSchema(props.getSchemaParent());
             return;
         }
 
@@ -137,7 +137,7 @@ public class DbLoader {
         try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
 
             AuditDao auditDao = rf.createAuditDao(hbm);
-            for (DataFile df : FilesManager.getFiles(props)) {
+            for (DataFile df : FilesManager.getFiles(props.getArgs())) {
 
                 AuditLog alog = new AuditLog();
                 try {
@@ -186,7 +186,7 @@ public class DbLoader {
 
     }
 
-    public static int main(String[] args) {
+    public static void main(String[] args) {
 
         // Install SLF4J logger to direct all java.util.logging messages to log4j
         SLF4JBridgeHandler.removeHandlersForRootLogger();
@@ -197,27 +197,27 @@ public class DbLoader {
             final PropertiesManager props = new CLIPropertiesManager(args);
 
             if (props.printVersion()) {
-                return 0;
+                System.exit(0);
             }
 
             if (props.printHelp()) {
-                return 0;
+            	System.exit(0);
             }
 
             DbLoader loader = new DbLoader(props);
             loader.run();
 
-            return 0;
+            System.exit(0);
             
         } catch (PropertiesException ex) {
 
             System.err.println("ERROR: " + ex.getMessage());
-            return 1;
+            System.exit(1);
             
         } catch (Exception ex) {
             
             ex.printStackTrace(System.err);
-            return 2;
+            System.exit(2);
             
         }
 
