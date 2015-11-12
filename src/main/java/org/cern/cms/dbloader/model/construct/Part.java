@@ -67,10 +67,11 @@ public class Part extends DeleteableBase {
     @XmlElement(name = "KIND_OF_PART")
     private String kindOfPartName;
 
+    @XmlTransient
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private PartTree partTree;
-
+    
     @XmlTransient
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "MANUFACTURER_ID", nullable = false)
@@ -127,7 +128,7 @@ public class Part extends DeleteableBase {
     @Transient
     @XmlElementWrapper(name = "PREDEFINED_ATTRIBUTES")
     @XmlElement(name = "ATTRIBUTE", type = Attribute.class)
-    private List<Attribute> attributes = new ArrayList<Attribute>();
+    private List<Attribute> attributes = new ArrayList<>();
 
     @Transient
     @XmlElement(name = "LOCATION")
@@ -149,6 +150,6 @@ public class Part extends DeleteableBase {
     @Transient
     @XmlElementWrapper(name = "CHILDREN")
     @XmlElement(name = "PART", type = Part.class)
-    private List<Part> children = new ArrayList<Part>();
+    private List<Part> children = new ArrayList<>();
 
 }

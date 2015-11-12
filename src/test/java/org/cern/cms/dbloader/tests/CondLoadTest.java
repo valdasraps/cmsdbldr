@@ -1,6 +1,7 @@
 package org.cern.cms.dbloader.tests;
 
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static junit.framework.TestCase.assertEquals;
@@ -61,7 +62,9 @@ public class CondLoadTest extends TestBase {
         AuditLog alog = new AuditLog();
         CondApp condApp = injector.getInstance(CondApp.class);
         try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
-            for (DataFile df: FilesManager.getFiles(Collections.singletonList("src/test/xml/02_condition.xml"))) {
+            for (DataFile df: FilesManager.getFiles(Arrays.asList(
+                    "src/test/xml/02_condition.xml", 
+                    "src/test/xml/03_condition.xml"))) {
 
                 Root root = xmlm.unmarshal(df.getData());
                 assertTrue(condApp.handleData(df, hbm, root, alog));

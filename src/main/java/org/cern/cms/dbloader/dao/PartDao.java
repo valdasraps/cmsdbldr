@@ -329,36 +329,6 @@ public class PartDao extends DaoBase {
 
     }
 
-    private AttrBase resolveAttrBase(Attribute attribute, AttrCatalog attrCatalog, Session session) throws XMLParseException {
-
-        AttrBase base = (AttrBase) session.createCriteria(PositionSchema.class)
-                .add(Restrictions.eq("name", attribute.getValue()))
-                .add(Restrictions.eq("attrCatalog", attrCatalog))
-                .uniqueResult();
-        if (base != null) {
-            return base;
-        }
-
-        base = (AttrBase) session.createCriteria(ModeStage.class)
-                .add(Restrictions.eq("name", attribute.getValue()))
-                .add(Restrictions.eq("attrCatalog", attrCatalog))
-                .uniqueResult();
-        if (base != null) {
-            return base;
-        }
-
-        base = (AttrBase) session.createCriteria(CondAlgorithm.class)
-                .add(Restrictions.eq("name", attribute.getValue()))
-                .add(Restrictions.eq("attrCatalog", attrCatalog))
-                .uniqueResult();
-        if (base != null) {
-            return base;
-        }
-
-        throw new XMLParseException(String.format("Not resolved: %s", attribute));
-
-    }
-
     @RequiredArgsConstructor
     @Getter
     private class PartsPair {

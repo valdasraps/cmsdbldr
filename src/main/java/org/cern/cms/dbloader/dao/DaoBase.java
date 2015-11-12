@@ -1,9 +1,18 @@
 package org.cern.cms.dbloader.dao;
 
 import com.google.inject.Inject;
+import javax.management.modelmbean.XMLParseException;
 import lombok.RequiredArgsConstructor;
 import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.model.xml.map.AttrBase;
+import org.cern.cms.dbloader.model.xml.map.AttrCatalog;
+import org.cern.cms.dbloader.model.xml.map.Attribute;
+import org.cern.cms.dbloader.model.xml.map.CondAlgorithm;
+import org.cern.cms.dbloader.model.xml.map.ModeStage;
+import org.cern.cms.dbloader.model.xml.map.PositionSchema;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 @RequiredArgsConstructor
 public abstract class DaoBase {
@@ -17,4 +26,34 @@ public abstract class DaoBase {
 
     protected final HbmManager hbm;
 
+    protected AttrBase resolveAttrBase(Attribute attribute, AttrCatalog attrCatalog, Session session) throws XMLParseException {
+
+        AttrBase base = (AttrBase) session.createCriteria(PositionSchema.class)
+                .add(Restrictions.eq("name", attribute.getValue()))
+                .add(Restrictions.eq("attrCatalog", attrCatalog))
+                .uniqueResult();
+        if (base != null) {
+            return base;
+        }
+
+        base = (AttrBase) session.createCriteria(ModeStage.class)
+                .add(Restrictions.eq("name", attribute.getValue()))
+                .add(Restrictions.eq("attrCatalog", attrCatalog))
+                .uniqueResult();
+        if (base != null) {
+            return base;
+        }
+
+        base = (AttrBase) session.createCriteria(CondAlgorithm.class)
+                .add(Restrictions.eq("name", attribute.getValue()))
+                .add(Restrictions.eq("attrCatalog", attrCatalog))
+                .uniqueResult();
+        if (base != null) {
+            return base;
+        }
+
+        throw new XMLParseException(String.format("Not resolved: %s", attribute));
+
+    }
+    
 }
