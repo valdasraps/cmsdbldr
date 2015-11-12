@@ -71,4 +71,25 @@ public class CondLoadTest extends TestBase {
                 
     }
     
+    @Test
+    public void loadLobExampleTest() throws Exception {
+        
+        CondManager condm = injector.getInstance(CondManager.class);
+        CondEntityHandler ch = condm.getConditionHandler("FILES");
+        
+        CondXmlManager xmlm = new CondXmlManager(ch, null);
+        
+        AuditLog alog = new AuditLog();
+        CondApp condApp = injector.getInstance(CondApp.class);
+        try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
+            for (DataFile df: FilesManager.getFiles(Collections.singletonList("src/test/lob/lob_test.zip"))) {
+
+                Root root = xmlm.unmarshal(df.getData());
+                assertTrue(condApp.handleData(df, hbm, root, alog));
+                
+            }
+        }
+                
+    }
+    
 }

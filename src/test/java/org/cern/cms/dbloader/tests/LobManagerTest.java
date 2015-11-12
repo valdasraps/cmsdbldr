@@ -64,13 +64,10 @@ public class LobManagerTest extends TestBase {
         methodClob.setAccessible(true);
         methodBlob.setAccessible(true);
 
-        String path = "src/test/lob/data00001.html";
+        String path = "src/test/lob/data.html";
         assertNotNull(methodClob.invoke(lob, path));
 
-        path = "src/test/lob/data00005.png";
-        assertNotNull(methodBlob.invoke(lob, path));
-
-        path = "src/test/lob/data00005.dat";
+        path = "src/test/lob/picture.png";
         assertNotNull(methodBlob.invoke(lob, path));
 
         path = null;
