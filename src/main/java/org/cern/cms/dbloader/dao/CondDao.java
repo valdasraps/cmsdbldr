@@ -36,6 +36,9 @@ import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import java.util.HashSet;
+import org.cern.cms.dbloader.model.condition.CondAttrList;
+import org.cern.cms.dbloader.model.condition.CondToAttrRltSh;
 import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.xml.map.AttrBase;
 import org.cern.cms.dbloader.model.xml.map.AttrCatalog;
@@ -104,8 +107,7 @@ public class CondDao extends DaoBase {
 
                 if ((ds.getPart() != null && ds.getChannel() != null) ||
                     (ds.getPart() != null && ds.getPartAssembly() != null) ||
-                    (ds.getChannel() != null && ds.getPartAssembly() != null) ||
-                    (ds.getPart() == null && ds.getChannel() == null && ds.getPartAssembly() == null)) {
+                    (ds.getChannel() != null && ds.getPartAssembly() != null)) {
                     throw new XMLParseException(String.format("One and Only One of Part, PartAssembly and Channel must be defined for Dataset %s", ds));
                 }
 
@@ -135,12 +137,17 @@ public class CondDao extends DaoBase {
                     
                 }
 
-
-
                 ds.setRun(root.getHeader().getRun());
                 ds.setKindOfCondition(root.getHeader().getKindOfCondition());
                 ds.setExtensionTable(root.getHeader().getKindOfCondition().getExtensionTable());
 
+                if (ds.getAttributes() != null) {
+                    ds.setAttrList(new HashSet<CondAttrList>());
+                    for (Attribute attr : ds.getAttributes()) {
+                        ds.getAttrList().add(resolveAttribute(attr, ds, session));
+                    }
+                }
+                
                 // Check if the dataset does not exist?
                 if (!newRun) {
                     checkDataset(session, ds);
@@ -441,4 +448,36 @@ public class CondDao extends DaoBase {
 
     }
 
+    private CondAttrList resolveAttribute(Attribute attr, Dataset ds, Session session) throws Exception {
+        KindOfCondition koc = ds.getKindOfCondition();
+                
+        AttrCatalog catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
+                .add(Restrictions.eq("name", attr.getName()))
+                .uniqueResult();
+
+        if (catalog == null) {
+            throw new XMLParseException(String.format("Not resolved attribute catalog for %s", attr));
+        }
+
+        AttrBase attrbase = resolveAttrBase(attr, catalog, session);
+
+        CondToAttrRltSh condship = (CondToAttrRltSh) session.createCriteria(CondToAttrRltSh.class)
+                .add(Restrictions.eq("koc", koc))
+                .add(Restrictions.eq("attrCatalog", catalog))
+                .uniqueResult();
+
+        if (condship == null) {
+            throw new XMLParseException(String.format("Not resolved attribute %s to kind of condition relationship %s", catalog, koc));
+        }
+
+        CondAttrList condAttrList = new CondAttrList();
+        condAttrList.setCondToAttrRtlSh(condship);
+        condAttrList.setAttrBase(attrbase);
+        condAttrList.setDataset(ds);
+        condAttrList.setDeleted(Boolean.FALSE);
+
+        return condAttrList;
+
+    }
+    
 }

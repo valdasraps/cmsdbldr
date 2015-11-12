@@ -1,6 +1,7 @@
 package org.cern.cms.dbloader.model.condition;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -42,6 +44,7 @@ import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.iov.Iov;
+import org.cern.cms.dbloader.model.xml.map.Attribute;
 import org.cern.cms.dbloader.model.xml.part.PartAssembly;
 
 @Entity
@@ -166,7 +169,7 @@ public class Dataset extends DeleteableBase {
     @XmlJavaTypeAdapter(value = CondBaseAdapter.class)
     private List<? extends CondBase> data;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset", cascade = CascadeType.ALL)
     private Set<CondAttrList> attrList;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -176,6 +179,11 @@ public class Dataset extends DeleteableBase {
             inverseJoinColumns = {
                 @JoinColumn(name = "COND_IOV_RECORD_ID")})
     @XmlTransient
-    private Set<Iov> iovs = new HashSet<Iov>();
+    private Set<Iov> iovs = new HashSet<>();
+    
+    @Transient
+    @XmlElementWrapper(name = "PREDEFINED_ATTRIBUTES")
+    @XmlElement(name = "ATTRIBUTE", type = Attribute.class)
+    private List<Attribute> attributes = new ArrayList<>();
 
 }

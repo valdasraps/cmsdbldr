@@ -64,7 +64,8 @@ public class CondLoadTest extends TestBase {
         try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
             for (DataFile df: FilesManager.getFiles(Arrays.asList(
                     "src/test/xml/02_condition.xml", 
-                    "src/test/xml/03_condition.xml"))) {
+                    "src/test/xml/03_condition.xml",
+                    "src/test/xml/04_condition.xml"))) {
 
                 Root root = xmlm.unmarshal(df.getData());
                 assertTrue(condApp.handleData(df, hbm, root, alog));
