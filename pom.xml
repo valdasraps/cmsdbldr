@@ -4,7 +4,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.0.2_pre1</version>
+    <version>0.0.2</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -115,6 +115,7 @@
                 <version>2.19</version>
                 <configuration>
                     <threadCount>1</threadCount>
+                    <argLine>-Xms256m -Xmx512m</argLine>
                 </configuration>
             </plugin>
             
