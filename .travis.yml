@@ -3,9 +3,12 @@ language: java
 jdk:
   - oraclejdk7
   # - openjdk7
+env:
+  - MAVEN_OPTS="-Xms512m -Xmx=1024m"
 before_install:
   - .travis/oracle/download.sh
   - .travis/oracle/install.sh  
+install: true
 before_script:
   - .travis/database.sh
 after_success:

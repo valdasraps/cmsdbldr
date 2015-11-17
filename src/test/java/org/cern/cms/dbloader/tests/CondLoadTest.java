@@ -104,6 +104,11 @@ public class CondLoadTest extends TestBase {
                 assertEquals((Integer) 1, alog.getRunNumber());
                 assertEquals((Integer) 1, alog.getDatasetCount());
                 assertEquals((Integer) 3, alog.getDatasetRecordCount());
+                assertEquals(new BigInteger("1"), alog.getIntervalOfValidityBegin());
+                assertEquals(new BigInteger("-1"), alog.getIntervalOfValidityEnd());
+                assertEquals("Some Test Tag", alog.getTagName());
+                
+                // Check all logs
                 
                 for (String file: files) {
                     File f = new File(file);

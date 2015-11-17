@@ -54,7 +54,7 @@ public class CondDao extends DaoBase {
         super(sm);
     }
 
-    public void saveCondition(Root root, AuditLog alog) throws Exception {       
+    public void saveCondition(Root root, AuditLog alog) throws Exception {
 
         Map<BigInteger, Iov> iovMap = new HashMap<>();
 
@@ -97,8 +97,13 @@ public class CondDao extends DaoBase {
             }
 
             if (!iovMap.isEmpty()) {
-//              No dataset idref check provided
-                mapIov2Datasets(ds, iovMap);
+                ds.getIovs().addAll(iovMap.values());
+                Iov iov = iovMap.values().iterator().next();
+                alog.setIntervalOfValidityBegin(iov.getIovBegin());
+                alog.setIntervalOfValidityEnd(iov.getIovEnd());
+                if (iov.getTags() != null && !iov.getTags().isEmpty()) {
+                    alog.setTagName(iov.getTags().iterator().next().getName());
+                }
             }
 
             if ((ds.getPart() != null && ds.getChannel() != null) ||
@@ -362,12 +367,6 @@ public class CondDao extends DaoBase {
 
     }
 
-    private void mapIov2Datasets(Dataset dataset, Map<BigInteger, Iov> iovMap) {
-        for (BigInteger key : iovMap.keySet()) {
-            dataset.getIovs().add(iovMap.get(key));
-        }
-    }
-
     private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps) {
 
         Map<BigInteger, Iov> mapIov = new HashMap<>();
@@ -387,8 +386,9 @@ public class CondDao extends DaoBase {
             for (MapIov mapI : mapT.getIovs()) {
                 BigInteger iovId = BigInteger.valueOf(mapI.getRefid());
                 Iov iov = mapIov.get(iovId);
-                session.save(iov);
                 tag.getIovs().add(iov);
+                iov.getTags().add(tag);
+                session.save(iov);
             }
             session.save(tag);
         }
