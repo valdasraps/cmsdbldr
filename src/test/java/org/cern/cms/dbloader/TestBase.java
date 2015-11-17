@@ -35,6 +35,10 @@ public abstract class TestBase {
         try (InputStream is = CondInfoTest.class.getResourceAsStream("/properties/test.properties")) {
             p.load(is);
         }
+        
+        if (System.getenv("TRAVIS_CI") != null) {
+            p.remove("print-sql");
+        }
 
         pm = new CLIPropertiesManager(p, new String[]{"file1.xml", "file2.xml"});
 
