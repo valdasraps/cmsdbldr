@@ -54,7 +54,11 @@ public class AuditLogHandler {
     public final void saveFailure(Exception ex) throws Exception {
         StringWriter sw = new StringWriter();
         ex.printStackTrace(new PrintWriter(sw));
-        log.setUploadLogTrace(sw.toString().substring(0, 4000));
+        String str = sw.toString();
+        if (str.length() > 4000) {
+            str = str.substring(0, 4000);
+        }
+        log.setUploadLogTrace(str);
         save(UploadStatus.Failure);
     }
     
