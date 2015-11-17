@@ -55,7 +55,7 @@ import org.cern.cms.dbloader.model.xml.part.PartAssembly;
     @AttributeOverride(name = "lastUpdateTime", column = @Column(name = "RECORD_DEL_FLAG_TIME")),
     @AttributeOverride(name = "lastUpdateUser", column = @Column(name = "RECORD_DEL_FLAG_USER"))
 })
-@ToString(exclude = "iovs")
+@ToString(exclude = {"iovs","data","attributes"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 public class Dataset extends DeleteableBase {
 

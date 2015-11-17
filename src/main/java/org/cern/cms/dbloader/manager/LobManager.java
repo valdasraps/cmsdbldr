@@ -37,9 +37,9 @@ public class LobManager {
                             String fileName = (String) fileProp.getValue(data);
                             if (fileName != null) {
                                 if ((prop.getType().equals(PropertyType.CLOB))) {
-                                    prop.setValue(data, fileProcessClob(buildPath(file.getData().getAbsolutePath(), file.getData().getName(), fileName)));
+                                    prop.setValue(data, fileProcessClob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
                                 } else if (prop.getType().equals(PropertyType.BLOB)) {
-                                    prop.setValue(data, fileProcessBlob(buildPath(file.getData().getAbsolutePath(), file.getData().getName(), fileName)));
+                                    prop.setValue(data, fileProcessBlob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
                                 }
                             }
                         }

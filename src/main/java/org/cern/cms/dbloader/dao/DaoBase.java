@@ -2,9 +2,8 @@ package org.cern.cms.dbloader.dao;
 
 import com.google.inject.Inject;
 import javax.management.modelmbean.XMLParseException;
-import lombok.RequiredArgsConstructor;
-import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.xml.map.AttrBase;
 import org.cern.cms.dbloader.model.xml.map.AttrCatalog;
 import org.cern.cms.dbloader.model.xml.map.Attribute;
@@ -14,7 +13,6 @@ import org.cern.cms.dbloader.model.xml.map.PositionSchema;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-@RequiredArgsConstructor
 public abstract class DaoBase {
 
     protected static final String DEFAULT_VERSION = "1.0";
@@ -24,14 +22,21 @@ public abstract class DaoBase {
     @Inject
     protected PropertiesManager props;
 
-    protected final HbmManager hbm;
+    protected final SessionManager sm;
+    protected final Session session;
 
-    protected AttrBase resolveAttrBase(Attribute attribute, AttrCatalog attrCatalog, Session session) throws XMLParseException {
-
+    public DaoBase(SessionManager sm) {
+        this.sm = sm;
+        this.session = sm.getSession();
+    }
+    
+    protected AttrBase resolveAttrBase(Attribute attribute, AttrCatalog attrCatalog) throws XMLParseException {
+        
         AttrBase base = (AttrBase) session.createCriteria(PositionSchema.class)
                 .add(Restrictions.eq("name", attribute.getValue()))
                 .add(Restrictions.eq("attrCatalog", attrCatalog))
                 .uniqueResult();
+        
         if (base != null) {
             return base;
         }
@@ -40,6 +45,7 @@ public abstract class DaoBase {
                 .add(Restrictions.eq("name", attribute.getValue()))
                 .add(Restrictions.eq("attrCatalog", attrCatalog))
                 .uniqueResult();
+        
         if (base != null) {
             return base;
         }
@@ -48,6 +54,7 @@ public abstract class DaoBase {
                 .add(Restrictions.eq("name", attribute.getValue()))
                 .add(Restrictions.eq("attrCatalog", attrCatalog))
                 .uniqueResult();
+        
         if (base != null) {
             return base;
         }

@@ -10,7 +10,6 @@ import javax.management.modelmbean.XMLParseException;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.ChannelMap;
 import org.cern.cms.dbloader.model.condition.CondBase;
@@ -30,13 +29,13 @@ import org.cern.cms.dbloader.model.xml.map.MapTag;
 import org.cern.cms.dbloader.model.xml.map.Maps;
 import org.cern.cms.dbloader.model.xml.part.PartAssembly;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import java.math.BigDecimal;
 import java.util.HashSet;
+import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.condition.CondAttrList;
 import org.cern.cms.dbloader.model.condition.CondToAttrRltSh;
 import org.cern.cms.dbloader.model.construct.PartAttrList;
@@ -51,151 +50,134 @@ import org.hibernate.criterion.Subqueries;
 public class CondDao extends DaoBase {
 
     @Inject
-    public CondDao(@Assisted HbmManager hbm) {
-        super(hbm);
+    public CondDao(@Assisted SessionManager sm) {
+        super(sm);
     }
 
-    public void saveCondition(Root root, AuditLog alog) throws Exception {
-        Session session = hbm.getSession();
-        Transaction tx = session.beginTransaction();
-        try {
+    public void saveCondition(Root root, AuditLog alog) throws Exception {       
 
-            Map<BigInteger, Iov> iovMap = new HashMap<>();
+        Map<BigInteger, Iov> iovMap = new HashMap<>();
 
-            if (root.getElements() != null && root.getMaps() != null) {
-                iovMap = mapIov2Tag(root.getElements(), root.getMaps(), session);
-            }
-
-            KindOfCondition dbKoc = resolveKindOfCondition(session, root.getHeader());
-
-            alog.setExtensionTableName(dbKoc.getExtensionTable());
-            alog.setKindOfConditionName(dbKoc.getName());
-
-            Run dbRun = resolveRun(session, root.getHeader());
-
-            if (dbRun != null) {
-
-                if (dbRun.getNumber() != null) {
-                    try {
-                        alog.setRunNumber(Integer.parseInt(dbRun.getNumber()));
-                    } catch (Exception ex) {
-                        // TO - DO ?
-                    }
-                }
-
-                alog.setRunType(dbRun.getRunType());
-                alog.setComment(dbRun.getComment());
-
-            }
-
-            boolean newRun = (dbRun == null ? null : dbRun.getId() == null);
-
-            alog.setDatasetCount(root.getDatasets().size());
-            alog.setDatasetRecordCount(0);
-
-            // Assembling Datasets: resolving parts and assigning other values
-            for (Dataset ds : root.getDatasets()) {
-
-                if (ds.getVersion() == null) {
-                    ds.setVersion(DEFAULT_VERSION);
-                }
-
-                if (!iovMap.isEmpty()) {
-//            		No dataset idref check provided
-                    mapIov2Datasets(ds, iovMap);
-                }
-
-                if ((ds.getPart() != null && ds.getChannel() != null) ||
-                    (ds.getPart() != null && ds.getPartAssembly() != null) ||
-                    (ds.getChannel() != null && ds.getPartAssembly() != null)) {
-                    throw new XMLParseException(String.format("One and Only One of Part, PartAssembly and Channel must be defined for Dataset %s", ds));
-                }
-
-                if (ds.getPart() != null) {
-
-                    Part dbPart = resolvePart(session, ds.getPart());
-                    ds.setPart(dbPart);
-
-                    if (alog.getSubdetectorName() == null) {
-                        alog.setSubdetectorName(dbPart.getKindOfPart().getSubdetector().getName());
-                    }
-
-                    // If KindOfCondition limits part type - check it up
-                    if (dbKoc.getKindsOfParts() == null
-                            || dbKoc.getKindsOfParts().isEmpty()
-                            || !dbKoc.getKindsOfParts().contains(dbPart.getKindOfPart())) {
-                        throw new XMLParseException(String.format("%s is not allowed with %s", dbPart.getKindOfPart(), dbKoc));
-                    }
-
-                } else if (ds.getChannel() != null) {
-
-                    resolveChannelMap(session, ds);
-
-                } else if (ds.getPartAssembly() != null) {
-                    
-                    resolvePartAssembly(ds, session);
-                    
-                }
-
-                ds.setRun(root.getHeader().getRun());
-                ds.setKindOfCondition(root.getHeader().getKindOfCondition());
-                ds.setExtensionTable(root.getHeader().getKindOfCondition().getExtensionTable());
-
-                if (ds.getAttributes() != null) {
-                    ds.setAttrList(new HashSet<CondAttrList>());
-                    for (Attribute attr : ds.getAttributes()) {
-                        ds.getAttrList().add(resolveAttribute(attr, ds, session));
-                    }
-                }
-                
-                // Check if the dataset does not exist?
-                if (!newRun) {
-                    checkDataset(session, ds);
-                }
-
-                if (alog.getVersion() == null) {
-                    alog.setVersion(ds.getVersion());
-                }
-
-                session.save(ds);
-
-                alog.setDatasetRecordCount(alog.getDatasetRecordCount() + ds.getData().size());
-                for (CondBase cb : ds.getData()) {
-                    cb.setDataset(ds);
-                    session.save(cb);
-                }
-
-            }
-
-            if (props.isTest()) {
-                log.info("rollback transaction (loader test)");
-                tx.rollback();
-            } else {
-                log.info("commit transaction");
-                tx.commit();
-            }
-
-        } catch (Exception ex) {
-            tx.rollback();
-            throw ex;
-        } finally {
-            session.close();
+        if (root.getElements() != null && root.getMaps() != null) {
+            iovMap = mapIov2Tag(root.getElements(), root.getMaps());
         }
+
+        KindOfCondition dbKoc = resolveKindOfCondition(root.getHeader());
+
+        alog.setExtensionTableName(dbKoc.getExtensionTable());
+        alog.setKindOfConditionName(dbKoc.getName());
+
+        Run dbRun = resolveRun(root.getHeader());
+
+        if (dbRun != null) {
+
+            if (dbRun.getNumber() != null) {
+                try {
+                    alog.setRunNumber(Integer.parseInt(dbRun.getNumber()));
+                } catch (Exception ex) {
+                    // Ignore
+                }
+            }
+
+            alog.setRunType(dbRun.getRunType());
+            alog.setComment(dbRun.getComment());
+
+        }
+
+        boolean newRun = (dbRun == null ? null : dbRun.getId() == null);
+
+        alog.setDatasetCount(root.getDatasets().size());
+        alog.setDatasetRecordCount(0);
+
+        // Assembling Datasets: resolving parts and assigning other values
+        for (Dataset ds : root.getDatasets()) {
+
+            if (ds.getVersion() == null) {
+                ds.setVersion(DEFAULT_VERSION);
+            }
+
+            if (!iovMap.isEmpty()) {
+//              No dataset idref check provided
+                mapIov2Datasets(ds, iovMap);
+            }
+
+            if ((ds.getPart() != null && ds.getChannel() != null) ||
+                (ds.getPart() != null && ds.getPartAssembly() != null) ||
+                (ds.getChannel() != null && ds.getPartAssembly() != null)) {
+                throw new XMLParseException(String.format("One and Only One of Part, PartAssembly and Channel must be defined for Dataset %s", ds));
+            }
+
+            if (ds.getPart() != null) {
+
+                Part dbPart = resolvePart(ds.getPart());
+                ds.setPart(dbPart);
+
+                if (alog.getSubdetectorName() == null) {
+                    alog.setSubdetectorName(dbPart.getKindOfPart().getSubdetector().getName());
+                }
+
+                // If KindOfCondition limits part type - check it up
+                if (dbKoc.getKindsOfParts() == null
+                        || dbKoc.getKindsOfParts().isEmpty()
+                        || !dbKoc.getKindsOfParts().contains(dbPart.getKindOfPart())) {
+                    throw new XMLParseException(String.format("%s is not allowed with %s", dbPart.getKindOfPart(), dbKoc));
+                }
+
+            } else if (ds.getChannel() != null) {
+
+                resolveChannelMap(ds);
+
+            } else if (ds.getPartAssembly() != null) {
+
+                resolvePartAssembly(ds);
+
+            }
+
+            ds.setRun(root.getHeader().getRun());
+            ds.setKindOfCondition(root.getHeader().getKindOfCondition());
+            ds.setExtensionTable(root.getHeader().getKindOfCondition().getExtensionTable());
+
+            if (ds.getAttributes() != null) {
+                ds.setAttrList(new HashSet<CondAttrList>());
+                for (Attribute attr : ds.getAttributes()) {
+                    ds.getAttrList().add(resolveAttribute(attr, ds));
+                }
+            }
+
+            // Check if the dataset does not exist?
+            if (!newRun) {
+                checkDataset(ds);
+            }
+
+            alog.setVersion(ds.getVersion());
+            try {
+                if (ds.getSubversion() != null) {
+                    alog.setSubversion(new BigDecimal(ds.getSubversion()).intValue());
+                }
+            } catch (NumberFormatException ex) {
+                // Ignore
+            }
+
+            session.save(ds);
+
+            alog.setDatasetRecordCount(alog.getDatasetRecordCount() + ds.getData().size());
+            for (CondBase cb : ds.getData()) {
+                cb.setDataset(ds);
+                session.save(cb);
+            }
+
+        }
+
     }
 
     public KindOfCondition getCondition(BigInteger id) throws Exception {
-        Session session = hbm.getSession();
-        try {
-            return (KindOfCondition) session.createCriteria(KindOfCondition.class)
-                    .add(Restrictions.eq("id", id))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
-        } finally {
-            session.close();
-        }
+        return (KindOfCondition) session.createCriteria(KindOfCondition.class)
+                .add(Restrictions.eq("id", id))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
+                .uniqueResult();
     }
 
-    private KindOfCondition resolveKindOfCondition(Session session, Header header) throws Exception {
+    private KindOfCondition resolveKindOfCondition(Header header) throws Exception {
 
         KindOfCondition xmKoc = header.getKindOfCondition();
         KindOfCondition dbKoc = (KindOfCondition) session.createCriteria(KindOfCondition.class)
@@ -214,7 +196,7 @@ public class CondDao extends DaoBase {
         return dbKoc;
     }
 
-    private Run resolveRun(Session session, Header header) throws Exception {
+    private Run resolveRun(Header header) throws Exception {
         Run xmRun = header.getRun();
         Run dbRun = null;
 
@@ -256,7 +238,7 @@ public class CondDao extends DaoBase {
 
     }
 
-    private Part resolvePart(Session session, Part part) throws Exception {
+    private Part resolvePart(Part part) throws Exception {
 
         Part xmPart = part;
         Part dbPart = null;
@@ -311,7 +293,7 @@ public class CondDao extends DaoBase {
 
     }
 
-    private ChannelMap resolveChannelMap(Session session, Dataset ds) throws Exception {
+    private ChannelMap resolveChannelMap(Dataset ds) throws Exception {
 
         ChannelBase xmChannel = ds.getChannel();
         ChannelMap dbChannel;
@@ -347,7 +329,7 @@ public class CondDao extends DaoBase {
 
     }
 
-    private void checkDataset(Session session, Dataset ds) throws Exception {
+    private void checkDataset(Dataset ds) throws Exception {
 
         Criteria c = session.createCriteria(Dataset.class)
                 .add(Restrictions.eq("kindOfCondition", ds.getKindOfCondition()))
@@ -357,10 +339,13 @@ public class CondDao extends DaoBase {
 
         if (ds.getPart() != null) {
             c.add(Restrictions.eq("part", ds.getPart()))
-                    .add(Restrictions.isNull("channelMap"));
-        } else {
+                .add(Restrictions.isNull("channelMap"));
+        } else if (ds.getChannelMap() != null) {
             c.add(Restrictions.eq("channelMap", ds.getChannelMap()))
-                    .add(Restrictions.isNull("part"));
+                .add(Restrictions.isNull("part"));
+        } else {
+            c.add(Restrictions.isNull("channelMap"))
+                .add(Restrictions.isNull("part"));
         }
 
         if (ds.getSubversion() != null) {
@@ -383,7 +368,7 @@ public class CondDao extends DaoBase {
         }
     }
 
-    private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps, Session session) {
+    private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps) {
 
         Map<BigInteger, Iov> mapIov = new HashMap<>();
         Map<BigInteger, Tag> mapTag = new HashMap<>();
@@ -410,9 +395,9 @@ public class CondDao extends DaoBase {
         return mapIov;
     }
 
-    private void resolvePartAssembly(Dataset ds, Session session) throws Exception {
+    private void resolvePartAssembly(Dataset ds) throws Exception {
         PartAssembly pa = ds.getPartAssembly();
-        Part parent = resolvePart(session, pa.getParentPart());
+        Part parent = resolvePart(pa.getParentPart());
 
         Attribute xmlAttr = pa.getAttribute();
         AttrCatalog catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
@@ -424,7 +409,7 @@ public class CondDao extends DaoBase {
             throw new XMLParseException(String.format("Not resolved attribute catalog for %s", xmlAttr));
         }
         
-        AttrBase attrbase = resolveAttrBase(xmlAttr, catalog ,session);
+        AttrBase attrbase = resolveAttrBase(xmlAttr, catalog);
         
         Part child = (Part) session.createCriteria(Part.class)
                 .add(Restrictions.eq("deleted", Boolean.FALSE))
@@ -448,7 +433,7 @@ public class CondDao extends DaoBase {
 
     }
 
-    private CondAttrList resolveAttribute(Attribute attr, Dataset ds, Session session) throws Exception {
+    private CondAttrList resolveAttribute(Attribute attr, Dataset ds) throws Exception {
         KindOfCondition koc = ds.getKindOfCondition();
                 
         AttrCatalog catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
@@ -459,7 +444,7 @@ public class CondDao extends DaoBase {
             throw new XMLParseException(String.format("Not resolved attribute catalog for %s", attr));
         }
 
-        AttrBase attrbase = resolveAttrBase(attr, catalog, session);
+        AttrBase attrbase = resolveAttrBase(attr, catalog);
 
         CondToAttrRltSh condship = (CondToAttrRltSh) session.createCriteria(CondToAttrRltSh.class)
                 .add(Restrictions.eq("koc", koc))

@@ -1,5 +1,6 @@
 package org.cern.cms.dbloader.manager;
 
+import com.google.inject.Inject;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -9,6 +10,8 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
+import org.cern.cms.dbloader.metadata.CondEntityHandler;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,6 +32,17 @@ public class HbmManager implements AutoCloseable {
     private SessionFactory sessionFactory;
     private final Set<Class<?>> classPool = new HashSet<>();
 
+    @Inject
+    public HbmManager(PropertiesManager props, CondManager condm) throws Exception {
+        this(props);
+        for (CondEntityHandler eh : condm.getConditionHandlers()) {
+            addEntityClass(eh.getEntityClass().getC());
+        }
+        for (ChannelEntityHandler eh : condm.getChannelHandlers()) {
+            addEntityClass(eh.getEntityClass().getC());
+        }
+    }
+    
     public HbmManager(final PropertiesManager props) throws Exception {
         this.props = props;
         this.cfg = new Configuration();

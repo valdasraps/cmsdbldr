@@ -1,5 +1,23 @@
 @params.sql
 
+begin
+  for s in (select sid || ',' || SERIAL# as s from V$SESSION where USERNAME in (
+    'CMS_&det._CORE_ATTRIBUTE',
+    'CMS_&det._CORE_COND',
+    'CMS_&det._CORE_CONSTRUCT',
+    'CMS_&det._CORE_IOV_MGMNT',
+    'CMS_&det._CORE_MANAGEMNT',
+    'CMS_&det._PRTTYPE_&subdet._ADMIN',
+    'CMS_&det._PRTTYPE_&subdet._READER',
+    'CMS_&det._PRTTYPE_&subdet._WRITER',
+    'CMS_&det._&subdet._COND',
+    'CMS_&det._&subdet._CONSTRUCT',
+    'CMS_&det._&subdet._VIEW')) loop
+    EXECUTE IMMEDIATE ('alter system kill session ''' ||  s.s || ''' immediate');
+  end loop;
+end;
+/
+
 drop user CMS_&det._CORE_ATTRIBUTE cascade;
 drop user CMS_&det._CORE_COND cascade;
 drop user CMS_&det._CORE_CONSTRUCT cascade;

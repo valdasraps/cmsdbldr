@@ -61,10 +61,10 @@ public class Iov extends IovBase {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "iovs")
     @XmlTransient
-    private Set<Tag> tags = new HashSet<Tag>();
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "iovs")
     @XmlTransient
-    private Set<Dataset> datasets = new HashSet<Dataset>();
+    private Set<Dataset> datasets = new HashSet<>();
     
 }

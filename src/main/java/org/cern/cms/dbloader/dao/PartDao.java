@@ -4,7 +4,6 @@ import java.util.Stack;
 
 import javax.management.modelmbean.XMLParseException;
 
-import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Manufacturer;
 import org.cern.cms.dbloader.model.construct.Part;
@@ -19,8 +18,6 @@ import org.cern.cms.dbloader.model.xml.Root;
 import org.cern.cms.dbloader.model.xml.map.AttrBase;
 import org.cern.cms.dbloader.model.xml.map.AttrCatalog;
 import org.cern.cms.dbloader.model.xml.map.Attribute;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;
@@ -29,63 +26,40 @@ import com.google.inject.assistedinject.Assisted;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import org.cern.cms.dbloader.manager.SessionManager;
 
 @Log4j
 public class PartDao extends DaoBase {
 
     @Inject
-    public PartDao(@Assisted HbmManager hbm) {
-        super(hbm);
+    public PartDao(@Assisted SessionManager sm) {
+        super(sm);
     }
 
     public void savePart(Root root, AuditLog alog) throws Exception {
+        Part rootPart = sm.getRootPart();
 
-        Session session = hbm.getSession();
-        Transaction tx = session.beginTransaction();
-        try {
+        alog.setKindOfConditionName("[CONSTRUCT]");
+        alog.setExtensionTableName("[PARTS]");
 
-            Part rootPart = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("id", props.getRootPartId()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
+        Stack<PartsPair> pairs = new Stack<>();
 
-            if (rootPart == null) {
-                throw new IllegalArgumentException(String.format("Not resolved ROOT part for ID: %d", props.getRootPartId()));
-            }
-
-            if (rootPart.getPartTree() == null) {
-                throw new Exception(String.format("ROOT Part does not have PartTree: %s", rootPart));
-            }
-
-            Stack<PartsPair> pairs = new Stack<>();
-
-            for (Part part : root.getParts()) {
-                resolvePart(part, pairs, session);
-            }
-
-            while (!pairs.isEmpty()) {
-                PartsPair pp = pairs.pop();
-                resolvePartTree(pp.getPart(), pp.getParent(), rootPart, session);
-            }
-
-            if (props.isTest()) {
-                log.info("rollback transaction (loader test)");
-                tx.rollback();
-            } else {
-                log.info("commit transaction");
-                tx.commit();
-            }
-
-        } catch (Exception e) {
-            tx.rollback();
-            throw e;
-        } finally {
-            session.close();
+        for (Part part : root.getParts()) {
+            resolvePart(part, pairs);
         }
+
+        int count = 0;
+        while (!pairs.isEmpty()) {
+            PartsPair pp = pairs.pop();
+            resolvePartTree(pp.getPart(), pp.getParent(), rootPart);
+            count++;
+        }
+        
+        alog.setDatasetRecordCount(count);
 
     }
 
-    private Part resolvePart(Part part, Stack<PartsPair> pairs, Session session) throws Exception {
+    private Part resolvePart(Part part, Stack<PartsPair> pairs) throws Exception {
 
         Part xmlPart = part;
         Part dbPart = null;
@@ -111,7 +85,7 @@ public class PartDao extends DaoBase {
 
         if (dbPart == null) {
 
-            kop = resolveKindOfPart(xmlPart, session);
+            kop = resolveKindOfPart(xmlPart);
 
             // Get the part based on KindOfPart and Name
             if (xmlPart.getName() != null) {
@@ -138,24 +112,24 @@ public class PartDao extends DaoBase {
         }
 
         if (xmlPart.getLocationName() != null || xmlPart.getInstitutionName() != null) {
-            dbPart.setLocation(resolveInstituteLocation(part, session));
+            dbPart.setLocation(resolveInstituteLocation(part));
         }
 
         if (xmlPart.getManufacturerName() != null) {
-            dbPart.setManufacturer(resolveManufacturer(xmlPart.getManufacturerName(), session));
+            dbPart.setManufacturer(resolveManufacturer(xmlPart.getManufacturerName()));
         }
 
         session.save(dbPart);
 
         if (xmlPart.getAttributes() != null) {
             for (Attribute attr : xmlPart.getAttributes()) {
-                resolveAttribute(attr, dbPart, session);
+                resolveAttribute(attr, dbPart);
             }
         }
 
         if (xmlPart.getChildren() != null) {
             for (Part child : xmlPart.getChildren()) {
-                pairs.push(new PartsPair(resolvePart(child, pairs, session), dbPart));
+                pairs.push(new PartsPair(resolvePart(child, pairs), dbPart));
             }
         }
 
@@ -163,14 +137,14 @@ public class PartDao extends DaoBase {
 
     }
 
-    private PartTree resolvePartTree(Part part, Part parent, Part rootPart, Session session) throws Exception {
+    private PartTree resolvePartTree(Part part, Part parent, Part rootPart) throws Exception {
 
         PartTree parentTree = parent.getPartTree();
         if (parentTree == null) {
             parentTree = new PartTree();
             parentTree.setPartId(parent.getId());
             parentTree.setParentPartTree(rootPart.getPartTree());
-            parentTree.setRelationship(resolveRelationship(rootPart.getKindOfPart(), parent.getKindOfPart(), session));
+            parentTree.setRelationship(resolveRelationship(rootPart.getKindOfPart(), parent.getKindOfPart()));
             session.save(parentTree);
             parent.setPartTree(parentTree);
             session.save(parent);
@@ -181,7 +155,7 @@ public class PartDao extends DaoBase {
             partTree = new PartTree();
             partTree.setPartId(part.getId());
             partTree.setParentPartTree(parentTree);
-            partTree.setRelationship(resolveRelationship(parent.getKindOfPart(), part.getKindOfPart(), session));
+            partTree.setRelationship(resolveRelationship(parent.getKindOfPart(), part.getKindOfPart()));
         }
 
         partTree.setParentPartTree(parentTree);
@@ -191,7 +165,7 @@ public class PartDao extends DaoBase {
 
     }
 
-    private PartRelationship resolveRelationship(KindOfPart parentKop, KindOfPart partKop, Session session) {
+    private PartRelationship resolveRelationship(KindOfPart parentKop, KindOfPart partKop) {
 
         PartRelationship relationship = (PartRelationship) session.createCriteria(PartRelationship.class)
                 .add(Restrictions.eq("parentKop", parentKop))
@@ -216,7 +190,7 @@ public class PartDao extends DaoBase {
         return relationship;
     }
 
-    private Location resolveInstituteLocation(Part part, Session session) {
+    private Location resolveInstituteLocation(Part part) {
 
         String locationName = part.getLocationName() != null ? part.getLocationName() : part.getInstitutionName();
         String institutionName = part.getInstitutionName() != null ? part.getInstitutionName() : part.getLocationName();
@@ -251,7 +225,7 @@ public class PartDao extends DaoBase {
         return location;
     }
 
-    private Manufacturer resolveManufacturer(String name, Session session) {
+    private Manufacturer resolveManufacturer(String name) {
         Manufacturer m = (Manufacturer) session.createCriteria(Manufacturer.class)
                 .add(Restrictions.eq("name", name)).
                 uniqueResult();
@@ -264,7 +238,7 @@ public class PartDao extends DaoBase {
         return m;
     }
 
-    private KindOfPart resolveKindOfPart(Part part, Session session) throws XMLParseException {
+    private KindOfPart resolveKindOfPart(Part part) throws XMLParseException {
 
         if (part.getKindOfPartName() == null) {
             throw new XMLParseException(String.format("Kind of part not defined for %s", part.getName()));
@@ -282,7 +256,7 @@ public class PartDao extends DaoBase {
         return kop;
     }
 
-    private PartAttrList resolveAttribute(Attribute attr, Part part, Session session) throws Exception {
+    private PartAttrList resolveAttribute(Attribute attr, Part part) throws Exception {
 
         KindOfPart kop = part.getKindOfPart();
 
@@ -294,7 +268,7 @@ public class PartDao extends DaoBase {
             throw new XMLParseException(String.format("Not resolved attribute catalog for %s", attr));
         }
 
-        AttrBase attrbase = resolveAttrBase(attr, catalog, session);
+        AttrBase attrbase = resolveAttrBase(attr, catalog);
 
         PartToAttrRltSh partlship = (PartToAttrRltSh) session.createCriteria(PartToAttrRltSh.class)
                 .add(Restrictions.eq("kop", kop))

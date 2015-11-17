@@ -34,44 +34,47 @@ import lombok.ToString;
 import org.cern.cms.dbloader.model.DeleteableBase;
 
 @Entity
-@Table(name="COND_TAGS")
-@Getter @Setter
+@Table(name = "COND_TAGS")
+@Getter
+@Setter
 @ToString
-@EqualsAndHashCode(callSuper=false, of={"id"})
+@EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
 @AttributeOverrides({
-	@AttributeOverride(name="lastUpdateTime", column=@Column(name="RECORD_DEL_FLAG_TIME")),
-	@AttributeOverride(name="lastUpdateUser", column=@Column(name="RECORD_DEL_FLAG_USER"))
+    @AttributeOverride(name = "lastUpdateTime", column = @Column(name = "RECORD_DEL_FLAG_TIME")),
+    @AttributeOverride(name = "lastUpdateUser", column = @Column(name = "RECORD_DEL_FLAG_USER"))
 })
 public class Tag extends DeleteableBase {
 
-	@Id
-	@Column(name="COND_TAG_ID")
+    @Id
+    @Column(name = "COND_TAG_ID")
     @GeneratedValue(generator = "CNDTAG_ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "CNDTAG_ID_SEQ", sequenceName = "CNDTAG_ID_SEQ", allocationSize = 20)
-	@XmlAttribute(name = "id", required = true)
-	private BigInteger id;
-	
-	@ManyToOne
-	@JoinColumn(name="COND_TAG_PARENT_ID")
-	@XmlTransient
-	private Tag parentTag;
-	
-	@Basic
-	@Column(name="TAG_NAME")
-	@XmlElement(name = "TAG_NAME", required = true)
-	private String name;
-	
-	@Basic
-	@Column(name="DETECTOR_NAME")
-	@XmlElement(name = "DETECTOR_NAME")
-	private String detectorName;
-	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "COND_IOV2TAG_MAPS",
-		joinColumns = {	@JoinColumn(name = "COND_TAG_ID") }, // FK to src PK
-		inverseJoinColumns = { @JoinColumn(name = "COND_IOV_RECORD_ID") }) // FK to target PK
-	@XmlTransient
-	private Set<Iov> iovs = new HashSet<Iov>();
-	
+    @XmlAttribute(name = "id", required = true)
+    private BigInteger id;
+
+    @ManyToOne
+    @JoinColumn(name = "COND_TAG_PARENT_ID")
+    @XmlTransient
+    private Tag parentTag;
+
+    @Basic
+    @Column(name = "TAG_NAME")
+    @XmlElement(name = "TAG_NAME", required = true)
+    private String name;
+
+    @Basic
+    @Column(name = "DETECTOR_NAME")
+    @XmlElement(name = "DETECTOR_NAME")
+    private String detectorName;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "COND_IOV2TAG_MAPS",
+            joinColumns = {
+                @JoinColumn(name = "COND_TAG_ID")}, // FK to src PK
+            inverseJoinColumns = {
+                @JoinColumn(name = "COND_IOV_RECORD_ID")}) // FK to target PK
+    @XmlTransient
+    private Set<Iov> iovs = new HashSet<>();
+
 }

@@ -7,6 +7,8 @@ import com.google.inject.Injector;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import org.cern.cms.dbloader.manager.CLIPropertiesManager;
 import org.cern.cms.dbloader.manager.EntityModificationManager;
@@ -18,8 +20,11 @@ import org.junit.Ignore;
 @Ignore
 public abstract class TestBase {
 
+    protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    
     protected static PropertiesManager pm;
     protected static Injector injector;
+    protected static ResourceFactory rf;
 
     @BeforeClass
     public static void init() throws Exception {
@@ -44,6 +49,8 @@ public abstract class TestBase {
 
             }
         });
+        
+        rf = injector.getInstance(ResourceFactory.class);
 
     }
     

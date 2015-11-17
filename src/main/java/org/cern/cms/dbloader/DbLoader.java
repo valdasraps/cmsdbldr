@@ -1,7 +1,5 @@
 package org.cern.cms.dbloader;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -10,14 +8,12 @@ import javax.management.modelmbean.XMLParseException;
 import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.app.CondApp;
 import org.cern.cms.dbloader.app.PartApp;
-import org.cern.cms.dbloader.dao.AuditDao;
+import org.cern.cms.dbloader.handler.AuditLogHandler;
 import org.cern.cms.dbloader.dao.DatasetDao;
-import org.cern.cms.dbloader.manager.CondHbmManager;
 import org.cern.cms.dbloader.manager.CondManager;
 import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.EntityModificationManager;
 import org.cern.cms.dbloader.manager.FilesManager;
-import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.manager.HelpPrinter;
 import org.cern.cms.dbloader.manager.CLIPropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
@@ -27,11 +23,8 @@ import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.OptId;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
-import org.cern.cms.dbloader.model.managemnt.AuditLog;
-import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.xml.Root;
 import org.cern.cms.dbloader.util.PropertiesException;
-import org.hibernate.Session;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.inject.AbstractModule;
@@ -41,6 +34,8 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
+import org.cern.cms.dbloader.manager.SessionManager;
+import org.cern.cms.dbloader.manager.file.FileBase;
 
 @Log4j
 @RequiredArgsConstructor
@@ -90,8 +85,8 @@ public class DbLoader {
             OptId optId = props.getCondDatasets();
             CondManager cm = injector.getInstance(CondManager.class);
             CondEntityHandler ch = cm.getConditionHandler(optId);
-            try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
-                DatasetDao dao = rf.createDatasetDao(hbm);
+            try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+                DatasetDao dao = rf.createDatasetDao(sm);
                 HelpPrinter.outputDatasetList(System.out, dao.getCondDatasets(ch));
             }
             return;
@@ -101,27 +96,24 @@ public class DbLoader {
             BigInteger dataSetId = props.getCondDataset();
             CondManager cm = injector.getInstance(CondManager.class);
 
-            try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
-                DatasetDao dao = rf.createDatasetDao(hbm);
-                Session session = hbm.getSession();
-                try {
-                    Dataset dataset = dao.getDataset(session, dataSetId);
-                    BigInteger id = dataset.getKindOfCondition().getId();
-                    CondEntityHandler ceh = cm.getConditionHandler(id);
-                    if (ceh == null) {
-                        throw new IllegalArgumentException(String.format("[%s] dataset not found!", dataSetId));
-                    }
-
-                    List<? extends CondBase> dataSetData = dao.getDatasetData(session, ceh, dataset);
-                    if (dataSetData.isEmpty()) {
-                        throw new IllegalArgumentException(String.format("[%s] dataset data not found!", dataSetId));
-                    }
-
-                    CondXmlManager xmlm = new CondXmlManager(ceh);
-                    xmlm.printDatasetDataXML(dataset, dataSetData);
-                } finally {
-                    session.close();
+            try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+                    
+                DatasetDao dao = rf.createDatasetDao(sm);
+                Dataset dataset = dao.getDataset(dataSetId);
+                BigInteger id = dataset.getKindOfCondition().getId();
+                CondEntityHandler ceh = cm.getConditionHandler(id);
+                if (ceh == null) {
+                    throw new IllegalArgumentException(String.format("[%s] dataset not found!", dataSetId));
                 }
+
+                List<? extends CondBase> dataSetData = dao.getDatasetData(ceh, dataset);
+                if (dataSetData.isEmpty()) {
+                    throw new IllegalArgumentException(String.format("[%s] dataset data not found!", dataSetId));
+                }
+
+                CondXmlManager xmlm = new CondXmlManager(ceh);
+                xmlm.printDatasetDataXML(dataset, dataSetData);
+
             }
 
             return;
@@ -134,56 +126,92 @@ public class DbLoader {
             throw new IllegalArgumentException("No input files provided");
         }
 
-        try (HbmManager hbm = injector.getInstance(CondHbmManager.class)) {
+        // Loop archives
+        for (FileBase archive : FilesManager.getFiles(props.getArgs())) {
 
-            AuditDao auditDao = rf.createAuditDao(hbm);
-            for (DataFile df : FilesManager.getFiles(props.getArgs())) {
+            loadArchive(injector, archive);
 
-                AuditLog alog = new AuditLog();
+        }
+
+    }
+    
+    public void loadArchive(Injector injector, FileBase archive) throws Exception {
+        
+        XmlManager xmlm = injector.getInstance(XmlManager.class);
+        ResourceFactory rf = injector.getInstance(ResourceFactory.class);
+        CondApp condApp = injector.getInstance(CondApp.class);
+        PartApp partApp = injector.getInstance(PartApp.class);
+        
+        // Start archive log if needed
+        AuditLogHandler archiveLog = null;
+        if (archive.isArchive()) {
+            archiveLog = rf.createAuditDao(archive);
+            archiveLog.saveProcessing();
+        }
+        
+        // Start session & transaction
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            
+            // Loop data files in archive
+            for (DataFile data : archive.getDataFiles()) {
+
+                // Start datafile log
+                AuditLogHandler dataLog = rf.createAuditDao(data);
+                dataLog.saveProcessing();
+
                 try {
 
-                    alog.setArchiveFileName(df.getArchive().getName());
-                    alog.setDataFileName(df.getData().getName());
-                    alog.setDataFileChecksum(df.getMd5());
-                    auditDao.saveAuditRecord(alog);
+                    log.info(String.format("Processing %s", data));
 
-                    log.info(String.format("Processing %s", df));
-                    XmlManager xmlm = injector.getInstance(XmlManager.class);
-                    Root root = xmlm.unmarshal(df.getData());
+                    
+                    Root root = xmlm.unmarshal(data.getFile());
 
-                    if (log.isDebugEnabled()) {
-                        log.debug(root);
-                    }
-
-                    boolean loaded = condApp.handleData(df, hbm, root, alog);
+                    boolean loaded = condApp.handleData(sm, data, root, dataLog.getLog());
 
                     if (!loaded) {
-                        loaded = partApp.handleData(df, hbm, root, alog);
+                        loaded = partApp.handleData(sm, data, root, dataLog.getLog());
                     }
 
                     if (loaded) {
-                        alog.setStatus(UploadStatus.Success);
+                        dataLog.saveSuccess();
                     } else {
                         throw new XMLParseException("XML file not recognized by handlers");
                     }
 
                 } catch (Exception ex) {
 
-                    StringWriter sw = new StringWriter();
-                    ex.printStackTrace(new PrintWriter(sw));
-                    alog.setUploadLogTrace(sw.toString());
-                    alog.setStatus(UploadStatus.Failure);
-
-                    log.error(ex.getMessage(), ex);
+                    dataLog.saveFailure(ex);
+                    throw ex;
 
                 }
 
-                auditDao.saveAuditRecord(alog);
+            }
+
+            if (props.isTest()) {
+
+                log.info("Rollback transaction (loader test)");
+                sm.rollback();
+
+            } else {
+
+                log.info("commit transaction");
+                sm.commit();
 
             }
 
-        }
+            if (archiveLog != null) {
+                archiveLog.saveSuccess();
+            }
 
+        } catch (Exception ex) {
+
+            if (archiveLog != null) {
+                archiveLog.saveFailure(ex);
+            }
+
+            throw ex;
+
+        }
     }
 
     public static void main(String[] args) {
@@ -201,24 +229,24 @@ public class DbLoader {
             }
 
             if (props.printHelp()) {
-            	System.exit(0);
+                System.exit(0);
             }
 
             DbLoader loader = new DbLoader(props);
             loader.run();
 
             System.exit(0);
-            
+
         } catch (PropertiesException ex) {
 
             System.err.println("ERROR: " + ex.getMessage());
             System.exit(1);
-            
+
         } catch (Exception ex) {
-            
+
             ex.printStackTrace(System.err);
             System.exit(2);
-            
+
         }
 
     }

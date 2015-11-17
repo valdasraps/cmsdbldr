@@ -7,7 +7,6 @@ import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.dao.CondDao;
 import org.cern.cms.dbloader.manager.CondManager;
 import org.cern.cms.dbloader.manager.CondXmlManager;
-import org.cern.cms.dbloader.manager.HbmManager;
 import org.cern.cms.dbloader.manager.HelpPrinter;
 import org.cern.cms.dbloader.manager.LobManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
@@ -18,13 +17,14 @@ import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.model.OptId;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.CondBase;
-import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.xml.Header;
 import org.cern.cms.dbloader.model.xml.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.manager.SessionManager;
+import org.cern.cms.dbloader.model.managemnt.AuditLog;
 
 @Log4j
 @Singleton
@@ -108,7 +108,7 @@ public class CondApp extends AppBase {
     }
 
     @Override
-    public boolean handleData(DataFile file, HbmManager hbm, Root root, AuditLog auditlog) throws Exception {
+    public boolean handleData(SessionManager sm, DataFile file, Root root, AuditLog alog) throws Exception {
         if (root.getHeader() != null && root.getDatasets() != null) {
             Header h = root.getHeader();
 
@@ -144,18 +144,21 @@ public class CondApp extends AppBase {
             log.info(String.format("%s (%s) with %d datasets and %s channel map to be processed", condeh.getId(), condeh.getName(), root.getDatasets().size(), chaneh));
 
             CondXmlManager xmlm = new CondXmlManager(condeh, chaneh);
-            root = (Root) xmlm.unmarshal(file.getData());
+            root = (Root) xmlm.unmarshal(file.getFile());
 
             LobManager lobManager = new LobManager();
             lobManager.lobParser(root, condeh, file);
 
             // Try to load the file!
-            CondDao dao = rf.createCondDao(hbm);
-            dao.saveCondition(root, auditlog);
+            CondDao dao = rf.createCondDao(sm);
+            dao.saveCondition(root, alog);
 
             return true;
+            
         }
+        
         return false;
+        
     }
 
 }

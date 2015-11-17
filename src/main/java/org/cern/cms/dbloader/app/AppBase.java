@@ -1,6 +1,6 @@
 package org.cern.cms.dbloader.app;
 
-import org.cern.cms.dbloader.manager.HbmManager;
+import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.xml.Root;
@@ -20,14 +20,14 @@ public abstract class AppBase {
     /**
      * Data handler
      *
+     * @param sm
      * @param file
-     * @param hbm
      * @param root
-     * @param auditLog
+     * @param alog
      * @return true if info was handled, false - otherwise
      * @throws Exception
      */
-    public boolean handleData(DataFile file, HbmManager hbm, Root root, AuditLog auditLog) throws Exception {
+    public boolean handleData(SessionManager sm, DataFile file, Root root, AuditLog alog) throws Exception {
         return false;
     }
 
