@@ -9,7 +9,7 @@ import com.google.inject.assistedinject.Assisted;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import lombok.Getter;
-import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.ArchiveFile;

@@ -10,8 +10,8 @@ import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
-import org.cern.cms.dbloader.manager.CLIPropertiesManager;
 import org.cern.cms.dbloader.manager.EntityModificationManager;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.tests.PropertiesTest;
 import org.junit.BeforeClass;
@@ -40,7 +40,14 @@ public abstract class TestBase {
             p.remove("print-sql");
         }
 
-        pm = new CLIPropertiesManager(p, new String[]{"file1.xml", "file2.xml"});
+        pm = new PropertiesManager(p, new String[]{"file1.xml", "file2.xml"}) {
+
+            @Override
+            public boolean printHelp() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+            
+        };
 
         EntityModificationManager.modify(pm);
 

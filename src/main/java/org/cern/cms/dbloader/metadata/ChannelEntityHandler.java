@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 
 @Getter

@@ -21,7 +21,6 @@ import org.cern.cms.dbloader.model.OptId;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.cern.cms.dbloader.PropertiesManager;
 
 @Log4j
 @Singleton

@@ -12,9 +12,8 @@ import java.net.InetAddress;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
-import org.cern.cms.dbloader.PropertiesManager;
 import org.cern.cms.dbloader.TestBase;
-import org.cern.cms.dbloader.manager.CLIPropertiesManager;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.util.PropertiesException;
 import org.junit.Test;
 import org.reflections.Reflections;
@@ -33,7 +32,14 @@ public class PropertiesTest extends TestBase {
             if (pname.contains("fail")) {
                 pname = "/" + pname;
                 try {
-                    pm1 = new CLIPropertiesManager(load(pname), new String[] { "somefile.xml" });
+                    pm1 = new PropertiesManager(load(pname), new String[] { "somefile.xml" }) {
+
+                        @Override
+                        public boolean printHelp() {
+                            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                        }
+                        
+                    };
                     fail(String.format("Did not fail while loading: %s", pname));
                 } catch (PropertiesException ex) {
                     // OK!

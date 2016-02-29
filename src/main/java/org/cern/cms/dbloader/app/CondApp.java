@@ -22,7 +22,7 @@ import org.cern.cms.dbloader.model.xml.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 

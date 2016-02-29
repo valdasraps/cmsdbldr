@@ -2,7 +2,7 @@ package org.cern.cms.dbloader.dao;
 
 import com.google.inject.Inject;
 import javax.management.modelmbean.XMLParseException;
-import org.cern.cms.dbloader.PropertiesManager;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.xml.map.AttrBase;
 import org.cern.cms.dbloader.model.xml.map.AttrCatalog;

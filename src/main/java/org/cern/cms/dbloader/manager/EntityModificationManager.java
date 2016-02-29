@@ -15,7 +15,6 @@ import javassist.bytecode.annotation.StringMemberValue;
 
 import javax.persistence.JoinTable;
 import javax.persistence.SequenceGenerator;
-import org.cern.cms.dbloader.PropertiesManager;
 
 public class EntityModificationManager {
 

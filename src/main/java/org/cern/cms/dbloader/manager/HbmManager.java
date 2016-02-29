@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
 import lombok.extern.log4j.Log4j;
-import org.cern.cms.dbloader.PropertiesManager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 

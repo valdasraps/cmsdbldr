@@ -3,7 +3,6 @@ package org.cern.cms.dbloader.manager;
 import com.google.inject.Inject;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
-import org.cern.cms.dbloader.PropertiesManager;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
