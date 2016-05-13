@@ -109,7 +109,11 @@ public class PropertiesTest extends TestBase {
         assertTrue(pm.isConditionDesc());
         assertTrue(pm.isConditionXml());
         assertTrue(pm.isConditionsList());
-        assertTrue(pm.isPrintSQL());
+        if (System.getenv("TRAVIS_CI") != null) {
+            assertFalse(pm.isPrintSQL());
+        } else {
+            assertTrue(pm.isPrintSQL());
+        }
         assertTrue(pm.isSchema());
         assertFalse(pm.isTest());
         
