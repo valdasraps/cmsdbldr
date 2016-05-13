@@ -5,4 +5,4 @@
 /.project
 /.settings
 /target
-
+/src/main/python/service/venv

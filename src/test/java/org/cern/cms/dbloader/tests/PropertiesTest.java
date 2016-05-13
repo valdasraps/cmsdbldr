@@ -91,6 +91,7 @@ public class PropertiesTest extends TestBase {
         assertEquals(InetAddress.getLocalHost().getHostName(), pm.getHostName());
         assertEquals(Level.INFO, pm.getLogLevel());
         assertEquals(System.getProperty("user.name"), pm.getOsUser());
+        assertEquals("petriukas", pm.getFileUser());
         assertNotNull(pm.getVersion());
         
         assertEquals("testing", pm.getPassword());

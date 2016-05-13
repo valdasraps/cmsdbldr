@@ -54,14 +54,17 @@ if [[ "$FNAME" =~ \.xml$ || "$FNAME" =~ \.zip$ ]]; then
   cd "$(dirname "$0")"
 
   # Check if properties file exits
-  if test -r "$PROP_F" -a -f "$PROP_F"; then  
+  if test -r "$PROP_F" -a -f "$PROP_F"; then
+
+    # Get file user
+    $USER_F=`stat -c '%U' "$SPOOL_F"`
 
     # Move file to work area
     mv "$SPOOL_F" "$WORK_F"
 
     # Execute DB loader application
     mkdir -p "$LOG_D"
-    ./cmsdbldr.sh --properties=$PROP_F "$WORK_F" >"$LOG_F" 2>&1
+    ./cmsdbldr.sh --properties="$PROP_F" --file-user="$USER_F" "$WORK_F" >"$LOG_F" 2>&1
 
     echo $? >"$STATE_F"
     cp "$LOG_F" "$LOGS_F"

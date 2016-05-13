@@ -62,7 +62,8 @@ public abstract class PropertiesManager {
         CHANNEL_CLASS("print generated channel class", true, false),
         TEST("upload test - proceed with the full upload process but rollback the transaction", false, false),
         LOG_LEVEL("log level, possible values OFF,FATAL,ERROR,WARN,INFO,DEBUG,TRACE. Default is " + DEFAULT_LEVEL.toString(), true, false),
-        PRINT_SQL("print SQL queries to stdout", false, false);
+        PRINT_SQL("print SQL queries to stdout", false, false),
+        FILE_USER("set file user, DEFAULT: process user", true, false);
 
         public final String key;
         public final String description;
@@ -243,6 +244,14 @@ public abstract class PropertiesManager {
 
     public String getOsUser() {
         return System.getProperty("user.name");
+    }
+    
+    public String getFileUser() {
+        if (this.values.containsKey(UserOption.FILE_USER)) {
+            return this.values.get(UserOption.FILE_USER);
+        } else {
+            return getOsUser();
+        }
     }
 
     public String getVersion() {
