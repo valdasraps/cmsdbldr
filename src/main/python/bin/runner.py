@@ -14,7 +14,7 @@ class Loader:
     
     def __init__(self):
     
-        self.parser = OptionParser(USAGE)
+        self.parser = OptionParser(RUN_USAGE)
         self.parser.add_option("-v", "--verbose",  dest = "verbose",  help = "verbose output", action = "store_true", default = False)
         self.parser.add_option("-u", "--user",     dest = "user",     help = "file USER", metavar = "USER")
 
@@ -48,8 +48,8 @@ class Loader:
         if not _allowed_file(file):
             return self.error(2, 'File %s type not allowed? Must be one of [%s]', file, ','.join(ALLOWED_EXTENSIONS))
         
-        if not file.startswith(SPOOL_SPOOL):
-            return self.error(2, '%s not in spool folder %s?', file, SPOOL_SPOOL)
+        if not file.startswith(DBSPOOL_SPOOL):
+            return self.error(2, '%s not in spool folder %s?', file, DBSPOOL_SPOOL)
         
         if not (os.path.exists(file) and os.path.isfile(file)):
             return self.error(2, '%s not found or is not a file?', file)
@@ -62,7 +62,7 @@ class Loader:
         (file_folder, filename) = os.path.split(file)
         self.vprint("Filename: %s", filename)
         
-        file_folder = file_folder.replace(SPOOL_SPOOL, '')
+        file_folder = file_folder.replace(DBSPOOL_SPOOL, '')
         
         (detector, database) = os.path.split(file_folder)
         self.vprint("Detector: %s", detector)
@@ -78,7 +78,7 @@ class Loader:
 
         # Creating temporary folder
 
-        logs = os.path.join(LOGS_BASE, detector, database)
+        logs = os.path.join(RUN_WORK, detector, database)
         if not os.path.exists(logs): 
             os.makedirs(logs)
             
@@ -90,13 +90,13 @@ class Loader:
         
         # Preparing response
         
-        state = os.path.join(SPOOL_STATE, detector, database)
+        state = os.path.join(DBSPOOL_STATE, detector, database)
         if not os.path.exists(state): os.makedirs(state)
         state = os.path.join(state, filename)
         os.remove(state) if os.path.exists(state) else None
         self.vprint("State: %s", state)
         
-        logs = os.path.join(SPOOL_LOGS, detector, database)
+        logs = os.path.join(DBSPOOL_LOGS, detector, database)
         if not os.path.exists(logs): os.makedirs(logs)
         logs = os.path.join(logs, filename)
         os.remove(logs) if os.path.exists(logs) else None
@@ -107,7 +107,7 @@ class Loader:
         os.rename(file, work)
         
         args = [ 
-            EXEC, 
+            RUN_EXEC, 
             '--properties=%s' % prop,
             '--file-user=%s' % user,
             work

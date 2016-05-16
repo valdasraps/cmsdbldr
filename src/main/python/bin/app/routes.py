@@ -1,5 +1,5 @@
 from app import app
-from config import ALLOWED_APPLICATIONS
+from config import HTTP_ALLOWED_APPLICATIONS
 from decorators import crossdomain
 from flask import Response
 from flask import jsonify
@@ -12,7 +12,7 @@ import subprocess
 
 def check_auth(username, password):
     user_exists = subprocess.call(["id", "-u", username], stdout = subprocess.PIPE)
-    return user_exists == 0 and password in ALLOWED_APPLICATIONS
+    return user_exists == 0 and password in HTTP_ALLOWED_APPLICATIONS
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""

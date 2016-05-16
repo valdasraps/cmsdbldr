@@ -6,3 +6,6 @@
 /.settings
 /target
 /src/main/python/service/venv
+src/main/python/bin/cmsdbldr.jar
+*.pyc
+src/main/python/bin/venv/

@@ -20,7 +20,7 @@ if [[ "$_java" ]]; then
 fi
 
 _args=-jar
-_exec=/home/valdo/Documents/cmsdbldr/target/cmsdbldr.jar
+_exec=cmsdbldr.jar
 
 if [[ -n "$TNS_ADMIN" ]] && [[ -r "$TNS_ADMIN/tnsnames.ora" ]];  then
     _args="$_args -Doracle.net.tns_admin=$TNS_ADMIN"

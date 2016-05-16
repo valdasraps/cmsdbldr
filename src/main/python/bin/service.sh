@@ -9,4 +9,4 @@ if [ ! -d venv ]; then
 else
   . venv/bin/activate
 fi
-python ./run.py
+python ./service.py

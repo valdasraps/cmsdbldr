@@ -14,7 +14,7 @@ class Loader:
     def __init__(self, det, db):
     
         # Checking directories
-        self.data_dir = os.path.join(DBSPOOL_DATA, det + "/" + db)
+        self.data_dir = os.path.join(DBSPOOL_SPOOL, det + "/" + db)
         if not _check_dir(self.data_dir): abort(404)
         self.state_dir = os.path.join(DBSPOOL_STATE, det + "/" + db)
         if not _check_dir(self.state_dir): abort(500)
