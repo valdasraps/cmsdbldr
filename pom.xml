@@ -114,6 +114,67 @@
                 <version>2.5.3</version>
             </plugin>
             
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.1.5</version>
+                <executions>
+                    <execution>
+                        <id>generate-rpm</id>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <license>GPL</license>
+                    <group>CMS</group>
+                    <packager>Valdas Rapsevicius</packager>
+                    <prefix>/opt</prefix>
+                    <provides>
+                        <provide>cmsdbldr</provide>
+                    </provides>
+                    <requires>
+                        <require>java-1.8.0-oracle</require>
+                        <require>python</require>
+                        <require>incron</require>
+                        <require>httpd</require>
+                    </requires>
+                    <mappings>
+                        <mapping>
+                            <directory>/opt/cmsdbldr/bin</directory>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/python/bin</location>
+                                </source>
+                                <source>
+                                    <location>target/cmsdbldr.jar</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                    <preinstallScriptlet>
+                        <scriptFile>src/main/scripts/preinstall.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </preinstallScriptlet>
+                    <postinstallScriptlet>
+                        <scriptFile>src/main/scripts/postinstall.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </postinstallScriptlet>
+                    <preremoveScriptlet>
+                        <scriptFile>src/main/scripts/preremove.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </preremoveScriptlet>
+                    <postremoveScriptlet>
+                        <scriptFile>src/main/scripts/postremove.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </postremoveScriptlet>
+                </configuration>
+            </plugin>
+            
         </plugins>
     </build>
     <dependencies>
