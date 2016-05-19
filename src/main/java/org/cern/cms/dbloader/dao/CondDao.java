@@ -416,8 +416,7 @@ public class CondDao extends DaoBase {
                 .add(Subqueries.propertyIn("id", 
                         DetachedCriteria.forClass(PartAttrList.class)
                                 .add(Restrictions.eq("attrBase", attrbase))
-                                .setProjection(Projections.property("part"))
-                                .setProjection(Projections.property("id"))))
+                                .setProjection(Projections.property("part"))))
                 .createCriteria("partTree")
                     .createCriteria("parentPartTree")
                         .add(Restrictions.eq("partId", parent.getId()))

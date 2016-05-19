@@ -139,6 +139,8 @@
                         <require>python</require>
                         <require>incron</require>
                         <require>httpd</require>
+                        <require>python</require>
+                        <require>mod_proxy_uwsgi</require>
                     </requires>
                     <mappings>
                         <mapping>

@@ -22,7 +22,7 @@
         <PART_ASSEMBLY>
           <PARENT_PART>
             <KIND_OF_PART>TEST Pack</KIND_OF_PART>
-            <SERIAL_NUMBER>serial 01</SERIAL_NUMBER>
+            <SERIAL_NUMBER>serial 02</SERIAL_NUMBER>
           </PARENT_PART>
           <CHILD_UNIQUELY_IDENTIFIED_BY>
             <ATTRIBUTE>
