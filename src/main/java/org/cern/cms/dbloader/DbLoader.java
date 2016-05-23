@@ -34,6 +34,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
+import org.cern.cms.dbloader.app.ChannelApp;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
@@ -142,6 +143,7 @@ public class DbLoader {
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
         CondApp condApp = injector.getInstance(CondApp.class);
         PartApp partApp = injector.getInstance(PartApp.class);
+        ChannelApp channelApp = injector.getInstance(ChannelApp.class);
         
         // Start archive log if needed
         AuditLogHandler archiveLog = null;
@@ -171,6 +173,10 @@ public class DbLoader {
 
                     if (!loaded) {
                         loaded = partApp.handleData(sm, data, root, dataLog.getLog());
+                    }
+                    
+                    if (!loaded) {
+                        loaded = channelApp.handleData(sm, data, root, dataLog.getLog());
                     }
 
                     if (loaded) {

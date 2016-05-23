@@ -35,5 +35,8 @@ public class Root {
 	@XmlElementWrapper(name="PARTS")
 	@XmlElement(name="PART", type=Part.class)
 	private List<Part> parts;
+        
+	@XmlElement(name="CHANNEL_UPDATE", type=ChannelUpdate.class)
+	private List<ChannelUpdate> channelUpdates;
 	
 }

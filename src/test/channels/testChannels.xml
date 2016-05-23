@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ROOT>
+    
+    <CHANNEL_UPDATE>
+        <EXTENSION_TABLE_NAME>TEST_CHANNELS</EXTENSION_TABLE_NAME>
+        <FILE>data.txt</FILE>
+    </CHANNEL_UPDATE>
+    
+    <CHANNEL_UPDATE>
+        <EXTENSION_TABLE_NAME>TEST_CHANNELS</EXTENSION_TABLE_NAME>
+        <FILE>data.txt</FILE>
+    </CHANNEL_UPDATE>
+    
+</ROOT>
