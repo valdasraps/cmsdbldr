@@ -3,7 +3,6 @@ sys.path.insert(0, '/opt/cmsdbldr/bin')
 
 from flask import Flask
 from routes import routes
-from config import HTTP_LOG
 
 def create_app():
     app = Flask('CMS DB Loader')
