@@ -1,4 +1,9 @@
 #!/bin/sh
 
-[ "$(ls -A /opt/cmsdbldr/properties)" ] || rm -fR /opt/cmsdbldr
+# Force removal of var
+
+rm -fR /var/cmsdbldr
+
+# Remove user
+
 /usr/sbin/userdel -rf dbspool

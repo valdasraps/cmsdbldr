@@ -157,6 +157,53 @@
                                 </source>
                             </sources>
                         </mapping>
+                        <mapping>
+                            <directory>/opt/cmsdbldr/web</directory>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/python/web</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/opt/cmsdbldr/properties</directory>
+                            <configuration>noreplace</configuration>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                        </mapping>
+                        <mapping>
+                            <directory>/var/cmsdbldr/work</directory>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                        </mapping>
+                        <mapping>
+                            <directory>/etc/httpd/conf.d</directory>
+                            <configuration>true</configuration>
+                            <filemode>644</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/scripts/uwsgi.conf</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/etc/rc.d/init.d</directory>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/scripts/cmsdbldr</location>
+                                </source>
+                            </sources>
+                        </mapping>
                     </mappings>
                     <preinstallScriptlet>
                         <scriptFile>src/main/scripts/preinstall.sh</scriptFile>
