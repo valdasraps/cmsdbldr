@@ -1,0 +1,50 @@
+#!/bin/sh
+
+prog=/usr/bin/uwsgi
+name=cmsdbldr
+asuser=dbspool
+pidfile=/var/run/$name.pid
+timeout=3
+
+. /etc/rc.d/init.d/functions
+
+do_start () {
+    echo $"Starting $name:"
+    touch $pidfile
+    chown $asuser $pidfile
+    su - $asuser -c "$prog --ini /opt/cmsdbldr/web/uwsgi.ini"
+    RETVAL=$?
+    echo
+    return $RETVAL
+}
+
+do_stop () {
+    echo -n $"Stopping $name: "
+    killproc -p ${pidfile} -d ${timeout} $prog
+    RETVAL=$?
+    echo
+}
+
+case "$1" in
+
+    start|stop)
+        do_${1}
+        ;;
+
+    restart|reload|force-reload)
+        do_stop
+        do_start
+        ;;
+
+    status)
+        status -p ${pidfile} $name
+	RETVAL=$?
+        ;;
+
+    *)
+        echo "Usage: /etc/init.d/$name {start|stop|restart|status}"
+        exit 1
+        ;;
+
+esac
+exit 0

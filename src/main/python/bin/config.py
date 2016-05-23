@@ -18,11 +18,4 @@ RUN_EXEC = os.path.join(BIN_DIR, 'cmsdbldr.sh')
 
 RUN_WORK = '/var/cmsdbldr/work'
 
-# Service
-
-HTTP_DEBUG = False
-HTTP_HOST = '0.0.0.0'
-HTTP_PORT = 8181
-
-HTTP_ALLOWED_APPLICATIONS = set(['http-service'])
-HTTP_LOG = '/var/cmsdbldr/service.log'
+HTTP_PASSWORD = 'kucr3PREruVUchAwEc'

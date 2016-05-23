@@ -1,18 +1,16 @@
-from app import app
-from config import HTTP_ALLOWED_APPLICATIONS
-from decorators import crossdomain
+from config import HTTP_PASSWORD
+from flask import Blueprint
 from flask import Response
-from flask import jsonify
-from flask import make_response
-from flask import render_template
 from flask import request
 from functools import wraps
 from loader import Loader
 import subprocess
 
+routes = Blueprint('routes', __name__)
+
 def check_auth(username, password):
     user_exists = subprocess.call(["id", "-u", username], stdout = subprocess.PIPE)
-    return user_exists == 0 and password in HTTP_ALLOWED_APPLICATIONS
+    return user_exists == 0 and password == HTTP_PASSWORD
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""
@@ -30,7 +28,11 @@ def requires_auth(f):
         return f(*args, **kwargs)
     return decorated
 
-@app.route('/<string:det>/<string:db>', methods=['POST'])
+@routes.route('/')
+def index():
+    return 'CMS DB Loader'
+
+@routes.route('/<string:det>/<string:db>', methods=['POST'])
 @requires_auth
 def load(det, db):
     """
@@ -47,19 +49,3 @@ def load(det, db):
     resp = Response(loader.log, mimetype='text/plain')
     resp.status_code = status_code
     return resp
-        
-@app.route('/')
-@crossdomain(origin='*')
-def index():
-    return render_template('index.html')
-
-# --- error handlers ----
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
-@app.errorhandler(500)
-def internal_error(error):
-    return make_response(jsonify({'error': 'Internal server error'}), 500)

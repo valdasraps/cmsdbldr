@@ -1,12 +1,8 @@
 #!/bin/sh
 
-mkdir /opt/cmsdbldr/properties
-chown -R dbspool /opt/cmsdbldr
+chown dbspool:dbspool /var/cmsdbldr
 
-mkdir -p /var/cmsdbldr/work
-chown -R dbspool:dbspool /var/cmsdbldr
-
-# Service stuff
+# Install python stuff
 
 cd $HOME
 curl https://bootstrap.pypa.io/get-pip.py -o $HOME/get-pip.py
@@ -14,7 +10,20 @@ python $HOME/get-pip.py
 pip install virtualenv virtualenvwrapper uwsgi honcho
 rm -f $HOME/get-pip.py
 
-cd /opt/cmsdbldr
+# Setup venv
+
+cd /opt/cmsdbldr/web
 virtualenv --system-site-packages venv
 . venv/bin/activate
-pip install -r bin/requirements.txt
+pip install -r requirements.txt
+chown -R dbspool:dbspool /opt/cmsdbldr/web/venv
+
+# Install service
+
+chkconfig --levels 345 cmsdbldr on
+
+# Restart services
+
+/sbin/service incrond restart
+/sbin/service httpd restart
+/sbin/service cmsdbldr start
