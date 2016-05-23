@@ -7,8 +7,10 @@ import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
@@ -52,54 +54,64 @@ public class PropertiesTest extends TestBase {
     @Test
     public void checkTestProperties() throws Exception {
         
+    	String log_lvl;
+        Properties props = new Properties();
+        try (InputStream in = this.getClass().getResourceAsStream("/properties/test.properties")) {
+        	props.load(in);
+        }
+    	
         assertEquals(2, pm.getArgs().size());
         assertTrue(pm.getArgs().contains("file1.xml"));
         assertTrue(pm.getArgs().contains("file2.xml"));
         
-        assertEquals("channel-class", pm.getChannelClass());
-        assertEquals("channel-desc", pm.getChannelDesc());
+        
+        assertEquals(props.getProperty("channel-class"), pm.getChannelClass());
+        assertEquals(props.getProperty("channel-desc"), pm.getChannelDesc());
+        
         
         assertFalse(pm.getCondDatasets().hasId());
         assertNull(pm.getCondDatasets().getId());
-        assertEquals("cond-datasets", pm.getCondDatasets().getName());
-        assertEquals(new BigInteger("12345"), pm.getCondDataset());
-
+        assertEquals(props.getProperty("cond-datasets"), pm.getCondDatasets().getName());
+        assertEquals(new BigInteger(props.getProperty("cond-dataset")), pm.getCondDataset());
+        
         assertTrue(pm.getConditionClass().hasId());
-        assertEquals("12345", pm.getConditionClass().getName());
-        assertEquals(new BigInteger("12345"), pm.getConditionClass().getId());
+        assertEquals(props.getProperty("cond-class"), pm.getConditionClass().getName());
+        assertEquals(new BigInteger(props.getProperty("cond-class")), pm.getConditionClass().getId());
+        
         
         assertFalse(pm.getConditionDesc().hasId());
-        assertEquals("cond-desc", pm.getConditionDesc().getName());
+        assertEquals(props.getProperty("cond-desc"), pm.getConditionDesc().getName());
         assertNull(pm.getConditionDesc().getId());
         
         assertFalse(pm.getConditionXml().hasId());
-        assertEquals("cond-xml", pm.getConditionXml().getName());
+        assertEquals(props.getProperty("cond-xml"), pm.getConditionXml().getName());
         assertNull(pm.getConditionXml().getId());
         
-        assertEquals("CMS_TST_CORE_ATTRIBUTE", pm.getCoreAttributeSchemaName());
-        assertEquals("CMS_TST_CORE_COND", pm.getCoreConditionSchemaName());
-        assertEquals("CMS_TST_CORE_COND.TABLE", pm.getCoreConditionTable("TABLE"));
-        assertEquals("CMS_TST_CORE_CONSTRUCT", pm.getCoreConstructSchemaName());
-        assertEquals("CMS_TST_CORE_CONSTRUCT.TABLE", pm.getCoreConstructTable("TABLE"));
-        assertEquals("CMS_TST_CORE_MANAGEMNT", pm.getCoreManagemntSchemaName());
-        assertEquals("CMS_TST_TEST_COND", pm.getExtConditionSchemaName());
-        assertEquals("CMS_TST_TEST_COND.TABLE", pm.getExtConditionTable("TABLE"));
-        assertEquals("CMS_TST_TEST_CONSTRUCT", pm.getExtConstructSchemaName());
-        assertEquals("CMS_TST_TEST_CONSTRUCT.TABLE", pm.getExtConstructTable("TABLE"));
-        assertEquals("CMS_TST_CORE_IOV_MGMNT", pm.getIovCoreSchemaName());
         
+        assertEquals(props.getProperty("attribute-core-schema"), pm.getCoreAttributeSchemaName());
+        assertEquals(props.getProperty("condition-core-schema"), pm.getCoreConditionSchemaName());
+        assertEquals(props.getProperty("condition-core-schema") + ".TABLE", pm.getCoreConditionTable("TABLE"));
+        assertEquals(props.getProperty("construct-core-schema"), pm.getCoreConstructSchemaName());
+        assertEquals(props.getProperty("construct-core-schema") + ".TABLE", pm.getCoreConstructTable("TABLE"));
+        assertEquals(props.getProperty("managemnt-core-schema"), pm.getCoreManagemntSchemaName());
+        assertEquals(props.getProperty("condition-ext-schema"), pm.getExtConditionSchemaName());
+        assertEquals(props.getProperty("condition-ext-schema") + ".TABLE", pm.getExtConditionTable("TABLE"));
+        assertEquals(props.getProperty("construct-ext-schema"), pm.getExtConstructSchemaName());
+        assertEquals(props.getProperty("construct-ext-schema") + ".TABLE", pm.getExtConstructTable("TABLE"));
+        assertEquals(props.getProperty("iov-core-schema"), pm.getIovCoreSchemaName());        
+        
+        log_lvl = props.getProperty("log-level");
         assertEquals(InetAddress.getLocalHost().getHostName(), pm.getHostName());
-        assertEquals(Level.INFO, pm.getLogLevel());
+        assertEquals(Level.toLevel(log_lvl), pm.getLogLevel());
         assertEquals(System.getProperty("user.name"), pm.getOsUser());
-        assertEquals("petriukas", pm.getFileUser());
+        assertEquals(props.getProperty("file-user"), pm.getFileUser());
         assertNotNull(pm.getVersion());
         
-        assertEquals("testing", pm.getPassword());
-        assertEquals(new BigInteger("1000"), pm.getRootPartId());
-        assertEquals("schema", pm.getSchemaParent());
-        assertEquals("jdbc:oracle:thin:@localhost:1521:XE", pm.getUrl());
-        assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", pm.getUsername());
-        
+        assertEquals(props.getProperty("password"), pm.getPassword());
+        assertEquals(new BigInteger(props.getProperty("root-part-id")), pm.getRootPartId());
+        assertEquals(props.getProperty("schema"), pm.getSchemaParent());
+        assertEquals("jdbc:oracle:thin:@" + props.getProperty("url"), pm.getUrl());
+        assertEquals(props.getProperty("username"), pm.getUsername());
         assertTrue(pm.isChannelClass());
         assertTrue(pm.isChannelDesc());
         assertTrue(pm.isChannelsList());
