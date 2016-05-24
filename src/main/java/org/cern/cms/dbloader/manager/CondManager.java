@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +37,6 @@ public class CondManager {
 
     @Inject
     public CondManager(PropertiesManager props) throws Exception {
-
         Class.forName(ORACLE_DRIVER);
         try (Connection conn = DriverManager.getConnection(props.getUrl(), props.getUsername(), props.getPassword())) {
 
@@ -69,19 +69,15 @@ public class CondManager {
             try (PreparedStatement stmt = conn.prepareStatement(String.format(CHANNELS_SQL, props.getCoreConditionSchemaName()))) {
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
-
                         String extensionTable = rs.getString(1);
-                        String extensionTableWithSchema = props.getExtConditionTable(extensionTable);
+                        try {
 
-                        try (PreparedStatement stmt1 = conn.prepareStatement("select * from ".concat(extensionTableWithSchema))) {
-                            ResultSetMetaData md = stmt1.getMetaData();
-
-                            ChannelEntityHandler t = new ChannelEntityHandler(props.getExtConditionSchemaName(), extensionTable, md);
+                            ChannelEntityHandler t = getChannelEntityHandler(props, conn, extensionTable);
                             channels.put(extensionTable, t);
 
                         } catch (Exception ex) {
                             log.warn(String.format("Channel table [%s]: %s. Skipping..",
-                                    extensionTableWithSchema, ex.getMessage()),
+                            		props.getExtConditionTable(extensionTable), ex.getMessage()),
                                     props.getLogLevel().equals(Level.DEBUG) ? ex : null);
                         }
                     }
@@ -92,6 +88,15 @@ public class CondManager {
 
     }
 
+    public final ChannelEntityHandler getChannelEntityHandler(PropertiesManager props, Connection conn, String extensionTableName) throws Exception {
+        String extensionTableWithSchema = props.getExtConditionTable(extensionTableName);
+        try (PreparedStatement stmt1 = conn.prepareStatement("select * from ".concat(extensionTableWithSchema))) {
+            ResultSetMetaData md = stmt1.getMetaData();
+            return new ChannelEntityHandler(props.getExtConditionSchemaName(), extensionTableName, md);
+
+        }
+    }
+    
     public CondEntityHandler getConditionHandler(OptId optId) {
         if (optId.hasId()) {
             return getConditionHandler(optId.getId());
