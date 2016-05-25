@@ -2,6 +2,7 @@ package org.cern.cms.dbloader.metadata;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import javax.persistence.DiscriminatorValue;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -16,10 +17,10 @@ import org.cern.cms.dbloader.model.condition.ChannelBase;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ChannelEntityHandler extends EntityHandler<ChannelBase> {
-
+    
     public ChannelEntityHandler(String schema, String tableName, ResultSetMetaData md) throws Exception {
         super(schema, tableName, md);
-
+        
         // Check columns
         PropertyHandler channelMapId = null;
         for (PropertyHandler cmd : this.properties) {
@@ -57,6 +58,7 @@ public class ChannelEntityHandler extends EntityHandler<ChannelBase> {
             @Override
             public void modifyClass(ClassBuilder cb) {
                 cb.newAnnotation(XmlRootElement.class).addMember("name", "CHANNEL").build();
+                cb.newAnnotation(DiscriminatorValue.class).addMember("value", tableName).build();
             }
 
         };

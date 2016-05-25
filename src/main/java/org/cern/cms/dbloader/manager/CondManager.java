@@ -34,11 +34,13 @@ public class CondManager {
 
     private Set<CondEntityHandler> conditions = new HashSet<>();
     private Map<String, ChannelEntityHandler> channels = new HashMap<>();
+    
+    private final PropertiesManager props;
 
     @Inject
     public CondManager(PropertiesManager props) throws Exception {
-        Class.forName(ORACLE_DRIVER);
-        try (Connection conn = DriverManager.getConnection(props.getUrl(), props.getUsername(), props.getPassword())) {
+        this.props = props;
+        try (Connection conn = getConnection()) {
 
             // Collect Kinds of Conditions
             try (PreparedStatement stmt = conn.prepareStatement(String.format(KINDS_OF_CONDITIONS_SQL, props.getCoreConditionSchemaName()))) {
@@ -72,8 +74,7 @@ public class CondManager {
                         String extensionTable = rs.getString(1);
                         try {
 
-                            ChannelEntityHandler t = getChannelEntityHandler(props, conn, extensionTable);
-                            channels.put(extensionTable, t);
+                            registerChannelEntityHandler(conn, extensionTable);
 
                         } catch (Exception ex) {
                             log.warn(String.format("Channel table [%s]: %s. Skipping..",
@@ -88,11 +89,23 @@ public class CondManager {
 
     }
 
-    public final ChannelEntityHandler getChannelEntityHandler(PropertiesManager props, Connection conn, String extensionTableName) throws Exception {
+    private Connection getConnection() throws SQLException, ClassNotFoundException {
+        Class.forName(ORACLE_DRIVER);
+        return DriverManager.getConnection(props.getUrl(), props.getUsername(), props.getPassword());
+    }
+    
+    public final void registerChannelEntityHandler(String extensionTableName) throws Exception {
+        try (Connection conn = getConnection()) {
+            registerChannelEntityHandler(conn, extensionTableName);
+        }
+    }
+    
+    private void registerChannelEntityHandler(Connection conn, String extensionTableName) throws Exception {
         String extensionTableWithSchema = props.getExtConditionTable(extensionTableName);
         try (PreparedStatement stmt1 = conn.prepareStatement("select * from ".concat(extensionTableWithSchema))) {
             ResultSetMetaData md = stmt1.getMetaData();
-            return new ChannelEntityHandler(props.getExtConditionSchemaName(), extensionTableName, md);
+            ChannelEntityHandler t = new ChannelEntityHandler(props.getExtConditionSchemaName(), extensionTableName, md);
+            channels.put(extensionTableName, t);
 
         }
     }

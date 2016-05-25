@@ -16,23 +16,19 @@ public class SessionManager implements AutoCloseable {
     @Inject
     private PropertiesManager props;
     
-    @Getter
-    private final Session session;
-    
-    private final Transaction tx;
+    private Session session = null;
+    private Transaction tx = null;
     private Part rootPart;
 
     @Inject
     public SessionManager(HbmManager hbm) {
         this.hbm = hbm;
-        this.session = hbm.getSession();
-        this.tx = session.beginTransaction();
     }
     
     public Part getRootPart() throws Exception {
         if (this.rootPart == null) {
             
-            this.rootPart = (Part) session.createCriteria(Part.class)
+            this.rootPart = (Part) getSession().createCriteria(Part.class)
                 .add(Restrictions.eq("id", props.getRootPartId()))
                 .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .uniqueResult();
@@ -49,6 +45,14 @@ public class SessionManager implements AutoCloseable {
         
         return this.rootPart;
     }
+
+    public Session getSession() throws Exception {
+        if (session == null) {
+            session = hbm.getSession();
+            tx = session.beginTransaction();
+        }
+        return session;
+    }
     
     public void commit() {
         tx.commit();
@@ -60,11 +64,13 @@ public class SessionManager implements AutoCloseable {
     
     @Override
     public void close() throws Exception {
-        if (this.tx.isActive()) {
-            this.rollback();
+        if (session != null) {
+            if (this.tx.isActive()) {
+                this.rollback();
+            }
+            this.session.close();
+            this.hbm.close();
         }
-        this.session.close();
-        this.hbm.close();
     }
 
 }

@@ -32,7 +32,7 @@ import org.cern.cms.dbloader.manager.SessionManager;
 public class PartDao extends DaoBase {
 
     @Inject
-    public PartDao(@Assisted SessionManager sm) {
+    public PartDao(@Assisted SessionManager sm) throws Exception {
         super(sm);
     }
 

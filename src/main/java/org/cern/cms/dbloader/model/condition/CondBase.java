@@ -20,22 +20,23 @@ import lombok.Setter;
 import lombok.ToString;
 
 @MappedSuperclass
-@Getter @Setter
+@Getter
+@Setter
 @ToString
-@EqualsAndHashCode(callSuper=false, of={"id"})
+@EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class CondBase {
 
-	@Id
-	@Column(name="RECORD_ID")
+    @Id
+    @Column(name = "RECORD_ID")
     @GeneratedValue(generator = "ANY_COND_RECORD_ID_SEQ", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "ANY_COND_RECORD_ID_SEQ", sequenceName = "ANY_COND_RECORD_ID_SEQ", allocationSize = 20)
-	@XmlTransient
-	private BigInteger id;
-	
-	@ManyToOne
-	@JoinColumn(name="CONDITION_DATA_SET_ID")
-	@XmlTransient
-	private Dataset dataset;
-	
+    @SequenceGenerator(name = "ANY_COND_RECORD_ID_SEQ", sequenceName = "ANY_COND_RECORD_ID_SEQ", allocationSize = 20)
+    @XmlTransient
+    private BigInteger id;
+
+    @ManyToOne
+    @JoinColumn(name = "CONDITION_DATA_SET_ID")
+    @XmlTransient
+    private Dataset dataset;
+
 }

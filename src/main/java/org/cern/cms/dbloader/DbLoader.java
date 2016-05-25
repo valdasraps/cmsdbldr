@@ -46,7 +46,7 @@ public class DbLoader {
     private final PropertiesManager props;
 
     private void run() throws Exception {
-
+        
         Logger.getRootLogger().setLevel(props.getLogLevel());
 
         /**

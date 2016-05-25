@@ -66,6 +66,10 @@ public class CondApp extends AppBase {
             String chanName = props.getChannelDesc();
             EntityHandler<ChannelBase> tm = condm.getChannelHandler(chanName);
             if (tm == null) {
+                condm.registerChannelEntityHandler(chanName);
+                tm = condm.getChannelHandler(chanName);
+            }
+            if (tm == null) {
                 throw new IllegalArgumentException(String.format("[%s] channel not found!", chanName));
             }
             HelpPrinter.outputConditionDesc(System.out, chanName, tm);
@@ -96,6 +100,10 @@ public class CondApp extends AppBase {
         if (props.isChannelClass()) {
             String chName = props.getChannelClass();
             EntityHandler<ChannelBase> tm = condm.getChannelHandler(chName);
+            if (tm == null) {
+                condm.registerChannelEntityHandler(chName);
+                tm = condm.getChannelHandler(chName);
+            }
             if (tm == null) {
                 throw new IllegalArgumentException(String.format("[%s] channel not found!", chName));
             }

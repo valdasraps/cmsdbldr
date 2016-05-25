@@ -20,6 +20,7 @@ public class EntityModificationManager {
 
     private final static String[] SQGENERATOR_SCHEMA_CORECONDITION = new String[] {
         "org.cern.cms.dbloader.model.condition.CondBase",
+        "org.cern.cms.dbloader.model.condition.ChannelBase",
         "org.cern.cms.dbloader.model.managemnt.AuditLog",
         "org.cern.cms.dbloader.model.condition.Dataset",
         "org.cern.cms.dbloader.model.condition.Run"

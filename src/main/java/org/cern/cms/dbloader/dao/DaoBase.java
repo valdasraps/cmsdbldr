@@ -25,7 +25,7 @@ public abstract class DaoBase {
     protected final SessionManager sm;
     protected final Session session;
 
-    public DaoBase(SessionManager sm) {
+    public DaoBase(SessionManager sm) throws Exception {
         this.sm = sm;
         this.session = sm.getSession();
     }

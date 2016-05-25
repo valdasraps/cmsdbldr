@@ -18,7 +18,7 @@ import org.cern.cms.dbloader.manager.SessionManager;
 public class DatasetDao extends DaoBase {
 
     @Inject
-    public DatasetDao(@Assisted SessionManager sm) {
+    public DatasetDao(@Assisted SessionManager sm) throws Exception {
         super(sm);
     }
 

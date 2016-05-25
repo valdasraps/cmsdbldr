@@ -50,7 +50,7 @@ import org.hibernate.criterion.Subqueries;
 public class CondDao extends DaoBase {
 
     @Inject
-    public CondDao(@Assisted SessionManager sm) {
+    public CondDao(@Assisted SessionManager sm) throws Exception {
         super(sm);
     }
 

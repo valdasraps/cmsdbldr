@@ -32,16 +32,9 @@ public class HbmManager implements AutoCloseable {
     private final Set<Class<?>> classPool = new HashSet<>();
 
     @Inject
-    public HbmManager(PropertiesManager props, CondManager condm) throws Exception {
-        this(props);
-        for (CondEntityHandler eh : condm.getConditionHandlers()) {
-            addEntityClass(eh.getEntityClass().getC());
-        }
-        for (ChannelEntityHandler eh : condm.getChannelHandlers()) {
-            addEntityClass(eh.getEntityClass().getC());
-        }
-    }
-    
+    private CondManager condm;
+
+    @Inject
     public HbmManager(final PropertiesManager props) throws Exception {
         this.props = props;
         this.cfg = new Configuration();
@@ -56,17 +49,16 @@ public class HbmManager implements AutoCloseable {
 
     }
 
-    protected final void addEntityClass(Class<?> entityClass) throws Exception {
-        if (sessionFactory == null) {
-            classPool.add(entityClass);
-        } else {
-            throw new Exception("Session Factory is already initialized!");
-        }
-    }
-
-    public Session getSession() {
+    public Session getSession() throws Exception {
         if (sessionFactory == null) {
 
+            for (CondEntityHandler eh : condm.getConditionHandlers()) {
+                classPool.add(eh.getEntityClass().getC());
+            }
+            for (ChannelEntityHandler eh : condm.getChannelHandlers()) {
+                classPool.add(eh.getEntityClass().getC());
+            }
+            
             for (Class<?> entityClass : classPool) {
                 cfg.addAnnotatedClass(entityClass);
             }
