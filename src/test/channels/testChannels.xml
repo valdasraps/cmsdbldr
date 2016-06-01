@@ -4,12 +4,12 @@
     
     <CHANNEL_UPDATE>
         <EXTENSION_TABLE_NAME>TEST_CHANNELS</EXTENSION_TABLE_NAME>
-        <FILE>data2.txt</FILE>
+        <FILE>channels.csv</FILE>
     </CHANNEL_UPDATE>
     
     <CHANNEL_UPDATE>
         <EXTENSION_TABLE_NAME>TEST_COORDINATES</EXTENSION_TABLE_NAME>
-        <FILE>data.txt</FILE>
+        <FILE>coords.txt</FILE>
     </CHANNEL_UPDATE>
     
 </ROOT>

@@ -107,10 +107,7 @@ public class CondInfoTest extends TestBase {
     @Test
     public void checkChannelHandlers() throws ClassNotFoundException {
         CondManager condm = injector.getInstance(CondManager.class);
-        Iterator<ChannelEntityHandler> it = condm.getChannelHandlers().iterator();
-        ChannelEntityHandler ceh = it.next();
-
-        assertFalse(it.hasNext());
+        ChannelEntityHandler ceh = condm.getChannelHandler("TEST_CHANNELS");
         
         assertEquals("TEST_CHANNELS", ceh.getTableName());
         assertEquals("org.cern.cms.dbloader.model.condition.ext.TestChannels", ceh.getClassName());

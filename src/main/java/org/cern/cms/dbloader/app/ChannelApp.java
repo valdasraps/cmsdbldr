@@ -12,20 +12,15 @@ import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.dao.ChannelDao;
 import org.cern.cms.dbloader.manager.CondManager;
-import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
-import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.xml.ChannelUpdate;
 import org.cern.cms.dbloader.model.xml.Root;
 
 @Log4j
 public class ChannelApp extends AppBase {
-
-    @Inject
-    private PropertiesManager props;
 
     @Inject
     private CondManager condm;
