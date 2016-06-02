@@ -41,7 +41,6 @@ public class ChannelDao extends DaoBase {
         
         log.info(String.format("%s loaded channels %d", update, list.size()));
         for (ChannelBase ch: list) {
-            log.info(ch);
             ch.setExtensionTableName(update.getExtensionTableName());
             session.save(ch);
         }

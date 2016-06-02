@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import org.cern.cms.dbloader.manager.EntityModificationManager;
+import org.cern.cms.dbloader.manager.LogManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.tests.PropertiesTest;
@@ -49,6 +50,7 @@ public abstract class TestBase {
             
         };
 
+        LogManager.setLogging(pm);
         EntityModificationManager.modify(pm);
 
         injector = Guice.createInjector(new AbstractModule() {

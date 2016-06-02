@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
 
-import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.app.CondApp;
 import org.cern.cms.dbloader.app.PartApp;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
@@ -35,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.app.ChannelApp;
+import org.cern.cms.dbloader.manager.LogManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
@@ -47,8 +47,8 @@ public class DbLoader {
 
     private void run() throws Exception {
         
-        Logger.getRootLogger().setLevel(props.getLogLevel());
-
+        LogManager.setLogging(props);
+        
         /**
          * Modify individual classes. This routine must be run before the class
          * loader tries to access the to-be-modified classes!

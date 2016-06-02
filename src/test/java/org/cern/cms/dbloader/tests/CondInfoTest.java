@@ -1,10 +1,10 @@
 package org.cern.cms.dbloader.tests;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 import static junit.framework.TestCase.fail;
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.CondManager;
 import org.cern.cms.dbloader.manager.PropertyType;
@@ -105,9 +105,16 @@ public class CondInfoTest extends TestBase {
     }
     
     @Test
-    public void checkChannelHandlers() throws ClassNotFoundException {
+    public void checkChannelHandlers() throws Exception {
+        
+        Logger.getLogger("java.sql.ResultSet").setLevel(Level.TRACE);
+        
         CondManager condm = injector.getInstance(CondManager.class);
         ChannelEntityHandler ceh = condm.getChannelHandler("TEST_CHANNELS");
+        if (ceh == null) {
+            condm.registerChannelEntityHandler("TEST_CHANNELS");
+            ceh = condm.getChannelHandler("TEST_CHANNELS");
+        }
         
         assertEquals("TEST_CHANNELS", ceh.getTableName());
         assertEquals("org.cern.cms.dbloader.model.condition.ext.TestChannels", ceh.getClassName());

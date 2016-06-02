@@ -91,7 +91,8 @@ public class CondManager {
 
     private Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName(ORACLE_DRIVER);
-        return DriverManager.getConnection(props.getUrl(), props.getUsername(), props.getPassword());
+        Connection conn = DriverManager.getConnection(props.getUrl(), props.getUsername(), props.getPassword());
+        return conn;
     }
     
     public final void registerChannelEntityHandler(String extensionTableName) throws Exception {
