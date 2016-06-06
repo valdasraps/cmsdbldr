@@ -27,3 +27,8 @@ chkconfig --levels 345 cmsdbldr on
 /sbin/service incrond restart
 /sbin/service httpd restart
 /sbin/service cmsdbldr start
+
+# Fix firewall
+iptables -I INPUT 5 -i eth0 -p tcp --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+/sbin/service iptables save
+setsebool httpd_can_network_connect 1
