@@ -3,7 +3,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -169,6 +169,17 @@
                             <sources>
                                 <source>
                                     <location>src/main/python/web</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/opt/cmsdbldr/ext</directory>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/python/ext</location>
                                 </source>
                             </sources>
                         </mapping>
