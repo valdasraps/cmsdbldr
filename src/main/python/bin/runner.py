@@ -1,5 +1,6 @@
 import sys
 import os
+import shutil
 from pwd import getpwuid
 from optparse import OptionParser
 from tempfile import mkdtemp
@@ -104,7 +105,7 @@ class Loader:
         
         # Move the file and execute loader
         
-        os.rename(file, work)
+        shutil.move(file, work)
         
         args = [ 
             RUN_EXEC, 

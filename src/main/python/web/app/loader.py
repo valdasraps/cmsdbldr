@@ -11,7 +11,7 @@ def _allowed_file(filename):
     
 class Loader:
     
-    def __init__(self, det, db):
+    def __init__(self, det, db, auth):
     
         # Checking directories
         self.data_dir = os.path.join(DBSPOOL_SPOOL, det + "/" + db)
@@ -20,6 +20,7 @@ class Loader:
         if not _check_dir(self.state_dir): abort(500)
         self.logs_dir = os.path.join(DBSPOOL_LOGS, det + "/" + db)
         if not _check_dir(self.logs_dir): abort(500)
+        self.auth = auth
     
     def load(self, request):
         
