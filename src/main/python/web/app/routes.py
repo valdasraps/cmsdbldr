@@ -4,13 +4,19 @@ from flask import Response
 from flask import request
 from functools import wraps
 from loader import Loader
+from egroup import EGroup
 import subprocess
 
 routes = Blueprint('routes', __name__)
 
 def check_auth(username, password):
-    user_exists = subprocess.call(["id", "-u", username], stdout = subprocess.PIPE)
-    return user_exists == 0 and password == HTTP_PASSWORD
+    user_ok = True
+    if AUTH_CHECK_EGROUP is not None:
+        members = EGroup(AUTH_EGROUP_USERNAME, AUTH_EGROUP_PASSWORD).members(AUTH_CHECK_EGROUP)
+        user_ok = username.upper() in map(str.upper, members)
+    if AUTH_CHECK_OS:
+        user_ok = user_ok and 0 == subprocess.call(["id", "-u", username], stdout = subprocess.PIPE)
+    return user_ok and password == HTTP_PASSWORD
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""

@@ -1,4 +1,21 @@
 #!/bin/sh
+#
+# cmsdbldr        Startup script for the CMS DB Loader service
+#
+# chkconfig: 45 75 25
+# description: CMS DB Loader provides XML data upload to Oracle database function.
+# processname: cmsdbldr
+# config: /opt/cmsdbldr/bin/config.py
+# pidfile: /var/run/cmsdbldr.pid
+#
+### BEGIN INIT INFO
+# Provides: cmsdbldr
+# Required-Start: $local_fs $remote_fs $network $named
+# Required-Stop: $local_fs $remote_fs $network
+# Should-Start: distcache
+# Short-Description: start and stop CMS DB Loader service
+# Description: CMS DB Loader provides XML data upload to Oracle database function.
+### END INIT INFO
 
 prog=/usr/bin/uwsgi
 name=cmsdbldr
