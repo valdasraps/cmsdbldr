@@ -41,39 +41,40 @@ class Loader:
     
         # Checking directories
         self.data_dir = os.path.join(DBSPOOL_SPOOL, det + "/" + db)
-        if not _check_dir(self.data_dir): abort(404)
+        if not _check_dir(self.data_dir): raise Exception(404, "Detector (%s) and database (%s) not supported?" % (det, db))
         self.state_dir = os.path.join(DBSPOOL_STATE, det + "/" + db)
-        if not _check_dir(self.state_dir): abort(500)
+        if not _check_dir(self.state_dir): raise Exception(500, "Server configuration issue (state directory not found)?")
         self.logs_dir = os.path.join(DBSPOOL_LOGS, det + "/" + db)
-        if not _check_dir(self.logs_dir): abort(500)
+        if not _check_dir(self.logs_dir): raise Exception(500, "Server configuration issue (logs directory not found)?")
         
         # Authentication
         props_file = os.path.join(PROP_DIR, det + '_' + db + '.properties')
-        if not _check_file(props_file): abort(500)
-        if not self.authenticate(_load_properties(props_file), auth): abort(401)
+        if not _check_file(props_file): raise Exception(500, "Server configuration error (properties file not found)?")
+        self.authenticate(_load_properties(props_file), auth)
     
     def authenticate(self, props, auth):
-        user_ok = True
         
         if 'user_check_egroup' in props and props['user_check_egroup'] is not None:
             
-            if not 'user_check_egroup_username' in props and props['user_check_egroup_username'] is not None: abort(500)
-            if not 'user_check_egroup_password' in props and props['user_check_egroup_password'] is not None: abort(500)
+            if not 'user_check_egroup_username' in props and props['user_check_egroup_username'] is not None: 
+                raise Exception(500, "Server configuration issue (no user_check_egroup_username defined)?")
+            if not 'user_check_egroup_password' in props and props['user_check_egroup_password'] is not None:
+                raise Exception(500, "Server configuration issue (no user_check_egroup_password defined)?")
             
             members = EGroup(props['user_check_egroup_username'], props['user_check_egroup_password']).members(props['user_check_egroup'])
-            user_ok = auth.username.upper() in map(str.upper, members)
+            if not auth.username.upper() in map(str.upper, members):
+                raise Exception(401, "User (%s) not authorized by egroup (%s)?" % (auth.username, props['user_check_egroup']))
         
         if 'user_check_os' in props and _bool(props['user_check_os']):
-            user_ok = user_ok and 0 == subprocess.call(["id", "-u", auth.username], stdout = subprocess.PIPE)
-            
-        return user_ok
+            if 0 != subprocess.call(["id", "-u", auth.username], stdout = subprocess.PIPE):
+                raise Exception(401, "User (%s) not authorized by os?" % auth.username)
     
     def load(self, request):
         
         # Checking file
         file = request.files['file']
-        if file is None: abort(400)
-        if not _allowed_file(file.filename): abort(406)
+        if file is None: raise Exception(400, "File not provided?")
+        if not _allowed_file(file.filename): raise Exception(406, "File type not allowed?")
         
         # Setup file names
         filename = secure_filename(file.filename)
