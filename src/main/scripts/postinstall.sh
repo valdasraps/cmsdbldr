@@ -6,7 +6,7 @@ chown dbspool:dbspool /var/cmsdbldr
 
 cd $HOME
 python /opt/cmsdbldr/ext/get-pip.py --no-index --find-links file:///opt/cmsdbldr/ext --no-wheel
-pip install --no-index --find-links file:///opt/cmsdbldr/ext virtualenv virtualenvwrapper uwsgi honcho
+pip install --no-index --find-links file:///opt/cmsdbldr/ext virtualenv virtualenvwrapper uwsgi honcho suds
 
 # Setup venv
 
