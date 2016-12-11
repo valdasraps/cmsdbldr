@@ -145,6 +145,7 @@
                         <require>python-devel</require>
                         <require>gcc</require>
                         <require>mod_proxy_uwsgi</require>
+			<require>oracle-instantclient-tnsnames.ora</require>
                     </requires>
                     <mappings>
                         <mapping>
