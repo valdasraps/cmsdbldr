@@ -17,5 +17,6 @@ RUN_USAGE = 'usage: %prog [-v] [-u USER] FILE'
 RUN_EXEC = os.path.join(BIN_DIR, 'cmsdbldr.sh')
 
 RUN_WORK = '/var/cmsdbldr/work'
+JOBS_LOG = '/var/cmsdbldr/jobs.log'
 
 HTTP_PASSWORD = 'kucr3PREruVUchAwEc'

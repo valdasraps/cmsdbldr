@@ -22,8 +22,14 @@ name=cmsdbldr
 asuser=dbspool
 pidfile=/var/run/$name.pid
 timeout=3
+jobs_file=/var/cmsdbldr/jobs.log
 
 . /etc/rc.d/init.d/functions
+
+# Create and fix permissions for job.log
+touch $jobs_file
+chown root:$asuser $jobs_file
+chmod 664 $jobs_file
 
 do_start () {
     echo $"Starting $name:"
