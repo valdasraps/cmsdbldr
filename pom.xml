@@ -3,7 +3,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -146,8 +146,16 @@
                         <require>gcc</require>
                         <require>mod_proxy_uwsgi</require>
 			<require>oracle-instantclient-tnsnames.ora</require>
+                        <require>python-setuptools</require>
+                        <require>python-virtualenv</require>
                     </requires>
                     <mappings>
+                        <mapping>
+                            <directory>/opt/cmsdbldr</directory>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                        </mapping>
                         <mapping>
                             <directory>/opt/cmsdbldr/bin</directory>
                             <filemode>755</filemode>
@@ -200,23 +208,37 @@
                         <mapping>
                             <directory>/etc/httpd/conf.d</directory>
                             <configuration>true</configuration>
+                            <directoryIncluded>false</directoryIncluded>
                             <filemode>644</filemode>
                             <username>root</username>
                             <groupname>root</groupname>
                             <sources>
                                 <source>
-                                    <location>src/main/scripts/uwsgi.conf</location>
+                                    <location>src/main/scripts/cmsdbldr.conf</location>
                                 </source>
                             </sources>
                         </mapping>
                         <mapping>
                             <directory>/etc/rc.d/init.d</directory>
+                            <directoryIncluded>false</directoryIncluded>
                             <filemode>755</filemode>
                             <username>root</username>
                             <groupname>root</groupname>
                             <sources>
                                 <source>
                                     <location>src/main/scripts/cmsdbldr</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/etc/systemd/system</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <filemode>755</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/scripts/cmsdbldr.service</location>
                                 </source>
                             </sources>
                         </mapping>

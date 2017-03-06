@@ -12,12 +12,12 @@
 # Provides: cmsdbldr
 # Required-Start: $local_fs $remote_fs $network $named
 # Required-Stop: $local_fs $remote_fs $network
-# Should-Start: distcache
+# Should-Start: httpd incrond
 # Short-Description: start and stop CMS DB Loader service
 # Description: CMS DB Loader provides XML data upload to Oracle database function.
 ### END INIT INFO
 
-prog=/usr/bin/uwsgi
+prog=uwsgi
 name=cmsdbldr
 asuser=dbspool
 pidfile=/var/run/$name.pid
@@ -35,7 +35,7 @@ do_start () {
     echo $"Starting $name:"
     touch $pidfile
     chown $asuser $pidfile
-    su - $asuser -c "$prog --ini /opt/cmsdbldr/web/uwsgi.ini"
+    su - $asuser -c "/opt/cmsdbldr/web/runner.sh"
     RETVAL=$?
     echo
     return $RETVAL
