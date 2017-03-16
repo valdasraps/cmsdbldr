@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.manager.SessionManager;
+import org.hibernate.NonUniqueResultException;
 
 @Log4j
 public class PartDao extends DaoBase {
@@ -260,9 +261,16 @@ public class PartDao extends DaoBase {
 
         KindOfPart kop = part.getKindOfPart();
 
-        AttrCatalog catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
-                .add(Restrictions.eq("name", attr.getName()))
-                .uniqueResult();
+        AttrCatalog catalog = null;
+        try {
+            
+             catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
+                    .add(Restrictions.eq("name", attr.getName()))
+                    .uniqueResult();
+             
+        } catch (NonUniqueResultException ex) {
+            throw new XMLParseException(String.format("More than one attribute catalog found for %s (%s)", attr, ex.getMessage()));
+        }
 
         if (catalog == null) {
             throw new XMLParseException(String.format("Not resolved attribute catalog for %s", attr));
@@ -270,10 +278,18 @@ public class PartDao extends DaoBase {
 
         AttrBase attrbase = resolveAttrBase(attr, catalog);
 
-        PartToAttrRltSh partlship = (PartToAttrRltSh) session.createCriteria(PartToAttrRltSh.class)
-                .add(Restrictions.eq("kop", kop))
-                .add(Restrictions.eq("attrCatalog", catalog))
-                .uniqueResult();
+        PartToAttrRltSh partlship = null;
+        
+        try {
+            
+            partlship = (PartToAttrRltSh) session.createCriteria(PartToAttrRltSh.class)
+                    .add(Restrictions.eq("kop", kop))
+                    .add(Restrictions.eq("attrCatalog", catalog))
+                    .uniqueResult();
+            
+        } catch (NonUniqueResultException ex) {
+            throw new XMLParseException(String.format("More than one attribute catalog to kind of part relationship found for %s and %s (%s)", catalog, kop, ex.getMessage()));
+        }
 
         if (partlship == null) {
             throw new XMLParseException(String.format("Not resolved attribute to kind of part relationship for %s and %s", kop, catalog));
