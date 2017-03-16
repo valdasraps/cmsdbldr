@@ -169,6 +169,7 @@ public class PartDao extends DaoBase {
     private PartRelationship resolveRelationship(KindOfPart parentKop, KindOfPart partKop) {
 
         PartRelationship relationship = (PartRelationship) session.createCriteria(PartRelationship.class)
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .add(Restrictions.eq("parentKop", parentKop))
                 .add(Restrictions.eq("partKop", partKop))
                 .uniqueResult();
@@ -181,6 +182,7 @@ public class PartDao extends DaoBase {
             relationship.setPriority(0); // Hard Coded
             relationship.setName(String.format("AutoAssigned: %s --> %s", partKop.getName(), parentKop.getName()));
             relationship.setComment(relationship.getName());
+            relationship.setDeleted(Boolean.FALSE);
 
             session.save(relationship);
 
@@ -197,6 +199,7 @@ public class PartDao extends DaoBase {
         String institutionName = part.getInstitutionName() != null ? part.getInstitutionName() : part.getLocationName();
 
         Institution institution = (Institution) session.createCriteria(Institution.class)
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .add(Restrictions.eq("name", institutionName))
                 .uniqueResult();
 
@@ -204,6 +207,7 @@ public class PartDao extends DaoBase {
 
         if (institution != null) {
             location = (Location) session.createCriteria(Location.class)
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .add(Restrictions.eq("name", locationName))
                     .add(Restrictions.eq("institution", institution))
                     .uniqueResult();
@@ -228,6 +232,7 @@ public class PartDao extends DaoBase {
 
     private Manufacturer resolveManufacturer(String name) {
         Manufacturer m = (Manufacturer) session.createCriteria(Manufacturer.class)
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .add(Restrictions.eq("name", name)).
                 uniqueResult();
 
@@ -265,6 +270,7 @@ public class PartDao extends DaoBase {
         try {
             
              catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .add(Restrictions.eq("name", attr.getName()))
                     .uniqueResult();
              
@@ -283,6 +289,7 @@ public class PartDao extends DaoBase {
         try {
             
             partlship = (PartToAttrRltSh) session.createCriteria(PartToAttrRltSh.class)
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .add(Restrictions.eq("kop", kop))
                     .add(Restrictions.eq("attrCatalog", catalog))
                     .uniqueResult();
@@ -296,6 +303,7 @@ public class PartDao extends DaoBase {
         }
 
         PartAttrList partAttrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .add(Restrictions.eq("partToAttrRtlSh", partlship))
                 .add(Restrictions.eq("attrBase", attrbase))
                 .add(Restrictions.eq("part", part))

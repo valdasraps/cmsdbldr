@@ -35,6 +35,7 @@ public abstract class DaoBase {
         AttrBase base = (AttrBase) session.createCriteria(PositionSchema.class)
                 .add(Restrictions.eq("name", attribute.getValue()))
                 .add(Restrictions.eq("attrCatalog", attrCatalog))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .uniqueResult();
         
         if (base != null) {
@@ -44,6 +45,7 @@ public abstract class DaoBase {
         base = (AttrBase) session.createCriteria(ModeStage.class)
                 .add(Restrictions.eq("name", attribute.getValue()))
                 .add(Restrictions.eq("attrCatalog", attrCatalog))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .uniqueResult();
         
         if (base != null) {
@@ -53,6 +55,7 @@ public abstract class DaoBase {
         base = (AttrBase) session.createCriteria(CondAlgorithm.class)
                 .add(Restrictions.eq("name", attribute.getValue()))
                 .add(Restrictions.eq("attrCatalog", attrCatalog))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .uniqueResult();
         
         if (base != null) {

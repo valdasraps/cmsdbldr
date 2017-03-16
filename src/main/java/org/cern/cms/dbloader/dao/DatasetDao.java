@@ -26,6 +26,7 @@ public class DatasetDao extends DaoBase {
     public List<Dataset> getCondDatasets(EntityHandler<CondBase> tm) throws Exception {
         return (List<Dataset>) session.createCriteria(tm.getEntityClass().getC())
                 .setProjection(Projections.distinct(Projections.property("dataset")))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .list();
     }
 
@@ -33,6 +34,7 @@ public class DatasetDao extends DaoBase {
     public List<Dataset> getCondDatasets(KindOfCondition koc) throws Exception {
         return (List<Dataset>) session.createCriteria(Dataset.class)
                 .add(Restrictions.eq("kindOfCondition", koc))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .list();
     }
 

@@ -416,10 +416,12 @@ public class CondDao extends DaoBase {
                 .add(Subqueries.propertyIn("id", 
                         DetachedCriteria.forClass(PartAttrList.class)
                                 .add(Restrictions.eq("attrBase", attrbase))
+                                .add(Restrictions.eq("deleted", Boolean.FALSE))
                                 .setProjection(Projections.property("part"))))
                 .createCriteria("partTree")
                     .createCriteria("parentPartTree")
                         .add(Restrictions.eq("partId", parent.getId()))
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .uniqueResult();
         
         if (child == null) {
@@ -437,6 +439,7 @@ public class CondDao extends DaoBase {
                 
         AttrCatalog catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
                 .add(Restrictions.eq("name", attr.getName()))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .uniqueResult();
 
         if (catalog == null) {
@@ -448,6 +451,7 @@ public class CondDao extends DaoBase {
         CondToAttrRltSh condship = (CondToAttrRltSh) session.createCriteria(CondToAttrRltSh.class)
                 .add(Restrictions.eq("koc", koc))
                 .add(Restrictions.eq("attrCatalog", catalog))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .uniqueResult();
 
         if (condship == null) {
