@@ -17,16 +17,7 @@ fi
 # Setup venv
 cd /opt/cmsdbldr/web
 
-if [ "$CENTOS" == 0 ]; then
-
-  virtualenv --system-site-packages venv
-
-else
-
-  virtualenv --system-site-packages --no-download venv
-
-fi
-
+virtualenv --system-site-packages venv
 . venv/bin/activate
 
 pip install --no-index --find-links file:///opt/cmsdbldr/ext -r requirements.txt --upgrade
