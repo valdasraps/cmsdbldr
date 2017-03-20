@@ -11,7 +11,7 @@ PROMPT Executing SYS stuff
 @01-sys/03-usr
 
 PROMPT Executing CMS_&det._CORE_ATTRIBUTE stuff
-connect CMS_&det._CORE_ATTRIBUTE/&owner_password
+connect CMS_&det._CORE_ATTRIBUTE/&owner_password@&&1
 
 @02-core_attribute/01-tab
 @02-core_attribute/02-ind
@@ -23,7 +23,7 @@ connect CMS_&det._CORE_ATTRIBUTE/&owner_password
 @02-core_attribute/99-fin
 
 PROMPT Executing CMS_&det._CORE_MANAGEMNT stuff
-connect CMS_&det._CORE_MANAGEMNT/&owner_password
+connect CMS_&det._CORE_MANAGEMNT/&owner_password@&&1
 
 @03-core_managemnt/01-tab
 @03-core_managemnt/02-ind
@@ -34,7 +34,7 @@ connect CMS_&det._CORE_MANAGEMNT/&owner_password
 @03-core_managemnt/07-aud
 
 PROMPT Executing CMS_&det._CORE_CONSTRUCT stuff
-connect CMS_&det._CORE_CONSTRUCT/&owner_password
+connect CMS_&det._CORE_CONSTRUCT/&owner_password@&&1
 
 @04-core_construct/01-tab
 @04-core_construct/02-ind
@@ -44,7 +44,7 @@ connect CMS_&det._CORE_CONSTRUCT/&owner_password
 @04-core_construct/06-gra
 
 PROMPT Executing CMS_&det._CORE_COND stuff
-connect CMS_&det._CORE_COND/&owner_password
+connect CMS_&det._CORE_COND/&owner_password@&&1
 
 @05-core_cond/01-tab
 @05-core_cond/02-ind
@@ -54,7 +54,7 @@ connect CMS_&det._CORE_COND/&owner_password
 @05-core_cond/06-gra
 
 PROMPT Executing CMS_&det._CORE_IOV_MGMNT stuff
-connect CMS_&det._CORE_IOV_MGMNT/&owner_password
+connect CMS_&det._CORE_IOV_MGMNT/&owner_password@&&1
 
 @06-core_iov_mgmnt/01-tab
 @06-core_iov_mgmnt/02-ind
