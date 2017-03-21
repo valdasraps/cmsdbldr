@@ -36,13 +36,31 @@ public class PartDao extends DaoBase {
     public PartDao(@Assisted SessionManager sm) throws Exception {
         super(sm);
     }
-
+    
     public void savePart(Root root, AuditLog alog) throws Exception {
-        Part rootPart = sm.getRootPart();
+        
+        // Read ROOT part
+        
+        Part rootPart = (Part) session.createCriteria(Part.class)
+            .add(Restrictions.eq("id", props.getRootPartId()))
+            .add(Restrictions.eq("deleted", Boolean.FALSE))
+            .uniqueResult();
+
+        if (rootPart == null) {
+            throw new IllegalArgumentException(String.format("Not resolved ROOT part for ID: %d", props.getRootPartId()));
+        }
+
+        if (rootPart.getPartTree() == null) {
+            throw new Exception(String.format("ROOT Part does not have PartTree: %s", rootPart));
+        }
+        
+        // Fill in AUDIT LOG
 
         alog.setKindOfConditionName("[CONSTRUCT]");
         alog.setExtensionTableName("[PARTS]");
 
+        // Loop Parts and load
+        
         Stack<PartsPair> pairs = new Stack<>();
 
         for (Part part : root.getParts()) {
