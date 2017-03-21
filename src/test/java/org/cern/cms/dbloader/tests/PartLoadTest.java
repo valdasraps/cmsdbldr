@@ -13,6 +13,7 @@ import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
+import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.xml.map.PositionSchema;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -137,11 +138,7 @@ public class PartLoadTest extends TestBase {
                 }
 
             }
-
-            List<AuditLog> alogs = (List<AuditLog>) session.createCriteria(AuditLog.class)
-                            .add(Restrictions.eq("archiveFileName", "01_construct.xml"))
-                            .addOrder(Order.desc("insertTime"))
-                            .list();
+            List <AuditLog> alogs = getAuditLogs("01_construct.xml");
 
             assertNotNull(alogs);
             assertTrue(alogs.size() > 0);
@@ -170,6 +167,7 @@ public class PartLoadTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
+
         for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/xml/05_construct.xml"))) {
 
             try{
@@ -179,7 +177,33 @@ public class PartLoadTest extends TestBase {
                 // OK!
             }
 
+            List<AuditLog> alogs = getAuditLogs("05_construct.xml");
+
+            assertNotNull(alogs);
+            assertTrue(alogs.size() > 0);
+            AuditLog alog = alogs.get(0);
+
+            assertNotNull(alog.getInsertTime());
+            assertNotNull(alog.getInsertUser());
+            assertEquals("05_construct.xml", alog.getArchiveFileName());
+            assertEquals("05_construct.xml", alog.getDataFileName());
+            assertEquals("TEST", alog.getSubdetectorName());
+            assertEquals( UploadStatus.Failure, alog.getStatus());
+
         }
     }
 
+    private List<AuditLog> getAuditLogs(String fileName) throws Exception {
+
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            List<AuditLog> alogs = (List<AuditLog>) session.createCriteria(AuditLog.class)
+                    .add(Restrictions.eq("archiveFileName", fileName))
+                    .addOrder(Order.desc("insertTime"))
+                    .list();
+
+            return  alogs;
+        }
+    }
 }
