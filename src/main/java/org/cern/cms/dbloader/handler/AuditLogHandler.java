@@ -15,10 +15,16 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.ArchiveFile;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
+import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 public class AuditLogHandler {
 
+    private static final String UNDEFINED_SUBDETECTOR_NAME = "UNDEFINED";
+    
     @Getter
     private final AuditLog log;
     
@@ -78,7 +84,7 @@ public class AuditLogHandler {
                 this.log.setInsertTime(new Date());
                 this.log.setInsertUser(props.getOsUser());
                 this.log.setCreatedByUser(props.getFileUser());
-                this.log.setSubdetectorName(sm.getRootPart().getKindOfPart().getSubdetector().getName());
+                this.log.setSubdetectorName(getSubDetectorName(sm));
             } else {
                 this.log.setLastUpdateTime(new Date());
                 this.log.setLastUpdateUser(props.getOsUser());
@@ -95,6 +101,26 @@ public class AuditLogHandler {
         } catch (Exception ex) {
             throw ex;
         }
+    }
+    
+    private String getSubDetectorName(SessionManager sm) {
+        
+        try {
+        
+            return (String) sm.getSession().createCriteria(Part.class)
+                .add(Restrictions.eq("id", props.getRootPartId()))
+                .add(Restrictions.eq("deleted", Boolean.FALSE))
+                .createCriteria("kindOfPart", "kop")
+                .createCriteria("subdetector", "det")
+                .setProjection(Projections.property("det.name"))
+                .uniqueResult();
+
+        } catch (Exception ex) {
+            
+            return UNDEFINED_SUBDETECTOR_NAME;
+            
+        }
+        
     }
 
 }

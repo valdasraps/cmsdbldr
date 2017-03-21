@@ -16,6 +16,7 @@ import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.xml.map.PositionSchema;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
@@ -137,10 +138,15 @@ public class PartLoadTest extends TestBase {
 
             }
 
-            AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
+            List<AuditLog> alogs = (List<AuditLog>) session.createCriteria(AuditLog.class)
                             .add(Restrictions.eq("archiveFileName", "01_construct.xml"))
-                            .uniqueResult();
+                            .addOrder(Order.desc("insertTime"))
+                            .list();
 
+            assertNotNull(alogs);
+            assertTrue(alogs.size() > 0);
+            AuditLog alog = alogs.get(0);
+            
             assertNotNull(alog.getInsertTime());
             assertNotNull(alog.getInsertUser());
             assertNotNull(alog.getLastUpdateTime());
