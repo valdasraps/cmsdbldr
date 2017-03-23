@@ -4,10 +4,6 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.FilesManager;
@@ -17,6 +13,7 @@ import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
+import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.xml.map.PositionSchema;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -26,19 +23,23 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.junit.Test;
 
+import javax.management.modelmbean.XMLParseException;
+
+import static junit.framework.TestCase.*;
+
 public class PartLoadTest extends TestBase {
-    
+
     @Test
     public void loadPartsXml() throws Throwable {
         
         DbLoader loader = new DbLoader(pm);
-        
+
         for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/xml/01_construct.xml"))) {
 
             loader.loadArchive(injector, fb);
 
         }
-            
+
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
 
@@ -93,7 +94,7 @@ public class PartLoadTest extends TestBase {
                 assertEquals(tower.getId(), pack.getPartTree().getParentPartTree().getPartId());
 
                 List<Part> children = (List<Part>) session.createCriteria(Part.class)
-                                .add(Subqueries.propertyIn("id", 
+                                .add(Subqueries.propertyIn("id",
                                     DetachedCriteria.forClass(PartTree.class)
                                         .setProjection(Projections.property("id"))
                                         .createCriteria("parentPartTree")
@@ -137,11 +138,7 @@ public class PartLoadTest extends TestBase {
                 }
 
             }
-
-            List<AuditLog> alogs = (List<AuditLog>) session.createCriteria(AuditLog.class)
-                            .add(Restrictions.eq("archiveFileName", "01_construct.xml"))
-                            .addOrder(Order.desc("insertTime"))
-                            .list();
+            List <AuditLog> alogs = getAuditLogs("01_construct.xml");
 
             assertNotNull(alogs);
             assertTrue(alogs.size() > 0);
@@ -157,7 +154,56 @@ public class PartLoadTest extends TestBase {
             assertEquals("[PARTS]", alog.getExtensionTableName());
 
         }
-                
+
     }
-    
+
+    /*
+     * This test check or exist 2 same  not deleted catalogs.
+     * If exist, it should throw an expection.
+     *
+     */
+    @Test
+    public void NonUniqueResultExceptionTest () throws Throwable {
+
+        DbLoader loader = new DbLoader(pm);
+
+
+        for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/xml/05_construct.xml"))) {
+
+            try{
+                loader.loadArchive(injector, fb);
+                fail("Found catalogs dublicate. Should fail here.");
+            }catch (XMLParseException ex){
+                // OK!
+            }
+
+            List<AuditLog> alogs = getAuditLogs("05_construct.xml");
+
+            assertNotNull(alogs);
+            assertTrue(alogs.size() > 0);
+            AuditLog alog = alogs.get(0);
+
+            assertNotNull(alog.getInsertTime());
+            assertNotNull(alog.getInsertUser());
+            assertEquals("05_construct.xml", alog.getArchiveFileName());
+            assertEquals("05_construct.xml", alog.getDataFileName());
+            assertEquals("TEST", alog.getSubdetectorName());
+            assertEquals( UploadStatus.Failure, alog.getStatus());
+
+        }
+    }
+
+    private List<AuditLog> getAuditLogs(String fileName) throws Exception {
+
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            List<AuditLog> alogs = (List<AuditLog>) session.createCriteria(AuditLog.class)
+                    .add(Restrictions.eq("archiveFileName", fileName))
+                    .addOrder(Order.desc("insertTime"))
+                    .list();
+
+            return  alogs;
+        }
+    }
 }
