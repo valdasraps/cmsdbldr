@@ -168,9 +168,10 @@ public class DbLoader {
 
                     log.info(String.format("Processing %s", data));
 
-                    
                     Root root = xmlm.unmarshal(data.getFile());
 
+                    // Proceed with loading
+                    
                     boolean loaded = condApp.handleData(sm, data, root, dataLog.getLog());
 
                     if (!loaded) {
@@ -181,17 +182,35 @@ public class DbLoader {
                         loaded = channelApp.handleData(sm, data, root, dataLog.getLog());
                     }
 
+                    // Done loading process
+                    
+                    sm.flush();
+
                     if (loaded) {
                         dataLog.saveSuccess();
                     } else {
                         throw new XMLParseException("XML file not recognized by handlers");
                     }
 
+                } catch (Error ex) {
+                
+                    error = ex;
+                    
+                } catch (RuntimeException ex) {
+                    
+                    error = ex;
+                    
                 } catch (Exception ex) {
 
-                    dataLog.saveFailure(ex);
-                    throw ex;
-
+                    error = ex;
+                    
+                } finally {
+                    
+                    if (error != null) {
+                        dataLog.saveFailure(error);
+                        throw error;
+                    }
+                    
                 }
 
             }

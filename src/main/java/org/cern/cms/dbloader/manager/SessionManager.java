@@ -28,13 +28,23 @@ public class SessionManager implements AutoCloseable {
         }
         return session;
     }
+
+    public void flush() {
+        if (session != null) {
+            session.flush();
+        }
+    }
     
     public void commit() {
-        tx.commit();
+        if (tx != null) {
+            tx.commit();
+        }
     }
     
     public void rollback() {
-        tx.rollback();
+        if (tx != null) {
+            tx.rollback();
+        }
     }
     
     @Override
