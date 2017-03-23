@@ -45,7 +45,7 @@ public class DbLoader {
 
     private final PropertiesManager props;
 
-    private void run() throws Exception {
+    private void run() throws Throwable {
         
         LogManager.setLogging(props);
         
@@ -137,7 +137,7 @@ public class DbLoader {
 
     }
     
-    public void loadArchive(Injector injector, FileBase archive) throws Exception {
+    public void loadArchive(Injector injector, FileBase archive) throws Throwable {
         
         XmlManager xmlm = injector.getInstance(XmlManager.class);
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
@@ -151,6 +151,8 @@ public class DbLoader {
             archiveLog = rf.createAuditDao(archive);
             archiveLog.saveProcessing();
         }
+        
+        Throwable error = null;
         
         // Start session & transaction
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
@@ -206,18 +208,31 @@ public class DbLoader {
 
             }
 
-            if (archiveLog != null) {
-                archiveLog.saveSuccess();
-            }
+        } catch (Error ex) {
 
+            error = ex;
+            
+        } catch (RuntimeException ex) {
+
+            error = ex;
+            
         } catch (Exception ex) {
 
-            if (archiveLog != null) {
-                archiveLog.saveFailure(ex);
+            error = ex;
+            
+        } finally {
+        
+            if (error != null) {
+                if (archiveLog != null) {
+                    archiveLog.saveFailure(error);
+                }
+                throw error;
+            } else {
+                if (archiveLog != null) {
+                    archiveLog.saveSuccess();
+                }
             }
-
-            throw ex;
-
+            
         }
     }
 
@@ -249,7 +264,7 @@ public class DbLoader {
             System.err.println("ERROR: " + ex.getMessage());
             System.exit(1);
 
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
 
             ex.printStackTrace(System.err);
             System.exit(2);

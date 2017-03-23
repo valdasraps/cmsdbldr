@@ -56,7 +56,7 @@ public class ChannelLoadZipTest extends TestBase {
     }
     
     @Test
-    public void successExampleTest() throws Exception {
+    public void successExampleTest() throws Throwable {
         
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/channels/channels.zip"))) {

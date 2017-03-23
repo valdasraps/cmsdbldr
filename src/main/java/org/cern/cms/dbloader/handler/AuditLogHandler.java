@@ -57,9 +57,9 @@ public class AuditLogHandler {
         save(UploadStatus.Processing);
     }
     
-    public final void saveFailure(Exception ex) throws Exception {
+    public final void saveFailure(Throwable error) throws Exception {
         StringWriter sw = new StringWriter();
-        ex.printStackTrace(new PrintWriter(sw));
+        error.printStackTrace(new PrintWriter(sw));
         String str = sw.toString();
         if (str.length() > 4000) {
             str = str.substring(0, 4000);

@@ -29,7 +29,7 @@ import org.junit.Test;
 public class PartLoadTest extends TestBase {
     
     @Test
-    public void loadPartsXml() throws Exception {
+    public void loadPartsXml() throws Throwable {
         
         DbLoader loader = new DbLoader(pm);
         

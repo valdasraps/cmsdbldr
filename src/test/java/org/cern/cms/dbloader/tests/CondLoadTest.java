@@ -28,7 +28,7 @@ import org.junit.Test;
 public class CondLoadTest extends TestBase {
     
     @Test
-    public void printAndLoadExampleTest() throws Exception {
+    public void printAndLoadExampleTest() throws Throwable {
         
         CondManager condm = injector.getInstance(CondManager.class);
         CondEntityHandler ch = condm.getConditionHandler("IV");
@@ -53,7 +53,7 @@ public class CondLoadTest extends TestBase {
     }
     
     @Test
-    public void loadExampleTest() throws Exception {
+    public void loadExampleTest() throws Throwable {
         
         String [] files = new String [] {
             "src/test/xml/02_condition.xml"
@@ -136,7 +136,7 @@ public class CondLoadTest extends TestBase {
     }
     
     @Test
-    public void loadLobExampleTest() throws Exception {
+    public void loadLobExampleTest() throws Throwable {
         
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/lob/lob_test.zip"))) {
