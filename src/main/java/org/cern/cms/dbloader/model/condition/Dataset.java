@@ -186,4 +186,10 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "ATTRIBUTE", type = Attribute.class)
     private List<Attribute> attributes = new ArrayList<>();
 
+//pagalbos
+    @Basic
+    @Column(name = "INITIATED_BY_USER")
+    @XmlElement(name = "INITIATED_BY_USER")
+    private String initiatedByUser;
+
 }

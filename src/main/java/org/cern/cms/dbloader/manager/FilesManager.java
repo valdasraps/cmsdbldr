@@ -5,12 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -26,6 +21,7 @@ public class FilesManager {
     private static final File TMP_FOLDER = new File(System.getProperty("java.io.tmpdir"));
     private static final Pattern XML_FILE = Pattern.compile("\\.xml$", Pattern.CASE_INSENSITIVE);
     private static final Pattern ZIP_FILE = Pattern.compile("\\.zip$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern XMA_FILE = Pattern.compile("\\.xma$", Pattern.CASE_INSENSITIVE);
 
     public static Set<FileBase> getFiles(List<String> listOfFiles) throws Exception {
         Set<FileBase> files = new LinkedHashSet<>();
@@ -47,15 +43,15 @@ public class FilesManager {
         return files;
     }
 
-    public static Set<DataFile> getDataFiles(ArchiveFile archive) throws IOException {
-        Set<DataFile> files = new TreeSet<>();
-        
+    public static List<DataFile> getDataFiles(ArchiveFile archive) throws Exception {
+        ArrayList<DataFile> files = new ArrayList<>();
+        FileTypeManager fm = new FileTypeManager();
         for (File f : extractZip(archive.getFile())) {
-            if (XML_FILE.matcher(f.getAbsolutePath()).find()) {
+            if ((XML_FILE.matcher(f.getAbsolutePath()).find()) || XMA_FILE.matcher(f.getAbsolutePath()).find()) {
                 files.add(new DataFile(archive, f));
             }
         }
-        
+        Collections.sort(files);
         return files;
     }
 

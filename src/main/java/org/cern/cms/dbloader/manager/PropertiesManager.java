@@ -27,6 +27,7 @@ public abstract class PropertiesManager {
     public static final String CONDITION_XML_PACKAGE = MODEL_PACKAGE.concat(".xml");
     public static final String CONSTRUCT_PACKAGE = MODEL_PACKAGE.concat(".construct");
     public static final String IOV_CORE_PACKAGE = MODEL_PACKAGE.concat(".iov");
+    public static final String CONFIG_CORE_PACKAGE = MODEL_PACKAGE.concat(".config");
     public static final String MANAGEMNT_CORE_PACKAGE = MODEL_PACKAGE.concat(".managemnt");
     
     protected static final String URL_PREFIX = "jdbc:oracle:thin:@";
