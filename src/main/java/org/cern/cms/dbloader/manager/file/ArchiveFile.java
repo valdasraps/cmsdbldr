@@ -2,7 +2,7 @@ package org.cern.cms.dbloader.manager.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -23,7 +23,7 @@ public class ArchiveFile extends FileBase {
     }
 
     @Override
-    public Set<DataFile> getDataFiles() throws Exception {
+    public List<DataFile> getDataFiles() throws Exception {
         return FilesManager.getDataFiles(this);
     }
     

@@ -90,7 +90,8 @@ public class HbmManager implements AutoCloseable {
                     pc.getTable().setSchema(props.getCoreManagemntSchemaName());
                 }
 
-                if (pc.getEntityName().startsWith(PropertiesManager.IOV_CORE_PACKAGE)) {
+                if (pc.getEntityName().startsWith(PropertiesManager.IOV_CORE_PACKAGE) ||
+                    pc.getEntityName().startsWith(PropertiesManager.CONFIG_CORE_PACKAGE)) {
                     pc.getTable().setSchema(props.getIovCoreSchemaName());
                 }
 

@@ -6,17 +6,12 @@ import java.util.List;
 import javax.management.modelmbean.XMLParseException;
 
 import org.cern.cms.dbloader.app.CondApp;
+import org.cern.cms.dbloader.app.ConfigApp;
 import org.cern.cms.dbloader.app.PartApp;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
 import org.cern.cms.dbloader.dao.DatasetDao;
-import org.cern.cms.dbloader.manager.CondManager;
-import org.cern.cms.dbloader.manager.CondXmlManager;
-import org.cern.cms.dbloader.manager.EntityModificationManager;
-import org.cern.cms.dbloader.manager.FilesManager;
-import org.cern.cms.dbloader.manager.HelpPrinter;
-import org.cern.cms.dbloader.manager.CLIPropertiesManager;
-import org.cern.cms.dbloader.manager.ResourceFactory;
-import org.cern.cms.dbloader.manager.XmlManager;
+import org.cern.cms.dbloader.manager.*;
+
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.OptId;
@@ -34,9 +29,6 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.app.ChannelApp;
-import org.cern.cms.dbloader.manager.LogManager;
-import org.cern.cms.dbloader.manager.PropertiesManager;
-import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 
 @Log4j
@@ -144,6 +136,7 @@ public class DbLoader {
         CondApp condApp = injector.getInstance(CondApp.class);
         PartApp partApp = injector.getInstance(PartApp.class);
         ChannelApp channelApp = injector.getInstance(ChannelApp.class);
+        ConfigApp configApp = injector.getInstance(ConfigApp.class);
         
         // Start archive log if needed
         AuditLogHandler archiveLog = null;
@@ -164,19 +157,26 @@ public class DbLoader {
 
                 try {
 
-                    log.info(String.format("Processing %s", data));
-
-                    
                     Root root = xmlm.unmarshal(data.getFile());
-
-                    boolean loaded = condApp.handleData(sm, data, root, dataLog.getLog());
-
-                    if (!loaded) {
-                        loaded = partApp.handleData(sm, data, root, dataLog.getLog());
-                    }
-                    
-                    if (!loaded) {
-                        loaded = channelApp.handleData(sm, data, root, dataLog.getLog());
+                    boolean loaded = false;
+                    switch (data.getType()){
+                        case 0:
+                            loaded = partApp.handleData(sm, data, root, dataLog.getLog());
+                            break;
+                        case 1:
+                            loaded = channelApp.handleData(sm, data, root, dataLog.getLog());
+                        case 2:
+                            loaded = condApp.handleData(sm, data, root, dataLog.getLog());
+                        case 3:
+                            loaded = configApp.handleData(sm, data, root, dataLog.getLog());
+                        case 4:
+                            loaded = configApp.handleData(sm, data, root, dataLog.getLog());
+                        case 5:
+                            loaded = configApp.handleData(sm, data, root, dataLog.getLog());
+                        case 999:
+                            log.info(String.format("Couldn't resolve file type", data.getFile().getName()));
+                            log.info(String.format("Root found:", root.toString()));
+                        default: break;
                     }
 
                     if (loaded) {
