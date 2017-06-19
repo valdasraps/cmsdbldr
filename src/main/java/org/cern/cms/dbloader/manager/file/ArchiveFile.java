@@ -3,17 +3,26 @@ package org.cern.cms.dbloader.manager.file;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import com.google.inject.assistedinject.Assisted;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.cern.cms.dbloader.manager.FilesManager;
+
+import javax.inject.Inject;
 
 @Getter
 @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = true)
 public class ArchiveFile extends FileBase {
 
-    public ArchiveFile(File archive) throws IOException {
+
+    @Inject
+    FilesManager fm;
+
+    @Inject
+    public ArchiveFile(@Assisted File archive) throws IOException {
         super(archive);
     }
 
@@ -24,7 +33,7 @@ public class ArchiveFile extends FileBase {
 
     @Override
     public List<DataFile> getDataFiles() throws Exception {
-        return FilesManager.getDataFiles(this);
+        return fm.getDataFiles(this);
     }
     
 }

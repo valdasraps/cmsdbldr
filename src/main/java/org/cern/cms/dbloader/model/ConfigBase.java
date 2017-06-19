@@ -45,7 +45,7 @@ public abstract class ConfigBase {
     private Date recordDelTime;
 
     @Basic
-    @Column(name="RECORD_LASTUPDATE_USER")
+    @Column(name="RECORD_DEL_FLAG_USER")
     @XmlTransient
     private String recordDelUser;
 

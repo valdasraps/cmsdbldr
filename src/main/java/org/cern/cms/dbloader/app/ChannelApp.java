@@ -29,7 +29,8 @@ public class ChannelApp extends AppBase {
     private ResourceFactory rf;
 
     @Override
-    public boolean handleData(SessionManager sm, DataFile file, Root root, AuditLog alog) throws Exception {
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+        Root root = file.getRoot();
         List<ChannelUpdate> updates = root.getChannelUpdates();
         if (updates != null && !updates.isEmpty()) {
 
@@ -60,9 +61,8 @@ public class ChannelApp extends AppBase {
 
             }
 
-            return true;
         }
-        return false;
+
     }
 
 }

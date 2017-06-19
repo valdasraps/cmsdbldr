@@ -22,13 +22,12 @@ public abstract class AppBase {
      *
      * @param sm
      * @param file
-     * @param root
      * @param alog
      * @return true if info was handled, false - otherwise
      * @throws Exception
      */
-    public boolean handleData(SessionManager sm, DataFile file, Root root, AuditLog alog) throws Exception {
-        return false;
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+
     }
 
 }

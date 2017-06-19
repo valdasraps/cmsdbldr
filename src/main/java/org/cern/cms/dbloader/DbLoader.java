@@ -5,9 +5,7 @@ import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
 
-import org.cern.cms.dbloader.app.CondApp;
-import org.cern.cms.dbloader.app.ConfigApp;
-import org.cern.cms.dbloader.app.PartApp;
+import org.cern.cms.dbloader.app.*;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
 import org.cern.cms.dbloader.dao.DatasetDao;
 import org.cern.cms.dbloader.manager.*;
@@ -28,7 +26,6 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
-import org.cern.cms.dbloader.app.ChannelApp;
 import org.cern.cms.dbloader.manager.file.FileBase;
 
 @Log4j
@@ -58,6 +55,7 @@ public class DbLoader {
         });
 
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
+        FilesManager fm = injector.getInstance(FilesManager.class);
 
         if (props.isSchema()) {
             XmlManager xmlm = injector.getInstance(XmlManager.class);
@@ -121,7 +119,7 @@ public class DbLoader {
         }
 
         // Loop archives
-        for (FileBase archive : FilesManager.getFiles(props.getArgs())) {
+        for (FileBase archive : fm.getFiles(props.getArgs())) {
 
             loadArchive(injector, archive);
 
@@ -131,7 +129,6 @@ public class DbLoader {
     
     public void loadArchive(Injector injector, FileBase archive) throws Exception {
         
-        XmlManager xmlm = injector.getInstance(XmlManager.class);
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
         CondApp condApp = injector.getInstance(CondApp.class);
         PartApp partApp = injector.getInstance(PartApp.class);
@@ -157,33 +154,26 @@ public class DbLoader {
 
                 try {
 
-                    Root root = xmlm.unmarshal(data.getFile());
-                    boolean loaded = false;
+                    AppBase app = null;
+
                     switch (data.getType()){
-                        case 0:
-                            loaded = partApp.handleData(sm, data, root, dataLog.getLog());
+                        case PART:
+                            app = partApp;
                             break;
-                        case 1:
-                            loaded = channelApp.handleData(sm, data, root, dataLog.getLog());
-                        case 2:
-                            loaded = condApp.handleData(sm, data, root, dataLog.getLog());
-                        case 3:
-                            loaded = configApp.handleData(sm, data, root, dataLog.getLog());
-                        case 4:
-                            loaded = configApp.handleData(sm, data, root, dataLog.getLog());
-                        case 5:
-                            loaded = configApp.handleData(sm, data, root, dataLog.getLog());
-                        case 999:
-                            log.info(String.format("Couldn't resolve file type", data.getFile().getName()));
-                            log.info(String.format("Root found:", root.toString()));
-                        default: break;
+                        case CHANNEL:
+                            app = channelApp;
+                            break;
+                        case CONDITION:
+                            app = condApp;
+                            break;
+                        case KEY:
+                        case KEY_ALIAS:
+                        case VERSION_ALIAS:
+                            app = configApp;
                     }
 
-                    if (loaded) {
-                        dataLog.saveSuccess();
-                    } else {
-                        throw new XMLParseException("XML file not recognized by handlers");
-                    }
+                    app.handleData(sm, data, dataLog.getLog());
+                    dataLog.saveSuccess();
 
                 } catch (Exception ex) {
 

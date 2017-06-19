@@ -18,12 +18,12 @@ public class Maps {
 	private Set<MapTag> tags;
 
 	@XmlElement(name="VERSION_ALIAS")
-	private VersionAlias versionAlias;
+	private Set<VersionAlias> versionAliases;
 
 	@XmlElement(name="KEY")
-	private Key key;
+	private Set<Key> key;
 
 	@XmlElement(name="KEY_ALIAS")
-	private KeyAlias keyAlias;
+	private Set<KeyAlias> keyAlias;
 
 }

@@ -23,16 +23,21 @@ public class ConfigApp extends AppBase{
     private ResourceFactory rf;
 
     @Override
-    public boolean handleData(SessionManager sm, DataFile file, Root root, AuditLog alog) throws Exception {
-        if (!root.getMaps().getVersionAlias().getName().isEmpty()){
-            ConfigDao dao = rf.createConfigDao(sm);
-            dao.saveVersionAliases(root, alog);
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
 
-        } else {
-            throw new XMLParseException("No VerionAliases defined");
+        ConfigDao dao = rf.createConfigDao(sm);
+        Root root = file.getRoot();
+
+        switch (file.getType()) {
+            case VERSION_ALIAS:
+            dao.saveVersionAliases(root.getMaps().getVersionAliases(), alog);
+            break;
+            case KEY:
+                dao.saveKey(root.getMaps().getKey(), alog);
+                break;
+            case KEY_ALIAS:
+                dao.saveKeyAlias(root.getMaps().getKeyAlias(), alog);
         }
-
-        return true;
 
     }
 

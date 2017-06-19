@@ -56,7 +56,7 @@ public abstract class PropertiesManager {
         COND_DESC("describe single condition", true, false),
         COND_XML("print condition XML example", true, false),
         COND_CLASS("print generated condition class", true, false),
-        COND_DATASETS("list condition datasets", true, false),
+        COND_DATASETS("list condition dataset", true, false),
         COND_DATASET("get XML stream data", true, false),
         CHANNEL_LIST("list available channels", false, false),
         CHANNEL_DESC("describe single channel", true, false),

@@ -78,7 +78,7 @@ public class PartDao extends DaoBase {
 
     }
 
-    private Part resolvePart(Part part, Stack<PartsPair> pairs) throws Exception {
+    public Part resolvePart(Part part, Stack<PartsPair> pairs) throws Exception {
 
         Part xmlPart = part;
         Part dbPart = null;
