@@ -29,6 +29,6 @@ public class Configuration {
     private KindOfCondition koc;
 
     @XmlElement(name = "DATA_SET")
-    private Dataset datasets;
+    private Dataset dataset;
 
 }

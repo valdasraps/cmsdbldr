@@ -32,9 +32,11 @@ public class PartLoadTest extends TestBase {
     @Test
     public void loadPartsXml() throws Exception {
 
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/xml/01_construct.xml"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/01_construct.xml"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -143,7 +145,7 @@ public class PartLoadTest extends TestBase {
             assertNotNull(alogs);
             assertTrue(alogs.size() > 0);
             AuditLog alog = alogs.get(0);
-            
+
             assertNotNull(alog.getInsertTime());
             assertNotNull(alog.getInsertUser());
             assertNotNull(alog.getLastUpdateTime());
@@ -165,10 +167,12 @@ public class PartLoadTest extends TestBase {
     @Test
     public void NonUniqueResultExceptionTest () throws Exception {
 
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
         DbLoader loader = new DbLoader(pm);
 
 
-        for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/xml/05_construct.xml"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/05_construct.xml"))) {
 
             try{
                 loader.loadArchive(injector, fb);

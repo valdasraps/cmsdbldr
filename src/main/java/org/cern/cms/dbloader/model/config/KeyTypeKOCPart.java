@@ -12,13 +12,14 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigInteger;
+import java.util.Set;
 
 /**
  * Created by aisi0860 on 6/1/17.
  */
 
 @Entity
-@Table(name = "CONFIG_TYPE_KOC_MAP_ID")
+@Table(name = "CONFIG_TYPE_KOC_PART_MAPS")
 @Getter
 @Setter
 public class KeyTypeKOCPart extends ConfigBase {
@@ -40,6 +41,9 @@ public class KeyTypeKOCPart extends ConfigBase {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="PART_ID", nullable = false)
     private Part part;
+
+    @OneToMany(mappedBy = "keyTypeKOCPart")
+    private Set<KeyDataset> keyVerMap;
 
     @Column(name = "KOC_ORDER")
     private String kocOrder;

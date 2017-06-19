@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by aisi0860 on 6/5/17.
@@ -38,7 +39,7 @@ public class KeyAliasKey extends ConfigBase {
     private Key key;
 
     @Basic
-    @JoinColumn(name="IS_MOVED_TO_HISTORY", nullable = false)
+    @Column(name="IS_MOVED_TO_HISTORY", nullable = false)
     @Type(type="true_false")
     @XmlTransient
     private Boolean movedToHistory = false;
@@ -48,4 +49,5 @@ public class KeyAliasKey extends ConfigBase {
     @Type(type="true_false")
     @XmlTransient
     private Boolean deleted = false;
+
 }

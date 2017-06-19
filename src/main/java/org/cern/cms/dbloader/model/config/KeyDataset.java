@@ -35,14 +35,14 @@ public class KeyDataset extends ConfigBase {
     private Dataset dataset;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="SUVERSION_COND_DATA_SET_ID", nullable=false)
+    @JoinColumn(name="SUBVERSION_COND_DATA_SET_ID", nullable=false)
     private Dataset subDataset;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="CONFIG_KEY_ID", nullable=false)
     private Key key;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="CONFIG_TYPE_KOC_MAP_ID")
     private KeyTypeKOCPart keyTypeKOCPart;
 

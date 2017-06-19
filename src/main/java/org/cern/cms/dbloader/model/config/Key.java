@@ -47,6 +47,9 @@ public class Key extends ConfigBase {
     @XmlElement(name="PROVENANCE")
     private String provenance;
 
+    @OneToMany(mappedBy = "key")
+    private Set<KeyDataset> keyMap;
+
     @Basic
     @Column(name="NAME", nullable = false)
     @XmlElement(name="NAME")
@@ -55,7 +58,7 @@ public class Key extends ConfigBase {
     @Basic
     @Transient
     @XmlElement(name="VERSION_ALIAS")
-    private VersionAlias versionAlias;
+    private Set<VersionAlias> versionAlias;
 
     @Basic
     @Column(name="IS_RECORD_DELETED")
@@ -71,4 +74,5 @@ public class Key extends ConfigBase {
     @Transient
     @XmlElement(name="CONFIGURATION")
     private List<Configuration> config = new ArrayList<>();
+
 }

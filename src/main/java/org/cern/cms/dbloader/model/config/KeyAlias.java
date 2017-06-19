@@ -11,6 +11,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.math.BigInteger;
+import java.util.Set;
 
 /**
  * Created by aisi0860 on 5/26/17.
@@ -40,7 +41,7 @@ public class KeyAlias extends ConfigBase {
     @Transient
     @Column(name="KEY", nullable=false)
     @XmlElement(name="KEY")
-    private Key key;
+    private Set<Key> key;
 
     @Basic
     @Column(name="IS_RECORD_DELETED")
@@ -52,5 +53,11 @@ public class KeyAlias extends ConfigBase {
     @Column(name="COMMENT_DESCRIPTION")
     @XmlElement(name="COMMENT_DESCRIPTION")
     private String comment;
+
+    @OneToMany(mappedBy = "keyAlias")
+    private Set<KeyAliasVersionAlias> keyAliasVersionAliases;
+
+    @OneToMany(mappedBy = "keyAlias")
+    private Set<KeyAliasKey> keyAliasKey;
 
 }

@@ -39,7 +39,7 @@ public class KeyAliasVersionAlias extends ConfigBase {
     private KeyAlias keyAlias;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CONFIG_VERSIO_ALIAS_ID", nullable = false)
+    @JoinColumn(name="CONFIG_VERSION_ALIAS_ID", nullable = false)
     private VersionAlias versionAlias;
 
     @Basic

@@ -22,7 +22,8 @@ public class ConfigLoadZipTest extends TestBase{
     public void loadConfigZipTest() throws Exception {
 
         XmlManager xmlm = injector.getInstance(XmlManager.class);
-        for(FileBase fb : FilesManager.getFiles(Collections.singletonList("src/test/zip/config-test.zip"))) {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+        for(FileBase fb : fm.getFiles(Collections.singletonList("src/test/zip/config-test.zip"))) {
 
             Assert.assertEquals(6, fb.getDataFiles().size());
 
@@ -30,7 +31,7 @@ public class ConfigLoadZipTest extends TestBase{
                 Root root = xmlm.unmarshal(df.getFile());
                 boolean loaded = false;
                 switch (df.getType()) {
-                    case 0:
+                    case PART:
                         Assert.assertNull(root.getDatasets());
                         Assert.assertNull(root.getMaps());
                         Assert.assertNull(root.getChannelUpdates());
@@ -38,7 +39,7 @@ public class ConfigLoadZipTest extends TestBase{
                         Assert.assertNull(root.getElements());
                         Assert.assertNotNull(root.getParts());
                         break;
-                    case 1:
+                    case CHANNEL:
                         Assert.assertNull(root.getDatasets());
                         Assert.assertNull(root.getMaps());
                         Assert.assertNull(root.getHeader());
@@ -46,12 +47,15 @@ public class ConfigLoadZipTest extends TestBase{
                         Assert.assertNull(root.getParts());
                         Assert.assertNotNull(root.getChannelUpdates());
                         break;
-                    case 2:
+                    case CONDITION:
                         Assert.assertNull(root.getMaps());
                         Assert.assertNull(root.getParts());
                         Assert.assertNull(root.getChannelUpdates());
+                        if (root.getHeader() == null & root.getDatasets() == null && root.getElements() == null){
+                            Assert.fail("Did not find anything like HEADER, DATASET or ELEMENTS as expected");
+                        }
                         break;
-                    case 3:
+                    case VERSION_ALIAS:
                         //check other roots
                         Assert.assertNull(root.getDatasets());
                         Assert.assertNull(root.getHeader());
@@ -63,9 +67,9 @@ public class ConfigLoadZipTest extends TestBase{
                         Assert.assertNull(root.getMaps().getKeyAlias());
                         Assert.assertNull(root.getMaps().getTags());
                         Assert.assertNotNull(root.getMaps());
-                        Assert.assertNotNull(root.getMaps().getVersionAlias());
+                        Assert.assertNotNull(root.getMaps().getVersionAliases());
                         break;
-                    case 4:
+                    case KEY:
                         //check other roots
                         Assert.assertNull(root.getDatasets());
                         Assert.assertNull(root.getHeader());
@@ -76,9 +80,9 @@ public class ConfigLoadZipTest extends TestBase{
                         Assert.assertNull(root.getMaps().getKeyAlias());
                         Assert.assertNull(root.getMaps().getTags());
                         Assert.assertNotNull(root.getMaps().getKey());
-                        Assert.assertNull(root.getMaps().getVersionAlias());
+                        Assert.assertNull(root.getMaps().getVersionAliases());
                         break;
-                    case 5:
+                    case KEY_ALIAS:
                         //check other roots
                         Assert.assertNull(root.getDatasets());
                         Assert.assertNull(root.getHeader());
@@ -86,17 +90,11 @@ public class ConfigLoadZipTest extends TestBase{
                         Assert.assertNull(root.getParts());
 
                         //check what is inside Maps
-                        Assert.assertNull(root.getMaps().getVersionAlias());
+                        Assert.assertNull(root.getMaps().getVersionAliases());
                         Assert.assertNull(root.getMaps().getTags());
                         Assert.assertNull(root.getMaps().getKey());
                         Assert.assertNotNull(root.getMaps());
                         Assert.assertNotNull(root.getMaps().getKeyAlias());
-                        break;
-                    case 999:
-                        //should fail here if found type numb 999,
-                        // it means that FileTypeManager can't recognise file type.
-                        Assert.assertNull(root);
-                    default:
                         break;
                 }
             }

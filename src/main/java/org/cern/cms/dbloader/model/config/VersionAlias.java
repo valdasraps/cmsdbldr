@@ -38,10 +38,6 @@ public class VersionAlias extends ConfigBase {
     @Column(name="NAME", nullable=false)
     @XmlElement(name="NAME")
     private String name;
-//pagalbos
-//    @Transient
-//    @XmlElement(name="CONFIGURATION")
-//    private Configuration config;
 
     @Basic
     @Column(name="COMMENT_DESCRIPTION")
@@ -53,6 +49,10 @@ public class VersionAlias extends ConfigBase {
     @XmlElement(name="KIND_OF_CONDITION")
     private KindOfCondition koc;
 
+
+    @OneToMany(mappedBy = "versionAlias")
+    private Set<VersionAliasDataset> versionAliasMap;
+
     @Basic
     @Column(name="IS_RECORD_DELETED")
     @Type(type="true_false")
@@ -61,7 +61,8 @@ public class VersionAlias extends ConfigBase {
 
     @Transient
     @XmlElement(name="CONFIGURATION")
-    private List<Configuration> config = new ArrayList<>();
+    private Set<Configuration> config;
+//    private List<Configuration> config = new ArrayList<>();
 
 }
 

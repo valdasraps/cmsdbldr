@@ -29,7 +29,8 @@ public class CondLoadTest extends TestBase {
     
     @Test
     public void printAndLoadExampleTest() throws Exception {
-        
+
+        FilesManager fm = injector.getInstance(FilesManager.class);
         CondManager condm = injector.getInstance(CondManager.class);
         CondEntityHandler ch = condm.getConditionHandler("IV");
         
@@ -44,7 +45,7 @@ public class CondLoadTest extends TestBase {
         xmlm.printExample(pm, out);
         
         DbLoader loader = new DbLoader(pm);
-        for (FileBase df: FilesManager.getFiles(Collections.singletonList(exampleFile))) {
+        for (FileBase df: fm.getFiles(Collections.singletonList(exampleFile))) {
 
             loader.loadArchive(injector, df);
 
@@ -54,7 +55,8 @@ public class CondLoadTest extends TestBase {
     
     @Test
     public void loadExampleTest() throws Exception {
-        
+
+        FilesManager fm = injector.getInstance(FilesManager.class);
         String [] files = new String [] {
             "src/test/xml/02_condition.xml"
             ,"src/test/xml/03_condition.xml"
@@ -62,7 +64,7 @@ public class CondLoadTest extends TestBase {
         };
         
         DbLoader loader = new DbLoader(pm);
-        for (FileBase fb: FilesManager.getFiles(Arrays.asList(files))) {
+        for (FileBase fb: fm.getFiles(Arrays.asList(files))) {
 
             loader.loadArchive(injector, fb);
 
@@ -137,9 +139,9 @@ public class CondLoadTest extends TestBase {
     
     @Test
     public void loadLobExampleTest() throws Exception {
-        
+        FilesManager fm = injector.getInstance(FilesManager.class);
         DbLoader loader = new DbLoader(pm);
-        for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/lob/lob_test.zip"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/lob/lob_test.zip"))) {
 
             loader.loadArchive(injector, fb);
 

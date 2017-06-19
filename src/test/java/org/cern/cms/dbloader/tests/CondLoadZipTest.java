@@ -21,9 +21,11 @@ public class CondLoadZipTest extends TestBase {
        
     @Test
     public void successExampleTest() throws Exception {
-        
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+
         DbLoader loader = new DbLoader(pm);
-        for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/zip/loading.zip"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/loading.zip"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -31,7 +33,7 @@ public class CondLoadZipTest extends TestBase {
         
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
-            
+
             String [] versions = new String[] {
                 "2000001", "2000002", "2000003"
             };
@@ -59,9 +61,10 @@ public class CondLoadZipTest extends TestBase {
 
     @Test
     public void failureExampleTest() throws Exception {
-        
+
+        FilesManager fm = injector.getInstance(FilesManager.class);
         DbLoader loader = new DbLoader(pm);
-        for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/zip/not_loading.zip"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/not_loading.zip"))) {
 
             try {
                 

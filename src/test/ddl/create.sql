@@ -26,4 +26,9 @@ connect CMS_TST_CORE_COND/testing@&&1
 
 @04-core_cond
 
+PROMPT Executing CMS_TST_CORE_IOV_MGMNT stuff
+connect CMS_TST_CORE_IOV_MGMNT/testing@&&1
+
+@05-core-iov-mgmnt
+
 quit

@@ -57,9 +57,9 @@ public class ChannelLoadZipTest extends TestBase {
     
     @Test
     public void successExampleTest() throws Exception {
-        
+        FilesManager fm = injector.getInstance(FilesManager.class);
         DbLoader loader = new DbLoader(pm);
-        for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/channels/channels.zip"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/channels/channels.zip"))) {
             loader.loadArchive(injector, fb);
         }
         
@@ -86,7 +86,7 @@ public class ChannelLoadZipTest extends TestBase {
         
         // Second load should fail...
         try {
-            for (FileBase fb: FilesManager.getFiles(Collections.singletonList("src/test/channels/channels.zip"))) {
+            for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/channels/channels.zip"))) {
                 loader.loadArchive(injector, fb);
             }
             TestCase.fail("Should have failed here...");

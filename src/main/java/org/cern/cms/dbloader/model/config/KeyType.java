@@ -18,7 +18,7 @@ import java.math.BigInteger;
 
 
 @Entity
-@Table(name = "CONFIG_KEY_TYPE")
+@Table(name = "CONFIG_KEY_TYPES")
 @Getter
 @Setter
 @ToString

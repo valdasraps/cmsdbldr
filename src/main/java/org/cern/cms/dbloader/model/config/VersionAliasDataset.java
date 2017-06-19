@@ -18,7 +18,7 @@ import java.math.BigInteger;
  */
 
 @Entity
-@Table(name="CONFIG_VERSION_ALIASES")
+@Table(name="CONFIG_VERSION_ALIAS_MAP")
 @Getter
 @Setter
 @ToString
@@ -42,9 +42,9 @@ public class VersionAliasDataset extends ConfigBase {
     @JoinColumn(name="CONDITION_DATA_SET_ID", nullable = false)
     private Dataset dataset;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @ManyToOne
-    @JoinColumn(name="CONFIG_VERSION_ALIAS_ID")
+    //    @ManyToOne(fetch = FetchType.LAZY )
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="CONFIG_VERSION_ALIAS_ID", nullable = false)
     private VersionAlias versionAlias;
 
     @Basic
