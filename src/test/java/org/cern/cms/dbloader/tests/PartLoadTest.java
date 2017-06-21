@@ -30,7 +30,7 @@ import static junit.framework.TestCase.*;
 public class PartLoadTest extends TestBase {
 
     @Test
-    public void loadPartsXml() throws Exception {
+    public void loadPartsXml() throws Throwable {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
 
