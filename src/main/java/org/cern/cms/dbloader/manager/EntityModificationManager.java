@@ -28,7 +28,16 @@ public class EntityModificationManager {
 
     private final static String[] SQGENERATOR_SCHEMA_CORE_IOV_MGMNT = new String[] {
         "org.cern.cms.dbloader.model.iov.Tag",
-        "org.cern.cms.dbloader.model.iov.Iov"
+        "org.cern.cms.dbloader.model.iov.Iov",
+        "org.cern.cms.dbloader.model.config.KeyType",
+        "org.cern.cms.dbloader.model.config.VersionAlias",
+        "org.cern.cms.dbloader.model.config.KeyAlias",
+        "org.cern.cms.dbloader.model.config.KeyAliasKey",
+        "org.cern.cms.dbloader.model.config.KeyAliasVersionAlias",
+        "org.cern.cms.dbloader.model.config.KeyDataset",
+        "org.cern.cms.dbloader.model.config.KeyTypeKOCPart",
+        "org.cern.cms.dbloader.model.config.VersionAliasDataset",
+        "org.cern.cms.dbloader.model.config.Key"
     };
 
     private final static String[] SQGENERATOR_SCHEMA_CONSTRUCT_CORE_SCHEMA_MGMNT = new String[] {

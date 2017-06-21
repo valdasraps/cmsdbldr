@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<ROOT>
+    <PARTS>
+        <PART>
+            <SERIAL_NUMBER>GE1/1-X-S-CERN-0001</SERIAL_NUMBER>
+            <NAME_LABEL>GE1/1-X-S-CERN-0001</NAME_LABEL>
+            <LOCATION>904</LOCATION>
+            <COMMENT_DESCRIPTION></COMMENT_DESCRIPTION>
+            <BARCODE>00001</BARCODE>
+            <KIND_OF_PART>GEM Chamber</KIND_OF_PART>
+            <CHILDREN>
+                <PART>
+                    <SERIAL_NUMBER>PCB-VIII-RO-S-0004</SERIAL_NUMBER>
+                    <KIND_OF_PART>GEM Readout PCB</KIND_OF_PART>
+                </PART>
+                <PART>
+                    <SERIAL_NUMBER>PCB-VIII-DR-S-0005</SERIAL_NUMBER>
+                    <KIND_OF_PART>GEM Drift PCB</KIND_OF_PART>
+                </PART>
+                <PART>
+                    <SERIAL_NUMBER>FOIL-B13-S-0140</SERIAL_NUMBER>
+                    <KIND_OF_PART>GEM Foil</KIND_OF_PART>
+                    <PREDEFINED_ATTRIBUTES>
+                        <ATTRIBUTE>
+                            <NAME>Foil Position</NAME>
+                            <VALUE>GEM1</VALUE>
+                        </ATTRIBUTE>
+                    </PREDEFINED_ATTRIBUTES>
+                </PART>
+                <PART>
+                    <SERIAL_NUMBER>FOIL-B13-S-0138</SERIAL_NUMBER>
+                    <KIND_OF_PART>GEM Foil</KIND_OF_PART>
+                    <PREDEFINED_ATTRIBUTES>
+                        <ATTRIBUTE>
+                            <NAME>Foil Position</NAME>
+                            <VALUE>GEM2</VALUE>
+                        </ATTRIBUTE>
+                    </PREDEFINED_ATTRIBUTES>
+                </PART>
+                <PART>
+                    <SERIAL_NUMBER>FOIL-B13-S-0147</SERIAL_NUMBER>
+                    <KIND_OF_PART>GEM Foil</KIND_OF_PART>
+                    <PREDEFINED_ATTRIBUTES>
+                        <ATTRIBUTE>
+                            <NAME>Foil Position</NAME>
+                            <VALUE>GEM3</VALUE>
+                        </ATTRIBUTE>
+                    </PREDEFINED_ATTRIBUTES>
+                </PART>
+            </CHILDREN>
+        </PART>
+    </PARTS>
+</ROOT>
+
+<!--<?xml version="1.0"?>-->
+<!--<ROOT>-->
+    <!--<PARTS>-->
+        <!--<PART>-->
+            <!--<KIND_OF_PART>GEM Chamber</KIND_OF_PART>-->
+            <!--<SERIAL_NUMBER>ever</SERIAL_NUMBER>-->
+            <!--&lt;!&ndash;<SERIAL_NUMBER>GE1/1-X-S-CERN-0001</SERIAL_NUMBER>&ndash;&gt;-->
+            <!--&lt;!&ndash;<NAME_LABEL>GE1/1-X-S-CERN-0001</NAME_LABEL>&ndash;&gt;-->
+            <!--<COMMENT_DESCRIPTION>Fixed</COMMENT_DESCRIPTION>-->
+            <!--<INSTALLED_DATE>2017-01-01 10:04:56</INSTALLED_DATE>-->
+            <!--<LOCATION>University of IowaZZZ</LOCATION>-->
+            <!--&lt;!&ndash;<LOCATION>904111</LOCATION>&ndash;&gt;-->
+            <!--<BARCODE>1234562</BARCODE>-->
+            <!--<CHILDREN>-->
+                <!--<PART>-->
+                    <!--<SERIAL_NUMBER>PCB-VIII-RO-S-0004</SERIAL_NUMBER>-->
+                    <!--<KIND_OF_PART>GEM Readout PCB</KIND_OF_PART>-->
+                <!--</PART>-->
+            <!--</CHILDREN>-->
+        <!--</PART>-->
+    <!--</PARTS>-->
+<!--</ROOT>-->
+
+

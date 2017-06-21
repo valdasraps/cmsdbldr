@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ROOT>
+    <MAPS>
+        <KEY_ALIAS>
+            <NAME>022-al-gena-test</NAME>
+            <KEY mode='keep'>
+                <NAME>022-gena-test</NAME>
+                <VERSION_ALIAS>
+                    <NAME>GENA-TEST-023</NAME>
+                    <KIND_OF_CONDITION>
+                        <EXTENSION_TABLE_NAME>TEST_FILES</EXTENSION_TABLE_NAME>
+                        <NAME>FILES</NAME>
+                    </KIND_OF_CONDITION>
+                </VERSION_ALIAS>
+                <CONFIGURATION>
+                    <PART>
+                        <NAME_LABEL>ROOT</NAME_LABEL>
+                        <KIND_OF_PART>TEST ROOT</KIND_OF_PART>
+                    </PART>
+                    <KIND_OF_CONDITION>
+                        <EXTENSION_TABLE_NAME>TEST_FILES</EXTENSION_TABLE_NAME>
+                        <NAME>FILES</NAME>
+                    </KIND_OF_CONDITION>
+                    <DATA_SET>
+                        <VERSION>CONFIG_VERSION</VERSION>
+                        <EXTENSION_TABLE_NAME>CONFIG_DATA</EXTENSION_TABLE_NAME>
+                    </DATA_SET>
+                </CONFIGURATION>
+            </KEY>
+        </KEY_ALIAS>
+    </MAPS>
+</ROOT>

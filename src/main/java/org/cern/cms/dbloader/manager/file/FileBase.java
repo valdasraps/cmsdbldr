@@ -3,7 +3,7 @@ package org.cern.cms.dbloader.manager.file;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -30,8 +30,8 @@ public abstract class FileBase {
     public String getFilename() {
         return file.getName();
     }
-    
+
     public abstract boolean isArchive();
-    public abstract Set<DataFile> getDataFiles() throws Exception;
+    public abstract List<DataFile> getDataFiles() throws Exception;
     
 }

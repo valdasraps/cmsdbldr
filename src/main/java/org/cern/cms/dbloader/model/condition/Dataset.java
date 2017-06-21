@@ -186,4 +186,8 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "ATTRIBUTE", type = Attribute.class)
     private List<Attribute> attributes = new ArrayList<>();
 
+    @Transient
+    @XmlElement(name = "INITIATED_BY_USER")
+    private String initiatedByUser;
+
 }

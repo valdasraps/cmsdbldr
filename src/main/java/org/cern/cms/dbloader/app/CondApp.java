@@ -116,57 +116,51 @@ public class CondApp extends AppBase {
     }
 
     @Override
-    public boolean handleData(SessionManager sm, DataFile file, Root root, AuditLog alog) throws Exception {
-        if (root.getHeader() != null && root.getDatasets() != null) {
-            Header h = root.getHeader();
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+        Root root = file.getRoot();
+        Header h = root.getHeader();
 
-            if (root.getDatasets().isEmpty()) {
-                throw new XMLParseException("No datasets defined!");
-            }
-
-            if (h.getKindOfCondition() == null) {
-                throw new XMLParseException("No Kind of Conition defined!");
-            }
-
-            if (h.getKindOfCondition().getName() == null) {
-                throw new XMLParseException("No Kind of Condition name defined!");
-            }
-
-            CondEntityHandler condeh = condm.getConditionHandler(h.getKindOfCondition().getName());
-            if (condeh == null) {
-                throw new XMLParseException(String.format("Kind of Condition not resolved: %s", h.getKindOfCondition()));
-            }
-
-            ChannelEntityHandler chaneh = null;
-            if (h.getHint() != null) {
-                if (h.getHint().getChannelMap() != null) {
-                    chaneh = condm.getChannelHandler(h.getHint().getChannelMap());
-                    if (chaneh == null) {
-                        throw new XMLParseException(String.format("Channel Map not resolved: %s", h.getHint()));
-                    }
-
-                }
-            }
-
-            // So far - success!
-            log.info(String.format("%s (%s) with %d datasets and %s channel map to be processed", condeh.getId(), condeh.getName(), root.getDatasets().size(), chaneh));
-
-            CondXmlManager xmlm = new CondXmlManager(condeh, chaneh);
-            root = (Root) xmlm.unmarshal(file.getFile());
-
-            LobManager lobManager = new LobManager();
-            lobManager.lobParser(root, condeh, file);
-
-            // Try to load the file!
-            CondDao dao = rf.createCondDao(sm);
-            dao.saveCondition(root, alog);
-
-            return true;
-            
+        if (root.getDatasets().isEmpty()) {
+            throw new XMLParseException("No dataset defined!");
         }
-        
-        return false;
-        
+
+        if (h.getKindOfCondition() == null) {
+            throw new XMLParseException("No Kind of Conition defined!");
+        }
+
+        if (h.getKindOfCondition().getName() == null) {
+            throw new XMLParseException("No Kind of Condition name defined!");
+        }
+
+        CondEntityHandler condeh = condm.getConditionHandler(h.getKindOfCondition().getName());
+        if (condeh == null) {
+            throw new XMLParseException(String.format("Kind of Condition not resolved: %s", h.getKindOfCondition()));
+        }
+
+        ChannelEntityHandler chaneh = null;
+        if (h.getHint() != null) {
+            if (h.getHint().getChannelMap() != null) {
+                chaneh = condm.getChannelHandler(h.getHint().getChannelMap());
+                if (chaneh == null) {
+                    throw new XMLParseException(String.format("Channel Map not resolved: %s", h.getHint()));
+                }
+
+            }
+        }
+
+        // So far - success!
+        log.info(String.format("%s (%s) with %d dataset and %s channel map to be processed", condeh.getId(), condeh.getName(), root.getDatasets().size(), chaneh));
+
+        CondXmlManager xmlm = new CondXmlManager(condeh, chaneh);
+        root = (Root) xmlm.unmarshal(file.getFile());
+
+        LobManager lobManager = new LobManager();
+        lobManager.lobParser(root, condeh, file);
+
+        // Try to load the file!
+        CondDao dao = rf.createCondDao(sm);
+        dao.saveCondition(root, alog);
+
     }
 
 }

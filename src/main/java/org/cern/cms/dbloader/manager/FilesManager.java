@@ -5,40 +5,45 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import com.google.inject.Inject;
+import org.apache.commons.collections.list.TreeList;
 import org.cern.cms.dbloader.manager.file.ArchiveFile;
 
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class FilesManager {
 
     private static final int BUFFER = 2048;
     private static final File TMP_FOLDER = new File(System.getProperty("java.io.tmpdir"));
     private static final Pattern XML_FILE = Pattern.compile("\\.xml$", Pattern.CASE_INSENSITIVE);
     private static final Pattern ZIP_FILE = Pattern.compile("\\.zip$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern XMA_FILE = Pattern.compile("\\.xma$", Pattern.CASE_INSENSITIVE);
 
-    public static Set<FileBase> getFiles(List<String> listOfFiles) throws Exception {
+    @Inject
+    private ResourceFactory rf;
+
+    public Set<FileBase> getFiles(List<String> listOfFiles) throws Exception {
         Set<FileBase> files = new LinkedHashSet<>();
 
         for (String fileName : listOfFiles) {
             File f = new File(fileName);
             
             if (XML_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(new DataFile(new ArchiveFile(f), f));
+                files.add(rf.createDataFile(rf.createArchiveFile(f), f));
             } else
 
             if (ZIP_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(new ArchiveFile(f));
+                files.add(rf.createArchiveFile(f));
             } else {
                 throw new IllegalArgumentException(String.format("unknown file type (%s). Only .zip and .xml files accepted", fileName));
             }
@@ -47,19 +52,17 @@ public class FilesManager {
         return files;
     }
 
-    public static Set<DataFile> getDataFiles(ArchiveFile archive) throws IOException {
-        Set<DataFile> files = new TreeSet<>();
-        
+    public List<DataFile> getDataFiles(ArchiveFile archive) throws Exception {
+        List<DataFile> files = new TreeList();
         for (File f : extractZip(archive.getFile())) {
-            if (XML_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(new DataFile(archive, f));
+            if ((XML_FILE.matcher(f.getAbsolutePath()).find()) || XMA_FILE.matcher(f.getAbsolutePath()).find()) {
+                files.add(rf.createDataFile(archive, f));
             }
         }
-        
         return files;
     }
 
-    private static Set<File> extractZip(File zipFile) throws ZipException, IOException {
+    private Set<File> extractZip(File zipFile) throws ZipException, IOException {
         Set<File> files = new HashSet<>();
         try (ZipFile zip = new ZipFile(zipFile)) {
 

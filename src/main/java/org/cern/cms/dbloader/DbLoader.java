@@ -5,18 +5,11 @@ import java.util.List;
 
 import javax.management.modelmbean.XMLParseException;
 
-import org.cern.cms.dbloader.app.CondApp;
-import org.cern.cms.dbloader.app.PartApp;
+import org.cern.cms.dbloader.app.*;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
 import org.cern.cms.dbloader.dao.DatasetDao;
-import org.cern.cms.dbloader.manager.CondManager;
-import org.cern.cms.dbloader.manager.CondXmlManager;
-import org.cern.cms.dbloader.manager.EntityModificationManager;
-import org.cern.cms.dbloader.manager.FilesManager;
-import org.cern.cms.dbloader.manager.HelpPrinter;
-import org.cern.cms.dbloader.manager.CLIPropertiesManager;
-import org.cern.cms.dbloader.manager.ResourceFactory;
-import org.cern.cms.dbloader.manager.XmlManager;
+import org.cern.cms.dbloader.manager.*;
+
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.OptId;
@@ -33,10 +26,6 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
-import org.cern.cms.dbloader.app.ChannelApp;
-import org.cern.cms.dbloader.manager.LogManager;
-import org.cern.cms.dbloader.manager.PropertiesManager;
-import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 
 @Log4j
@@ -66,6 +55,7 @@ public class DbLoader {
         });
 
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
+        FilesManager fm = injector.getInstance(FilesManager.class);
 
         if (props.isSchema()) {
             XmlManager xmlm = injector.getInstance(XmlManager.class);
@@ -129,7 +119,7 @@ public class DbLoader {
         }
 
         // Loop archives
-        for (FileBase archive : FilesManager.getFiles(props.getArgs())) {
+        for (FileBase archive : fm.getFiles(props.getArgs())) {
 
             loadArchive(injector, archive);
 
@@ -139,11 +129,11 @@ public class DbLoader {
     
     public void loadArchive(Injector injector, FileBase archive) throws Throwable {
         
-        XmlManager xmlm = injector.getInstance(XmlManager.class);
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
         CondApp condApp = injector.getInstance(CondApp.class);
         PartApp partApp = injector.getInstance(PartApp.class);
         ChannelApp channelApp = injector.getInstance(ChannelApp.class);
+        ConfigApp configApp = injector.getInstance(ConfigApp.class);
         
         // Start archive log if needed
         AuditLogHandler archiveLog = null;
@@ -167,30 +157,27 @@ public class DbLoader {
                 try {
 
                     log.info(String.format("Processing %s", data));
+                  
+                    AppBase app = null;
 
-                    Root root = xmlm.unmarshal(data.getFile());
-
-                    // Proceed with loading
-                    
-                    boolean loaded = condApp.handleData(sm, data, root, dataLog.getLog());
-
-                    if (!loaded) {
-                        loaded = partApp.handleData(sm, data, root, dataLog.getLog());
+                    switch (data.getType()){
+                        case PART:
+                            app = partApp;
+                            break;
+                        case CHANNEL:
+                            app = channelApp;
+                            break;
+                        case CONDITION:
+                            app = condApp;
+                            break;
+                        case KEY:
+                        case KEY_ALIAS:
+                        case VERSION_ALIAS:
+                            app = configApp;
                     }
-                    
-                    if (!loaded) {
-                        loaded = channelApp.handleData(sm, data, root, dataLog.getLog());
-                    }
 
-                    // Done loading process
-                    
-                    sm.flush();
-
-                    if (loaded) {
-                        dataLog.saveSuccess();
-                    } else {
-                        throw new XMLParseException("XML file not recognized by handlers");
-                    }
+                    app.handleData(sm, data, dataLog.getLog());
+                    dataLog.saveSuccess();
 
                 } catch (Error ex) {
                 

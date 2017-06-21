@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <HEADER>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>TEST_FILES</EXTENSION_TABLE_NAME>
+            <NAME>FILES</NAME>
+        </TYPE>
+        <RUN>
+            <RUN_NUMBER>1</RUN_NUMBER>
+            <RUN_TYPE>1</RUN_TYPE>
+            <RUN_BEGIN_TIMESTAMP>2015-11-03 19:00:00</RUN_BEGIN_TIMESTAMP>
+        </RUN>
+    </HEADER>
+
+    <DATA_SET>
+        <COMMENT_DESCRIPTION>Testing LOB loading</COMMENT_DESCRIPTION>
+        <CREATE_TIMESTAMP>2011-06-17 00:00:00.0</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>joshi</CREATED_BY_USER>
+        <VERSION>JUN_7_2011</VERSION>
+        <SUBVERSION>0</SUBVERSION>
+        <PART_ASSEMBLY>
+
+
+            <PARENT_PART>
+                <KIND_OF_PART>TEST Pack</KIND_OF_PART>
+                <SERIAL_NUMBER>serial 02</SERIAL_NUMBER>
+            </PARENT_PART>
+
+
+            <CHILD_UNIQUELY_IDENTIFIED_BY>
+                <ATTRIBUTE>
+                    <NAME>TEST Position</NAME>
+                    <VALUE>4</VALUE>
+                </ATTRIBUTE>
+            </CHILD_UNIQUELY_IDENTIFIED_BY>
+        </PART_ASSEMBLY>
+        <DATA>
+            <TEST_TEXT_FILE>data.html</TEST_TEXT_FILE>
+            <TEST_MEDIA_FILE>picture.jpg</TEST_MEDIA_FILE>
+            <TEST_COMMENT>These are test files</TEST_COMMENT>
+        </DATA>
+        <DATA>
+            <TEST_TEXT_FILE>data.html</TEST_TEXT_FILE>
+            <TEST_MEDIA_FILE>picture.png</TEST_MEDIA_FILE>
+            <TEST_COMMENT>These are test files</TEST_COMMENT>
+        </DATA>
+    </DATA_SET>
+
+</ROOT>

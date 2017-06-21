@@ -22,14 +22,9 @@ public class PartApp extends AppBase {
     }
 
     @Override
-    public boolean handleData(SessionManager sm, DataFile file, Root root, AuditLog alog) throws Exception {
-        if (root.getParts() != null) {
-            PartDao dao = rf.createPartDao(sm);
-            dao.savePart(root, alog);
-            return true;
-        }
-        return false;
-
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+        PartDao dao = rf.createPartDao(sm);
+        dao.savePart(file.getRoot(), alog);
     }
 
 }

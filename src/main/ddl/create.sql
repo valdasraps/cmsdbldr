@@ -63,8 +63,8 @@ connect CMS_&det._CORE_IOV_MGMNT/&owner_password@&&1
 @06-core_iov_mgmnt/05-trg
 @06-core_iov_mgmnt/06-gra
 
-PROMPT Executing CMS_&det._CORE_IOV_MGMNT stuff
-connect CMS_&det._CORE_IOV_MGMNT/&owner_password@&&1
+-- PROMPT Executing CMS_&det._CORE_IOV_MGMNT stuff
+-- connect CMS_&det._CORE_IOV_MGMNT/&owner_password@&&1
 
 @07-core_iov_mgmnt_cfg/01-tab
 @07-core_iov_mgmnt_cfg/02-ind
