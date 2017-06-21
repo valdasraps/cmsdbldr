@@ -56,7 +56,7 @@ public class ChannelLoadZipTest extends TestBase {
     }
     
     @Test
-    public void successExampleTest() throws Exception {
+    public void successExampleTest() throws Throwable {
         FilesManager fm = injector.getInstance(FilesManager.class);
 
         DbLoader loader = new DbLoader(pm);

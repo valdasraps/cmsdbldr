@@ -28,7 +28,7 @@ import org.junit.Test;
 public class CondLoadTest extends TestBase {
     
     @Test
-    public void printAndLoadExampleTest() throws Exception {
+    public void printAndLoadExampleTest() throws Throwable {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
 
@@ -55,7 +55,7 @@ public class CondLoadTest extends TestBase {
     }
     
     @Test
-    public void loadExampleTest() throws Exception {
+    public void loadExampleTest() throws Throwable {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
 
@@ -140,7 +140,7 @@ public class CondLoadTest extends TestBase {
     }
     
     @Test
-    public void loadLobExampleTest() throws Exception {
+    public void loadLobExampleTest() throws Throwable {
         FilesManager fm = injector.getInstance(FilesManager.class);
 
         DbLoader loader = new DbLoader(pm);

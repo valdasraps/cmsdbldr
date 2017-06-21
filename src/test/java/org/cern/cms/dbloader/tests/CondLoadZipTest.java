@@ -20,7 +20,7 @@ import org.junit.Test;
 public class CondLoadZipTest extends TestBase {
        
     @Test
-    public void successExampleTest() throws Exception {
+    public void successExampleTest() throws Throwable {
         FilesManager fm = injector.getInstance(FilesManager.class);
 
         DbLoader loader = new DbLoader(pm);
@@ -59,7 +59,7 @@ public class CondLoadZipTest extends TestBase {
     }
 
     @Test
-    public void failureExampleTest() throws Exception {
+    public void failureExampleTest() throws Throwable {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
 
@@ -85,7 +85,7 @@ public class CondLoadZipTest extends TestBase {
             String [] versions = new String[] {
                 "2000004", "2000005", "2000006"
             };
-            
+
             for (String version: versions) {
                 
                 Dataset ds = (Dataset) session.createCriteria(Dataset.class)
@@ -95,22 +95,25 @@ public class CondLoadZipTest extends TestBase {
                             .uniqueResult();
 
                 assertNull(ds);
+            }
 
-                AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
-                    .add(Restrictions.eq("archiveFileName", "not_loading.zip"))
-                    .add(Restrictions.eq("version", version))
-                    .uniqueResult();
 
-                assertEquals(UploadStatus.Success, alog.getStatus());
-            }            
 
-            AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
+            AuditLog alogFile1 = (AuditLog) session.createCriteria(AuditLog.class)
                 .add(Restrictions.eq("archiveFileName", "not_loading.zip"))
                 .add(Restrictions.eq("dataFileName", "06-data_1.xml"))
                 .uniqueResult();
 
-            assertEquals(UploadStatus.Failure, alog.getStatus());
-        
+            AuditLog alogFile2 = (AuditLog) session.createCriteria(AuditLog.class)
+                .add(Restrictions.eq("archiveFileName", "not_loading.zip"))
+                .add(Restrictions.eq("dataFileName", "06-data.xml"))
+                .uniqueResult();
+
+            if (alogFile1.getStatus() != UploadStatus.Failure) {
+                assertEquals(UploadStatus.Failure, alogFile2.getStatus());
+            } else {
+                assertEquals(UploadStatus.Success, alogFile2.getStatus());
+            }
         }
                 
     }

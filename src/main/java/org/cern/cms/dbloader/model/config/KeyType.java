@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.cern.cms.dbloader.model.ConfigBase;
-import org.cern.cms.dbloader.model.DeleteableBase;
-import org.cern.cms.dbloader.model.EntityBase;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;

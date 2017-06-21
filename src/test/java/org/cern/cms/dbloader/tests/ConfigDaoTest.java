@@ -34,7 +34,7 @@ public class ConfigDaoTest extends TestBase {
        If Dataset, Part, KindOfCondition found and VersionAlias not found - write to DB.
      */
     @Test
-    public void loadVersionAliasXml() throws Exception {
+    public void loadVersionAliasXml() throws Throwable {
 
 //        SessionManager ssm = injector.getInstance(SessionManager.class);
 //        ssm.getSession();
@@ -87,7 +87,7 @@ public class ConfigDaoTest extends TestBase {
     }
 
     @Test
-    public void loadKeysXml() throws Exception {
+    public void loadKeysXml() throws Throwable {
 
 //        SessionManager ssm = injector.getInstance(SessionManager.class);
 //        ssm.getSession();
@@ -147,7 +147,7 @@ public class ConfigDaoTest extends TestBase {
     }
 
     @Test
-    public void loadKeyAlias() throws Exception {
+    public void loadKeyAlias() throws Throwable {
 
 //        SessionManager ssm = injector.getInstance(SessionManager.class);
 //        ssm.getSession();
