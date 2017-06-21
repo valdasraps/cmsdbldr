@@ -165,7 +165,7 @@ public class PartLoadTest extends TestBase {
      *
      */
     @Test
-    public void NonUniqueResultExceptionTest () throws Exception {
+    public void NonUniqueResultExceptionTest () throws Throwable {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
 

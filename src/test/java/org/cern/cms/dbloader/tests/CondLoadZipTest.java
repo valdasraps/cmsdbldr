@@ -23,7 +23,6 @@ public class CondLoadZipTest extends TestBase {
     public void successExampleTest() throws Exception {
         FilesManager fm = injector.getInstance(FilesManager.class);
 
-
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/loading.zip"))) {
 
@@ -63,6 +62,7 @@ public class CondLoadZipTest extends TestBase {
     public void failureExampleTest() throws Exception {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
+
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/not_loading.zip"))) {
 

@@ -34,7 +34,7 @@ public class DbLoader {
 
     private final PropertiesManager props;
 
-    private void run() throws Exception {
+    private void run() throws Throwable {
         
         LogManager.setLogging(props);
         
@@ -127,7 +127,7 @@ public class DbLoader {
 
     }
     
-    public void loadArchive(Injector injector, FileBase archive) throws Exception {
+    public void loadArchive(Injector injector, FileBase archive) throws Throwable {
         
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
         CondApp condApp = injector.getInstance(CondApp.class);
@@ -142,6 +142,8 @@ public class DbLoader {
             archiveLog.saveProcessing();
         }
         
+        Throwable error = null;
+        
         // Start session & transaction
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             
@@ -154,6 +156,8 @@ public class DbLoader {
 
                 try {
 
+                    log.info(String.format("Processing %s", data));
+                  
                     AppBase app = null;
 
                     switch (data.getType()){
@@ -175,11 +179,25 @@ public class DbLoader {
                     app.handleData(sm, data, dataLog.getLog());
                     dataLog.saveSuccess();
 
+                } catch (Error ex) {
+                
+                    error = ex;
+                    
+                } catch (RuntimeException ex) {
+                    
+                    error = ex;
+                    
                 } catch (Exception ex) {
 
-                    dataLog.saveFailure(ex);
-                    throw ex;
-
+                    error = ex;
+                    
+                } finally {
+                    
+                    if (error != null) {
+                        dataLog.saveFailure(error);
+                        throw error;
+                    }
+                    
                 }
 
             }
@@ -196,18 +214,31 @@ public class DbLoader {
 
             }
 
-            if (archiveLog != null) {
-                archiveLog.saveSuccess();
-            }
+        } catch (Error ex) {
 
+            error = ex;
+            
+        } catch (RuntimeException ex) {
+
+            error = ex;
+            
         } catch (Exception ex) {
 
-            if (archiveLog != null) {
-                archiveLog.saveFailure(ex);
+            error = ex;
+            
+        } finally {
+        
+            if (error != null) {
+                if (archiveLog != null) {
+                    archiveLog.saveFailure(error);
+                }
+                throw error;
+            } else {
+                if (archiveLog != null) {
+                    archiveLog.saveSuccess();
+                }
             }
-
-            throw ex;
-
+            
         }
     }
 
@@ -239,7 +270,7 @@ public class DbLoader {
             System.err.println("ERROR: " + ex.getMessage());
             System.exit(1);
 
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
 
             ex.printStackTrace(System.err);
             System.exit(2);

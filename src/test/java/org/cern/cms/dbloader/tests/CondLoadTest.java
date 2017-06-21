@@ -31,6 +31,7 @@ public class CondLoadTest extends TestBase {
     public void printAndLoadExampleTest() throws Exception {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
+
         CondManager condm = injector.getInstance(CondManager.class);
         CondEntityHandler ch = condm.getConditionHandler("IV");
         
@@ -57,6 +58,7 @@ public class CondLoadTest extends TestBase {
     public void loadExampleTest() throws Exception {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
+
         String [] files = new String [] {
             "src/test/xml/02_condition.xml"
             ,"src/test/xml/03_condition.xml"
@@ -140,6 +142,7 @@ public class CondLoadTest extends TestBase {
     @Test
     public void loadLobExampleTest() throws Exception {
         FilesManager fm = injector.getInstance(FilesManager.class);
+
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/lob/lob_test.zip"))) {
 
