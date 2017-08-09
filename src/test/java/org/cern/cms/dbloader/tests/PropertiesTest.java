@@ -98,7 +98,8 @@ public class PropertiesTest extends TestBase {
         assertEquals(props.getProperty("condition-ext-schema") + ".TABLE", pm.getExtConditionTable("TABLE"));
         assertEquals(props.getProperty("construct-ext-schema"), pm.getExtConstructSchemaName());
         assertEquals(props.getProperty("construct-ext-schema") + ".TABLE", pm.getExtConstructTable("TABLE"));
-        assertEquals(props.getProperty("iov-core-schema"), pm.getIovCoreSchemaName());        
+        assertEquals(props.getProperty("iov-core-schema"), pm.getIovCoreSchemaName());
+        assertEquals(props.getProperty("view-ext-schema"), pm.getExtViewSchemaName());
         
         log_lvl = props.getProperty("log-level");
         assertEquals(InetAddress.getLocalHost().getHostName(), pm.getHostName());

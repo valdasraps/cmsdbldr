@@ -51,6 +51,7 @@ public abstract class PropertiesManager {
         MANAGEMNT_CORE_SCHEMA("MANAGEMNT: core schema name", true, true),
         IOV_CORE_SCHEMA("MANAGEMNT: iov schema name", true, true),
         ATTRIBUTE_CORE_SCHEMA("MANAGEMNT: attribute schema name", true, true),
+        VIEW_EXT_SCHEMA("VIEW: extension schema name", true, false),
         SCHEMA("save XML schema files to path", true, false),
         COND_LIST("list available conditions", false, false),
         COND_DESC("describe single condition", true, false),
@@ -310,6 +311,14 @@ public abstract class PropertiesManager {
 
     public String getExtConditionTable(String tableName) {
         return getExtConditionSchemaName().concat(".").concat(tableName);
+    }
+
+    public String getExtViewSchemaName() {
+        return this.values.get(UserOption.VIEW_EXT_SCHEMA);
+    }
+
+    public boolean isExtViewSchemaName() {
+        return this.values.containsKey(UserOption.VIEW_EXT_SCHEMA);
     }
 
 }
