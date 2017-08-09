@@ -126,6 +126,7 @@
                         <goals>
                             <goal>rpm</goal>
                         </goals>
+                        <phase>install</phase>
                     </execution>
                 </executions>
                 <configuration>
