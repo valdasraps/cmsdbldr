@@ -3,7 +3,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.0.13</version>
+    <version>0.0.14</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -13,6 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <rpm.phase>package</rpm.phase>
     </properties>
 
     <licenses>
@@ -126,7 +127,7 @@
                         <goals>
                             <goal>rpm</goal>
                         </goals>
-                        <phase>install</phase>
+                        <phase>${rpm.phase}</phase>
                     </execution>
                 </executions>
                 <configuration>

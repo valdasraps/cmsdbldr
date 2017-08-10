@@ -1,2 +1,2 @@
 install:
-   - mvn clean package -DskipTests
+   - mvn install -DskipTests -Drpm.phase=none
