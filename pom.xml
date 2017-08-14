@@ -3,7 +3,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.0.14</version>
+    <version>0.0.15</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -60,7 +60,7 @@
                 <executions>
                     <execution>
                         <id>jar-with-dependencies</id>
-                        <phase>package</phase>
+                        <phase>${rpm.phase}</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
