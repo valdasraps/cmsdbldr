@@ -30,5 +30,4 @@ fi
 
 _args="$_args -Djava.security.egd=file:///dev/urandom"
 
-
 $_java $_args $_exec $@
