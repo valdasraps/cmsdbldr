@@ -21,7 +21,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.cern.cms.dbloader.model.DeleteableBase;
-import org.cern.cms.dbloader.model.xml.map.AttrCatalog;
+import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
 
 @Entity
 @Table(name="COND_TO_ATTR_RLTNSHPS")

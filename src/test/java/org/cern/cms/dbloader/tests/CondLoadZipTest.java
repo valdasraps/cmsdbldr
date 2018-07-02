@@ -101,12 +101,12 @@ public class CondLoadZipTest extends TestBase {
 
             AuditLog alogFile1 = (AuditLog) session.createCriteria(AuditLog.class)
                 .add(Restrictions.eq("archiveFileName", "not_loading.zip"))
-                .add(Restrictions.eq("dataFileName", "06-data_1.xml"))
+                .add(Restrictions.eq("dataFileName", "06-data_1.serial"))
                 .uniqueResult();
 
             AuditLog alogFile2 = (AuditLog) session.createCriteria(AuditLog.class)
                 .add(Restrictions.eq("archiveFileName", "not_loading.zip"))
-                .add(Restrictions.eq("dataFileName", "06-data.xml"))
+                .add(Restrictions.eq("dataFileName", "06-data.serial"))
                 .uniqueResult();
 
             if (alogFile1.getStatus() != UploadStatus.Failure) {

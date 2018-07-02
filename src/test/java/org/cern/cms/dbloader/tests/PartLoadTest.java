@@ -14,7 +14,7 @@ import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
-import org.cern.cms.dbloader.model.xml.map.PositionSchema;
+import org.cern.cms.dbloader.model.serial.map.PositionSchema;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -36,7 +36,7 @@ public class PartLoadTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/01_construct.xml"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/serial/01_construct.serial"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -140,7 +140,7 @@ public class PartLoadTest extends TestBase {
                 }
 
             }
-            List <AuditLog> alogs = getAuditLogs("01_construct.xml");
+            List <AuditLog> alogs = getAuditLogs("01_construct.serial");
 
             assertNotNull(alogs);
             assertTrue(alogs.size() > 0);
@@ -172,7 +172,7 @@ public class PartLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
 
 
-        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/05_construct.xml"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/serial/05_construct.serial"))) {
 
             try{
                 loader.loadArchive(injector, fb);
@@ -181,7 +181,7 @@ public class PartLoadTest extends TestBase {
                 // OK!
             }
 
-            List<AuditLog> alogs = getAuditLogs("05_construct.xml");
+            List<AuditLog> alogs = getAuditLogs("05_construct.serial");
 
             assertNotNull(alogs);
             assertTrue(alogs.size() > 0);
@@ -189,8 +189,8 @@ public class PartLoadTest extends TestBase {
 
             assertNotNull(alog.getInsertTime());
             assertNotNull(alog.getInsertUser());
-            assertEquals("05_construct.xml", alog.getArchiveFileName());
-            assertEquals("05_construct.xml", alog.getDataFileName());
+            assertEquals("05_construct.serial", alog.getArchiveFileName());
+            assertEquals("05_construct.serial", alog.getDataFileName());
             assertEquals("TEST", alog.getSubdetectorName());
             assertEquals( UploadStatus.Failure, alog.getStatus());
 

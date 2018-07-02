@@ -14,10 +14,10 @@ import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.Institution;
 import org.cern.cms.dbloader.model.managemnt.Location;
-import org.cern.cms.dbloader.model.xml.Root;
-import org.cern.cms.dbloader.model.xml.map.AttrBase;
-import org.cern.cms.dbloader.model.xml.map.AttrCatalog;
-import org.cern.cms.dbloader.model.xml.map.Attribute;
+import org.cern.cms.dbloader.model.serial.Root;
+import org.cern.cms.dbloader.model.serial.map.AttrBase;
+import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
+import org.cern.cms.dbloader.model.serial.map.Attribute;
 import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;

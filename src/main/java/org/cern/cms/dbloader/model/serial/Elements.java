@@ -1,4 +1,4 @@
-package org.cern.cms.dbloader.model.xml;
+package org.cern.cms.dbloader.model.serial;
 
 import java.util.Set;
 

@@ -1,4 +1,4 @@
-package org.cern.cms.dbloader.model.xml;
+package org.cern.cms.dbloader.model.serial;
 
 import java.util.List;
 
@@ -9,39 +9,48 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.construct.Part;
-import org.cern.cms.dbloader.model.xml.map.Maps;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.cern.cms.dbloader.model.serial.map.Maps;
 
-@XmlRootElement(name = "ROOT")
-@JsonRootName(value = "ROOT")
 @Getter
 @Setter
 @ToString
+@XmlRootElement(name = "Root")
+@JsonRootName(value = "Root")
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 public class Root {
 
 	@XmlElement(name = "HEADER")
+	@JsonProperty("Header")
 	private Header header;
 
 	@XmlElement(name = "ELEMENTS")
-    private Elements elements;
-	
+	@JsonProperty("Elements")
+	private Elements elements;
+
 	@XmlElement(name = "MAPS")
+	@JsonProperty("Maps")
 	private Maps maps;
 
 	@XmlElement(name = "DATA_SET")
+	@JsonProperty("Datasets")
 	private List<Dataset> datasets;
-	
+
 	@XmlElementWrapper(name="PARTS")
 	@XmlElement(name="PART", type=Part.class)
+	@JsonProperty("Parts")
 	private List<Part> parts;
-        
+
 	@XmlElement(name="CHANNEL_UPDATE", type=ChannelUpdate.class)
+	@JsonProperty("ChannelUpdates")
 	private List<ChannelUpdate> channelUpdates;
-	
+
 }
+
+

@@ -3,7 +3,6 @@ package org.cern.cms.dbloader.app;
 import org.cern.cms.dbloader.dao.PartDao;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.file.DataFile;
-import org.cern.cms.dbloader.model.xml.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

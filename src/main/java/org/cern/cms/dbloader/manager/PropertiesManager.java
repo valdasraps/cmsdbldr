@@ -24,7 +24,7 @@ public abstract class PropertiesManager {
     public static final String MODEL_PACKAGE = "org.cern.cms.dbloader.model";
     public static final String CONDITION_CORE_PACKAGE = MODEL_PACKAGE.concat(".condition");
     public static final String CONDITION_EXT_PACKAGE = CONDITION_CORE_PACKAGE.concat(".ext");
-    public static final String CONDITION_XML_PACKAGE = MODEL_PACKAGE.concat(".xml");
+    public static final String CONDITION_XML_PACKAGE = MODEL_PACKAGE.concat(".serial");
     public static final String CONSTRUCT_PACKAGE = MODEL_PACKAGE.concat(".construct");
     public static final String IOV_CORE_PACKAGE = MODEL_PACKAGE.concat(".iov");
     public static final String CONFIG_CORE_PACKAGE = MODEL_PACKAGE.concat(".config");

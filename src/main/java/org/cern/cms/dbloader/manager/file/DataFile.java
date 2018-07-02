@@ -3,8 +3,9 @@ package org.cern.cms.dbloader.manager.file;
 import com.google.inject.assistedinject.Assisted;
 import lombok.Getter;
 import lombok.ToString;
+import org.cern.cms.dbloader.manager.JsonManager;
 import org.cern.cms.dbloader.manager.XmlManager;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Root;
 
 import javax.inject.Inject;
 import javax.management.modelmbean.XMLParseException;
@@ -21,10 +22,18 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
     private final DataFileType type;
 
     @Inject
-    public DataFile(XmlManager xmlm, @Assisted FileBase archive, @Assisted File file) throws Exception {
+    public DataFile(XmlManager xmlm, JsonManager jmngr,  @Assisted FileBase archive, @Assisted File file) throws Exception {
         super(file);
         this.archive = archive;
-        this.root = xmlm.unmarshal(file);
+        Root tmpRoot = null;
+        try {
+            // Handle xml
+            tmpRoot = xmlm.unmarshal(file);
+        } catch (Exception e) {
+            // Handle Json
+            tmpRoot = jmngr.deserialize(file);
+        }
+        this.root = tmpRoot;
         this.type = DataFile.resolveType(this.root);
     }
 

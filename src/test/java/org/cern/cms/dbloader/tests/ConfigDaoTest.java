@@ -1,7 +1,5 @@
 package org.cern.cms.dbloader.tests;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
-import lombok.Data;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.FilesManager;
@@ -10,15 +8,12 @@ import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.KindOfCondition;
 import org.cern.cms.dbloader.model.config.*;
-import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Part;
-import org.cern.cms.dbloader.model.xml.Configuration;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -26,7 +21,7 @@ import java.util.Collections;
  */
 public class ConfigDaoTest extends TestBase {
 
-    /* This test has to load VersionAlias xml file.
+    /* This test has to load VersionAlias serial file.
        If Version Alias already exist - exception.
        If Dataset not define - exception.
        If Part not found - exception.
@@ -43,7 +38,7 @@ public class ConfigDaoTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/08_addVersionAlias.xml"))) {
+        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/serial/08_addVersionAlias.serial"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -96,7 +91,7 @@ public class ConfigDaoTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/09_addKeys.xml"))) {
+        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/serial/09_addKeys.serial"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -156,7 +151,7 @@ public class ConfigDaoTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/10_addAlias.xml"))) {
+        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/serial/10_addAlias.serial"))) {
 
             loader.loadArchive(injector, fb);
 

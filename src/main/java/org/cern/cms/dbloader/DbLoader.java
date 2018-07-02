@@ -3,8 +3,6 @@ package org.cern.cms.dbloader;
 import java.math.BigInteger;
 import java.util.List;
 
-import javax.management.modelmbean.XMLParseException;
-
 import org.cern.cms.dbloader.app.*;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
 import org.cern.cms.dbloader.dao.DatasetDao;
@@ -15,7 +13,6 @@ import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.OptId;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
-import org.cern.cms.dbloader.model.xml.Root;
 import org.cern.cms.dbloader.util.PropertiesException;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 

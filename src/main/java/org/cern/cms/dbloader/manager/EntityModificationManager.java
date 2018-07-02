@@ -53,8 +53,8 @@ public class EntityModificationManager {
     };
 
     private final static String[] SQGENERATOR_SCHEMA_CORE_ATTRIBUTE = new String[] {
-        "org.cern.cms.dbloader.model.xml.map.AttrBase",
-        "org.cern.cms.dbloader.model.xml.map.AttrCatalog",
+        "org.cern.cms.dbloader.model.serial.map.AttrBase",
+        "org.cern.cms.dbloader.model.serial.map.AttrCatalog",
         "org.cern.cms.dbloader.model.condition.CondAttrList",
         "org.cern.cms.dbloader.model.construct.PartAttrList",
         "org.cern.cms.dbloader.model.construct.PartRelationship"

@@ -2,7 +2,7 @@
  * Additional XML entities
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-package org.cern.cms.dbloader.model.xml;
+package org.cern.cms.dbloader.model.serial;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

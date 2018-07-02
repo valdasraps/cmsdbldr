@@ -41,7 +41,7 @@ public abstract class TestBase {
             p.remove("print-sql");
         }
 
-        pm = new PropertiesManager(p, new String[]{"file1.xml", "file2.xml"}) {
+        pm = new PropertiesManager(p, new String[]{"file1.serial", "file2.serial"}) {
 
             @Override
             public boolean printHelp() {

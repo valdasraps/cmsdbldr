@@ -4,8 +4,8 @@ import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.model.config.Key;
 import org.cern.cms.dbloader.model.config.VersionAlias;
-import org.cern.cms.dbloader.model.xml.Configuration;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Configuration;
+import org.cern.cms.dbloader.model.serial.Root;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class ConfigXMLTest extends TestBase {
     public void testAddAlias() throws Exception {
 
         XmlManager xmlm = injector.getInstance(XmlManager.class);
-        Root root = xmlm.unmarshal(new File("src/test/xml/10_addAlias.xml"));
+        Root root = xmlm.unmarshal(new File("src/test/serial/10_addAlias.serial"));
 
         //Doesn't exist
         Assert.assertNull(root.getDatasets());
@@ -56,7 +56,7 @@ public class ConfigXMLTest extends TestBase {
     public void testAddVersionAlias() throws Exception {
 
         XmlManager xmlm = injector.getInstance(XmlManager.class);
-        Root root = xmlm.unmarshal(new File("src/test/xml/08_addVersionAlias.xml"));
+        Root root = xmlm.unmarshal(new File("src/test/serial/08_addVersionAlias.serial"));
 
         //Doesn't exist
         Assert.assertNull(root.getDatasets());
@@ -82,7 +82,7 @@ public class ConfigXMLTest extends TestBase {
     public void testMakeKey() throws Exception {
 
         XmlManager xmlm = injector.getInstance(XmlManager.class);
-        Root root = xmlm.unmarshal(new File("src/test/xml/09_addKeys.xml"));
+        Root root = xmlm.unmarshal(new File("src/test/serial/09_addKeys.serial"));
 
         //Doesn't exist
         Assert.assertNull(root.getDatasets());

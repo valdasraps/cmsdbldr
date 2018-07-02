@@ -1,12 +1,11 @@
 package org.cern.cms.dbloader.tests;
 
-import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Root;
 import org.junit.Assert;
 import org.junit.Test;
 

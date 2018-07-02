@@ -76,7 +76,7 @@ public class ChannelLoadZipTest extends TestBase {
             
             alog = (AuditLog) session.createCriteria(AuditLog.class)
                 .add(Restrictions.eq("archiveFileName", "channels.zip"))
-                .add(Restrictions.eq("dataFileName", "testChannels.xml"))
+                .add(Restrictions.eq("dataFileName", "testChannels.serial"))
                 .uniqueResult();
             
             assertEquals(UploadStatus.Success, alog.getStatus());

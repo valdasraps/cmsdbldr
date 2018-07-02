@@ -17,8 +17,8 @@ import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.model.OptId;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.CondBase;
-import org.cern.cms.dbloader.model.xml.Header;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Header;
+import org.cern.cms.dbloader.model.serial.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

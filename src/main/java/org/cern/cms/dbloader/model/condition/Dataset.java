@@ -44,8 +44,8 @@ import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.iov.Iov;
-import org.cern.cms.dbloader.model.xml.map.Attribute;
-import org.cern.cms.dbloader.model.xml.part.PartAssembly;
+import org.cern.cms.dbloader.model.serial.map.Attribute;
+import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 
 @Entity
 @Table(name = "COND_DATA_SETS")

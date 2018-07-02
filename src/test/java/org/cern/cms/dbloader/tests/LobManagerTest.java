@@ -38,15 +38,15 @@ public class LobManagerTest extends TestBase {
 
         assertNull(method.invoke(lob, args));
 
-        path = "data.xml";
-        replacable = "data.xml";
+        path = "data.serial";
+        replacable = "data.serial";
         replacement = "name.html";
         args = new Object[]{path, replacable, replacement};
         assertEquals(replacement, method.invoke(lob, args));
 
-        path = "etc/temp/data.xml";
+        path = "etc/temp/data.serial";
         replacement = "name.html";
-        replacable = "data.xml";
+        replacable = "data.serial";
         args = new Object[]{path, replacable, replacement};
         assertEquals("etc/temp/name.html", method.invoke(lob, args));
 

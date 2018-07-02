@@ -16,7 +16,7 @@ import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Root;
 
 @Getter
 public class LobManager {

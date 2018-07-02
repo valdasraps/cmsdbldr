@@ -1,4 +1,4 @@
-package org.cern.cms.dbloader.model.xml.part;
+package org.cern.cms.dbloader.model.serial.part;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,8 +10,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.cern.cms.dbloader.model.construct.Part;
-import org.cern.cms.dbloader.model.xml.map.Attribute;
-import org.cern.cms.dbloader.model.xml.map.ChildUnique;
+import org.cern.cms.dbloader.model.serial.map.Attribute;
+import org.cern.cms.dbloader.model.serial.map.ChildUnique;
 
 @Getter @Setter
 @XmlAccessorType(XmlAccessType.FIELD)

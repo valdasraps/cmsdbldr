@@ -14,7 +14,7 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
-import org.cern.cms.dbloader.model.xml.ChannelUpdate;
+import org.cern.cms.dbloader.model.serial.ChannelUpdate;
 
 @Log4j
 public class ChannelDao extends DaoBase {

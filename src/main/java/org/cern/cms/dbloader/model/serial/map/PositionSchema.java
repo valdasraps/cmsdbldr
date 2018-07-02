@@ -1,4 +1,4 @@
-package org.cern.cms.dbloader.model.xml.map;
+package org.cern.cms.dbloader.model.serial.map;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;

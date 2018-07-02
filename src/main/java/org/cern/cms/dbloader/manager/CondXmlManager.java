@@ -22,8 +22,8 @@ import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.KindOfCondition;
 import org.cern.cms.dbloader.model.condition.Run;
 import org.cern.cms.dbloader.model.construct.Part;
-import org.cern.cms.dbloader.model.xml.Header;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Header;
+import org.cern.cms.dbloader.model.serial.Root;
 
 public class CondXmlManager extends XmlManager {
 
