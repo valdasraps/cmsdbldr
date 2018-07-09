@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,13 +21,16 @@ import org.cern.cms.dbloader.model.serial.map.ChildUnique;
 public class PartAssembly {
 
 	@XmlElement(name = "PARENT_PART")
+	@JsonProperty("ParentPart")
 	private Part parentPart;
 	
 	@XmlElement(name = "CHILD_UNIQUELY_IDENTIFIED_BY")
+	@JsonProperty("ChildUniquelyIdentifiedBy")
 	private ChildUnique uniqueChild;
         
-        @XmlTransient
-        public Attribute getAttribute() {
+	@XmlTransient
+	@JsonIgnore
+	public Attribute getAttribute() {
             return (uniqueChild == null ? null : uniqueChild.getAttribute());
         }
 	

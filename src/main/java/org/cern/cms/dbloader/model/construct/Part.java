@@ -67,6 +67,7 @@ import org.cern.cms.dbloader.model.serial.map.Attribute;
 //@JsonPropertyOrder({"", ""})
 @JsonRootName("PART")
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Part extends DeleteableBase {
 
     @Id

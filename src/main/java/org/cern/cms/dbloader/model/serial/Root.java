@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,6 +25,7 @@ import org.cern.cms.dbloader.model.serial.map.Maps;
 @XmlRootElement(name = "Root")
 @JsonRootName(value = "Root")
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Root {
 
 	@XmlElement(name = "HEADER")

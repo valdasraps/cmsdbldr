@@ -1,27 +1,11 @@
 {
   "Root": {
-    "Header": null,
-    "Elements": null,
-    "Maps": null,
-    "Datasets": null,
     "Parts": [
       {
         "Part": {
-          "RecordInsertUser": null,
-          "CommentDescription": null,
           "KindOfPart": "TEST ROOT",
-          "Manufacturer": null,
-          "Barcode": null,
-          "SerialNumber": null,
-          "Version": null,
           "NameLabel": "ROOT",
-          "InstalledDate": null,
-          "RemovedDate": null,
-          "PredifinedAttributes": [
-            
-          ],
-          "Location": null,
-          "Institution": null,
+          "PredifinedAttributes": [],
           "Children": [
             {
               "Part": {
@@ -30,47 +14,23 @@
                 "KindOfPart": "TEST Tower",
                 "Manufacturer": "IBM",
                 "Barcode": "123000000001",
-                "SerialNumber": null,
-                "Version": null,
-                "NameLabel": null,
                 "InstalledDate": "2012-10-17 10:04:56",
-                "RemovedDate": null,
-                "PredifinedAttributes": [
-                  
-                ],
+                "PredifinedAttributes": [],
                 "Location": "University of Iowa",
                 "Institution": "University of Iowa",
                 "Children": [
                   {
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                      "CommentDescription": null,
                       "KindOfPart": "TEST Pack",
-                      "Manufacturer": null,
-                      "Barcode": null,
                       "SerialNumber": "serial 01",
-                      "Version": null,
-                      "NameLabel": null,
-                      "InstalledDate": null,
-                      "RemovedDate": null,
-                      "PredifinedAttributes": [
-                        
-                      ],
-                      "Location": null,
-                      "Institution": null,
+                      "PredifinedAttributes": [],
                       "Children": [
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
-                            "NameLabel": "B03",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
+                            "NameLabel": "B01",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -79,25 +39,14 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         },
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
                             "NameLabel": "B02",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -106,25 +55,14 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         },
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
-                            "NameLabel": "B01",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
+                            "NameLabel": "B03",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -133,11 +71,7 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         }
                       ]
@@ -146,33 +80,15 @@
                   {
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                      "CommentDescription": null,
                       "KindOfPart": "TEST Pack",
-                      "Manufacturer": null,
-                      "Barcode": null,
                       "SerialNumber": "serial 02",
-                      "Version": null,
-                      "NameLabel": null,
-                      "InstalledDate": null,
-                      "RemovedDate": null,
-                      "PredifinedAttributes": [
-                        
-                      ],
-                      "Location": null,
-                      "Institution": null,
+                      "PredifinedAttributes": [],
                       "Children": [
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
-                            "NameLabel": "B06",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
+                            "NameLabel": "B04",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -181,25 +97,14 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         },
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
                             "NameLabel": "B05",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -208,25 +113,14 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         },
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
-                            "NameLabel": "B04",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
+                            "NameLabel": "B06",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -235,11 +129,7 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         }
                       ]
@@ -248,33 +138,15 @@
                   {
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                      "CommentDescription": null,
                       "KindOfPart": "TEST Pack",
-                      "Manufacturer": null,
-                      "Barcode": null,
                       "SerialNumber": "serial 03",
-                      "Version": null,
-                      "NameLabel": null,
-                      "InstalledDate": null,
-                      "RemovedDate": null,
-                      "PredifinedAttributes": [
-                        
-                      ],
-                      "Location": null,
-                      "Institution": null,
+                      "PredifinedAttributes": [],
                       "Children": [
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
-                            "NameLabel": "B09",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
+                            "NameLabel": "B07",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -283,25 +155,14 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         },
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
                             "NameLabel": "B08",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -310,25 +171,14 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         },
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                            "CommentDescription": null,
                             "KindOfPart": "TEST Board",
-                            "Manufacturer": null,
-                            "Barcode": null,
-                            "SerialNumber": null,
-                            "Version": null,
-                            "NameLabel": "B07",
-                            "InstalledDate": null,
-                            "RemovedDate": null,
+                            "NameLabel": "B09",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -337,11 +187,7 @@
                                 }
                               }
                             ],
-                            "Location": null,
-                            "Institution": null,
-                            "Children": [
-                              
-                            ]
+                            "Children": []
                           }
                         }
                       ]
@@ -353,8 +199,29 @@
           ]
         }
       }
-    ],
-    "ChannelUpdates": null
+    ]
   }
 }
+
+INSERT INTO CMS_TST_CORE_ATTRIBUTE.ATTR_CATALOGS (DISPLAY_NAME, IS_UNIQUE_WITHIN_PARENT,IS_RECORD_DELETED)
+VALUES ('Foil Position', 'F');
+
+INSERT INTO CMS_TST_CORE_ATTRIBUTE.POSITION_SCHEMAS(NAME, IS_RECORD_DELETED) VALUES ('GEM1', 'F');
+INSERT INTO CMS_TST_CORE_ATTRIBUTE.POSITION_SCHEMAS(NAME, IS_RECORD_DELETED) VALUES ('GEM2', 'F');
+INSERT INTO CMS_TST_CORE_ATTRIBUTE.POSITION_SCHEMAS(NAME, IS_RECORD_DELETED) VALUES ('GEM3', 'F');
+
+INSERT INTO CMS_TST_CORE_ATTRIBUTE.ATTR_BASES (ATTRIBUTE_ID, ATTR_CATALOG_ID, EXTENSION_TABLE_NAME)
+VALUES ((SELECT ATTRIBUTE_ID FROM CMS_TST_CORE_ATTRIBUTE.POSITION_SCHEMAS WHERE NAME = 'GEM1'),
+        (SELECT ATTR_CATALOG_ID FROM CMS_TST_CORE_ATTRIBUTE.ATTR_CATALOGS WHERE DISPLAY_NAME = 'Foil Position'),
+        'POSITION_SCHEMAS');
+
+INSERT INTO CMS_TST_CORE_ATTRIBUTE.ATTR_BASES (ATTRIBUTE_ID, ATTR_CATALOG_ID, EXTENSION_TABLE_NAME)
+VALUES ((SELECT ATTRIBUTE_ID FROM CMS_TST_CORE_ATTRIBUTE.POSITION_SCHEMAS WHERE NAME = 'GEM2'),
+        (SELECT ATTR_CATALOG_ID FROM CMS_TST_CORE_ATTRIBUTE.ATTR_CATALOGS WHERE DISPLAY_NAME = 'Foil Position'),
+        'POSITION_SCHEMAS');
+
+INSERT INTO CMS_TST_CORE_ATTRIBUTE.ATTR_BASES (ATTRIBUTE_ID, ATTR_CATALOG_ID, EXTENSION_TABLE_NAME)
+VALUES ((SELECT ATTRIBUTE_ID FROM CMS_TST_CORE_ATTRIBUTE.POSITION_SCHEMAS WHERE NAME = 'GEM3'),
+        (SELECT ATTR_CATALOG_ID FROM CMS_TST_CORE_ATTRIBUTE.ATTR_CATALOGS WHERE DISPLAY_NAME = 'Foil Position'),
+        'POSITION_SCHEMAS');
 

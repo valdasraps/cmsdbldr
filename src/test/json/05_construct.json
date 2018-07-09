@@ -1,27 +1,11 @@
 {
   "Root": {
-    "Header": null,
-    "Elements": null,
-    "Maps": null,
-    "Datasets": null,
     "Parts": [
       {
         "Part": {
-          "RecordInsertUser": null,
-          "CommentDescription": null,
           "KindOfPart": "TEST ROOT",
-          "Manufacturer": null,
-          "Barcode": null,
-          "SerialNumber": null,
-          "Version": null,
           "NameLabel": "ROOT",
-          "InstalledDate": null,
-          "RemovedDate": null,
-          "PredifinedAttributes": [
-            
-          ],
-          "Location": null,
-          "Institution": null,
+          "PredifinedAttributes": [],
           "Children": [
             {
               "Part": {
@@ -30,11 +14,7 @@
                 "KindOfPart": "TEST Tower",
                 "Manufacturer": "IBM",
                 "Barcode": "123000000001",
-                "SerialNumber": null,
-                "Version": null,
-                "NameLabel": null,
                 "InstalledDate": "2012-10-17 10:04:56",
-                "RemovedDate": null,
                 "PredifinedAttributes": [
                   {
                     "Attribute": {
@@ -45,16 +25,12 @@
                 ],
                 "Location": "University of Iowa",
                 "Institution": "University of Iowa",
-                "Children": [
-                  
-                ]
+                "Children": []
               }
             }
           ]
         }
       }
-    ],
-    "ChannelUpdates": null
+    ]
   }
 }
-

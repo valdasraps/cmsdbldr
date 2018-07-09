@@ -16,6 +16,9 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +32,8 @@ import org.cern.cms.dbloader.model.construct.KindOfPart;
 @Getter @Setter
 @ToString
 @EqualsAndHashCode(callSuper=false, of={"id"})
+@JsonIgnoreProperties({"id", "kindsOfParts"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class KindOfCondition extends DeleteableBase {
 	
 	@Id
@@ -39,11 +44,13 @@ public class KindOfCondition extends DeleteableBase {
 	@Basic
 	@Column(name="NAME")
 	@XmlElement(name="NAME")
+	@JsonProperty("Name")
 	private String name;
 
 	@Basic
 	@Column(name="EXTENSION_TABLE_NAME")
 	@XmlElement(name="EXTENSION_TABLE_NAME", required = true)
+	@JsonProperty("ExtensionTableName")
 	private String extensionTable;
 
     @ManyToMany(fetch=FetchType.EAGER)

@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties({"id", "dataset"})
 public abstract class CondBase {
 
     @Id

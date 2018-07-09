@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -57,6 +58,10 @@ import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 })
 @ToString(exclude = {"iovs","data","attributes"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
+@JsonIgnoreProperties({"channelMap", "run", "iovs"})
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonRootName("DataSet")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Dataset extends DeleteableBase {
 
     @Id
@@ -64,6 +69,7 @@ public class Dataset extends DeleteableBase {
     @XmlAttribute(name = "id", required = false)
     @GeneratedValue(generator = "COND_DATA_SET_ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "COND_DATA_SET_ID_SEQ", sequenceName = "COND_DATA_SET_ID_SEQ", allocationSize = 20)
+    @JsonProperty("Id")
     private BigInteger id;
 
     @ManyToOne
@@ -92,16 +98,19 @@ public class Dataset extends DeleteableBase {
     @Basic
     @Column(name = "VERSION")
     @XmlElement(name = "VERSION")
+    @JsonProperty("Version")
     private String version;
 
     @Basic
     @Column(name = "SUBVERSION")
     @XmlElement(name = "SUBVERSION")
+    @JsonProperty("Subversion")
     private String subversion;
 
     @Basic
     @Column(name = "EXTENSION_TABLE_NAME")
     @XmlElement(name = "EXTENSION_TABLE_NAME")
+    @JsonProperty("ExtensionTableName")
     private String extensionTable;
 
     @Basic
@@ -112,11 +121,13 @@ public class Dataset extends DeleteableBase {
     @Basic
     @Column(name = "IMAGE_FILE_NAME")
     @XmlElement(name = "IMAGE_FILE_NAME")
+    @JsonProperty("ImageFileName")
     private String imageFilename;
 
     @Basic
     @Column(name = "CREATED_BY_USER")
     @XmlElement(name = "CREATED_BY_USER")
+    @JsonProperty("CreatedByUser")
     private String createdByUser;
 
     @Basic
@@ -124,21 +135,26 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "CREATE_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     @XmlJavaTypeAdapter(DateAdapter.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonProperty("CreateTimestamp")
     private Date createTimestamp;
 
     @Basic
     @Column(name = "NUMBER_OF_EVENTS_IN_SET")
     @XmlElement(name = "NUMBER_OF_EVENTS_IN_SET")
+    @JsonProperty("NumberOfEventsInSet")
     private Long eventsInSet;
 
     @Basic
     @Column(name = "SET_NUMBER")
     @XmlElement(name = "SET_NUMBER")
+    @JsonProperty("SetNumber")
     private Long setNumber;
 
     @Basic
     @Column(name = "SET_STATUS")
     @XmlElement(name = "SET_STATUS")
+    @JsonProperty("SetStatus")
     private Long setStatus;
 
     @Basic
@@ -146,6 +162,8 @@ public class Dataset extends DeleteableBase {
     @Column(name = "SET_BEGIN_TIMESTAMP")
     @XmlElement(name = "SET_BEGIN_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonProperty("SetBeginTimestamp")
     private Date setBeginTime;
 
     @Basic
@@ -153,20 +171,25 @@ public class Dataset extends DeleteableBase {
     @Column(name = "SET_END_TIMESTAMP")
     @XmlElement(name = "SET_END_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonProperty("SetEndTime")
     private Date setEndTime;
 
     @Transient
     @XmlElement(name = "CHANNEL")
     @XmlJavaTypeAdapter(value = ChannelBaseAdapter.class)
+    @JsonProperty("Channel")
     private ChannelBase channel;
 
     @Transient
     @XmlElement(name = "PART_ASSEMBLY")
+    @JsonProperty("PartAssembly")
     private PartAssembly partAssembly;
 
     @Transient
     @XmlElement(name = "DATA")
     @XmlJavaTypeAdapter(value = CondBaseAdapter.class)
+    @JsonProperty("Data")
     private List<? extends CondBase> data;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset", cascade = CascadeType.ALL)
@@ -184,10 +207,12 @@ public class Dataset extends DeleteableBase {
     @Transient
     @XmlElementWrapper(name = "PREDEFINED_ATTRIBUTES")
     @XmlElement(name = "ATTRIBUTE", type = Attribute.class)
+    @JsonProperty("PredefinedAttributes")
     private List<Attribute> attributes = new ArrayList<>();
 
     @Transient
     @XmlElement(name = "INITIATED_BY_USER")
+    @JsonProperty("InitiatedByUser")
     private String initiatedByUser;
 
 }

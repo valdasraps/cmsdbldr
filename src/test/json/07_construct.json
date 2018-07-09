@@ -1,149 +1,88 @@
 {
   "Root": {
-    "header": null,
-    "elements": null,
-    "maps": null,
-    "datasets": null,
-    "channelUpdates": null,
-    "PARTS": [
+    "Parts": [
       {
         "Part": {
-          "RECORD_INSERTION_USER": null,
-          "COMMENT_DESCRIPTION": null,
-          "KIND_OF_PART": "GEM Chamber",
-          "MANUFACTURER": null,
-          "BARCODE": "00001",
-          "SERIAL_NUMBER": "GE1/1-X-S-CERN-0001",
-          "VERSION": null,
-          "NAME_LABEL": "GE1/1-X-S-CERN-0001",
-          "INSTALLED_DATE": null,
-          "REMOVED_DATE": null,
-          "PREDEFINED_ATTRIBUTES": [
-
-          ],
-          "LOCATION": 904,
-          "INSTITUTION": null,
-          "CHILDREN": [
+          "KindOfPart": "TEST ROOT",
+          "NameLabel": "ROOT",
+          "PredifinedAttributes": [],
+          "Children": [
             {
               "Part": {
-                "RECORD_INSERTION_USER": "CMS_TST_PRTTYPE_TEST_WRITER",
-                "COMMENT_DESCRIPTION": null,
-                "KIND_OF_PART": "GEM Readout PCB",
-                "MANUFACTURER": null,
-                "BARCODE": null,
-                "SERIAL_NUMBER": "PCB-VIII-RO-S-0004",
-                "VERSION": null,
-                "NAME_LABEL": null,
-                "INSTALLED_DATE": null,
-                "REMOVED_DATE": null,
-                "PREDEFINED_ATTRIBUTES": [
-                ],
-                "LOCATION": null,
-                "INSTITUTION": null,
-                "CHILDREN": [
-
-                ]
-              }
-            },
-            {
-              "Part": {
-                "RECORD_INSERTION_USER": "CMS_TST_PRTTYPE_TEST_WRITER",
-                "COMMENT_DESCRIPTION": null,
-                "KIND_OF_PART": "GEM Drift PCB",
-                "MANUFACTURER": null,
-                "BARCODE": null,
-                "SERIAL_NUMBER": "PCB-VIII-DR-S-0005",
-                "VERSION": null,
-                "NAME_LABEL": null,
-                "INSTALLED_DATE": null,
-                "REMOVED_DATE": null,
-                "PREDEFINED_ATTRIBUTES": [
-                ],
-                "LOCATION": null,
-                "INSTITUTION": null,
-                "CHILDREN": [
-
-                ]
-              }
-            },
-            {
-              "Part": {
-                "RECORD_INSERTION_USER": "CMS_TST_PRTTYPE_TEST_WRITER",
-                "COMMENT_DESCRIPTION": null,
-                "KIND_OF_PART": "GEM Foil",
-                "MANUFACTURER": null,
-                "BARCODE": null,
-                "SERIAL_NUMBER": "FOIL-B13-S-0140",
-                "VERSION": null,
-                "NAME_LABEL": null,
-                "INSTALLED_DATE": null,
-                "REMOVED_DATE": null,
-                "PREDEFINED_ATTRIBUTES": [
+                "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                "KindOfPart": "GEM Chamber",
+                "Barcode": "00001",
+                "SerialNumber": "GE1/1-X-S-CERN-0001",
+                "NameLabel": "GE1/1-X-S-CERN-0001",
+                "PredifinedAttributes": [],
+                "Location": "904",
+                "Children": [
                   {
-                    "Attribute": {
-                      "NAME": "Foil Position",
-                      "VALUE": "GEM1"
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "GEM Readout PCB",
+                      "SerialNumber": "PCB-VIII-RO-S-0004",
+                      "PredifinedAttributes": [],
+                      "Children": []
+                    }
+                  },
+                  {
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "GEM Drift PCB",
+                      "SerialNumber": "PCB-VIII-DR-S-0005",
+                      "PredifinedAttributes": [],
+                      "Children": []
+                    }
+                  },
+                  {
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "GEM Foil",
+                      "SerialNumber": "FOIL-B13-S-0140",
+                      "PredifinedAttributes": [
+                        {
+                          "Attribute": {
+                            "Name": "Foil Position",
+                            "Value": "GEM1"
+                          }
+                        }
+                      ],
+                      "Children": []
+                    }
+                  },
+                  {
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "GEM Foil",
+                      "SerialNumber": "FOIL-B13-S-0138",
+                      "PredifinedAttributes": [
+                        {
+                          "Attribute": {
+                            "Name": "Foil Position",
+                            "Value": "GEM2"
+                          }
+                        }
+                      ],
+                      "Children": []
+                    }
+                  },
+                  {
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "GEM Foil",
+                      "SerialNumber": "FOIL-B13-S-0147",
+                      "PredifinedAttributes": [
+                        {
+                          "Attribute": {
+                            "Name": "Foil Position",
+                            "Value": "GEM3"
+                          }
+                        }
+                      ],
+                      "Children": []
                     }
                   }
-                ],
-                "LOCATION": null,
-                "INSTITUTION": null,
-                "CHILDREN": [
-
-                ]
-              }
-            },
-            {
-              "Part": {
-                "RECORD_INSERTION_USER": "CMS_TST_PRTTYPE_TEST_WRITER",
-                "COMMENT_DESCRIPTION": null,
-                "KIND_OF_PART": "GEM Foil",
-                "MANUFACTURER": null,
-                "BARCODE": null,
-                "SERIAL_NUMBER": "FOIL-B13-S-0138",
-                "VERSION": null,
-                "NAME_LABEL": null,
-                "INSTALLED_DATE": null,
-                "REMOVED_DATE": null,
-                "PREDEFINED_ATTRIBUTES": [
-                  {
-                    "Attribute": {
-                      "NAME": "Foil Position",
-                      "VALUE": "GEM2"
-                    }
-                  }
-                ],
-                "LOCATION": null,
-                "INSTITUTION": null,
-                "CHILDREN": [
-
-                ]
-              }
-            },
-            {
-              "Part": {
-                "RECORD_INSERTION_USER": "CMS_TST_PRTTYPE_TEST_WRITER",
-                "COMMENT_DESCRIPTION": null,
-                "KIND_OF_PART": "GEM Foil",
-                "MANUFACTURER": null,
-                "BARCODE": null,
-                "SERIAL_NUMBER": "FOIL-B13-S-0147",
-                "VERSION": null,
-                "NAME_LABEL": null,
-                "INSTALLED_DATE": null,
-                "REMOVED_DATE": null,
-                "PREDEFINED_ATTRIBUTES": [
-                  {
-                    "Attribute": {
-                      "NAME": "Foil Position",
-                      "VALUE": "GEM3"
-                    }
-                  }
-                ],
-                "LOCATION": null,
-                "INSTITUTION": null,
-                "CHILDREN": [
-
                 ]
               }
             }
