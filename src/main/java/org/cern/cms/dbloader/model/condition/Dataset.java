@@ -34,11 +34,13 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.cern.cms.dbloader.manager.ChannelDeserializer;
 import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
@@ -58,7 +60,7 @@ import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 })
 @ToString(exclude = {"iovs","data","attributes"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
-@JsonIgnoreProperties({"channelMap", "run", "iovs"})
+@JsonIgnoreProperties(value = {"channelMap", "run", "iovs"})
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonRootName("DataSet")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -179,6 +181,7 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "CHANNEL")
     @XmlJavaTypeAdapter(value = ChannelBaseAdapter.class)
     @JsonProperty("Channel")
+    // @JsonDeserialize(using = ChannelDeserializer.class)
     private ChannelBase channel;
 
     @Transient

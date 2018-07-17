@@ -6,6 +6,7 @@ import javax.persistence.DiscriminatorValue;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -59,6 +60,7 @@ public class ChannelEntityHandler extends EntityHandler<ChannelBase> {
             public void modifyClass(ClassBuilder cb) {
                 cb.newAnnotation(XmlRootElement.class).addMember("name", "CHANNEL").build();
                 cb.newAnnotation(DiscriminatorValue.class).addMember("value", tableName).build();
+                cb.newAnnotation(JsonRootName.class).addMember("value", "Channel").build();
             }
 
         };

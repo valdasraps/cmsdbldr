@@ -3,6 +3,8 @@ package org.cern.cms.dbloader.metadata;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javax.persistence.Basic;
@@ -55,6 +57,8 @@ public abstract class EntityFactory<T> {
             pb.newFieldAnnotation(Basic.class).build()
                     .newFieldAnnotation(Column.class).addMember("name", cmd.getColumnName()).build()
                     .newFieldAnnotation(XmlElement.class).addMember("name", cmd.getColumnName()).addMember("nillable", true).build();
+
+            pb.newFieldAnnotation(JsonProperty.class).addMember("value", cmd.getColumnName().toLowerCase()).build();
 
             if (cmd.getType().equals(PropertyType.CLOB)) {
                 pb.newFieldAnnotation(Lob.class).build();

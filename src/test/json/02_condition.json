@@ -1,0 +1,118 @@
+{
+  "Root": {
+    "Header": {
+      "Type": {
+        "deleted": false,
+        "Name": "IV",
+        "ExtensionTableName": "TEST_IV"
+      },
+      "Run": {
+        "deleted": false,
+        "RunNumber": "1",
+        "RunType": "1",
+        "RunBeginTimestamp": "2015-11-03 19:00:00"
+      },
+      "Hints": {
+        "Hint": {
+          "ChannelMap": "TEST_CHANNELS"
+        }
+      }
+    },
+    "Elements": {
+      "DataSets": [
+        {
+          "Dataset": {
+            "deleted": false,
+            "Id": -1,
+            "PredefinedAttributes": [
+              
+            ]
+          }
+        }
+      ],
+      "Iovs": [
+        {
+          "Iov": {
+            "deleted": false,
+            "IovBegin": 1,
+            "IovEnd": -1
+          }
+        }
+      ],
+      "Tags": [
+        {
+          "Tag": {
+            "deleted": false,
+            "CommentDescription": "This is some comment",
+            "TagName": "Some Test Tag",
+            "DetectorName": "TEST"
+          }
+        }
+      ]
+    },
+    "Maps": {
+      "Maps": {
+        "Tags": [
+          {
+            "Tag": {
+              "Idref": 2,
+              "Iovs": [
+                {
+                  "Iov": {
+                    "Idref": 1,
+                    "DataSets": [
+                      {
+                        "DataSet": {
+                          "Idref": -1
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Datasets": [
+      {
+        "Dataset": {
+          "deleted": false,
+          "CommentDescription": "Test TEST condition entry",
+          "Version": "JUL_16_2011",
+          "Subversion": "2",
+          "CreatedByUser": "apoluden",
+          "CreateTimestamp": "2011-06-17 00:00:00.0",
+          "PredefinedAttributes": [
+            
+          ],
+          "Channel": {
+            "ExtensionTableName" : "TEST_CHANNELS", 
+            "subdet" : "Test", 
+            "ieta" : 1,
+            "iphi" : 1, 
+            "depth" : 1
+          },
+          "Data" : [
+              { 
+                "voltage" : "1.80",
+                "curr" : "0.001",
+                "comment_description" : "Testing 01"
+              }, 
+              { 
+                "voltage" : "1.81", 
+                "curr" : "0.001",
+                "comment_description" : "Testing 02"
+              }, 
+              { 
+                "voltage" : "1.82", 
+                "curr" : "0.001",
+                "comment_description" : "Testing 03"
+              }
+          ]
+        }
+      }
+    ]
+  }
+}

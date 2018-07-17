@@ -59,7 +59,7 @@ public class PartLoadJsonTest extends TestBase {
         IMPORTANT! Root fields that annotated with @Transient
         filled by hand
     */
-    @Ignore
+    @Test
     public void testBeanToJsonCase0() throws Throwable {
 
         Integer val = 1;
