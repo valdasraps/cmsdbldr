@@ -55,11 +55,11 @@
         "Tags": [
           {
             "Tag": {
-              "Idref": 2,
+              "Idref": 3,
               "Iovs": [
                 {
                   "Iov": {
-                    "Idref": 1,
+                    "Idref": 2,
                     "DataSets": [
                       {
                         "DataSet": {
@@ -79,37 +79,37 @@
       {
         "Dataset": {
           "deleted": false,
-          "CommentDescription": "Test TEST condition entry",
-          "Version": "JUL_16_2011",
+          "CommentDescription": "Any comment",
+          "Version": "JUN_7_2011",
           "Subversion": "2",
-          "CreatedByUser": "apoluden",
-          "CreateTimestamp": "2011-06-17 00:00:00.0",
+          "CreatedByUser": "joshi",
+          "CreateTimestamp": "2011-06-17 00:00:00",
           "PredefinedAttributes": [
             
           ],
           "Channel": {
-            "ExtensionTableName" : "TEST_CHANNELS", 
-            "subdet" : "Test", 
-            "ieta" : 1,
-            "iphi" : 1, 
-            "depth" : 1
+            "ExtensionTableName": "TEST_CHANNELS",
+            "subdet": "Test",
+            "ieta": 1,
+            "iphi": 1,
+            "depth": 1
           },
-          "Data" : [
-              { 
-                "voltage" : "1.80",
-                "curr" : "0.001",
-                "comment_description" : "Testing 01"
-              }, 
-              { 
-                "voltage" : "1.81", 
-                "curr" : "0.001",
-                "comment_description" : "Testing 02"
-              }, 
-              { 
-                "voltage" : "1.82", 
-                "curr" : "0.001",
-                "comment_description" : "Testing 03"
-              }
+          "Data": [
+            {
+              "voltage": "1.80",
+              "curr": "0.001",
+              "comment_description": "Testing 01"
+            },
+            {
+              "voltage": "1.81",
+              "curr": "0.001",
+              "comment_description": "Testing 02"
+            },
+            {
+              "voltage": "1.82",
+              "curr": "0.001",
+              "comment_description": "Testing 03"
+            }
           ]
         }
       }

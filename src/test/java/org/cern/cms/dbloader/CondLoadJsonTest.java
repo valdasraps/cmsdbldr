@@ -22,6 +22,7 @@ import org.cern.cms.dbloader.model.serial.Header;
 import org.cern.cms.dbloader.model.serial.Hint;
 import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.model.serial.map.*;
+import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
@@ -30,6 +31,7 @@ import org.hibernate.criterion.Subqueries;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.w3c.dom.Attr;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,6 +66,8 @@ public class CondLoadJsonTest extends TestBase {
 
         IMPORTANT! Root fields that annotated with @Transient
         filled by hand
+
+        Channel and Data properties filled manualy
     */
     @Ignore
     public void testBeanToJsonCase0() throws Throwable {
@@ -75,17 +79,17 @@ public class CondLoadJsonTest extends TestBase {
 
         // Hint
         Hint hint = new Hint();
-        hint.setChannelMap("Test");
+        hint.setChannelMap("TEST_CHANNELS");
 
         // Type
         KindOfCondition koc = new KindOfCondition();
-        koc.setExtensionTable("Test_IV");
+        koc.setExtensionTable("TEST_IV");
         koc.setName("IV");
 
         //Run
         Run run = new Run();
-        run.setNumber("2");
-        run.setRunType("2");
+        run.setNumber("1");
+        run.setRunType("1");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = sdf.parse("2015-11-03 19:00:00");
         run.setBeginTime(d);
@@ -108,9 +112,9 @@ public class CondLoadJsonTest extends TestBase {
         iov.setIovEnd(new BigInteger("-1"));
 
         Tag tag = new Tag();
-        tag.setName("Test tag");
-        tag.setDetectorName("TAG");
-        tag.setComment("Test comment");
+        tag.setName("Some Test Tag");
+        tag.setDetectorName("TEST");
+        tag.setComment("This is some comment");
 
         // Elements setUp
         elements.setTags(new HashSet<Tag>() {{
@@ -147,11 +151,11 @@ public class CondLoadJsonTest extends TestBase {
         Dataset ds = new Dataset();
         ds.setComment("Any comment");
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = sdf1.parse("2015-11-03 19:00:00");
+        Date date = sdf1.parse("2011-06-17 00:00:00");
         ds.setCreateTimestamp(date);
-        ds.setCreatedByUser("apoluden");
-        ds.setVersion("JUL_16_2011");
-        ds.setSubversion("3");
+        ds.setCreatedByUser("joshi");
+        ds.setVersion("JUN_7_2011");
+        ds.setSubversion("2");
 
         // Root setUp
         root.setHeader(header);
@@ -170,9 +174,71 @@ public class CondLoadJsonTest extends TestBase {
 
         IMPORTANT! Root fields that annotated with @Transient
         filled by hand
+
+        Channel and Data properties filled manualy
+
     */
     @Ignore
     public void testBeanToJsonStringCase1() throws Throwable {
+        Root root = new Root();
+
+        Header header = new Header();
+        // Hint
+        Hint hint = new Hint();
+        hint.setChannelMap("TEST_CHANNELS");
+
+        // Type
+        KindOfCondition koc = new KindOfCondition();
+        koc.setExtensionTable("TEST_IV");
+        koc.setName("IV");
+
+        //Run
+        Run run = new Run();
+        run.setNumber("2");
+        run.setRunType("1");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = sdf.parse("2015-11-03 19:00:00");
+        run.setBeginTime(d);
+
+        // Header SetUp
+        header.setHint(hint);
+        header.setKindOfCondition(koc);
+        header.setRun(run);
+
+        // PartAssembly
+        PartAssembly pa = new PartAssembly();
+        ChildUnique cu = new ChildUnique();
+
+        Attribute attr = new Attribute();
+        attr.setName("TEST Position");
+        attr.setValue("3");
+        cu.setAttribute(attr);
+
+        Part part = new Part();
+        part.setKindOfPartName("TEST Pack");
+        part.setSerialNumber("serial 01");
+        pa.setUniqueChild(cu);
+        pa.setParentPart(part);
+
+        // Dataset
+        Dataset ds = new Dataset();
+        ds.setComment("Any comment");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sdf1.parse("2015-11-03 19:00:00");
+        ds.setCreateTimestamp(date);
+        ds.setCreatedByUser("apoluden");
+        ds.setVersion("JUL_16_2011");
+        ds.setSubversion("3");
+        ds.setPartAssembly(pa);
+        // Root setUp
+        root.setDatasets(new ArrayList<Dataset>() {{
+            add(ds);
+        }});
+        root.setHeader(header);
+
+        String json = this.jmanager.serialiaze(root);
+        System.out.println(json);
+
     }
 
     /*
@@ -183,6 +249,7 @@ public class CondLoadJsonTest extends TestBase {
     */
     @Ignore
     public void testBeanToJsonStringCase2() throws Throwable {
+        // TODO
     }
 
 
@@ -251,12 +318,12 @@ public class CondLoadJsonTest extends TestBase {
         Set<MapTag> mapTags = maps.getTags();
         assertEquals(1, mapTags.size());
         MapTag mapTag = mapTags.iterator().next();
-        assertEquals(new Integer(2), mapTag.getRefid());
+        assertEquals(new Integer(3), mapTag.getRefid());
         assertNotNull(mapTag.getIovs());
         Set<MapIov> mapIovs = mapTag.getIovs();
         assertEquals(1, mapIovs.size());
         MapIov mapIov = mapIovs.iterator().next();
-        assertEquals(new Integer(1), mapIov.getRefid());
+        assertEquals(new Integer(2), mapIov.getRefid());
         assertNotNull(mapIov.getDatasets());
         Set<MapDataset> datasets = mapIov.getDatasets();
         assertEquals(1, datasets.size());
@@ -268,10 +335,10 @@ public class CondLoadJsonTest extends TestBase {
         assertNotNull(datasetList);
         assertEquals(1, datasetList.size());
         Dataset dataset = datasetList.get(0);
-        assertEquals("Test TEST condition entry", dataset.getComment());
+        assertEquals("Any comment", dataset.getComment());
         assertEquals(DATE_FORMAT.parse("2011-06-17 00:00:00"), dataset.getCreateTimestamp());
-        assertEquals("apoluden", dataset.getCreatedByUser());
-        assertEquals("JUL_16_2011", dataset.getVersion());
+        assertEquals("joshi", dataset.getCreatedByUser());
+        assertEquals("JUN_7_2011", dataset.getVersion());
         assertEquals("2", dataset.getSubversion());
         // Channel
         ChannelBase cb = dataset.getChannel();
@@ -292,6 +359,70 @@ public class CondLoadJsonTest extends TestBase {
      */
     @Test
     public void testJsonToBeanCase1() throws ParseException, IOException {
+        CondManager condMngr = null;
+        try {
+            condMngr = new CondManager(pm);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // ChannelEntityHandler chaneh = condMngr.getChannelHandler(root.getHeader().getHint().getChannelMap());
+        ChannelEntityHandler chaneh = condMngr.getChannelHandler("TEST_CHANNELS");
+        CondEntityHandler condeh = condMngr.getConditionHandler("IV");
+
+        CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
+
+        Root root = jmanager.deserialize(new File(case1));
+
+        // Asserting Header
+        Header header = root.getHeader();
+        assertNotNull(header.getKindOfCondition());
+        // Type
+        KindOfCondition koc = header.getKindOfCondition();
+        assertEquals("TEST_IV", koc.getExtensionTable());
+        assertEquals("IV", koc.getName());
+        assertNotNull(header.getRun());
+        // Run
+        Run run = header.getRun();
+        assertEquals("2", run.getNumber());
+        assertEquals("1", run.getRunType());
+        assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00"), run.getBeginTime());
+        // Hint
+        assertNotNull(header.getHint());
+        Hint hint = header.getHint();
+        assertEquals("TEST_CHANNELS", hint.getChannelMap());
+
+        // Asserting Dataset
+        List<Dataset>  datasetList = root.getDatasets();
+        assertNotNull(datasetList);
+        assertEquals(1, datasetList.size());
+        Dataset dataset = datasetList.get(0);
+        assertEquals("Any comment", dataset.getComment());
+        assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00"), dataset.getCreateTimestamp());
+        assertEquals("apoluden", dataset.getCreatedByUser());
+        assertEquals("JUL_16_2011", dataset.getVersion());
+        assertEquals("3", dataset.getSubversion());
+        // PartAssembly
+        assertNotNull(dataset.getPartAssembly());
+        PartAssembly pa = dataset.getPartAssembly();
+        assertNotNull(pa.getParentPart());
+        Part part = pa.getParentPart();
+        assertEquals("TEST Pack" , part.getKindOfPartName());
+        assertEquals("serial 01", part.getSerialNumber());
+        assertNotNull(pa.getUniqueChild());
+        ChildUnique cu = pa.getUniqueChild();
+        assertNotNull(cu.getAttribute());
+        Attribute attr = cu.getAttribute();
+        assertEquals("TEST Position", attr.getName());
+        assertEquals("3", attr.getValue());
+
+        assertNotNull(dataset.getData());
+        List<? extends CondBase> datas = dataset.getData();
+        assertEquals(3, datas.size());
+        for (int i = 0; i <= 2; i++) {
+            assertEquals("org.cern.cms.dbloader.model.condition.ext.TestIv",
+                    datas.get(i).getClass().getTypeName());
+
+        }
     }
 
     /*
