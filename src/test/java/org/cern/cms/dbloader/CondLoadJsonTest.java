@@ -246,10 +246,66 @@ public class CondLoadJsonTest extends TestBase {
 
         IMPORTANT! Root fields that annotated with @Transient
         filled by hand
+
+        Channel and Data properties filled manualy
     */
-    @Ignore
+    @Test
     public void testBeanToJsonStringCase2() throws Throwable {
-        // TODO
+        Root root = new Root();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Header header = new Header();
+
+        // Hint
+        Hint hint = new Hint();
+        // Type
+        KindOfCondition koc = new KindOfCondition();
+        koc.setExtensionTable("TEST_IV");
+        koc.setName("IV");
+
+        //Run
+        Run run = new Run();
+        run.setNumber("164654");
+        run.setRunType("LOCAL-RUN");
+        Date d = sdf.parse("2009-01-01 00:00:00");
+        run.setBeginTime(d);
+        run.setComment("TEST LED CALIB data");
+        run.setLocation("P5");
+        run.setInitiatedByUser("dma");
+
+        // Header SetUp
+        header.setHint(hint);
+        header.setKindOfCondition(koc);
+        header.setRun(run);
+
+        // Dataset
+        Dataset ds = new Dataset();
+        ds.setSetNumber(new Long(1));
+        ds.setSetBeginTime(sdf.parse("2009-01-01 00:00:00"));
+        ds.setSetEndTime(sdf.parse("2009-01-01 00:00:00"));
+        ds.setEventsInSet(new Long(2000));
+        ds.setComment("Automatic DQM output");
+        ds.setDataFilename("HcalDetDiagLEDCalib_164654_1.xml");
+        ds.setImageFilename("data plot url or file path");
+        ds.setSetBeginTime(sdf.parse("2011-05-16 12:09:28"));
+        ds.setCreatedByUser("dma");
+        ds.setVersion("1646541");
+        ds.setSubversion("1");
+
+        Attribute attr = new Attribute();
+        attr.setName("TEST Dataset status");
+        attr.setValue("VALID");
+        ds.setAttributes(new ArrayList<Attribute>() {{
+            add(attr);
+        }});
+
+        // Root setUp
+        root.setHeader(header);
+        root.setDatasets(new ArrayList<Dataset>() {{
+            add(ds);
+        }});
+
+        String json = this.jmanager.serialiaze(root);
+        System.out.println(json);
     }
 
 
