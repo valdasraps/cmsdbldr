@@ -174,7 +174,7 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "SET_END_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
-    @JsonProperty("SetEndTime")
+    @JsonProperty("SetEndTimestamp")
     private Date setEndTime;
 
     @Transient
