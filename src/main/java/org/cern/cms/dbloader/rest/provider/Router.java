@@ -18,7 +18,6 @@ public class Router {
     private final ApplicationConfig config = ApplicationConfig.getInstance();
     
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public String root() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(config.getProps());

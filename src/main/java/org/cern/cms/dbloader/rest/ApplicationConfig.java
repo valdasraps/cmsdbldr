@@ -3,6 +3,7 @@ package org.cern.cms.dbloader.rest;
 import com.google.common.collect.Maps;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,8 +32,10 @@ public class ApplicationConfig {
     @Getter
     private final Map<String, Map<String, LoaderApplicationExecutor>> props = Maps.newHashMap();
 
-    public void load(final Path descriptorFolder) throws Exception {
-        Files.newDirectoryStream(descriptorFolder).forEach(p -> {
+    public void load(final Path descriptorFolder, final Path logFolder) throws Exception {
+        Iterator<Path> it = Files.newDirectoryStream(descriptorFolder).iterator();
+        while (it.hasNext()) {
+            Path p = it.next();
             if (Files.exists(p) && Files.isReadable(p) && Files.isRegularFile(p)) {
                 Matcher m = FILE_PATTERN.matcher(p.getFileName().toString());
                 if (m.matches()) {
@@ -45,17 +48,12 @@ public class ApplicationConfig {
                         props.put(det, Maps.newHashMap());
                     }
                     
-                    LoaderApplicationExecutor exec = new LoaderApplicationExecutor(fname);
-                    try {
-                        exec.start();
-                    } catch (Exception ex) {
-                        log.error(String.format("Error while starting service for %s.%s", det, db), ex);
-                    }
+                    LoaderApplicationExecutor exec = new LoaderApplicationExecutor(det, db, logFolder.toString(), fname);
                     props.get(det).put(db, exec);
 
                 }
             }
-        });
+        }
 
     }
     

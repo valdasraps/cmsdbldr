@@ -3,6 +3,7 @@ package org.cern.cms.dbloader.rest;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
@@ -18,17 +19,29 @@ public class LoaderApplicationExecutor {
     @Getter
     private final String propertiesFile;
     @Getter
+    private final String logFile;
+    @Getter
+    private final String logAccessFile;
+    @Getter
     private int port = 0;
     private Process proc;
 
-    public LoaderApplicationExecutor(String propertiesFile) {
+    public LoaderApplicationExecutor(String det, String db, String logDir, String propertiesFile) {
         this.propertiesFile = propertiesFile;
+        this.logFile = logDir.concat(File.separator).concat(det).concat("_").concat(db).concat(".log");
+        this.logAccessFile = logDir.concat(File.separator).concat(det).concat("_").concat(db).concat(".access.log");
         log.info(String.format("Loader descriptor loaded from: %s", propertiesFile));
     }
 
     public void start() throws Exception {
         this.port = nextFreePort();
-        this.proc = new ProcessBuilder(JAVA_BIN, "-cp", CLASS_PATH, CLASS_NAME, String.valueOf(port), propertiesFile).start();
+        ProcessBuilder pb = new ProcessBuilder(JAVA_BIN, "-cp", CLASS_PATH, CLASS_NAME, String.valueOf(port), propertiesFile, logAccessFile);
+        pb.redirectErrorStream(true);
+        pb.redirectOutput(ProcessBuilder.Redirect.appendTo(new File(logFile)));
+        this.proc = pb.start();
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException ex) { }
     }
 
     public void stop() {
