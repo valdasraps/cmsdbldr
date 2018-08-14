@@ -3,7 +3,6 @@ package org.cern.cms.dbloader;
 import java.math.BigInteger;
 import java.util.List;
 
-import javax.management.modelmbean.XMLParseException;
 
 import org.cern.cms.dbloader.app.*;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
@@ -15,7 +14,6 @@ import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.OptId;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
-import org.cern.cms.dbloader.model.xml.Root;
 import org.cern.cms.dbloader.util.PropertiesException;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -26,6 +24,12 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
+import static org.cern.cms.dbloader.manager.file.DataFileType.CHANNEL;
+import static org.cern.cms.dbloader.manager.file.DataFileType.CONDITION;
+import static org.cern.cms.dbloader.manager.file.DataFileType.KEY;
+import static org.cern.cms.dbloader.manager.file.DataFileType.KEY_ALIAS;
+import static org.cern.cms.dbloader.manager.file.DataFileType.PART;
+import static org.cern.cms.dbloader.manager.file.DataFileType.VERSION_ALIAS;
 import org.cern.cms.dbloader.manager.file.FileBase;
 
 @Log4j
