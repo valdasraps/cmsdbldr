@@ -118,6 +118,7 @@ public class Dataset extends DeleteableBase {
     @Basic
     @Column(name = "DATA_FILE_NAME")
     @XmlElement(name = "DATA_FILE_NAME")
+    @JsonProperty("DataFilename")
     private String dataFilename;
 
     @Basic

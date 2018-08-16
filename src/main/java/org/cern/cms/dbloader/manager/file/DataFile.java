@@ -21,17 +21,22 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
     private final Root root;
     private final DataFileType type;
 
+    public enum Type {
+        XMA,
+        XML,
+        JSON
+    }
+
     @Inject
-    public DataFile(XmlManager xmlm, JsonManager jmngr,  @Assisted FileBase archive, @Assisted File file) throws Exception {
+    public DataFile(XmlManager xmlm, JsonManager jmngr, @Assisted FileBase archive, @Assisted File file, @Assisted Type type) throws Exception {
         super(file);
         this.archive = archive;
         Root tmpRoot = null;
-        try {
-            // Handle xml
-            tmpRoot = xmlm.unmarshal(file);
-        } catch (Exception e) {
-            // Handle Json
+        if (type == Type.JSON) {
             tmpRoot = jmngr.deserialize(file);
+        } else {
+            // XMA or XML
+            tmpRoot = xmlm.unmarshal(file);
         }
         this.root = tmpRoot;
         this.type = DataFile.resolveType(this.root);

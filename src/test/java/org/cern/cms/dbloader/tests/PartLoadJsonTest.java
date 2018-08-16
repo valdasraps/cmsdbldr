@@ -1,14 +1,18 @@
 package org.cern.cms.dbloader.tests;
 
 import junit.framework.TestCase;
+import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.app.PartApp;
 import org.cern.cms.dbloader.dao.PartDao;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
+import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.manager.file.ArchiveFile;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.construct.PartTree;
+import org.cern.cms.dbloader.model.managemnt.AuditLog;
+import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.JsonManager;
@@ -16,23 +20,20 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
+import org.hibernate.criterion.*;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import javax.management.modelmbean.XMLParseException;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -59,7 +60,7 @@ public class PartLoadJsonTest extends TestBase {
         IMPORTANT! Root fields that annotated with @Transient
         filled by hand
     */
-    @Test
+    @Ignore
     public void testBeanToJsonCase0() throws Throwable {
 
         Integer val = 1;
@@ -380,34 +381,27 @@ public class PartLoadJsonTest extends TestBase {
     /*
         Test JSON case0 data upload to DB
      */
-    @Ignore
-    public void testJsonCase0UploadToDb() throws Exception {
-        File partJson = new File(this.constr01Path);
-        Root root = this.jmanager.deserialize(partJson);
-
+    @Test
+    public void testJsonCase0UploadToDb() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList(this.constr01Path))) {
+            loader.loadArchive(injector, fb);
+        }
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
-            PartDao dao = rf.createPartDao(sm);
+            // Tower
             Part tower = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", "123000000001"))
-                    .createCriteria("kindOfPart")
-                    .add(Restrictions.eq("name", "TEST Tower"))
-                    .uniqueResult();
-            assertNull(tower);
-            DataFile data = new DataFile(new XmlManager(), new JsonManager(), new ArchiveFile(partJson), partJson);
-            AuditLogHandler dataLog = rf.createAuditDao(data);
-            dao.savePart(root, dataLog.getLog()); // AuditLog ???
-            tower = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", "123000000001"))
+                    .add(Restrictions.eq("barcode", "101010"))
                     .createCriteria("kindOfPart")
                     .add(Restrictions.eq("name", "TEST Tower"))
                     .uniqueResult();
             assertNotNull(tower);
-            assertEquals("TEST Tower", tower    .getKindOfPartName());
-            assertEquals("123000000001", tower.getBarcode());
-            assertEquals("TEST Tower 01", tower.getComment());
+            assertEquals("TEST Tower", tower.getKindOfPart().getName());
+            assertEquals("101010", tower.getBarcode());
+            assertEquals("TEST Tower 01 json", tower.getComment());
             assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
-            assertEquals("IBM", tower.getManufacturer().getName());
+            assertEquals("LENOVO", tower.getManufacturer().getName());
             assertEquals("University of Iowa", tower.getLocation().getName());
             assertEquals("University of Iowa", tower.getLocation().getInstitution().getName());
             assertNull(tower.getSerialNumber());
@@ -416,11 +410,9 @@ public class PartLoadJsonTest extends TestBase {
             assertNull(tower.getRemovedDate());
             assertNull(tower.getInstalledUser());
             assertNull(tower.getRemovedUser());
-            // TestCase.assertNotNull(tower.getInsertTime());
             assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", tower.getInsertUser());
-            assertEquals(3 , tower.getChildren().size());
-
-            String[] serials = {"serial 01", "serial 02", "serial 03"};
+            // Packs
+            String[] serials = {"serial a", "serial b", "serial c"};
             for (String serialNumber: serials) {
 
                 Part pack = (Part) session.createCriteria(Part.class)
@@ -433,17 +425,14 @@ public class PartLoadJsonTest extends TestBase {
                 assertNull(pack.getInstalledDate());
                 assertNull(pack.getManufacturer());
                 assertNull(pack.getLocation());
-                assertEquals(serials[tower.getChildren().indexOf(pack)], pack.getSerialNumber());
                 assertNull(pack.getBarcode());
                 assertNull(pack.getVersion());
                 assertNull(pack.getName());
                 assertNull(pack.getRemovedDate());
                 assertNull(pack.getInstalledUser());
                 assertNull(pack.getRemovedUser());
-                // TestCase.assertNotNull(pack.getInsertTime());
                 assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", pack.getInsertUser());
-                assertEquals(3, pack.getChildren().size());
-
+                // Packs children
                 List<Part> children = (List<Part>) session.createCriteria(Part.class)
                         .add(Subqueries.propertyIn("id",
                                 DetachedCriteria.forClass(PartTree.class)
@@ -461,61 +450,41 @@ public class PartLoadJsonTest extends TestBase {
                     assertNull(child.getSerialNumber());
                     assertNull(child.getBarcode());
                     assertNull(child.getVersion());
-                    assertTrue(Pattern.matches("B0[1-9]", child.getName()));
+                    assertTrue(Pattern.matches("A0[1-9]", child.getName()));
                     assertNull(child.getRemovedDate());
                     assertNull(child.getInstalledUser());
                     assertNull(child.getRemovedUser());
-                    // TestCase.assertNotNull(child.getInsertTime());
                     assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", child.getInsertUser());
                 }
             }
-            // sm.commit();
         }
     }
 
     /*
         Test JSON case1 data upload to Db
      */
-    @Ignore
-    public void testJsonCase1UploadToDb() throws Exception {
-        File partJson = new File(this.constr05Path);
-        Root root = this.jmanager.deserialize(partJson);
-        PartApp app = injector.getInstance(PartApp.class);
-        try(SessionManager sm = injector.getInstance(SessionManager.class)) {
-            Session session = sm.getSession();
-            PartDao dao = rf.createPartDao(sm);
-            Part tower = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", "123000000001"))
-                    .createCriteria("kindOfPart")
-                    .add(Restrictions.eq("name", "TEST Tower"))
-                    .uniqueResult();
-            assertNull(tower);
-            DataFile data = new DataFile(new XmlManager(), new JsonManager(), new ArchiveFile(partJson), partJson);
-            AuditLogHandler dataLog = rf.createAuditDao(data);
-            dao.savePart(root, dataLog.getLog());
-            tower = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", "123000000001"))
-                    .createCriteria("kindOfPart")
-                    .add(Restrictions.eq("name", "TEST Tower"))
-                    .uniqueResult();
-            assertNotNull(tower);
-            assertEquals("TEST Tower", tower    .getKindOfPartName());
-            assertEquals("123000000001", tower.getBarcode());
-            assertEquals("TEST Tower 01", tower.getComment());
-            assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
-            assertEquals("IBM", tower.getManufacturer().getName());
-            assertEquals("University of Iowa", tower.getLocation().getName());
-            assertEquals("University of Iowa", tower.getLocation().getInstitution().getName());
-            assertNull(tower.getSerialNumber());
-            assertNull(tower.getVersion());
-            assertNull(tower.getName());
-            assertNull(tower.getRemovedDate());
-            assertNull(tower.getInstalledUser());
-            assertNull(tower.getRemovedUser());
-            TestCase.assertNotNull(tower.getInsertTime());
-            assertEquals(1, tower.getAttributes().size());
-            assertEquals("Duplicate catalog", tower.getAttributes().get(0).getName());
-            assertEquals("1", tower.getAttributes().get(0).getValue());
+    @Test
+    public void testJsonCase1UploadToDb() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+        DbLoader loader = new DbLoader(pm);
+
+        for (FileBase fb: fm.getFiles(Collections.singletonList(this.constr05Path))) {
+            try{
+                loader.loadArchive(injector, fb);
+                fail("Found catalogs dublicate. Should fail here.");
+            }catch (XMLParseException ex){
+                // OK!
+            }
+            List<AuditLog> alogs = getAuditLogs("05_construct.json");
+            TestCase.assertNotNull(alogs);
+            assertTrue(alogs.size() > 0);
+            AuditLog alog = alogs.get(0);
+            TestCase.assertNotNull(alog.getInsertTime());
+            TestCase.assertNotNull(alog.getInsertUser());
+            assertEquals("05_construct.json", alog.getArchiveFileName());
+            assertEquals("05_construct.json", alog.getDataFileName());
+            assertEquals("TEST", alog.getSubdetectorName());
+            assertEquals( UploadStatus.Failure, alog.getStatus());
         }
     }
 
@@ -526,55 +495,54 @@ public class PartLoadJsonTest extends TestBase {
         ATTR_CATALOG, ATTR_BASES
      */
     @Test
-    public void testJsonCase2UploadToDb() throws Exception {
-        File partJson = new File(this.constr07Path);
-        Root root = this.jmanager.deserialize(partJson);
-        PartApp app = injector.getInstance(PartApp.class);
+    public void testJsonCase2UploadToDb() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList(this.constr07Path))) {
+            loader.loadArchive(injector, fb);
+        }
         try(SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
-            PartDao dao = rf.createPartDao(sm);
             Part chamber = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", "00001"))
-                    .createCriteria("kindOfPart")
-                    .add(Restrictions.eq("name", "GEM Chamber"))
-                    .uniqueResult();
-
-            DataFile data = new DataFile(new XmlManager(), new JsonManager(), new ArchiveFile(partJson), partJson);
-            AuditLogHandler dataLog = rf.createAuditDao(data);
-            assertNull(chamber);
-            dao.savePart(root, dataLog.getLog());
-            chamber = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", "00001"))
+                    .add(Restrictions.eq("barcode", "00002"))
                     .createCriteria("kindOfPart")
                     .add(Restrictions.eq("name", "GEM Chamber"))
                     .uniqueResult();
             assertNotNull(chamber);
-            assertEquals("GEM Chamber", chamber.getKindOfPartName());
-            assertEquals("GE1/1-X-S-CERN-0001", chamber.getName());
-            assertEquals("GE1/1-X-S-CERN-0001", chamber.getSerialNumber());
-            assertEquals("904", chamber.getLocationName());
-            assertEquals("00001", chamber.getBarcode());
-            // assertEquals(5 , chamber.getChildren().size());
+            assertEquals("GEM Chamber", chamber.getKindOfPart().getName());
+            assertEquals("GE1/1-X-S-CERN-0001-JSON", chamber.getName());
+            assertEquals("GE1/1-X-S-CERN-0001-JSON", chamber.getSerialNumber());
+            assertEquals("904", chamber.getLocation().getName());
+            assertEquals("00002", chamber.getBarcode());
             //  Packs : siblings
             String[] serials = {
-                    "PCB-VIII-RO-S-0004",
-                    "PCB-VIII-DR-S-0005",
-                    "FOIL-B13-S-0140",
-                    "FOIL-B13-S-0138",
-                    "FOIL-B13-S-0147" };
+                    "PCB-VIII-RO-S-0004-JSON",
+                    "PCB-VIII-DR-S-0005-JSON",
+                    "FOIL-B13-S-0140-JSON",
+                    "FOIL-B13-S-0138-JSON",
+                    "FOIL-B13-S-0147-JSON" };
             for (String serialNumber: serials) {
 
                 Part child = (Part) session.createCriteria(Part.class)
                         .add(Restrictions.eq("serialNumber", serialNumber))
                         .uniqueResult();
-                assertNotNull(child.getKindOfPartName());
+                assertNotNull(child.getKindOfPart().getName());
                 assertNotNull(child.getSerialNumber());
-                // assertTrue(Pattern.matches("\\s+-\\s+-\\s+-S-\\d+", chamber.getSerialNumber()));
-                // assertEquals(1, child.getAttributes().size()); // Fails here
-                // assertNotNull(child.getAttributes().get(0).getName());
-                // assertNotNull(child.getAttributes().get(0).getValue());
             }
-            // sm.commit();
+        }
+    }
+
+    private List<AuditLog> getAuditLogs(String fileName) throws Exception {
+
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            List<AuditLog> alogs = (List<AuditLog>) session.createCriteria(AuditLog.class)
+                    .add(Restrictions.eq("archiveFileName", fileName))
+                    .addOrder(Order.desc("insertTime"))
+                    .list();
+
+            return  alogs;
         }
     }
 }

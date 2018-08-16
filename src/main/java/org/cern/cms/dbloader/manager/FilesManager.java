@@ -40,13 +40,13 @@ public class FilesManager {
             File f = new File(fileName);
 
             if (XML_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(rf.createDataFile(rf.createArchiveFile(f), f));
+                files.add(rf.createDataFile(rf.createArchiveFile(f), f, DataFile.Type.XML));
             } else
 
             if (ZIP_FILE.matcher(f.getAbsolutePath()).find()) {
                 files.add(rf.createArchiveFile(f));
             } else if(JSON_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(rf.createDataFile(rf.createArchiveFile(f), f));
+                files.add(rf.createDataFile(rf.createArchiveFile(f), f, DataFile.Type.JSON));
             } else {
                 throw new IllegalArgumentException(String.format("unknown file type (%s). Only .zip and .serial files accepted", fileName));
             }
@@ -60,7 +60,7 @@ public class FilesManager {
         List<DataFile> files = new TreeList();
         for (File f : extractZip(archive.getFile())) {
             if ((XML_FILE.matcher(f.getAbsolutePath()).find()) || XMA_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(rf.createDataFile(archive, f));
+                files.add(rf.createDataFile(archive, f, DataFile.Type.JSON));
             }
         }
         return files;

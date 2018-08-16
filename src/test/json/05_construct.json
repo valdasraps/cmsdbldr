@@ -10,10 +10,10 @@
             {
               "Part": {
                 "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                "CommentDescription": "TEST Tower 01",
+                "CommentDescription": "TEST Tower 01 json",
                 "KindOfPart": "TEST Tower",
-                "Manufacturer": "IBM",
-                "Barcode": "123000000001",
+                "Manufacturer": "LENOVO",
+                "Barcode": "101010",
                 "InstalledDate": "2012-10-17 10:04:56",
                 "PredifinedAttributes": [
                   {

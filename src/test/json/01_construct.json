@@ -10,10 +10,10 @@
             {
               "Part": {
                 "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
-                "CommentDescription": "TEST Tower 01",
+                "CommentDescription": "TEST Tower 01 json",
                 "KindOfPart": "TEST Tower",
-                "Manufacturer": "IBM",
-                "Barcode": "123000000001",
+                "Manufacturer": "LENOVO",
+                "Barcode": "101010",
                 "InstalledDate": "2012-10-17 10:04:56",
                 "PredifinedAttributes": [],
                 "Location": "University of Iowa",
@@ -23,14 +23,14 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "TEST Pack",
-                      "SerialNumber": "serial 01",
+                      "SerialNumber": "serial a",
                       "PredifinedAttributes": [],
                       "Children": [
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B01",
+                            "NameLabel": "A01",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -46,7 +46,7 @@
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B02",
+                            "NameLabel": "A02",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -62,7 +62,7 @@
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B03",
+                            "NameLabel": "A03",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -81,14 +81,14 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "TEST Pack",
-                      "SerialNumber": "serial 02",
+                      "SerialNumber": "serial b",
                       "PredifinedAttributes": [],
                       "Children": [
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B04",
+                            "NameLabel": "A04",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -104,7 +104,7 @@
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B05",
+                            "NameLabel": "A05",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -120,7 +120,7 @@
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B06",
+                            "NameLabel": "A06",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -139,14 +139,14 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "TEST Pack",
-                      "SerialNumber": "serial 03",
+                      "SerialNumber": "serial c",
                       "PredifinedAttributes": [],
                       "Children": [
                         {
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B07",
+                            "NameLabel": "A07",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -162,7 +162,7 @@
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B08",
+                            "NameLabel": "A08",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {
@@ -178,7 +178,7 @@
                           "Part": {
                             "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                             "KindOfPart": "TEST Board",
-                            "NameLabel": "B09",
+                            "NameLabel": "A09",
                             "PredifinedAttributes": [
                               {
                                 "Attribute": {

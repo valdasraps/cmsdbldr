@@ -17,6 +17,6 @@ public interface ResourceFactory {
 	ChannelDao createChannelDao(SessionManager sm);
     SessionManager createSessionManager();
 	ConfigDao createConfigDao(SessionManager sm);
-	DataFile createDataFile(FileBase archive, File file);
+	DataFile createDataFile(FileBase archive, File file, DataFile.Type type);
 	ArchiveFile createArchiveFile(File file);
 }

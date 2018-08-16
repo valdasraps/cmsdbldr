@@ -11,9 +11,9 @@
               "Part": {
                 "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                 "KindOfPart": "GEM Chamber",
-                "Barcode": "00001",
-                "SerialNumber": "GE1/1-X-S-CERN-0001",
-                "NameLabel": "GE1/1-X-S-CERN-0001",
+                "Barcode": "00002",
+                "SerialNumber": "GE1/1-X-S-CERN-0001-JSON",
+                "NameLabel": "GE1/1-X-S-CERN-0001-JSON",
                 "PredifinedAttributes": [],
                 "Location": "904",
                 "Children": [
@@ -21,7 +21,7 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "GEM Readout PCB",
-                      "SerialNumber": "PCB-VIII-RO-S-0004",
+                      "SerialNumber": "PCB-VIII-RO-S-0004-JSON",
                       "PredifinedAttributes": [],
                       "Children": []
                     }
@@ -30,7 +30,7 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "GEM Drift PCB",
-                      "SerialNumber": "PCB-VIII-DR-S-0005",
+                      "SerialNumber": "PCB-VIII-DR-S-0005-JSON",
                       "PredifinedAttributes": [],
                       "Children": []
                     }
@@ -39,7 +39,7 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "GEM Foil",
-                      "SerialNumber": "FOIL-B13-S-0140",
+                      "SerialNumber": "FOIL-B13-S-0140-JSON",
                       "PredifinedAttributes": [
                         {
                           "Attribute": {
@@ -55,7 +55,7 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "GEM Foil",
-                      "SerialNumber": "FOIL-B13-S-0138",
+                      "SerialNumber": "FOIL-B13-S-0138-JSON",
                       "PredifinedAttributes": [
                         {
                           "Attribute": {
@@ -71,7 +71,7 @@
                     "Part": {
                       "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
                       "KindOfPart": "GEM Foil",
-                      "SerialNumber": "FOIL-B13-S-0147",
+                      "SerialNumber": "FOIL-B13-S-0147-JSON",
                       "PredifinedAttributes": [
                         {
                           "Attribute": {
