@@ -34,8 +34,8 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
     }
 
     @Override
-    public List<DataFile> getDataFiles() { return Collections.singletonList(this);
-//    public ArrayList<DataFile> getDataFiles() { return Collections.singleton(this);
+    public List<DataFile> getDataFiles() { 
+        return Collections.singletonList(this);
     }
 
     @Override
