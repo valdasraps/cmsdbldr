@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -60,10 +61,12 @@ import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 })
 @ToString(exclude = {"iovs","data","attributes"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
-@JsonIgnoreProperties(value = {"channelMap", "run", "iovs"})
+// @JsonIgnoreProperties(value = {"channelMap", "run", "iovs", "Data", "Channel"})
+// @JsonIgnoreProperties(value = {"channelMap", "run", "iovs", "Data", "Channel"})
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonRootName("DataSet")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Dataset extends DeleteableBase {
 
     @Id
@@ -82,11 +85,13 @@ public class Dataset extends DeleteableBase {
     @ManyToOne
     @JoinColumn(name = "CHANNEL_MAP_ID")
     @XmlTransient
+    @JsonIgnore
     private ChannelMap channelMap;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinColumn(name = "COND_RUN_ID", nullable = false)
     @XmlTransient
+    @JsonIgnore
     private Run run;
 
     @ManyToOne
@@ -193,7 +198,7 @@ public class Dataset extends DeleteableBase {
     @Transient
     @XmlElement(name = "DATA")
     @XmlJavaTypeAdapter(value = CondBaseAdapter.class)
-    @JsonProperty("Data")
+    @JsonProperty(value = "Data")
     private List<? extends CondBase> data;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dataset", cascade = CascadeType.ALL)
@@ -206,6 +211,7 @@ public class Dataset extends DeleteableBase {
             inverseJoinColumns = {
                 @JoinColumn(name = "COND_IOV_RECORD_ID")})
     @XmlTransient
+    @JsonIgnore
     private Set<Iov> iovs = new HashSet<>();
     
     @Transient

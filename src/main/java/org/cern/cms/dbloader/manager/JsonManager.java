@@ -1,20 +1,13 @@
 package org.cern.cms.dbloader.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.*;
 
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.apache.commons.collections.bag.SynchronizedSortedBag;
-import org.cern.cms.dbloader.manager.serial.PartSerializer;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
-import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.serial.Root;
-import org.codehaus.jackson.map.jsontype.impl.TypeNameIdResolver;
 
 
 import java.io.File;
@@ -36,8 +29,13 @@ public class JsonManager {
 
     public Root deserialize(File file) throws IOException {
         Root root = null;
-        // this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
+        this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        SimpleModule module = new SimpleModule();
+        JsonDeserializer<ChannelBase> cbj = new ChannelDeserilizerMock();
+        JsonDeserializer<CondBase> cbb = new CondDeserializerMock();
+        module.addDeserializer(CondBase.class, cbb);
+        module.addDeserializer(ChannelBase.class, cbj);
+        mapper.registerModule(module);
         root = this.mapper.readerFor(Root.class).readValue(file);
         return root;
     }

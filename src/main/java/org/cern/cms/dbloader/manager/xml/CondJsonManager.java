@@ -10,7 +10,6 @@ import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.CondBase;
-import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.serial.Root;
 
 import java.io.File;

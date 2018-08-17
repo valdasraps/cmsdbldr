@@ -20,6 +20,7 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
     private final FileBase archive;
     private final Root root;
     private final DataFileType type;
+    private final Type fileType;
 
     public enum Type {
         XMA,
@@ -38,6 +39,7 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
             // XMA or XML
             tmpRoot = xmlm.unmarshal(file);
         }
+        this.fileType = type;
         this.root = tmpRoot;
         this.type = DataFile.resolveType(this.root);
     }
