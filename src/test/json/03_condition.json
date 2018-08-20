@@ -8,9 +8,9 @@
       },
       "Run": {
         "deleted": false,
-        "RunNumber": "2",
+        "RunNumber": "1",
         "RunType": "1",
-        "RunBeginTimestamp": "2015-11-03 19:00:00"
+        "RunBeginTimestamp": "2018-08-20 19:00:00"
       },
       "Hints": {
         "Hint": {
@@ -23,15 +23,15 @@
         "Dataset": {
           "deleted": false,
           "CommentDescription": "Any comment",
-          "Version": "JUL_16_2011",
-          "Subversion": "3",
+          "Version": "AUG_20_2018",
+          "Subversion": "1",
           "CreatedByUser": "apoluden",
-          "CreateTimestamp": "2015-11-03 19:00:00",
+          "CreateTimestamp": "2018-08-20 19:00:00",
           "PartAssembly": {
             "ParentPart": {
               "Part": {
                 "KindOfPart": "TEST Pack",
-                "SerialNumber": "serial 01",
+                "SerialNumber": "ser01",
                 "PredifinedAttributes": [
                   
                 ],

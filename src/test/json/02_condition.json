@@ -35,6 +35,7 @@
           "Iov": {
             "deleted": false,
             "IovBegin": 1,
+            "Id": 1,
             "IovEnd": -1
           }
         }
@@ -43,8 +44,9 @@
         {
           "Tag": {
             "deleted": false,
-            "CommentDescription": "This is some comment",
-            "TagName": "Some Test Tag",
+            "Id": 2,
+            "CommentDescription": "This is tag comment",
+            "TagName": "Any Tag",
             "DetectorName": "TEST"
           }
         }
@@ -55,11 +57,11 @@
         "Tags": [
           {
             "Tag": {
-              "Idref": 3,
+              "Idref": 2,
               "Iovs": [
                 {
                   "Iov": {
-                    "Idref": 2,
+                    "Idref": 1,
                     "DataSets": [
                       {
                         "DataSet": {

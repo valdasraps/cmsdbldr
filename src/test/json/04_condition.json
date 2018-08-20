@@ -25,7 +25,7 @@
       {
         "Dataset": {
           "deleted": false,
-          "dataFilename": "HcalDetDiagLEDCalib_164654_1.xml",
+          "DataFilename": "HcalDetDiagLEDCalib_164654_1.xml",
           "CommentDescription": "Automatic DQM output",
           "Version": "1646541",
           "Subversion": "1",
@@ -33,7 +33,7 @@
           "CreatedByUser": "dma",
           "NumberOfEventsInSet": 2000,
           "SetNumber": 1,
-          "SetBeginTimestamp": "2011-05-16 12:09:28",
+          "SetBeginTimestamp": "2009-01-01 00:00:00",
           "SetEndTimestamp": "2009-01-01 00:00:00",
           "PredefinedAttributes": [
             {
