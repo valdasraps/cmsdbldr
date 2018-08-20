@@ -50,7 +50,7 @@ public class Load extends ProviderBase {
             final java.nio.file.Path file = Files.createTempFile("Load.", ".".concat(ext));
             Files.write(file, data.getBytes());
             
-            log.info(String.format("Load request: %s.", file.toAbsolutePath()));
+            log.info(String.format("Load request: %s", file.toAbsolutePath()));
             
             DbLoader loader = new DbLoader(pm);
             for (FileBase fb: fm.getFiles(Collections.singletonList(file.toAbsolutePath().toString()))) {
