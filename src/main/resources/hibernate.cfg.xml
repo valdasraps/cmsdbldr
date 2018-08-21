@@ -16,6 +16,7 @@
 		<property name="hibernate.current_session_context_class">thread</property>
 		<property name="hibernate.generate_statistics">false</property>
 		<property name="hibernate.id.new_generator_mappings">true</property>
+		<property name="javax.persistence.validation.mode">none</property>
 
 	</session-factory>
 </hibernate-configuration>

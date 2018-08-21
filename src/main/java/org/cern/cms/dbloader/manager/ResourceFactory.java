@@ -10,11 +10,11 @@ import java.io.File;
 
 public interface ResourceFactory {
 
-	AuditLogHandler createAuditDao(FileBase df);
-	CondDao createCondDao(SessionManager sm);
-	PartDao createPartDao(SessionManager sm);
-	DatasetDao createDatasetDao(SessionManager sm);
-	ChannelDao createChannelDao(SessionManager sm);
+    AuditLogHandler createAuditDao(FileBase df);
+    CondDao createCondDao(SessionManager sm);
+    PartDao createPartDao(SessionManager sm);
+    DatasetDao createDatasetDao(SessionManager sm);
+    ChannelDao createChannelDao(SessionManager sm);
     SessionManager createSessionManager();
 	ConfigDao createConfigDao(SessionManager sm);
 	DataFile createDataFile(FileBase archive, File file, DataFile.Type type);

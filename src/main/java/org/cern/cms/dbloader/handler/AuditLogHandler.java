@@ -9,6 +9,8 @@ import com.google.inject.assistedinject.Assisted;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import lombok.Getter;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.SessionManager;
@@ -17,12 +19,13 @@ import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
-import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 public class AuditLogHandler {
 
+    private static final Logger logger = LogManager.getLogger(AuditLogHandler.class);
+    
     private static final String UNDEFINED_SUBDETECTOR_NAME = "UNDEFINED";
     
     @Getter
@@ -116,6 +119,8 @@ public class AuditLogHandler {
                 .uniqueResult();
 
         } catch (Exception ex) {
+            
+            logger.warn("Error while reading subdetector name", ex);
             
             return UNDEFINED_SUBDETECTOR_NAME;
             

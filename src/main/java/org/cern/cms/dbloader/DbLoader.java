@@ -23,6 +23,12 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
+import static org.cern.cms.dbloader.manager.file.DataFileType.CHANNEL;
+import static org.cern.cms.dbloader.manager.file.DataFileType.CONDITION;
+import static org.cern.cms.dbloader.manager.file.DataFileType.KEY;
+import static org.cern.cms.dbloader.manager.file.DataFileType.KEY_ALIAS;
+import static org.cern.cms.dbloader.manager.file.DataFileType.PART;
+import static org.cern.cms.dbloader.manager.file.DataFileType.VERSION_ALIAS;
 import org.cern.cms.dbloader.manager.file.FileBase;
 
 @Log4j
