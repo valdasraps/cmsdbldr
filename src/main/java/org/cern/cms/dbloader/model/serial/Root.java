@@ -22,7 +22,7 @@ import org.cern.cms.dbloader.model.serial.map.Maps;
 @Getter
 @Setter
 @ToString
-@XmlRootElement(name = "Root")
+@XmlRootElement(name = "ROOT")
 @JsonRootName(value = "Root")
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonInclude(JsonInclude.Include.NON_NULL)
