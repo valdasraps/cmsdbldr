@@ -36,7 +36,7 @@ public class PartLoadTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/serial/01_construct.serial"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/01_construct.xml"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -140,7 +140,7 @@ public class PartLoadTest extends TestBase {
                 }
 
             }
-            List <AuditLog> alogs = getAuditLogs("01_construct.serial");
+            List <AuditLog> alogs = getAuditLogs("01_construct.xml");
 
             assertNotNull(alogs);
             assertTrue(alogs.size() > 0);
@@ -172,7 +172,7 @@ public class PartLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
 
 
-        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/serial/05_construct.serial"))) {
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/05_construct.xml"))) {
 
             try{
                 loader.loadArchive(injector, fb);
@@ -181,7 +181,7 @@ public class PartLoadTest extends TestBase {
                 // OK!
             }
 
-            List<AuditLog> alogs = getAuditLogs("05_construct.serial");
+            List<AuditLog> alogs = getAuditLogs("05_construct.xml");
 
             assertNotNull(alogs);
             assertTrue(alogs.size() > 0);
@@ -189,8 +189,8 @@ public class PartLoadTest extends TestBase {
 
             assertNotNull(alog.getInsertTime());
             assertNotNull(alog.getInsertUser());
-            assertEquals("05_construct.serial", alog.getArchiveFileName());
-            assertEquals("05_construct.serial", alog.getDataFileName());
+            assertEquals("05_construct.xml", alog.getArchiveFileName());
+            assertEquals("05_construct.xml", alog.getDataFileName());
             assertEquals("TEST", alog.getSubdetectorName());
             assertEquals( UploadStatus.Failure, alog.getStatus());
 
