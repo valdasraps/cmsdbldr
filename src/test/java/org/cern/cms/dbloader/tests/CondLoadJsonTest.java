@@ -75,7 +75,7 @@ public class CondLoadJsonTest extends TestBase {
 
         Channel and Data properties filled manualy
     */
-    @Test
+    @Ignore
     public void testBeanToJsonCase0() throws Throwable {
 
         Integer val = 1;

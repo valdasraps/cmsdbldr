@@ -34,8 +34,8 @@ public class CondLoadTest extends TestBase {
 
         CondManager condm = injector.getInstance(CondManager.class);
         CondEntityHandler ch = condm.getConditionHandler("IV");
-        
-        String exampleFile = "target/iv_example.serial";
+
+        String exampleFile = "target/iv_example.xml";
         
         assertEquals(ch, condm.getConditionHandler(ch.getId()));
         assertEquals(ch, condm.getConditionHandler(new OptId(ch.getId().toString())));
@@ -60,9 +60,9 @@ public class CondLoadTest extends TestBase {
         FilesManager fm = injector.getInstance(FilesManager.class);
 
         String [] files = new String [] {
-            "src/test/serial/02_condition.serial"
-            ,"src/test/serial/03_condition.serial"
-            ,"src/test/serial/04_condition.serial"
+             "src/test/xml/02_condition.xml"
+            ,"src/test/xml/03_condition.xml"
+            ,"src/test/xml/04_condition.xml"
         };
         
         DbLoader loader = new DbLoader(pm);
@@ -75,8 +75,8 @@ public class CondLoadTest extends TestBase {
         try (HbmManager hbm = injector.getInstance(HbmManager.class)) {
             Session session = hbm.getSession();
             try {
-                
-                // Check 02_condition.serial
+
+                // Check 02_condition.xml
                 
                 Dataset ds = (Dataset) session.createCriteria(Dataset.class)
                             .add(Restrictions.eq("version", "JUN_7_2011"))
@@ -99,8 +99,8 @@ public class CondLoadTest extends TestBase {
                 assertEquals("This is some comment", tag.getComment());
                 
                 AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
-                                .add(Restrictions.eq("archiveFileName", "02_condition.serial"))
-                                .uniqueResult();
+                        .add(Restrictions.eq("archiveFileName", "02_condition.xml"))
+                        .uniqueResult();
                 
                 assertEquals("JUN_7_2011", alog.getVersion());
                 assertEquals((Integer) 2, alog.getSubversion());
