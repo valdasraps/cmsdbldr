@@ -24,7 +24,7 @@ public class ConditionXmlTest extends TestBase {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse("src/test/serial/HF_PMT_Batch1-8_Gain.serial");
+        Document doc = db.parse("src/test/xml/HF_PMT_Batch1-8_Gain.xml");
 
         NodeList nodes = doc.getElementsByTagName("DATA");
         for (int i = 0; i < nodes.getLength(); i++) {
