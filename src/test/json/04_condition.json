@@ -8,11 +8,11 @@
       },
       "Run": {
         "deleted": false,
-        "CommentDescription": "TEST LED CALIB data",
+        "CommentDescription": "run comment",
         "RunNumber": "164654",
         "RunType": "LOCAL-RUN",
         "Location": "P5",
-        "InitiatedByUser": "dma",
+        "InitiatedByUser": "apoluden",
         "RunBeginTimestamp": "2009-01-01 00:00:00"
       },
       "Hints": {
@@ -26,11 +26,11 @@
         "Dataset": {
           "deleted": false,
           "DataFilename": "HcalDetDiagLEDCalib_164654_1.xml",
-          "CommentDescription": "Automatic DQM output",
-          "Version": "1646541",
+          "CommentDescription": "dataset comment",
+          "Version": "AUG_22_2018",
           "Subversion": "1",
           "ImageFileName": "data plot url or file path",
-          "CreatedByUser": "dma",
+          "CreatedByUser": "apoluden",
           "NumberOfEventsInSet": 2000,
           "SetNumber": 1,
           "SetBeginTimestamp": "2009-01-01 00:00:00",

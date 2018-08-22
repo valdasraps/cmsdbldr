@@ -12,6 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
     CondInfoTest.class,
     ConditionXmlTest.class,
     CondLoadTest.class,
+    CondLoadJsonTest.class,
     CondLoadZipTest.class,
     LobManagerTest.class,
     PropertiesTest.class,
