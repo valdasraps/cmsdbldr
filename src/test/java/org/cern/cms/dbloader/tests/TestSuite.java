@@ -8,6 +8,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     ChannelLoadZipTest.class,
     PartLoadTest.class,
+    PartLoadJsonTest.class,
     CondInfoTest.class,
     ConditionXmlTest.class,
     CondLoadTest.class,

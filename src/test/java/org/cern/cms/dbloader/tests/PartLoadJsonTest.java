@@ -255,11 +255,11 @@ public class PartLoadJsonTest extends TestBase {
 
         // Tower Part
         Part tower = rootPart.getChildren().get(0);
-        assertEquals("TEST Tower", tower    .getKindOfPartName());
-        assertEquals("123000000001", tower.getBarcode());
-        assertEquals("TEST Tower 01", tower.getComment());
+        assertEquals("TEST Tower", tower.getKindOfPartName());
+        assertEquals("101010", tower.getBarcode());
+        assertEquals("TEST Tower 01 json", tower.getComment());
         assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
-        assertEquals("IBM", tower.getManufacturerName());
+        assertEquals("LENOVO", tower.getManufacturerName());
         assertEquals("University of Iowa", tower.getLocationName());
         assertEquals("University of Iowa", tower.getInstitutionName());
         assertNull(tower.getSerialNumber());
@@ -272,7 +272,7 @@ public class PartLoadJsonTest extends TestBase {
         assertEquals(3 , tower.getChildren().size());
 
         // Serial Parts
-        String[] serials = {"serial 01", "serial 02", "serial 03"};
+        String[] serials = {"serial a", "serial b", "serial c"};
         List<Part> packs = tower.getChildren();
         for (Part pack : packs) {
             assertNull(pack.getComment());
@@ -298,7 +298,7 @@ public class PartLoadJsonTest extends TestBase {
                 assertNull(child.getSerialNumber());
                 assertNull(child.getBarcode());
                 assertNull(child.getVersion());
-                assertTrue(Pattern.matches("B0[1-9]", child.getName()));
+                assertTrue(Pattern.matches("A0[1-9]", child.getName()));
                 assertNull(child.getRemovedDate());
                 assertNull(child.getInstalledUser());
                 assertNull(child.getRemovedUser());
@@ -327,10 +327,10 @@ public class PartLoadJsonTest extends TestBase {
         // Tower Part
         Part tower = rootPart.getChildren().get(0);
         assertEquals("TEST Tower", tower    .getKindOfPartName());
-        assertEquals("123000000001", tower.getBarcode());
-        assertEquals("TEST Tower 01", tower.getComment());
+        assertEquals("101010", tower.getBarcode());
+        assertEquals("TEST Tower 01 json", tower.getComment());
         assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
-        assertEquals("IBM", tower.getManufacturerName());
+        assertEquals("LENOVO", tower.getManufacturerName());
         assertEquals("University of Iowa", tower.getLocationName());
         assertEquals("University of Iowa", tower.getInstitutionName());
         assertNull(tower.getSerialNumber());
@@ -363,10 +363,10 @@ public class PartLoadJsonTest extends TestBase {
         assertEquals(1, rootPart.getChildren().size());
         Part chamber = rootPart.getChildren().get(0);
         assertEquals("GEM Chamber", chamber.getKindOfPartName());
-        assertEquals("GE1/1-X-S-CERN-0001", chamber.getName());
-        assertEquals("GE1/1-X-S-CERN-0001", chamber.getSerialNumber());
+        assertEquals("GE1/1-X-S-CERN-0001-JSON", chamber.getName());
+        assertEquals("GE1/1-X-S-CERN-0001-JSON", chamber.getSerialNumber());
         assertEquals("904", chamber.getLocationName());
-        assertEquals("00001", chamber.getBarcode());
+        assertEquals("00002", chamber.getBarcode());
         assertEquals(5 , chamber.getChildren().size());
         for (Part child : chamber.getChildren()) {
             // assertTrue(Pattern.matches("[A-Z]+-[A-Z_0-9]+-[A-Z]+-S-[0-9]+", child.getSerialNumber()));
