@@ -143,7 +143,7 @@ public class Part extends DeleteableBase {
     @XmlJavaTypeAdapter(DateAdapter.class)
     // @JsonProperty("INSTALLED_DATE")
     @JsonProperty("InstalledDate")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+3")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="UTC")
     private Date installedDate;
 
     @Basic
@@ -153,7 +153,7 @@ public class Part extends DeleteableBase {
     // @JsonProperty("REMOVED_DATE")
     @JsonProperty("RemovedDate")
     @XmlJavaTypeAdapter(DateAdapter.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="UTC")
     private Date removedDate;
 
     @Basic
