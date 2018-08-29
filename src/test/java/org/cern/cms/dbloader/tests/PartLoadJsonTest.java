@@ -545,4 +545,15 @@ public class PartLoadJsonTest extends TestBase {
             return  alogs;
         }
     }
+
+    @Ignore
+    public void convertConstructXmlToJson() throws Exception {
+        String xmlPath = "src/test/xml/condition_request.xml";
+        File xmlFile = new File(xmlPath);
+        XmlManager xmlMngr = new XmlManager();
+        JsonManager jsonMngr = new JsonManager();
+        Root root = xmlMngr.unmarshal(xmlFile);
+        String json = jsonMngr.<Root>serialiaze(root);
+        System.out.println(json);
+    }
 }
