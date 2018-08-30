@@ -2,13 +2,11 @@
   "Root": {
     "Header": {
       "Type": {
-        "deleted": false,
         "Name": "Tracker Requests",
         "ExtensionTableName": "TRK_REQUESTS"
       },
       "Run": {
-        "deleted": false,
-        "RunNumber": "100",
+        "RunNumber": "10",
         "RunType": "Tracker Requests",
         "RunBeginTimestamp": "2015-11-03 17:00:00"
       }
@@ -16,10 +14,10 @@
     "Datasets": [
       {
         "Dataset": {
-          "deleted": false,
           "CommentDescription": "Test TRQ request",
           "CreatedByUser": "apoluden",
           "CreateTimestamp": "2011-06-16 21:00:00",
+          "Subversion" : 1,
           "PredefinedAttributes": [
           ], 
           "Data" : [
