@@ -4,7 +4,7 @@ jdk:
   - oraclejdk8
   # - openjdk7
 env:
-  - MAVEN_OPTS="-Xms512m -Xmx=1024m"
+  - MAVEN_OPTS="-Xms512m -Xmx1024m"
 before_install:
   - .travis/oracle/download.sh
   - .travis/oracle/install.sh  

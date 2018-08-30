@@ -81,7 +81,7 @@ public class Run extends DeleteableBase {
     @Column(name = "RUN_BEGIN_TIMESTAMP")
     @XmlElement(name = "RUN_BEGIN_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     @JsonProperty("RunBeginTimestamp")
     private Date beginTime;
 
@@ -90,7 +90,7 @@ public class Run extends DeleteableBase {
     @Column(name = "RUN_END_TIMESTAMP")
     @XmlElement(name = "RUN_END_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     @JsonProperty("RunEndTimestamp")
     private Date endTime;
 

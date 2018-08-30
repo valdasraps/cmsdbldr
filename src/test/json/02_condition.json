@@ -82,16 +82,16 @@
         "Dataset": {
           "deleted": false,
           "CommentDescription": "Any comment",
-          "Version": "JUN_7_2011",
+          "Version": "AUG_20_2018",
           "Subversion": "2",
-          "CreatedByUser": "joshi",
+          "CreatedByUser": "apoluden",
           "CreateTimestamp": "2011-06-17 00:00:00",
           "PredefinedAttributes": [
             
           ],
           "Channel": {
             "ExtensionTableName": "TEST_CHANNELS",
-            "subdet": "Test",
+            "subdet": "TEST",
             "ieta": 1,
             "iphi": 1,
             "depth": 1

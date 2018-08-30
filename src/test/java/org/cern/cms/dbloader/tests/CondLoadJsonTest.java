@@ -373,21 +373,21 @@ public class CondLoadJsonTest extends TestBase {
         Set<Tag> tags =  elements.getTags();
         assertEquals(1, tags.size());
         Tag tag = tags.iterator().next();
-        assertEquals("Some Test Tag", tag.getName());
+        assertEquals("Any Tag", tag.getName());
         assertEquals("TEST", tag.getDetectorName());
-        assertEquals("This is some comment", tag.getComment());
+        assertEquals("This is tag comment", tag.getComment());
 
         // Asserting Maps
         Maps maps = root.getMaps();
         Set<MapTag> mapTags = maps.getTags();
         assertEquals(1, mapTags.size());
         MapTag mapTag = mapTags.iterator().next();
-        assertEquals(new Integer(3), mapTag.getRefid());
+        assertEquals(new Integer(2), mapTag.getRefid());
         assertNotNull(mapTag.getIovs());
         Set<MapIov> mapIovs = mapTag.getIovs();
         assertEquals(1, mapIovs.size());
         MapIov mapIov = mapIovs.iterator().next();
-        assertEquals(new Integer(2), mapIov.getRefid());
+        assertEquals(new Integer(1), mapIov.getRefid());
         assertNotNull(mapIov.getDatasets());
         Set<MapDataset> datasets = mapIov.getDatasets();
         assertEquals(1, datasets.size());
@@ -401,8 +401,8 @@ public class CondLoadJsonTest extends TestBase {
         Dataset dataset = datasetList.get(0);
         assertEquals("Any comment", dataset.getComment());
         assertEquals(DATE_FORMAT.parse("2011-06-17 00:00:00"), dataset.getCreateTimestamp());
-        assertEquals("joshi", dataset.getCreatedByUser());
-        assertEquals("JUN_7_2011", dataset.getVersion());
+        assertEquals("apoluden", dataset.getCreatedByUser());
+        assertEquals("AUG_20_2018", dataset.getVersion());
         assertEquals("2", dataset.getSubversion());
         // Channel
         ChannelBase cb = dataset.getChannel();
@@ -447,9 +447,9 @@ public class CondLoadJsonTest extends TestBase {
         assertNotNull(header.getRun());
         // Run
         Run run = header.getRun();
-        assertEquals("2", run.getNumber());
+        assertEquals("1", run.getNumber());
         assertEquals("1", run.getRunType());
-        assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00"), run.getBeginTime());
+        assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00"), run.getBeginTime());
         // Hint
         assertNotNull(header.getHint());
         Hint hint = header.getHint();
@@ -461,10 +461,10 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals(1, datasetList.size());
         Dataset dataset = datasetList.get(0);
         assertEquals("Any comment", dataset.getComment());
-        assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00"), dataset.getCreateTimestamp());
+        assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00"), dataset.getCreateTimestamp());
         assertEquals("apoluden", dataset.getCreatedByUser());
-        assertEquals("JUL_16_2011", dataset.getVersion());
-        assertEquals("3", dataset.getSubversion());
+        assertEquals("AUG_21_2018", dataset.getVersion());
+        assertEquals("1", dataset.getSubversion());
         // PartAssembly
         assertNotNull(dataset.getPartAssembly());
         PartAssembly pa = dataset.getPartAssembly();
@@ -521,7 +521,7 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals("LOCAL-RUN", run.getRunType());
         assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00"), run.getBeginTime());
         assertEquals("LOCAL-RUN", run.getRunType());
-        assertEquals("dma", run.getInitiatedByUser());
+        assertEquals("apoluden", run.getInitiatedByUser());
         assertEquals("P5", run.getLocation());
         // Hint
         // Asserting Dataset
@@ -529,11 +529,11 @@ public class CondLoadJsonTest extends TestBase {
         assertNotNull(datasetList);
         assertEquals(1, datasetList.size());
         Dataset dataset = datasetList.get(0);
-        assertEquals("Automatic DQM output", dataset.getComment());
+        assertEquals("dataset comment", dataset.getComment());
         assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00"), dataset.getSetBeginTime());
         assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00"), dataset.getSetEndTime());
-        assertEquals("dma", dataset.getCreatedByUser());
-        assertEquals("1646541", dataset.getVersion());
+        assertEquals("apoluden", dataset.getCreatedByUser());
+        assertEquals("AUG_22_2018", dataset.getVersion());
         assertEquals("1", dataset.getSubversion());
         assertEquals("HcalDetDiagLEDCalib_164654_1.xml", dataset.getDataFilename());
         assertEquals("data plot url or file path", dataset.getImageFilename());
@@ -557,144 +557,84 @@ public class CondLoadJsonTest extends TestBase {
         }
     }
 
-    /*
-        Test JSON case0 data upload to DB
-     */
     @Test
-    public void testJsonCase0UploadToDb() throws Throwable {
+    public void testJsonUploadToDb() throws Throwable {
+
         FilesManager fm = injector.getInstance(FilesManager.class);
-        String [] files = new String [] { case0 };
+
+        String [] files = new String [] { case0, case1, case2 };
+
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Arrays.asList(files))) {
-             loader.loadArchive(injector, fb);
-        }
-        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-            Session session = sm.getSession();
-            Dataset ds = (Dataset) session.createCriteria(Dataset.class)
-                    .add(Restrictions.eq("version", "JUN_7_2011"))
-                    .createCriteria("kindOfCondition")
-                    .add(Restrictions.eq("name", "IV"))
-                    .uniqueResult();
-            assertNotNull(ds);
-            assertEquals("TEST_CHANNELS", ds.getChannelMap().getExtensionTableName());
-            assertEquals("1", ds.getRun().getNumber());
-            assertEquals("1", ds.getRun().getRunType());
-            assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00"), ds.getRun().getBeginTime());
-            assertEquals("Any comment", ds.getComment());
-            assertEquals("joshi", ds.getCreatedByUser());
-            assertEquals("2", ds.getSubversion());
-            Iov iov = ds.getIovs().iterator().next();
-            assertEquals(new BigInteger("1"), iov.getIovBegin());
-            assertEquals(new BigInteger("-1"), iov.getIovEnd());
-            Tag tag = iov.getTags().iterator().next();
-            assertEquals("Any Tag", tag.getName());
-            assertEquals("TEST", tag.getDetectorName());
-            assertEquals("This is tag comment", tag.getComment());
 
-            AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
-                    .add(Restrictions.eq("archiveFileName", "02_condition.json"))
-                    .uniqueResult();
-            assertEquals("JUN_7_2011", alog.getVersion());
-            assertEquals((Integer) 2, alog.getSubversion());
-            assertEquals("1", alog.getRunType());
-            assertEquals((Integer) 1, alog.getRunNumber());
-            assertEquals((Integer) 1, alog.getDatasetCount());
-            assertEquals((Integer) 3, alog.getDatasetRecordCount());
-            assertEquals(new BigInteger("1"), alog.getIntervalOfValidityBegin());
-            assertEquals(new BigInteger("-1"), alog.getIntervalOfValidityEnd());
-            assertEquals("Any Tag", alog.getTagName());
-
-
-            for (String file: files) {
-                File f = new File(file);
-                alog = (AuditLog) session.createCriteria(AuditLog.class)
-                        .add(Restrictions.eq("archiveFileName", f.getName()))
-                        .uniqueResult();
-
-                TestCase.assertNotNull(alog.getInsertTime());
-                TestCase.assertNotNull(alog.getInsertUser());
-                TestCase.assertNotNull(alog.getLastUpdateTime());
-                TestCase.assertNotNull(alog.getLastUpdateUser());
-                assertEquals("TEST", alog.getSubdetectorName());
-                assertEquals("IV", alog.getKindOfConditionName());
-                assertEquals("TEST_IV", alog.getExtensionTableName());
-
-            }
-        }
-
-    }
-
-    /*
-        Test JSON case1 data upload to Db
-
-        Example with Part
-     */
-    @Test
-    public void testJsonCase1UploadToDb() throws Throwable {
-        FilesManager fm = injector.getInstance(FilesManager.class);
-        String [] files = new String [] { case1 };
-        DbLoader loader = new DbLoader(pm);
-        for (FileBase fb: fm.getFiles(Arrays.asList(files))) {
             loader.loadArchive(injector, fb);
+
         }
-        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-            Session session = sm.getSession();
-            Dataset ds = (Dataset) session.createCriteria(Dataset.class)
-                    .add(Restrictions.eq("version", "AUG_20_2018"))
-                    .createCriteria("kindOfCondition")
-                    .add(Restrictions.eq("name", "IV"))
-                    .uniqueResult();
-            assertNotNull(ds);
-            assertEquals("TEST_IV", ds.getChannelMap().getExtensionTableName());
-            assertEquals("1", ds.getRun().getNumber());
-            assertEquals("1", ds.getRun().getRunType());
-            assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00"), ds.getRun().getBeginTime());
-            assertEquals("Any comment", ds.getComment());
-            assertEquals("apoluden", ds.getCreatedByUser());
-            assertEquals("3", ds.getSubversion());
-            // ParentPart
-            Part part = ds.getPartAssembly().getParentPart();
-            assertEquals("serial 01", part.getSerialNumber());
-            assertEquals("TEST Pack", part.getKindOfPartName());
 
-            // ChildUniquelyIdentifiedBy kaip patikrinti ?
-            // Data kaip patikrinti ?
+        try (HbmManager hbm = injector.getInstance(HbmManager.class)) {
+            Session session = hbm.getSession();
+            try {
 
-            AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
-                    .add(Restrictions.eq("archiveFileName", "03_condition.json"))
-                    .uniqueResult();
-            assertEquals("AUG_20_2018", alog.getVersion());
-            assertEquals((Integer) 1, alog.getSubversion());
-            assertEquals("1", alog.getRunType());
-            assertEquals((Integer) 1, alog.getRunNumber());
-            // assertEquals((Integer) 1, alog.getDatasetCount());
-            // assertEquals((Integer) 3, alog.getDatasetRecordCount());
+                // Check 02_condition.xml
 
-            for (String file: files) {
-                File f = new File(file);
-                alog = (AuditLog) session.createCriteria(AuditLog.class)
-                        .add(Restrictions.eq("archiveFileName", f.getName()))
+                Dataset ds = (Dataset) session.createCriteria(Dataset.class)
+                        .add(Restrictions.eq("version", "AUG_20_2018"))
+                        .createCriteria("kindOfCondition")
+                        .add(Restrictions.eq("name", "IV"))
                         .uniqueResult();
 
-                TestCase.assertNotNull(alog.getInsertTime());
-                TestCase.assertNotNull(alog.getInsertUser());
-                TestCase.assertNotNull(alog.getLastUpdateTime());
-                TestCase.assertNotNull(alog.getLastUpdateUser());
-                assertEquals("TEST", alog.getSubdetectorName());
-                assertEquals("IV", alog.getKindOfConditionName());
-                assertEquals("TEST_IV", alog.getExtensionTableName());
+                assertEquals("TEST_CHANNELS", ds.getChannelMap().getExtensionTableName());
+                assertEquals("1", ds.getRun().getNumber());
+                assertEquals("1", ds.getRun().getRunType());
+                assertEquals("Any comment", ds.getComment());
+                assertEquals("apoluden", ds.getCreatedByUser());
+                assertEquals("2", ds.getSubversion());
+                Iov iov = ds.getIovs().iterator().next();
+                assertEquals(new BigInteger("1"), iov.getIovBegin());
+                assertEquals(new BigInteger("-1"), iov.getIovEnd());
+                Tag tag = iov.getTags().iterator().next();
+                assertEquals("Any Tag", tag.getName());
+                assertEquals("TEST", tag.getDetectorName());
+                assertEquals("This is tag comment", tag.getComment());
 
+                AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
+                        .add(Restrictions.eq("archiveFileName", "02_condition.json"))
+                        .uniqueResult();
+
+                assertEquals("AUG_20_2018", alog.getVersion());
+                assertEquals((Integer) 2, alog.getSubversion());
+                assertEquals("1", alog.getRunType());
+                assertEquals((Integer) 1, alog.getRunNumber());
+                assertEquals((Integer) 1, alog.getDatasetCount());
+                assertEquals((Integer) 3, alog.getDatasetRecordCount());
+                assertEquals(new BigInteger("1"), alog.getIntervalOfValidityBegin());
+                assertEquals(new BigInteger("-1"), alog.getIntervalOfValidityEnd());
+                assertEquals("Any Tag", alog.getTagName());
+
+                // Check all logs
+
+                for (String file: files) {
+                    File f = new File(file);
+                    alog = (AuditLog) session.createCriteria(AuditLog.class)
+                            .add(Restrictions.eq("archiveFileName", f.getName()))
+                            .uniqueResult();
+
+                    TestCase.assertNotNull(alog.getInsertTime());
+                    TestCase.assertNotNull(alog.getInsertUser());
+                    TestCase.assertNotNull(alog.getLastUpdateTime());
+                    TestCase.assertNotNull(alog.getLastUpdateUser());
+                    //assertEquals((Integer) 13, alog.getDatasetRecordCount());
+                    assertEquals("TEST", alog.getSubdetectorName());
+                    assertEquals("IV", alog.getKindOfConditionName());
+                    assertEquals("TEST_IV", alog.getExtensionTableName());
+
+                }
+
+            } finally {
+                session.close();
             }
-        }
-    }
-    /*
-        Test JSON case2 data upload to Db
 
-        Before loading part KindOfPart
-        ATTR_CATALOG, ATTR_BASES
-     */
-    @Test
-    public void testJsonCase2UploadToDb() throws Exception {
+        }
 
     }
 

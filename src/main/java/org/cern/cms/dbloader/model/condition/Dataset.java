@@ -143,7 +143,7 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "CREATE_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     @XmlJavaTypeAdapter(DateAdapter.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     @JsonProperty("CreateTimestamp")
     private Date createTimestamp;
 
@@ -170,7 +170,7 @@ public class Dataset extends DeleteableBase {
     @Column(name = "SET_BEGIN_TIMESTAMP")
     @XmlElement(name = "SET_BEGIN_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     @JsonProperty("SetBeginTimestamp")
     private Date setBeginTime;
 
@@ -179,7 +179,7 @@ public class Dataset extends DeleteableBase {
     @Column(name = "SET_END_TIMESTAMP")
     @XmlElement(name = "SET_END_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="Europe/Vilnius")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     @JsonProperty("SetEndTimestamp")
     private Date setEndTime;
 

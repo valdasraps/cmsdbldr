@@ -60,7 +60,7 @@ public class FilesManager {
         List<DataFile> files = new TreeList();
         for (File f : extractZip(archive.getFile())) {
             if ((XML_FILE.matcher(f.getAbsolutePath()).find()) || XMA_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(rf.createDataFile(archive, f, DataFile.Type.JSON));
+                files.add(rf.createDataFile(archive, f, DataFile.Type.XML));
             }
         }
         return files;

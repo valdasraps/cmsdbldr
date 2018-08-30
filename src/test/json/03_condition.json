@@ -23,7 +23,7 @@
         "Dataset": {
           "deleted": false,
           "CommentDescription": "Any comment",
-          "Version": "AUG_20_2018",
+          "Version": "AUG_21_2018",
           "Subversion": "1",
           "CreatedByUser": "apoluden",
           "CreateTimestamp": "2018-08-20 19:00:00",
@@ -31,7 +31,7 @@
             "ParentPart": {
               "Part": {
                 "KindOfPart": "TEST Pack",
-                "SerialNumber": "ser01",
+                "SerialNumber": "serial 01",
                 "PredifinedAttributes": [
                   
                 ],

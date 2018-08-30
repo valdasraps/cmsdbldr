@@ -5,42 +5,18 @@ CENTOS=$?
 
 chown dbspool:dbspool /var/cmsdbldr
 
-# Install python stuff (SLC only)
-if [ "$CENTOS" != 0 ]; then
-
-  cd $HOME
-  python /opt/cmsdbldr/ext/get-pip.py --no-index --find-links file:///opt/cmsdbldr/ext --no-wheel
-  pip install --no-index --find-links file:///opt/cmsdbldr/ext virtualenv virtualenvwrapper uwsgi honcho suds
-
-fi
-
-# Setup venv
-cd /opt/cmsdbldr/web
-
-virtualenv --system-site-packages venv
-. venv/bin/activate
-
-pip install --no-index --find-links file:///opt/cmsdbldr/ext -r requirements.txt --upgrade
-chown -R dbspool:dbspool /opt/cmsdbldr/web/venv
-
 # Install service and restart
 
 if [ "$CENTOS" == 0 ]; then
 
   systemctl daemon-reload
-  systemctl enable cmsdbldr
-
   systemctl restart incrond
   systemctl restart httpd
-  systemctl start cmsdbldr
 
 else
 
-  chkconfig --levels 345 cmsdbldr on
-
   /sbin/service incrond restart
   /sbin/service httpd restart
-  /sbin/service cmsdbldr start
 
 fi
 
