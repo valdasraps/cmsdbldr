@@ -1,0 +1,36 @@
+{
+  "Root": {
+    "Header": {
+      "Type": {
+        "Name": "Tracker Shipments",
+        "ExtensionTableName": "TRK_SHIPMENTS"
+      },
+      "Run": {
+        "RunNumber": "200",
+        "RunType": "Tracker Shipments", 
+        "RunBeginTimestamp": "2015-11-03 17:00:00"
+      }
+    },
+    "Datasets": [
+      {
+        "Dataset": {
+          "CreatedByUser": "apoluden",
+          "CreateTimestamp": "2011-06-16 21:00:00",
+          "Subversion" : 3,
+          "PredefinedAttributes": [
+          ], 
+          "Data" : [
+            {
+              "company": "company",
+              "tracking_number": "SEAPS5000495784V2",
+              "from_location": "100",
+              "to_location": "200",
+              "status" : "SHIPPED",
+              "comments" : "shippment component comment" 
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
