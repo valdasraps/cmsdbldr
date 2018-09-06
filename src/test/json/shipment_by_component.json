@@ -21,12 +21,14 @@
           ], 
           "Data" : [
             {
-              "company": "company",
-              "tracking_number": "SEAPS5000495784V2",
-              "from_location": "100",
-              "to_location": "200",
-              "status" : "SHIPPED",
-              "comments" : "shippment component comment" 
+              "shp_company_name": "company",
+              "shp_tracking_number": "SEAPS5000495784V2",
+              "shp_from_location_id": "100",
+              "shp_to_location_id": "200",
+              "shp_status" : "SHIPPED",
+              "shp_status_comment" : "shippment component comment", 
+              "shp_status_date" : "2018-09-06", 
+              "shp_status_person": "apoluden" 
             }
           ]
         }

@@ -21,8 +21,8 @@
           ], 
           "Data" : [
             {
-              "request_number": "10",
-              "comments" : "shippment request comment" 
+              "shi_request_number": "10",
+              "shi_comment" : "shippment request comment"
             }
           ]
         }
