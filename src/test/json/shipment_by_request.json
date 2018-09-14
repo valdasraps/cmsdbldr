@@ -22,7 +22,8 @@
           "Data" : [
             {
               "shi_request_number": "10",
-              "shi_comment" : "shippment request comment"
+              "shi_comment" : "shippment request comment",
+              "shi_part_id" : 100
             }
           ]
         }
