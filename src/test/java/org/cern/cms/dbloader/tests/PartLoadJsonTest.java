@@ -255,11 +255,11 @@ public class PartLoadJsonTest extends TestBase {
 
         // Tower Part
         Part tower = rootPart.getChildren().get(0);
-        assertEquals("TEST Tower", tower    .getKindOfPartName());
-        assertEquals("123000000001", tower.getBarcode());
-        assertEquals("TEST Tower 01", tower.getComment());
+        assertEquals("TEST Tower", tower.getKindOfPartName());
+        assertEquals("101010", tower.getBarcode());
+        assertEquals("TEST Tower 01 json", tower.getComment());
         assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
-        assertEquals("IBM", tower.getManufacturerName());
+        assertEquals("LENOVO", tower.getManufacturerName());
         assertEquals("University of Iowa", tower.getLocationName());
         assertEquals("University of Iowa", tower.getInstitutionName());
         assertNull(tower.getSerialNumber());
@@ -272,7 +272,7 @@ public class PartLoadJsonTest extends TestBase {
         assertEquals(3 , tower.getChildren().size());
 
         // Serial Parts
-        String[] serials = {"serial 01", "serial 02", "serial 03"};
+        String[] serials = {"serial a", "serial b", "serial c"};
         List<Part> packs = tower.getChildren();
         for (Part pack : packs) {
             assertNull(pack.getComment());
@@ -298,7 +298,7 @@ public class PartLoadJsonTest extends TestBase {
                 assertNull(child.getSerialNumber());
                 assertNull(child.getBarcode());
                 assertNull(child.getVersion());
-                assertTrue(Pattern.matches("B0[1-9]", child.getName()));
+                assertTrue(Pattern.matches("A0[1-9]", child.getName()));
                 assertNull(child.getRemovedDate());
                 assertNull(child.getInstalledUser());
                 assertNull(child.getRemovedUser());
@@ -327,10 +327,10 @@ public class PartLoadJsonTest extends TestBase {
         // Tower Part
         Part tower = rootPart.getChildren().get(0);
         assertEquals("TEST Tower", tower    .getKindOfPartName());
-        assertEquals("123000000001", tower.getBarcode());
-        assertEquals("TEST Tower 01", tower.getComment());
+        assertEquals("101010", tower.getBarcode());
+        assertEquals("TEST Tower 01 json", tower.getComment());
         assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
-        assertEquals("IBM", tower.getManufacturerName());
+        assertEquals("LENOVO", tower.getManufacturerName());
         assertEquals("University of Iowa", tower.getLocationName());
         assertEquals("University of Iowa", tower.getInstitutionName());
         assertNull(tower.getSerialNumber());
@@ -363,10 +363,10 @@ public class PartLoadJsonTest extends TestBase {
         assertEquals(1, rootPart.getChildren().size());
         Part chamber = rootPart.getChildren().get(0);
         assertEquals("GEM Chamber", chamber.getKindOfPartName());
-        assertEquals("GE1/1-X-S-CERN-0001", chamber.getName());
-        assertEquals("GE1/1-X-S-CERN-0001", chamber.getSerialNumber());
+        assertEquals("GE1/1-X-S-CERN-0001-JSON", chamber.getName());
+        assertEquals("GE1/1-X-S-CERN-0001-JSON", chamber.getSerialNumber());
         assertEquals("904", chamber.getLocationName());
-        assertEquals("00001", chamber.getBarcode());
+        assertEquals("00002", chamber.getBarcode());
         assertEquals(5 , chamber.getChildren().size());
         for (Part child : chamber.getChildren()) {
             // assertTrue(Pattern.matches("[A-Z]+-[A-Z_0-9]+-[A-Z]+-S-[0-9]+", child.getSerialNumber()));
@@ -543,6 +543,51 @@ public class PartLoadJsonTest extends TestBase {
                     .list();
 
             return  alogs;
+        }
+    }
+
+    /*
+        Converts xml to json
+     */
+    @Test
+    public void convertConstructXmlToJson() throws Exception {
+        boolean unique = true;
+        // String xmlPath = "src/test/xml/samples/Load_FNAL_TB2SModule_Rocs.xml";
+        // String xmlPath = "src/test/xml/samples/LoadTrackerSensors.xml"; Load_8CBC2_Flex_Prototypes.xml
+        // String xmlPath = "src/test/xml/samples/Load_8CBC2_Flex_Prototypes.xml"; Attach_8CBC2_Rocs_To_Flex.xml
+        // String xmlPath = "src/test/xml/samples/Attach_8CBC2_Rocs_To_Flex.xml";
+        // String xmlPath = "src/test/xml/samples/Attach_FlexToHybrid.xml";
+        String xmlPath = "src/test/xml/samples/Build_TB2SProto_Module.xml";
+        File xmlFile = new File(xmlPath);
+        XmlManager xmlMngr = new XmlManager();
+        JsonManager jsonMngr = new JsonManager();
+        Root root = xmlMngr.unmarshal(xmlFile);
+        if (!root.getParts().isEmpty()) {
+            if (unique) modifyParts(root.getParts());
+            // for (Part part : root.getParts()) {
+            //    part.setInsertUser("apoluden");
+            //    if (part.getSerialNumber() != null) part.setSerialNumber(prefix.concat(part.getSerialNumber()));
+            //    if (part.getBarcode() != null) part.setBarcode(prefix.concat(part.getBarcode()));
+            // }
+        }
+        String json = jsonMngr.<Root>serialiaze(root);
+        System.out.println(json);
+    }
+
+    /*
+        Modifies part: Barcode and SerialNumber with prefix
+        Recursive function!
+     */
+    private void modifyParts(List<Part> parts) {
+        String prefix = "ARTIOM_TEST_";
+        for (Part part : parts) {
+            part.setInsertUser("artiom");
+            if (part.getSerialNumber() != null) part.setSerialNumber(prefix.concat(part.getSerialNumber()));
+            if (part.getBarcode() != null) part.setBarcode(prefix.concat(part.getBarcode()));
+            if (part.getName() != null ) part.setName(prefix.concat(part.getName()));
+            if (!part.getChildren().isEmpty()) {
+                modifyParts(part.getChildren());
+            }
         }
     }
 }

@@ -1,0 +1,39 @@
+{
+  "Root": {
+    "Header": {
+      "Type": {
+        "Name": "Tracker Requests",
+        "ExtensionTableName": "TRK_REQUESTS"
+      },
+      "Run": {
+        "RunNumber": "10",
+        "RunType": "Tracker Requests",
+        "RunBeginTimestamp": "2015-11-03 17:00:00"
+      }
+    },
+    "Datasets": [
+      {
+        "Dataset": {
+          "CommentDescription": "Test TRQ request",
+          "CreatedByUser": "apoluden",
+          "CreateTimestamp": "2011-06-16 21:00:00",
+          "Subversion" : 1,
+          "PredefinedAttributes": [
+          ], 
+          "Data" : [
+            {
+              "req_name": "apoluden0",
+              "req_location_id": "101010",
+              "req_kind_of_part_id": "1000",
+              "req_quantity": "100",
+              "req_status" : "OPEN",
+              "req_status_comment" : "request comment", 
+              "req_status_date" : "2018-09-06",
+              "req_status_person": "apoluden1"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
