@@ -1,0 +1,33 @@
+{
+  "Root": {
+    "Header": {
+      "Type": {
+        "Name": "Tracker Shipment Items",
+        "ExtensionTableName": "TRK_SHIPMENT_ITEMS"
+      },
+      "Run": {
+        "RunNumber": "200",
+        "RunType": "Tracker Shipment Items",
+        "RunBeginTimestamp": "2015-11-03 17:00:00"
+      }
+    },
+    "Datasets": [
+      {
+        "Dataset": {
+          "CreatedByUser": "apoluden",
+          "CreateTimestamp": "2011-06-16 21:00:00",
+          "Subversion" : 4,
+          "PredefinedAttributes": [
+          ], 
+          "Data" : [
+            {
+              "shi_request_number": "10",
+              "shi_comment" : "shippment request comment",
+              "shi_part_id" : 100
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
