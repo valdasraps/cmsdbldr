@@ -99,8 +99,8 @@ Description=Start and stop CMS DB Loader service for ${det} at ${dat}
 Type=simple
 TimeoutSec=10sec
 PIDFile=/var/run/cmsdbldr_${det}_${dat}.pid
-ExecStart=/usr/bin/jsvc -server -pidfile /var/run/cmsdbldr_${det}_${dat}.pid -outfile /var/cmsdbldr/rest_${det}_${dat}.out.log -errfile /var/cmsdbldr/rest_${det}_${dat}.err.log -wait 30 -cp /opt/cmsdbldr/bin/cmsdbldr.jar org.cern.cms.dbloader.rest.Application $PROPS
-ExecStop=/usr/bin/jsvc -server -pidfile /var/run/cmsdbldr_${det}_${dat}.pid -outfile /var/cmsdbldr/rest_${det}_${dat}.out.log -errfile /var/cmsdbldr/rest_${det}_${dat}.err.log -wait 30 -stop -cp /opt/cmsdbldr/bin/cmsdbldr.jar org.cern.cms.dbloader.rest.Application $PROPS
+ExecStart=/usr/bin/jsvc -server -pidfile /var/run/cmsdbldr_${det}_${dat}.pid -outfile /var/cmsdbldr/rest_${det}_${dat}.out.log -errfile /var/cmsdbldr/rest_${det}_${dat}.err.log -wait 30 -cp /opt/cmsdbldr/bin/cmsdbldr.jar -Doracle.net.tns_admin=/etc org.cern.cms.dbloader.rest.Application $PROPS
+ExecStop=/usr/bin/jsvc -server -pidfile /var/run/cmsdbldr_${det}_${dat}.pid -outfile /var/cmsdbldr/rest_${det}_${dat}.out.log -errfile /var/cmsdbldr/rest_${det}_${dat}.err.log -wait 30 -stop -cp /opt/cmsdbldr/bin/cmsdbldr.jar -Doracle.net.tns_admin=/etc org.cern.cms.dbloader.rest.Application $PROPS
 
 EOF
 
