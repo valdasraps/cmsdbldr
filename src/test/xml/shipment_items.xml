@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <HEADER>
+        <RUN>
+            <RUN_BEGIN_TIMESTAMP>2015-11-03 17:00:00</RUN_BEGIN_TIMESTAMP>
+            <RUN_NUMBER>200</RUN_NUMBER>
+            <RUN_TYPE>Tracker Shipment Items</RUN_TYPE>
+        </RUN>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>TRK_SHIPMENT_ITEMS</EXTENSION_TABLE_NAME>
+            <NAME>Tracker Shipment Items</NAME>
+        </TYPE>
+    </HEADER>
+    <DATA_SET>
+        <CREATE_TIMESTAMP>2011-06-16 21:00:00</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>apoluden</CREATED_BY_USER>
+        <SUBVERSION>4</SUBVERSION>
+        <DATA>
+            <SHI_COMMENT>shippment request comment</SHI_COMMENT>
+            <SHI_PART_ID>100</SHI_PART_ID>
+            <SHI_REQUEST_NUMBER>10</SHI_REQUEST_NUMBER>
+        </DATA>
+    </DATA_SET>
+</ROOT>
