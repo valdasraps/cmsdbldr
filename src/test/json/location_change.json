@@ -1,0 +1,21 @@
+{
+  "Root": {
+    "Parts": [{
+      "Part": {
+        "Id": 3857,
+        "Location": "CERN Building 14",
+        "Institution": "CERN",
+        "KindOfPart": "Hamamatsu 2S Sensor",
+        "Children": []
+      }
+    }, {
+      "Part": {
+        "Id": 1971,
+        "Location": "CERN Building 14",
+        "Institution": "CERN",
+        "KindOfPart": "Tracker Prototype 2CBC3 Flex Stiffner",
+        "Children": []
+      }
+    }]
+  }
+}
