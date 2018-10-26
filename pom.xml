@@ -3,7 +3,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
