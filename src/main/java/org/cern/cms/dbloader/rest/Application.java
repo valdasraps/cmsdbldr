@@ -5,6 +5,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.daemon.Daemon;
@@ -14,9 +16,14 @@ import org.cern.cms.dbloader.manager.EntityModificationManager;
 import org.cern.cms.dbloader.manager.LogManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
+import org.cern.cms.dbloader.rest.provider.Load;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
  * RESTful API application for the single Loader
@@ -32,7 +39,7 @@ public class Application implements Daemon {
     public static ResourceFactory rf;
     
     private Server server;
-    
+
     public void setup(String[] args) throws Exception {
 
         if (args.length == 0) {
@@ -87,7 +94,7 @@ public class Application implements Daemon {
     private void initServer(final int port) {
         
         org.eclipse.jetty.util.log.Log.setLog(LogFactory.createLogger());
-        
+
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         context.setContextPath("/");
 
@@ -97,8 +104,10 @@ public class Application implements Daemon {
         server.setRequestLog(LogFactory.createRequestLogger());
 
         ServletHolder jersey = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
+
         jersey.setInitOrder(0);
-        
+        // http://qaru.site/questions/11412132/no-injection-source-found-for-a-parameter-of-type-public-javaxwsrscoreresponse-jersey-multipartfeature
+        jersey.setInitParameter(ServerProperties.PROVIDER_CLASSNAMES, MultiPartFeature.class.getCanonicalName());
         jersey.setInitParameter("jersey.config.server.provider.packages", "org.cern.cms.dbloader.rest.provider");
         
     }
