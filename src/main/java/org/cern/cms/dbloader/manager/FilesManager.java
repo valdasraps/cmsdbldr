@@ -61,6 +61,8 @@ public class FilesManager {
         for (File f : extractZip(archive.getFile())) {
             if ((XML_FILE.matcher(f.getAbsolutePath()).find()) || XMA_FILE.matcher(f.getAbsolutePath()).find()) {
                 files.add(rf.createDataFile(archive, f, DataFile.Type.XML));
+            } else if (JSON_FILE.matcher(f.getAbsolutePath()).find()) {
+                files.add(rf.createDataFile(archive, f, DataFile.Type.JSON));
             }
         }
         return files;
