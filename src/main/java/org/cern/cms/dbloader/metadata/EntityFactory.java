@@ -21,6 +21,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.manager.PropertyType;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
+import org.cern.cms.dbloader.manager.xml.TimestampAdapter;
 import org.cern.cms.dbloader.metadata.ClassBuilder.PropertyBuilder;
 
 @Log4j
@@ -67,8 +68,11 @@ public abstract class EntityFactory<T> {
             if (cmd.getType().equals(PropertyType.TEMPORAL)) {
                 pb.newFieldAnnotation(Temporal.class).addMember("value", TemporalType.TIMESTAMP).build();
                 pb.newFieldAnnotation(XmlJavaTypeAdapter.class).addMember("value", DateAdapter.class).build();
+            } else if (cmd.getType().equals(PropertyType.TIMESTAMP)) {
+                // pb.newFieldAnnotation(Temporal.class).addMember("value", TemporalType.TIMESTAMP).build();
+                pb.newFieldAnnotation(XmlJavaTypeAdapter.class).addMember("value", TimestampAdapter.class).build();
             }
-            
+
             modifyProperty(pb);
 
             pb.build();
