@@ -4,7 +4,7 @@ import com.google.inject.Injector;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Collections;
+import java.util.*;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FilenameUtils;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.manager.FilesManager;
+import org.cern.cms.dbloader.manager.JsonManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.rest.Application;
@@ -41,8 +42,12 @@ public class Load extends ProviderBase {
     
     @POST
     @Path("/load/json")
-    public final Response loadJson(String data) {
-        return load(data, "json");
+    public final Response loadJson(String data) throws Throwable {
+        if (data.startsWith("[") && data.endsWith("]")) {
+            return loadJsonArray(data, "json");
+        } else {
+            return load(data, "json");
+        }
     }
 
     @POST
@@ -105,6 +110,23 @@ public class Load extends ProviderBase {
             throw buildException(ex);
             
         }
+    }
+
+    public final Response loadJsonArray(final String data, final String ext)  throws Throwable {
+        JsonManager jmnger = new JsonManager();
+        List<String> roots = jmnger.deserilizeRootArray(data);
+        List<String> filePaths = new ArrayList<String>();
+        for (String root: roots) {
+            final java.nio.file.Path file = Files.createTempFile("Load.", ".".concat(ext));
+            Files.write(file, root.getBytes());
+            filePaths.add(file.toAbsolutePath().toString());
+        }
+        FilesManager fm = injector.getInstance(FilesManager.class);
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(filePaths)) {
+            loader.loadArchive(injector, fb);
+        }
+        return Response.status(Response.Status.OK).entity("loaded").type(MediaType.MULTIPART_FORM_DATA).build();
     }
 
     private final Response load(final String data, final String ext) {

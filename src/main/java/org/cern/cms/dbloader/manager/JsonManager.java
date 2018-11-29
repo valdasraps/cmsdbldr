@@ -12,6 +12,9 @@ import org.cern.cms.dbloader.model.serial.Root;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class JsonManager {
 
@@ -38,6 +41,17 @@ public class JsonManager {
         mapper.registerModule(module);
         root = this.mapper.readerFor(Root.class).readValue(file);
         return root;
+    }
+
+    public List<String> deserilizeRootArray(String data) throws IOException {
+        ObjectMapper om = new ObjectMapper();
+        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Object[] list = om.readerFor(Object[].class).readValue(data);
+        List<String> roots = new ArrayList<String>();
+        for (Object elmnt: list) {
+            roots.add(mapper.writeValueAsString(((LinkedHashMap) elmnt)));
+        }
+        return roots;
     }
 
     /**
