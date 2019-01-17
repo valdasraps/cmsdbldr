@@ -20,8 +20,8 @@ drop sequence ANY_REQUEST_ITM_ID_SEQ;
 
 */
 
-define det=TST
-define subdet=TEST
+-- define det=TST
+-- define subdet=TEST
 
 /* REQUESTS */
 
