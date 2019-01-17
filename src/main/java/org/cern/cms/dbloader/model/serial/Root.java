@@ -17,6 +17,8 @@ import lombok.ToString;
 
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.construct.ext.Request;
+import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.serial.map.Maps;
 
 @Getter
@@ -53,6 +55,16 @@ public class Root {
 	@JsonProperty("ChannelUpdates")
 	private List<ChannelUpdate> channelUpdates;
 
+	@XmlElementWrapper(name="REQUESTS")
+	@XmlElement(name="REQUEST", type=Request.class)
+	@JsonProperty("Requests")
+	private List<Request> requests;
+
+	@XmlElementWrapper(name="SHIPMENTS")
+	@XmlElement(name="SHIPMENT", type=Shipment.class)
+	@JsonProperty("Shipments")
+	private List<Shipment> shipments;
+        
 }
 
 

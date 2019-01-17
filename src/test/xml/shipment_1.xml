@@ -10,7 +10,6 @@
             
             <COMPANY_NAME>DHL</COMPANY_NAME>
             <TRACKING_NUMBER>SEAPS5000495784V2</TRACKING_NUMBER>
-            <COMMENT>shippment component comment</COMMENT>
             <DATE>2018-09-06</DATE>
             <PERSON>Artiom Poluden</PERSON>
             
@@ -26,6 +25,7 @@
                         
             <!-- Optional -->
             
+            <COMMENT_DESCRIPTION>shippment component comment</COMMENT_DESCRIPTION>
             <STATUS>PACKAGING</STATUS> <!-- Default: PACKAGING -->
             <ITEMS>
                 <ITEM>
@@ -40,7 +40,7 @@
                     <!-- Optional -->
                     
                     <REQUEST_NAME>Some request</REQUEST_NAME>
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -54,7 +54,7 @@
                     <!-- Optional -->
                     
                     <REQUEST_ID>123</REQUEST_ID>
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -76,7 +76,7 @@
 
                     <!-- Optional -->
                     
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -94,7 +94,7 @@
                     <!-- Optional -->
                     
                     <REQUEST_NAME>Some request</REQUEST_NAME>
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
             </ITEMS>
@@ -112,7 +112,7 @@
             <!-- Optional -->
                         
             <COMPANY_NAME>DHL</COMPANY_NAME>
-            <COMMENT>shippment component comment</COMMENT>
+            <COMMENT_DESCRIPTION>shippment component comment</COMMENT_DESCRIPTION>
             <DATE>2018-09-06</DATE>
             <PERSON>Artiom Poluden</PERSON>
             
@@ -138,7 +138,7 @@
 
                     <!-- Optional -->
                     <REQUEST_NAME>Some request</REQUEST_NAME>
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -150,7 +150,7 @@
 
                     <!-- Optional -->
                     <REQUEST_ID>123</REQUEST_ID>
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -170,7 +170,7 @@
                     </PART_ASSEMBLY>
 
                     <!-- Optional -->
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -186,7 +186,7 @@
 
                     <!-- Optional -->
                     <REQUEST_NAME>Some request</REQUEST_NAME>
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
             </ITEMS>

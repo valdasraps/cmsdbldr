@@ -9,7 +9,7 @@
             <!-- Required -->
             
             <NAME>Some request</NAME>
-            <COMMENT>Some comment</COMMENT>
+            <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
             <DATE>2018-09-06</DATE>
             <PERSON>Artiom Poluden</PERSON>
             
@@ -34,7 +34,7 @@
                     
                     <!-- Optional -->
                     
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -49,7 +49,7 @@
                     
                     <!-- Optional -->
                     
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
             </ITEMS>
@@ -72,7 +72,7 @@
             <!-- Optional -->
             
             <STATUS>CLOSED</STATUS> <!-- Default: OPEN -->
-            <COMMENT>Some comment</COMMENT>
+            <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
             <DATE>2018-09-06</DATE>
             <PERSON>Artiom Poluden</PERSON>
             <ITEMS>
@@ -89,7 +89,7 @@
                     
                     <!-- Optional -->
                     
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -106,7 +106,7 @@
                     
                     <!-- Optional -->
                     
-                    <COMMENT>Some comment</COMMENT>
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
             </ITEMS>

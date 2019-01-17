@@ -79,6 +79,10 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
             return DataFileType.KEY_ALIAS;
         } else if (root.getMaps().getTags() != null) {
             return DataFileType.CONDITION;
+        } else if (root.getRequests() != null) {
+            return DataFileType.REQUEST;
+        } else if (root.getShipments() != null) {
+            return DataFileType.SHIPMENT;
         }
 
         throw new XMLParseException(String.format("File type not resolved: %s", root));

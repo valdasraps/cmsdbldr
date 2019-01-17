@@ -28,7 +28,7 @@ public class ConfigApp extends AppBase{
 
         switch (file.getType()) {
             case VERSION_ALIAS:
-            dao.saveVersionAliases(root.getMaps().getVersionAliases(), alog);
+                dao.saveVersionAliases(root.getMaps().getVersionAliases(), alog);
             break;
             case KEY:
                 dao.saveKey(root.getMaps().getKey(), alog);

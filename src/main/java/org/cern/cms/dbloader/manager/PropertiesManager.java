@@ -29,6 +29,7 @@ public abstract class PropertiesManager {
     public static final String IOV_CORE_PACKAGE = MODEL_PACKAGE.concat(".iov");
     public static final String CONFIG_CORE_PACKAGE = MODEL_PACKAGE.concat(".config");
     public static final String MANAGEMNT_CORE_PACKAGE = MODEL_PACKAGE.concat(".managemnt");
+    public static final String CONSTRUCT_EXT_PACKAGE = CONSTRUCT_PACKAGE.concat(".ext");
     
     protected static final String URL_PREFIX = "jdbc:oracle:thin:@";
     protected static final Level DEFAULT_LEVEL = Level.ERROR;
