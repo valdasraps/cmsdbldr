@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <HEADER>
+        <RUN>
+            <RUN_BEGIN_TIMESTAMP>2015-11-03 17:00:00</RUN_BEGIN_TIMESTAMP>
+            <RUN_NUMBER>10</RUN_NUMBER>
+            <RUN_TYPE>Tracker Requests</RUN_TYPE>
+        </RUN>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>TRK_REQUESTS</EXTENSION_TABLE_NAME>
+            <NAME>Tracker Requests</NAME>
+        </TYPE>
+    </HEADER>
+    <DATA_SET>
+        <COMMENT_DESCRIPTION>Test TRQ request</COMMENT_DESCRIPTION>
+        <CREATE_TIMESTAMP>2011-06-16 21:00:00</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>apoluden</CREATED_BY_USER>
+        <SUBVERSION>1</SUBVERSION>
+        <DATA>
+            <REQ_KIND_OF_PART_ID>1000</REQ_KIND_OF_PART_ID>
+            <REQ_LOCATION_ID>101010</REQ_LOCATION_ID>
+            <REQ_NAME>apoluden0</REQ_NAME>
+            <REQ_QUANTITY>100</REQ_QUANTITY>
+            <REQ_STATUS>OPEN</REQ_STATUS>
+            <REQ_STATUS_COMMENT>request comment</REQ_STATUS_COMMENT>
+            <REQ_STATUS_DATE>2018-09-06</REQ_STATUS_DATE>
+            <REQ_STATUS_PERSON>apoluden1</REQ_STATUS_PERSON>
+        </DATA>
+    </DATA_SET>
+</ROOT>

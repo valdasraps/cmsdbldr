@@ -3,6 +3,8 @@ package org.cern.cms.dbloader.metadata;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javax.persistence.Basic;
@@ -19,6 +21,7 @@ import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.manager.PropertyType;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
+import org.cern.cms.dbloader.manager.xml.TimestampAdapter;
 import org.cern.cms.dbloader.metadata.ClassBuilder.PropertyBuilder;
 
 @Log4j
@@ -56,6 +59,8 @@ public abstract class EntityFactory<T> {
                     .newFieldAnnotation(Column.class).addMember("name", cmd.getColumnName()).build()
                     .newFieldAnnotation(XmlElement.class).addMember("name", cmd.getColumnName()).addMember("nillable", true).build();
 
+            pb.newFieldAnnotation(JsonProperty.class).addMember("value", cmd.getColumnName().toLowerCase()).build();
+
             if (cmd.getType().equals(PropertyType.CLOB)) {
                 pb.newFieldAnnotation(Lob.class).build();
             }
@@ -63,8 +68,11 @@ public abstract class EntityFactory<T> {
             if (cmd.getType().equals(PropertyType.TEMPORAL)) {
                 pb.newFieldAnnotation(Temporal.class).addMember("value", TemporalType.TIMESTAMP).build();
                 pb.newFieldAnnotation(XmlJavaTypeAdapter.class).addMember("value", DateAdapter.class).build();
+            } else if (cmd.getType().equals(PropertyType.TIMESTAMP)) {
+                // pb.newFieldAnnotation(Temporal.class).addMember("value", TemporalType.TIMESTAMP).build();
+                pb.newFieldAnnotation(XmlJavaTypeAdapter.class).addMember("value", TimestampAdapter.class).build();
             }
-            
+
             modifyProperty(pb);
 
             pb.build();

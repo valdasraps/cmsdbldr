@@ -19,7 +19,6 @@ public abstract class FileBase {
     
     public FileBase(File file) throws IOException {
         this.file = file;
-
         // Calculated MD5 and checks file for availability!
         try (FileInputStream fis = new FileInputStream(file)) {
             this.md5 = DigestUtils.md5Hex(fis);

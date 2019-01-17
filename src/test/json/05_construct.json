@@ -1,0 +1,36 @@
+{
+  "Root": {
+    "Parts": [
+      {
+        "Part": {
+          "KindOfPart": "TEST ROOT",
+          "NameLabel": "ROOT",
+          "PredifinedAttributes": [],
+          "Children": [
+            {
+              "Part": {
+                "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                "CommentDescription": "TEST Tower 01 json",
+                "KindOfPart": "TEST Tower",
+                "Manufacturer": "LENOVO",
+                "Barcode": "101010",
+                "InstalledDate": "2012-10-17 10:04:56",
+                "PredifinedAttributes": [
+                  {
+                    "Attribute": {
+                      "Name": "Duplicate catalog",
+                      "Value": "1"
+                    }
+                  }
+                ],
+                "Location": "University of Iowa",
+                "Institution": "University of Iowa",
+                "Children": []
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

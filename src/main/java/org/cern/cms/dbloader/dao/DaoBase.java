@@ -4,12 +4,12 @@ import com.google.inject.Inject;
 import javax.management.modelmbean.XMLParseException;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
-import org.cern.cms.dbloader.model.xml.map.AttrBase;
-import org.cern.cms.dbloader.model.xml.map.AttrCatalog;
-import org.cern.cms.dbloader.model.xml.map.Attribute;
-import org.cern.cms.dbloader.model.xml.map.CondAlgorithm;
-import org.cern.cms.dbloader.model.xml.map.ModeStage;
-import org.cern.cms.dbloader.model.xml.map.PositionSchema;
+import org.cern.cms.dbloader.model.serial.map.AttrBase;
+import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
+import org.cern.cms.dbloader.model.serial.map.Attribute;
+import org.cern.cms.dbloader.model.serial.map.CondAlgorithm;
+import org.cern.cms.dbloader.model.serial.map.ModeStage;
+import org.cern.cms.dbloader.model.serial.map.PositionSchema;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 

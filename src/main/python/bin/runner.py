@@ -87,7 +87,7 @@ class Loader:
         work = mkdtemp(prefix = filename + '-', dir = logs)
         self.vprint("Work: %s", work)
         
-        with open(JOBS_LOG,'r+') as f:
+        with open(JOBS_LOG,'w+') as f:
             f.seek(0, 2)
             f.write("%s\t%s\n" % (unicode(datetime.now()), work))
 

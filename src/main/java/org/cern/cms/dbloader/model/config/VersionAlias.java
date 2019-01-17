@@ -5,14 +5,12 @@ import lombok.Setter;
 import lombok.ToString;
 import org.cern.cms.dbloader.model.ConfigBase;
 import org.cern.cms.dbloader.model.condition.KindOfCondition;
-import org.cern.cms.dbloader.model.xml.Configuration;
+import org.cern.cms.dbloader.model.serial.Configuration;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**

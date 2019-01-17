@@ -10,10 +10,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
-import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
-import org.cern.cms.dbloader.manager.xml.DateAdapter;
-import org.cern.cms.dbloader.manager.xml.EventHandler;
+import org.cern.cms.dbloader.manager.xml.*;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
@@ -22,8 +19,8 @@ import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.KindOfCondition;
 import org.cern.cms.dbloader.model.condition.Run;
 import org.cern.cms.dbloader.model.construct.Part;
-import org.cern.cms.dbloader.model.xml.Header;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Header;
+import org.cern.cms.dbloader.model.serial.Root;
 
 public class CondXmlManager extends XmlManager {
 
@@ -49,7 +46,7 @@ public class CondXmlManager extends XmlManager {
 
         ums.setEventHandler(new EventHandler());
         ums.setAdapter(new DateAdapter());
-
+        ums.setAdapter(new TimestampAdapter());
         CondBaseAdapter condBaseAdapter = new CondBaseAdapter(getJAXBContext(), condeh.getEntityClass().getC());
         ums.setAdapter(CondBaseAdapter.class, condBaseAdapter);
 

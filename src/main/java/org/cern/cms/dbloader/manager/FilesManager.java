@@ -28,6 +28,7 @@ public class FilesManager {
     private static final Pattern XML_FILE = Pattern.compile("\\.xml$", Pattern.CASE_INSENSITIVE);
     private static final Pattern ZIP_FILE = Pattern.compile("\\.zip$", Pattern.CASE_INSENSITIVE);
     private static final Pattern XMA_FILE = Pattern.compile("\\.xma$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern JSON_FILE = Pattern.compile("\\.json$", Pattern.CASE_INSENSITIVE);
 
     @Inject
     private ResourceFactory rf;
@@ -37,16 +38,19 @@ public class FilesManager {
 
         for (String fileName : listOfFiles) {
             File f = new File(fileName);
-            
+
             if (XML_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(rf.createDataFile(rf.createArchiveFile(f), f));
+                files.add(rf.createDataFile(rf.createArchiveFile(f), f, DataFile.Type.XML));
             } else
 
             if (ZIP_FILE.matcher(f.getAbsolutePath()).find()) {
                 files.add(rf.createArchiveFile(f));
+            } else if(JSON_FILE.matcher(f.getAbsolutePath()).find()) {
+                files.add(rf.createDataFile(rf.createArchiveFile(f), f, DataFile.Type.JSON));
             } else {
-                throw new IllegalArgumentException(String.format("unknown file type (%s). Only .zip and .xml files accepted", fileName));
+                throw new IllegalArgumentException(String.format("unknown file type (%s). Only .zip and .serial files accepted", fileName));
             }
+
         }
 
         return files;
@@ -56,7 +60,9 @@ public class FilesManager {
         List<DataFile> files = new TreeList();
         for (File f : extractZip(archive.getFile())) {
             if ((XML_FILE.matcher(f.getAbsolutePath()).find()) || XMA_FILE.matcher(f.getAbsolutePath()).find()) {
-                files.add(rf.createDataFile(archive, f));
+                files.add(rf.createDataFile(archive, f, DataFile.Type.XML));
+            } else if (JSON_FILE.matcher(f.getAbsolutePath()).find()) {
+                files.add(rf.createDataFile(archive, f, DataFile.Type.JSON));
             }
         }
         return files;

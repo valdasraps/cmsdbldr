@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.cern.cms.dbloader.model.xml.map.AttrBase;
+import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.hibernate.annotations.Type;
 
 @Entity

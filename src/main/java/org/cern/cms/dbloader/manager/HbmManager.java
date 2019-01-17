@@ -78,6 +78,10 @@ public class HbmManager implements AutoCloseable {
                     pc.getTable().setSchema(props.getCoreConstructSchemaName());
                 }
 
+                if (pc.getEntityName().startsWith(PropertiesManager.CONSTRUCT_EXT_PACKAGE)) {
+                    pc.getTable().setSchema(props.getExtConstructSchemaName());
+                }
+
                 if (pc.getEntityName().startsWith(PropertiesManager.CONDITION_CORE_PACKAGE)) {
                     pc.getTable().setSchema(props.getCoreConditionSchemaName());
                 }

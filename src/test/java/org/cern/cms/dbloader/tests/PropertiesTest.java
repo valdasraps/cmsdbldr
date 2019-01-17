@@ -34,7 +34,7 @@ public class PropertiesTest extends TestBase {
             if (pname.contains("fail")) {
                 pname = "/" + pname;
                 try {
-                    pm1 = new PropertiesManager(load(pname), new String[] { "somefile.xml" }) {
+                    pm1 = new PropertiesManager(load(pname), new String[] { "somefile.serial" }) {
 
                         @Override
                         public boolean printHelp() {
@@ -61,8 +61,8 @@ public class PropertiesTest extends TestBase {
         }
     	
         assertEquals(2, pm.getArgs().size());
-        assertTrue(pm.getArgs().contains("file1.xml"));
-        assertTrue(pm.getArgs().contains("file2.xml"));
+        assertTrue(pm.getArgs().contains("file1.serial"));
+        assertTrue(pm.getArgs().contains("file2.serial"));
         
         
         assertEquals(props.getProperty("channel-class"), pm.getChannelClass());

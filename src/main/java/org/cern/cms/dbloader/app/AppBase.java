@@ -3,7 +3,6 @@ package org.cern.cms.dbloader.app;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
-import org.cern.cms.dbloader.model.xml.Root;
 
 public abstract class AppBase {
 

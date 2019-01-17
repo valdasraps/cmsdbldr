@@ -10,11 +10,14 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @MappedSuperclass
 @Setter @Getter
+@JsonIgnoreProperties({ "insertTime", "insertUser", "lastUpdateTime", "lastUpdateUser"})
 public abstract class EntityBase {
 
 	@Basic
@@ -42,6 +45,7 @@ public abstract class EntityBase {
 	@Basic
 	@Column(name="COMMENT_DESCRIPTION")
 	@XmlElement(name="COMMENT_DESCRIPTION")
+	@JsonProperty("CommentDescription")
 	private String comment;
 	
 }

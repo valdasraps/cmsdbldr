@@ -10,7 +10,7 @@ import org.cern.cms.dbloader.model.condition.KindOfCondition;
 import org.cern.cms.dbloader.model.config.*;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
-import org.cern.cms.dbloader.model.xml.Configuration;
+import org.cern.cms.dbloader.model.serial.Configuration;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 

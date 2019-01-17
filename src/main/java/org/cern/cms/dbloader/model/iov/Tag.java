@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +45,10 @@ import org.cern.cms.dbloader.model.DeleteableBase;
     @AttributeOverride(name = "lastUpdateTime", column = @Column(name = "RECORD_DEL_FLAG_TIME")),
     @AttributeOverride(name = "lastUpdateUser", column = @Column(name = "RECORD_DEL_FLAG_USER"))
 })
+@JsonIgnoreProperties({"parentTag", "iovs"})
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonRootName("Tag")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Tag extends DeleteableBase {
 
     @Id
@@ -51,6 +56,7 @@ public class Tag extends DeleteableBase {
     @GeneratedValue(generator = "CNDTAG_ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "CNDTAG_ID_SEQ", sequenceName = "CNDTAG_ID_SEQ", allocationSize = 20)
     @XmlAttribute(name = "id", required = true)
+    @JsonProperty("Id")
     private BigInteger id;
 
     @ManyToOne
@@ -61,11 +67,13 @@ public class Tag extends DeleteableBase {
     @Basic
     @Column(name = "TAG_NAME")
     @XmlElement(name = "TAG_NAME", required = true)
+    @JsonProperty("TagName")
     private String name;
 
     @Basic
     @Column(name = "DETECTOR_NAME")
     @XmlElement(name = "DETECTOR_NAME")
+    @JsonProperty("DetectorName")
     private String detectorName;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

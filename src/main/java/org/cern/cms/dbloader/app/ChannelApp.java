@@ -16,8 +16,8 @@ import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
-import org.cern.cms.dbloader.model.xml.ChannelUpdate;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.ChannelUpdate;
+import org.cern.cms.dbloader.model.serial.Root;
 
 @Log4j
 public class ChannelApp extends AppBase {

@@ -1,6 +1,0 @@
-Flask
-prettytable
-simplejson
-uwsgi
-suds
-honcho

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <REQUESTS>
+        
+        <!-- New REQUEST -->
+        
+        <REQUEST>
+        
+            <!-- Required -->
+            
+            <NAME>Some request</NAME>
+            <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+            <DATE>2018-09-06</DATE>
+            <PERSON>Artiom Poluden</PERSON>
+            
+            <!-- One of (1+2 or 3) is required -->
+            <LOCATION>University of Iowa</LOCATION>
+            <INSTITUTION>University of Iowa</INSTITUTION>
+            <!-- LOCATION_ID>100</LOCATION_ID-->
+
+            <!-- Optional -->
+            
+            <STATUS>OPEN</STATUS> <!-- Default: OPEN -->
+            <ITEMS>
+                <ITEM>
+                    
+                    <!-- One of (1 or 2) is required -->
+                    <KIND_OF_PART>TEST Tower</KIND_OF_PART>
+                    <!--KIND_OF_PART_ID>123</KIND_OF_PART_ID-->
+
+                    <!-- Required -->
+                    
+                    <QUANTITY>10</QUANTITY>
+                    
+                    <!-- Optional -->
+                    
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+
+                </ITEM>
+                <ITEM>
+                    
+                    <!-- One of (1 or 2) is required -->
+                    <KIND_OF_PART_ID>122</KIND_OF_PART_ID>
+                    <!--KIND_OF_PART>TEST Chip</KIND_OF_PART-->
+
+                    <!-- Required -->
+                    
+                    <QUANTITY>100</QUANTITY>
+                    
+                    <!-- Optional -->
+                    
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+
+                </ITEM>
+            </ITEMS>
+            
+        </REQUEST>
+        
+        <!-- Update REQUEST -->
+        
+        <REQUEST>
+        
+            <!-- Required -->
+            
+            <NAME>Some request</NAME>
+            
+            <!-- One of (1+2 or 3) is required -->
+            <LOCATION>University of Iowa</LOCATION>
+            <INSTITUTION>University of Iowa</INSTITUTION>
+            <!-- LOCATION_ID>100</LOCATION_ID-->
+
+            <!-- Optional -->
+            
+            <STATUS>CLOSED</STATUS> <!-- Default: OPEN -->
+            <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+            <DATE>2018-09-06</DATE>
+            <PERSON>Artiom Poluden</PERSON>
+            <ITEMS>
+                <ITEM>
+                    
+                    <!-- One of (1 or 2) is required -->
+                    <KIND_OF_PART>TEST Tower</KIND_OF_PART>
+                    <!--KIND_OF_PART_ID>123</KIND_OF_PART_ID-->
+
+
+                    <!-- Required -->
+                    
+                    <QUANTITY>10</QUANTITY>
+                    
+                    <!-- Optional -->
+                    
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+
+                </ITEM>
+                <ITEM>
+                    
+                    <!-- One of (1 or 2) is required -->
+                    <KIND_OF_PART_ID>122</KIND_OF_PART_ID>
+                    <!--KIND_OF_PART>TEST Chip</KIND_OF_PART-->
+                    
+
+
+                    <!-- Required -->
+                    
+                    <QUANTITY>100</QUANTITY>
+                    
+                    <!-- Optional -->
+                    
+                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+
+                </ITEM>
+            </ITEMS>
+            
+        </REQUEST>
+    </REQUESTS>
+</ROOT>

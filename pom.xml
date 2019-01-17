@@ -3,7 +3,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.0.15</version>
+    <version>0.1.1</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -108,6 +108,7 @@
                             <exclude>lt/emasina/resthub/*.class</exclude>
                         </excludes>
                     </instrumentation>
+                    <check/>
                 </configuration>
             </plugin>
             
@@ -144,12 +145,8 @@
                         <require>incron</require>
                         <require>httpd</require>
                         <require>python</require>
-                        <require>python-devel</require>
-                        <require>gcc</require>
-                        <require>mod_proxy_uwsgi</require>
 			<require>oracle-instantclient-tnsnames.ora</require>
-                        <require>python-setuptools</require>
-                        <require>python-virtualenv</require>
+                        <require>apache-commons-daemon-jsvc</require>
                     </requires>
                     <mappings>
                         <mapping>
@@ -173,28 +170,6 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directory>/opt/cmsdbldr/web</directory>
-                            <filemode>755</filemode>
-                            <username>dbspool</username>
-                            <groupname>dbspool</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/python/web</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>/opt/cmsdbldr/ext</directory>
-                            <filemode>755</filemode>
-                            <username>dbspool</username>
-                            <groupname>dbspool</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/python/ext</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
                             <directory>/opt/cmsdbldr/properties</directory>
                             <configuration>noreplace</configuration>
                             <filemode>755</filemode>
@@ -206,43 +181,6 @@
                             <filemode>755</filemode>
                             <username>dbspool</username>
                             <groupname>dbspool</groupname>
-                        </mapping>
-                        <mapping>
-                            <directory>/etc/httpd/conf.d</directory>
-                            <configuration>true</configuration>
-                            <directoryIncluded>false</directoryIncluded>
-                            <filemode>644</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/scripts/cmsdbldr.conf</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>/etc/rc.d/init.d</directory>
-                            <directoryIncluded>false</directoryIncluded>
-                            <filemode>755</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/scripts/cmsdbldr</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>/etc/systemd/system</directory>
-                            <directoryIncluded>false</directoryIncluded>
-                            <filemode>755</filemode>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/scripts/cmsdbldr.service</location>
-                                </source>
-                            </sources>
                         </mapping>
                     </mappings>
                     <preinstallScriptlet>
@@ -298,6 +236,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>4.1.7.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.1.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -416,9 +359,19 @@
             <version>2.27</version>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>2.27</version>
+        </dependency>
+        <dependency>
             <groupId>commons-daemon</groupId>
             <artifactId>commons-daemon</artifactId>
             <version>1.0.15</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.6</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -429,6 +382,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.9.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
         </dependency>
     </dependencies>
     <repositories>

@@ -16,7 +16,7 @@ import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.manager.xml.EventHandler;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

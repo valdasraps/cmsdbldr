@@ -1,0 +1,68 @@
+{
+  "Root": {
+    "Header": {
+      "Type": {
+        "deleted": false,
+        "Name": "IV",
+        "ExtensionTableName": "TEST_IV"
+      },
+      "Run": {
+        "deleted": false,
+        "CommentDescription": "run comment",
+        "RunNumber": "164654",
+        "RunType": "LOCAL-RUN",
+        "Location": "P5",
+        "InitiatedByUser": "apoluden",
+        "RunBeginTimestamp": "2009-01-01 00:00:00"
+      },
+      "Hints": {
+        "Hint": {
+          
+        }
+      }
+    },
+    "Datasets": [
+      {
+        "Dataset": {
+          "deleted": false,
+          "DataFilename": "HcalDetDiagLEDCalib_164654_1.xml",
+          "CommentDescription": "dataset comment",
+          "Version": "AUG_22_2018",
+          "Subversion": "1",
+          "ImageFileName": "data plot url or file path",
+          "CreatedByUser": "apoluden",
+          "NumberOfEventsInSet": 2000,
+          "SetNumber": 1,
+          "SetBeginTimestamp": "2009-01-01 00:00:00",
+          "SetEndTimestamp": "2009-01-01 00:00:00",
+          "PredefinedAttributes": [
+            {
+              "Attribute": {
+                "Name": "TEST Dataset status",
+                "Value": "VALID"
+              }
+            }
+          ], 
+          "Data" : [
+            { 
+              "voltage" : "3519.52",
+              "curr" : "9.50726",
+              "comment_description" : "HcalDetId"
+            }, 
+            { 
+              "voltage" : "2328.33", 
+              "curr" : "28.6467",
+              "comment_description" : "HcalDetId"
+            }, 
+            { 
+              "voltage" : "2388.64", 
+              "curr" : "8.52168",
+              "comment_description" : "HcalDetId"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+

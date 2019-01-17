@@ -34,7 +34,7 @@ public class CondLoadTest extends TestBase {
 
         CondManager condm = injector.getInstance(CondManager.class);
         CondEntityHandler ch = condm.getConditionHandler("IV");
-        
+
         String exampleFile = "target/iv_example.xml";
         
         assertEquals(ch, condm.getConditionHandler(ch.getId()));
@@ -60,7 +60,7 @@ public class CondLoadTest extends TestBase {
         FilesManager fm = injector.getInstance(FilesManager.class);
 
         String [] files = new String [] {
-            "src/test/xml/02_condition.xml"
+             "src/test/xml/02_condition.xml"
             ,"src/test/xml/03_condition.xml"
             ,"src/test/xml/04_condition.xml"
         };
@@ -75,7 +75,7 @@ public class CondLoadTest extends TestBase {
         try (HbmManager hbm = injector.getInstance(HbmManager.class)) {
             Session session = hbm.getSession();
             try {
-                
+
                 // Check 02_condition.xml
                 
                 Dataset ds = (Dataset) session.createCriteria(Dataset.class)
@@ -99,8 +99,8 @@ public class CondLoadTest extends TestBase {
                 assertEquals("This is some comment", tag.getComment());
                 
                 AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
-                                .add(Restrictions.eq("archiveFileName", "02_condition.xml"))
-                                .uniqueResult();
+                        .add(Restrictions.eq("archiveFileName", "02_condition.xml"))
+                        .uniqueResult();
                 
                 assertEquals("JUN_7_2011", alog.getVersion());
                 assertEquals((Integer) 2, alog.getSubversion());

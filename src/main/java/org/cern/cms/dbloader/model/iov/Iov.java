@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.*;
 import org.cern.cms.dbloader.model.condition.Dataset;
 
 import lombok.EqualsAndHashCode;
@@ -40,6 +41,10 @@ import lombok.ToString;
     @AttributeOverride(name = "lastUpdateTime", column = @Column(name = "RECORD_DEL_FLAG_TIME")),
     @AttributeOverride(name = "lastUpdateUser", column = @Column(name = "RECORD_DEL_FLAG_USER"))
 })
+@JsonIgnoreProperties({"tags", "datasets"})
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonRootName("Iov")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Iov extends IovBase {
 
     @Id
@@ -47,16 +52,19 @@ public class Iov extends IovBase {
     @GeneratedValue(generator = "CNDIOV_ID_SEQ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "CNDIOV_ID_SEQ", sequenceName = "CNDIOV_ID_SEQ", allocationSize = 20)
     @XmlAttribute(name = "id", required = true)
+    @JsonProperty("Id")
     private BigInteger id;
 
     @Basic
     @Column(name = "INTERVAL_OF_VALIDITY_BEGIN")
     @XmlElement(name = "INTERVAL_OF_VALIDITY_BEGIN", required = true)
+    @JsonProperty("IovBegin")
     private BigInteger iovBegin;
 
     @Basic
     @Column(name = "INTERVAL_OF_VALIDITY_END")
     @XmlElement(name = "INTERVAL_OF_VALIDITY_END", required = true)
+    @JsonProperty("IovEnd")
     private BigInteger iovEnd;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "iovs")

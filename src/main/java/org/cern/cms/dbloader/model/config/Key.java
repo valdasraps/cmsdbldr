@@ -1,19 +1,16 @@
 package org.cern.cms.dbloader.model.config;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.cern.cms.dbloader.model.ConfigBase;
-import org.cern.cms.dbloader.model.DeleteableBase;
-import org.cern.cms.dbloader.model.xml.Configuration;
+import org.cern.cms.dbloader.model.serial.Configuration;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 

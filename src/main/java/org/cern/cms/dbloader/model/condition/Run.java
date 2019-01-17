@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,9 @@ import org.cern.cms.dbloader.model.DeleteableBase;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false, of = {"id"})
+@JsonIgnoreProperties({"id"})
+@JsonRootName(value = "Run")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Run extends DeleteableBase {
 
     @Id
@@ -45,26 +49,31 @@ public class Run extends DeleteableBase {
     @Basic
     @Column(name = "RUN_NUMBER")
     @XmlElement(name = "RUN_NUMBER")
+    @JsonProperty("RunNumber")
     private String number;
 
     @Basic
     @Column(name = "RUN_NAME")
     @XmlElement(name = "RUN_NAME")
+    @JsonProperty("RunName")
     private String name;
 
     @Basic
     @Column(name = "RUN_TYPE")
     @XmlElement(name = "RUN_TYPE")
+    @JsonProperty("RunType")
     private String runType;
 
     @Basic
     @Column(name = "LOCATION")
     @XmlElement(name = "LOCATION")
+    @JsonProperty("Location")
     private String location;
 
     @Basic
     @Column(name = "INITIATED_BY_USER")
     @XmlElement(name = "INITIATED_BY_USER")
+    @JsonProperty("InitiatedByUser")
     private String initiatedByUser;
 
     @Basic
@@ -72,6 +81,8 @@ public class Run extends DeleteableBase {
     @Column(name = "RUN_BEGIN_TIMESTAMP")
     @XmlElement(name = "RUN_BEGIN_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonProperty("RunBeginTimestamp")
     private Date beginTime;
 
     @Basic
@@ -79,10 +90,13 @@ public class Run extends DeleteableBase {
     @Column(name = "RUN_END_TIMESTAMP")
     @XmlElement(name = "RUN_END_TIMESTAMP")
     @XmlJavaTypeAdapter(DateAdapter.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonProperty("RunEndTimestamp")
     private Date endTime;
 
     @Transient
     @XmlAttribute(name = "mode")
+    @JsonProperty("Mode")
     private String mode;
 
 }

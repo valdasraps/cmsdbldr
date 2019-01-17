@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -75,6 +76,7 @@ public class CondEntityHandler extends EntityHandler<CondBase> {
             @Override
             public void modifyClass(ClassBuilder cb) {
                 cb.newAnnotation(XmlRootElement.class).addMember("name", "DATA").build();
+                cb.newAnnotation(JsonRootName.class).addMember("value", "Data").build();
             }
 
         };

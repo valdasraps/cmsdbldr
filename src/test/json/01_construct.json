@@ -1,0 +1,204 @@
+{
+  "Root": {
+    "Parts": [
+      {
+        "Part": {
+          "KindOfPart": "TEST ROOT",
+          "NameLabel": "ROOT",
+          "PredifinedAttributes": [],
+          "Children": [
+            {
+              "Part": {
+                "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                "CommentDescription": "TEST Tower 01 json",
+                "KindOfPart": "TEST Tower",
+                "Manufacturer": "LENOVO",
+                "Barcode": "101010",
+                "InstalledDate": "2012-10-17 10:04:56",
+                "PredifinedAttributes": [],
+                "Location": "University of Iowa",
+                "Institution": "University of Iowa",
+                "Children": [
+                  {
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "TEST Pack",
+                      "SerialNumber": "serial a",
+                      "PredifinedAttributes": [],
+                      "Children": [
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A01",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "1"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        },
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A02",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "2"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        },
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A03",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "3"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "TEST Pack",
+                      "SerialNumber": "serial b",
+                      "PredifinedAttributes": [],
+                      "Children": [
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A04",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "4"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        },
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A05",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "5"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        },
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A06",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "6"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Part": {
+                      "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                      "KindOfPart": "TEST Pack",
+                      "SerialNumber": "serial c",
+                      "PredifinedAttributes": [],
+                      "Children": [
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A07",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "7"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        },
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A08",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "8"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        },
+                        {
+                          "Part": {
+                            "RecordInsertUser": "CMS_TST_PRTTYPE_TEST_WRITER",
+                            "KindOfPart": "TEST Board",
+                            "NameLabel": "A09",
+                            "PredifinedAttributes": [
+                              {
+                                "Attribute": {
+                                  "Name": "TEST Position",
+                                  "Value": "9"
+                                }
+                              }
+                            ],
+                            "Children": []
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

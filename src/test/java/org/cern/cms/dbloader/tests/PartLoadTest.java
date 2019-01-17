@@ -14,7 +14,7 @@ import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
-import org.cern.cms.dbloader.model.xml.map.PositionSchema;
+import org.cern.cms.dbloader.model.serial.map.PositionSchema;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;

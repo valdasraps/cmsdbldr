@@ -13,12 +13,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,7 @@ import org.hibernate.annotations.Type;
 @ToString
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonIgnoreProperties({"deleted"})
 public abstract class ChannelBase {
 
     @Id
@@ -46,6 +48,7 @@ public abstract class ChannelBase {
     @Basic
     @Column(name = "EXTENSION_TABLE_NAME")
     @XmlElement(name = "EXTENSION_TABLE_NAME")
+    @JsonProperty("ExtensionTableName")
     private String extensionTableName;
 
     @Basic

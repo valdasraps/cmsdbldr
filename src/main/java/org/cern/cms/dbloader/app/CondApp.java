@@ -11,14 +11,15 @@ import org.cern.cms.dbloader.manager.HelpPrinter;
 import org.cern.cms.dbloader.manager.LobManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.file.DataFile;
+import org.cern.cms.dbloader.manager.xml.CondJsonManager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.model.OptId;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.CondBase;
-import org.cern.cms.dbloader.model.xml.Header;
-import org.cern.cms.dbloader.model.xml.Root;
+import org.cern.cms.dbloader.model.serial.Header;
+import org.cern.cms.dbloader.model.serial.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -144,15 +145,19 @@ public class CondApp extends AppBase {
                 if (chaneh == null) {
                     throw new XMLParseException(String.format("Channel Map not resolved: %s", h.getHint()));
                 }
-
             }
         }
-
         // So far - success!
         log.info(String.format("%s (%s) with %d dataset and %s channel map to be processed", condeh.getId(), condeh.getName(), root.getDatasets().size(), chaneh));
 
-        CondXmlManager xmlm = new CondXmlManager(condeh, chaneh);
-        root = (Root) xmlm.unmarshal(file.getFile());
+        if (file.getFileType() == DataFile.Type.JSON) {
+            CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
+            root = jmanager.deserialize(file.getFile());
+
+        } else {
+            CondXmlManager xmlm = new CondXmlManager(condeh, chaneh);
+            root = (Root) xmlm.unmarshal(file.getFile());
+        }
 
         LobManager lobManager = new LobManager();
         lobManager.lobParser(root, condeh, file);

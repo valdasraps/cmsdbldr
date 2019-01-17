@@ -30,6 +30,9 @@ public class PropertyHandler {
 		if (tn.contains("TIMESTAMP")) {
 			this.className = "java.util.Date";
 			this.type = PropertyType.TEMPORAL;
+		} else if (tn.contains("DATE")) {
+			this.className = "java.util.Date";
+			this.type = PropertyType.TIMESTAMP;
 		} else {
 			if (tn.equals("CLOB")) {
 				this.className = "java.lang.String";

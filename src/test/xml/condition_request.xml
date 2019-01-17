@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!-- If DBloader throws 'XML Parse Exception: Dataset already exists:' change SUBVERSION NUMBER-->
+    <HEADER>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>TRK_REQUESTS</EXTENSION_TABLE_NAME>
+            <NAME>Tracker Requests</NAME>
+        </TYPE>
+        <RUN>
+            <RUN_NUMBER>100</RUN_NUMBER>
+            <RUN_TYPE>Tracker Requests</RUN_TYPE>
+            <RUN_BEGIN_TIMESTAMP>2015-11-03 19:00:00</RUN_BEGIN_TIMESTAMP>
+        </RUN>
+    </HEADER>
+
+    <DATA_SET>
+        <COMMENT_DESCRIPTION>Test TRQ request</COMMENT_DESCRIPTION>
+        <CREATE_TIMESTAMP>2011-06-17 00:00:00.0</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>apoluden</CREATED_BY_USER>
+    </DATA_SET>
+</ROOT>
