@@ -33,8 +33,7 @@
                     <!-- Required -->
                     
                     <PART>
-                        <NAME_LABEL>ROOT</NAME_LABEL>
-                        <KIND_OF_PART>TEST ROOT</KIND_OF_PART>
+                        <BARCODE>123000000001</BARCODE>
                     </PART>
 
                     <!-- Optional -->
@@ -48,7 +47,8 @@
                     <!-- Required -->
                     
                     <PART>
-                        <PART_ID>234</PART_ID>
+                        <SERIAL_NUMBER>serial 02</SERIAL_NUMBER>
+                        <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                     </PART>
 
                     <!-- Optional -->
@@ -76,24 +76,6 @@
 
                     <!-- Optional -->
                     
-                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
-
-                </ITEM>
-                <ITEM>
-                    
-                    <!-- Required -->
-                    
-                    <CHANNEL>
-                        <EXTENSION_TABLE_NAME>TEST_CHANNELS</EXTENSION_TABLE_NAME>
-                        <SUBDET>TEST</SUBDET>
-                        <IETA>1</IETA>
-                        <IPHI>1</IPHI>
-                        <DEPTH>1</DEPTH>
-                    </CHANNEL>
-
-                    <!-- Optional -->
-                    
-                    <REQUEST_NAME>Some request</REQUEST_NAME>
                     <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>
@@ -132,8 +114,8 @@
                     
                     <!-- Required -->
                     <PART>
-                        <NAME_LABEL>ROOT</NAME_LABEL>
-                        <KIND_OF_PART>TEST ROOT</KIND_OF_PART>
+                        <NAME_LABEL>B04</NAME_LABEL>
+                        <KIND_OF_PART>TEST Board</KIND_OF_PART>
                     </PART>
 
                     <!-- Optional -->
@@ -145,7 +127,8 @@
                     
                     <!-- Required -->
                     <PART>
-                        <PART_ID>234</PART_ID>
+                        <NAME_LABEL>B05</NAME_LABEL>
+                        <KIND_OF_PART>TEST Board</KIND_OF_PART>
                     </PART>
 
                     <!-- Optional -->
@@ -170,22 +153,6 @@
                     </PART_ASSEMBLY>
 
                     <!-- Optional -->
-                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
-
-                </ITEM>
-                <ITEM>
-                    
-                    <!-- Required -->
-                    <CHANNEL>
-                        <EXTENSION_TABLE_NAME>TEST_CHANNELS</EXTENSION_TABLE_NAME>
-                        <SUBDET>TEST</SUBDET>
-                        <IETA>1</IETA>
-                        <IPHI>1</IPHI>
-                        <DEPTH>1</DEPTH>
-                    </CHANNEL>
-
-                    <!-- Optional -->
-                    <REQUEST_NAME>Some request</REQUEST_NAME>
                     <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
 
                 </ITEM>

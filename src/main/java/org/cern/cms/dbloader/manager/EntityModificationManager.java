@@ -59,6 +59,13 @@ public class EntityModificationManager {
         "org.cern.cms.dbloader.model.construct.PartAttrList",
         "org.cern.cms.dbloader.model.construct.PartRelationship"
     };
+    
+    private final static String[] SQGENERATOR_SCHEMA_EXT_CONSTRUCT = new String[] {
+        "org.cern.cms.dbloader.model.construct.ext.Request",
+        "org.cern.cms.dbloader.model.construct.ext.RequestItem",
+        "org.cern.cms.dbloader.model.construct.ext.Shipment",
+        "org.cern.cms.dbloader.model.construct.ext.ShipmentItem"
+    };
 
     public static void modify(final PropertiesManager props) throws Exception {
 
@@ -113,6 +120,15 @@ public class EntityModificationManager {
             }.process();
         }
 
+        for (String pc : SQGENERATOR_SCHEMA_EXT_CONSTRUCT) {
+            new EntityModifier(pc) {
+                @Override
+                protected void modify() throws Exception {
+                    addFieldAnnotationAttribute("id", SequenceGenerator.class, "schema", props.getExtConstructSchemaName());
+                }
+            }.process();
+        }
+        
         new EntityModifier("org.cern.cms.dbloader.model.condition.KindOfCondition") {
             @Override
             protected void modify() throws Exception {

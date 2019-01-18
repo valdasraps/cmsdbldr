@@ -72,11 +72,6 @@ public class RequestItem extends EntityBase {
     @XmlElement(name = "KIND_OF_PART")
     @JsonProperty("KindOfPart")
     private String kindOfPartName;
-
-    @Transient
-    @XmlElement(name = "KIND_OF_PART_ID")
-    @JsonProperty("KindOfPartId")
-    private BigInteger kindOfPartId;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "RQI_REQ_ID")

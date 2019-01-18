@@ -12,6 +12,7 @@ public interface ResourceFactory {
 
     AuditLogHandler createAuditDao(FileBase df);
     CondDao createCondDao(SessionManager sm);
+    TrackingDao createTrackingDao(SessionManager sm);
     PartDao createPartDao(SessionManager sm);
     DatasetDao createDatasetDao(SessionManager sm);
     ChannelDao createChannelDao(SessionManager sm);

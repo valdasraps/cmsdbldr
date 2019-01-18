@@ -12,11 +12,8 @@
             <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
             <DATE>2018-09-06</DATE>
             <PERSON>Artiom Poluden</PERSON>
-            
-            <!-- One of (1+2 or 3) is required -->
             <LOCATION>University of Iowa</LOCATION>
             <INSTITUTION>University of Iowa</INSTITUTION>
-            <!-- LOCATION_ID>100</LOCATION_ID-->
 
             <!-- Optional -->
             
@@ -24,12 +21,9 @@
             <ITEMS>
                 <ITEM>
                     
-                    <!-- One of (1 or 2) is required -->
-                    <KIND_OF_PART>TEST Tower</KIND_OF_PART>
-                    <!--KIND_OF_PART_ID>123</KIND_OF_PART_ID-->
-
                     <!-- Required -->
                     
+                    <KIND_OF_PART>TEST Tower</KIND_OF_PART>
                     <QUANTITY>10</QUANTITY>
                     
                     <!-- Optional -->
@@ -39,12 +33,9 @@
                 </ITEM>
                 <ITEM>
                     
-                    <!-- One of (1 or 2) is required -->
-                    <KIND_OF_PART_ID>122</KIND_OF_PART_ID>
-                    <!--KIND_OF_PART>TEST Chip</KIND_OF_PART-->
-
                     <!-- Required -->
                     
+                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
                     <QUANTITY>100</QUANTITY>
                     
                     <!-- Optional -->
@@ -62,12 +53,9 @@
         
             <!-- Required -->
             
-            <NAME>Some request</NAME>
-            
-            <!-- One of (1+2 or 3) is required -->
-            <LOCATION>University of Iowa</LOCATION>
-            <INSTITUTION>University of Iowa</INSTITUTION>
-            <!-- LOCATION_ID>100</LOCATION_ID-->
+            <NAME>Some second request</NAME>
+            <LOCATION>MIF Baltupiai</LOCATION>
+            <INSTITUTION>Vilnius University</INSTITUTION>
 
             <!-- Optional -->
             
@@ -85,7 +73,7 @@
 
                     <!-- Required -->
                     
-                    <QUANTITY>10</QUANTITY>
+                    <QUANTITY>20</QUANTITY>
                     
                     <!-- Optional -->
                     
@@ -94,15 +82,10 @@
                 </ITEM>
                 <ITEM>
                     
-                    <!-- One of (1 or 2) is required -->
-                    <KIND_OF_PART_ID>122</KIND_OF_PART_ID>
-                    <!--KIND_OF_PART>TEST Chip</KIND_OF_PART-->
-                    
-
-
                     <!-- Required -->
                     
-                    <QUANTITY>100</QUANTITY>
+                    <KIND_OF_PART>TEST Pack</KIND_OF_PART>
+                    <QUANTITY>222</QUANTITY>
                     
                     <!-- Optional -->
                     

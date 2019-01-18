@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -110,7 +111,7 @@ public class Request extends EntityBase {
     @XmlElementWrapper(name="ITEMS")
     @XmlElement(name="ITEM", type = RequestItem.class)
     @JsonProperty("Items")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "request")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "request", cascade = CascadeType.ALL)
     private List<RequestItem> items;
     
 }

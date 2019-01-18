@@ -1,6 +1,5 @@
 package org.cern.cms.dbloader.dao;
 
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,14 +8,10 @@ import javax.management.modelmbean.XMLParseException;
 
 import lombok.extern.log4j.Log4j;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.cern.cms.dbloader.model.condition.ChannelBase;
-import org.cern.cms.dbloader.model.condition.ChannelMap;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.KindOfCondition;
 import org.cern.cms.dbloader.model.condition.Run;
-import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.iov.Iov;
 import org.cern.cms.dbloader.model.iov.Tag;
@@ -27,7 +22,6 @@ import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.model.serial.map.MapIov;
 import org.cern.cms.dbloader.model.serial.map.MapTag;
 import org.cern.cms.dbloader.model.serial.map.Maps;
-import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -38,13 +32,9 @@ import java.util.HashSet;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.condition.CondAttrList;
 import org.cern.cms.dbloader.model.condition.CondToAttrRltSh;
-import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Subqueries;
 
 @Log4j
 public class CondDao extends DaoBase {
@@ -114,7 +104,7 @@ public class CondDao extends DaoBase {
 
             if (ds.getPart() != null) {
 
-                Part dbPart = resolvePart(ds.getPart());
+                Part dbPart = resolvePart(ds.getPart(), true);
                 ds.setPart(dbPart);
 
                 if (alog.getSubdetectorName() == null) {
@@ -130,11 +120,11 @@ public class CondDao extends DaoBase {
 
             } else if (ds.getChannel() != null) {
 
-                resolveChannelMap(ds);
+                ds.setChannelMap(resolveChannelMap(ds.getChannel(), true));
 
             } else if (ds.getPartAssembly() != null) {
 
-                resolvePartAssembly(ds);
+                ds.setPart(resolvePartAssembly(ds.getPartAssembly(), true));
 
             }
 
@@ -143,7 +133,7 @@ public class CondDao extends DaoBase {
             ds.setExtensionTable(root.getHeader().getKindOfCondition().getExtensionTable());
 
             if (ds.getAttributes() != null) {
-                ds.setAttrList(new HashSet<CondAttrList>());
+                ds.setAttrList(new HashSet<>());
                 for (Attribute attr : ds.getAttributes()) {
                     ds.getAttrList().add(resolveAttribute(attr, ds));
                 }
@@ -243,96 +233,7 @@ public class CondDao extends DaoBase {
 
     }
 
-    private Part resolvePart(Part part) throws Exception {
 
-        Part xmPart = part;
-        Part dbPart = null;
-
-        // Get the part based on id 
-        if (xmPart.getId() != null) {
-            dbPart = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("id", xmPart.getId()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
-        }
-
-        // Get the part based on barcode
-        if (xmPart.getBarcode() != null) {
-            dbPart = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", xmPart.getBarcode()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
-
-        } else if (xmPart.getKindOfPartName() != null) {
-            KindOfPart kop = (KindOfPart) session.createCriteria(KindOfPart.class)
-                    .add(Restrictions.eq("name", xmPart.getKindOfPartName()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
-
-            // Get the part based on KindOfPart and Name
-            if (xmPart.getName() != null) {
-                dbPart = (Part) session.createCriteria(Part.class)
-                        .add(Restrictions.eq("name", xmPart.getName()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                        .add(Restrictions.eq("kindOfPart", kop))
-                        .uniqueResult();
-
-                // Get the part based on KindOfPart and SerialNumber
-            } else if (xmPart.getSerialNumber() != null) {
-                dbPart = (Part) session.createCriteria(Part.class)
-                        .add(Restrictions.eq("serialNumber", xmPart.getSerialNumber()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                        .add(Restrictions.eq("kindOfPart", kop))
-                        .uniqueResult();
-            }
-        }
-
-        // If part not resolved - give-up
-        if (dbPart == null) {
-            throw new XMLParseException(String.format("Not resolved: %s", xmPart));
-        }
-
-        log.info(String.format("Resolved: %s", dbPart));
-        
-        return dbPart;
-
-    }
-
-    private ChannelMap resolveChannelMap(Dataset ds) throws Exception {
-
-        ChannelBase xmChannel = ds.getChannel();
-        ChannelMap dbChannel;
-
-        Criteria c = session.createCriteria(xmChannel.getClass());
-
-        for (Field f : xmChannel.getClass().getDeclaredFields()) {
-            String name = f.getName();
-            Object value = PropertyUtils.getSimpleProperty(xmChannel, name);
-            if (value != null) {
-                c.add(Restrictions.eq(name, value));
-            }
-        }
-
-        ChannelBase cb = (ChannelBase) c.uniqueResult();
-
-        // If part not resolved - give-up
-        if (cb == null) {
-            throw new XMLParseException(String.format("Not resolved: %s", xmChannel));
-        }
-
-        dbChannel = (ChannelMap) session.get(ChannelMap.class, cb.getId());
-
-        // If part not resolved - give-up
-        if (dbChannel == null) {
-            throw new XMLParseException(String.format("Not resolved: %s", cb));
-        }
-
-        log.info(String.format("Resolved: %s", dbChannel));
-        ds.setChannelMap(dbChannel);
-
-        return dbChannel;
-
-    }
 
     private void checkDataset(Dataset ds) throws Exception {
 
@@ -393,45 +294,6 @@ public class CondDao extends DaoBase {
             session.save(tag);
         }
         return mapIov;
-    }
-
-    private void resolvePartAssembly(Dataset ds) throws Exception {
-        PartAssembly pa = ds.getPartAssembly();
-        Part parent = resolvePart(pa.getParentPart());
-
-        Attribute xmlAttr = pa.getAttribute();
-        AttrCatalog catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
-                .add(Restrictions.eq("name", xmlAttr.getName()))
-                .add(Restrictions.eq("deleted", Boolean.FALSE))
-                .uniqueResult();
-
-        if (catalog == null) {
-            throw new XMLParseException(String.format("Not resolved attribute catalog for %s", xmlAttr));
-        }
-        
-        AttrBase attrbase = resolveAttrBase(xmlAttr, catalog);
-        
-        Part child = (Part) session.createCriteria(Part.class)
-                .add(Restrictions.eq("deleted", Boolean.FALSE))
-                .add(Subqueries.propertyIn("id", 
-                        DetachedCriteria.forClass(PartAttrList.class)
-                                .add(Restrictions.eq("attrBase", attrbase))
-                                .add(Restrictions.eq("deleted", Boolean.FALSE))
-                                .setProjection(Projections.property("part"))))
-                .createCriteria("partTree")
-                    .createCriteria("parentPartTree")
-                        .add(Restrictions.eq("partId", parent.getId()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                .uniqueResult();
-        
-        if (child == null) {
-            throw new XMLParseException(String.format("Part can not be resolved for %s", pa));
-        } else {
-            log.info(String.format("Resolved: %s", child));
-        }
-        
-        ds.setPart(child);
-
     }
 
     private CondAttrList resolveAttribute(Attribute attr, Dataset ds) throws Exception {

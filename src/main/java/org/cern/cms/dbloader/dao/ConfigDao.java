@@ -37,10 +37,10 @@ public class ConfigDao extends DaoBase {
 
         PartDao partDao = rf.createPartDao(sm);
 
-        VersionAlias dbVersionAlias = null;
-        Dataset dbDataset = null;
-        Part dbPart = null;
-        KindOfCondition dbKoc = null;
+        VersionAlias dbVersionAlias;
+        Dataset dbDataset;
+        Part dbPart;
+        KindOfCondition dbKoc;
         Set<VersionAlias> dbVersionAliases = new HashSet<>();
         Set<VersionAliasDataset> dbVerAlDataset = new HashSet<>();
 
@@ -54,14 +54,15 @@ public class ConfigDao extends DaoBase {
                 dbVersionAlias = xmlVersionAlias;
             }
 
-            if (xmlVersionAlias.getConfig().size() == 0) {
+            if (xmlVersionAlias.getConfig().isEmpty()) {
                 throw new XMLParseException(String.format("Configuration not defined for: %s", xmlVersionAlias.getName()));
             }
 
             for (Configuration xmlConfig : xmlVersionAlias.getConfig()) {
+                
                 dbKoc = resolveKOC(xmlConfig.getKoc());
                 dbDataset = resolveDataset(xmlConfig.getDataset());
-                dbPart = partDao.resolvePart(xmlConfig.getPart(), new Stack<>());
+                dbPart = resolvePart(xmlConfig.getPart(), true);
 
                 if (dbKoc.equals(dbDataset.getKindOfCondition()) && dbPart.equals(dbDataset.getPart())) {
 
@@ -116,7 +117,7 @@ public class ConfigDao extends DaoBase {
 
                 dbDataset = resolveDataset(config.getDataset());
                 dbKoc = resolveKOC(config.getKoc());
-                dbPart = partDao.resolvePart(config.getPart(), new Stack<>());
+                dbPart = resolvePart(config.getPart(), true);
 
                 if (dbDataset.getKindOfCondition().equals(dbKoc) && dbDataset.getPart().equals(dbPart)) {
 
@@ -178,7 +179,7 @@ public class ConfigDao extends DaoBase {
                 for (Configuration config : key.getConfig()){
                     dbDataset = resolveDataset(config.getDataset());
                     dbKoc = resolveKOC(config.getKoc());
-                    dbPart = partDao.resolvePart(config.getPart(), new Stack<>());
+                    dbPart = resolvePart(config.getPart(), true);
 
                     if (dbDataset.getKindOfCondition().equals(dbKoc) && dbDataset.getPart().equals(dbPart)) {
                         log.info(String.format("Resolved Configuration for Key: %s", key.getName()));

@@ -137,6 +137,7 @@ public class DbLoader {
         PartApp partApp = injector.getInstance(PartApp.class);
         ChannelApp channelApp = injector.getInstance(ChannelApp.class);
         ConfigApp configApp = injector.getInstance(ConfigApp.class);
+        TrackingApp trackingApp = injector.getInstance(TrackingApp.class);
         
         // Start archive log if needed
         AuditLogHandler archiveLog = null;
@@ -177,6 +178,9 @@ public class DbLoader {
                         case KEY_ALIAS:
                         case VERSION_ALIAS:
                             app = configApp;
+                        case REQUEST:
+                        case SHIPMENT:
+                            app = trackingApp;
                     }
 
                     app.handleData(sm, data, dataLog.getLog());

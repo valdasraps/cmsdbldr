@@ -5,15 +5,12 @@ import java.util.Stack;
 import javax.management.modelmbean.XMLParseException;
 
 import org.cern.cms.dbloader.model.construct.KindOfPart;
-import org.cern.cms.dbloader.model.construct.Manufacturer;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.construct.PartRelationship;
 import org.cern.cms.dbloader.model.construct.PartToAttrRltSh;
 import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
-import org.cern.cms.dbloader.model.managemnt.Institution;
-import org.cern.cms.dbloader.model.managemnt.Location;
 import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
@@ -78,60 +75,24 @@ public class PartDao extends DaoBase {
 
     }
 
-    public Part resolvePart(Part part, Stack<PartsPair> pairs) throws Exception {
+    private Part resolvePart(Part part, Stack<PartsPair> pairs) throws Exception {
 
         Part xmlPart = part;
-        Part dbPart = null;
-        KindOfPart kop = null;
+        KindOfPart kop;
 
-        if (xmlPart.getId() != null) {
-
-            dbPart = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("id", xmlPart.getId()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
-
-        }
-
-        if (dbPart == null && xmlPart.getBarcode() != null) {
-
-            dbPart = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", xmlPart.getBarcode()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
-
-        }
-
+        Part dbPart = resolvePart(xmlPart, false);
         if (dbPart == null) {
-
-            kop = resolveKindOfPart(xmlPart);
-
-            // Get the part based on KindOfPart and Name
-            if (xmlPart.getName() != null) {
-                dbPart = (Part) session.createCriteria(Part.class)
-                        .add(Restrictions.eq("name", xmlPart.getName()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                        .add(Restrictions.eq("kindOfPart", kop))
-                        .uniqueResult();
-
-                // Get the part based on KindOfPart and SerialNumber
-            } else if (xmlPart.getSerialNumber() != null) {
-                dbPart = (Part) session.createCriteria(Part.class)
-                        .add(Restrictions.eq("serialNumber", xmlPart.getSerialNumber()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                        .add(Restrictions.eq("kindOfPart", kop))
-                        .uniqueResult();
-            }
-
-        }
-
-        if (dbPart == null) {
+            
+            kop = resolveKindOfPart(xmlPart.getKindOfPartName());
             dbPart = xmlPart;
             dbPart.setKindOfPart(kop);
+            
         }
 
         if (xmlPart.getLocationName() != null || xmlPart.getInstitutionName() != null) {
-            dbPart.setLocation(resolveInstituteLocation(part));
+            String locationName = part.getLocationName() != null ? part.getLocationName() : part.getInstitutionName();
+            String institutionName = part.getInstitutionName() != null ? part.getInstitutionName() : part.getLocationName();
+            dbPart.setLocation(resolveInstituteLocation(institutionName, locationName));
         }
 
         if (xmlPart.getManufacturerName() != null) {
@@ -209,75 +170,6 @@ public class PartDao extends DaoBase {
         log.info(String.format("Resolved: %s", relationship));
 
         return relationship;
-    }
-
-    private Location resolveInstituteLocation(Part part) {
-
-        String locationName = part.getLocationName() != null ? part.getLocationName() : part.getInstitutionName();
-        String institutionName = part.getInstitutionName() != null ? part.getInstitutionName() : part.getLocationName();
-
-        Institution institution = (Institution) session.createCriteria(Institution.class)
-                .add(Restrictions.eq("deleted", Boolean.FALSE))
-                .add(Restrictions.eq("name", institutionName))
-                .uniqueResult();
-
-        Location location = null;
-
-        if (institution != null) {
-            location = (Location) session.createCriteria(Location.class)
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .add(Restrictions.eq("name", locationName))
-                    .add(Restrictions.eq("institution", institution))
-                    .uniqueResult();
-        } else {
-            institution = new Institution();
-            institution.setName(institutionName);
-            institution.setInstituteCode(0); // Hard Coded
-            session.save(institution);
-        }
-
-        if (location == null) {
-            location = new Location();
-            location.setName(locationName);
-            location.setInstitution(institution);
-            session.save(location);
-            institution.getLocations().add(location);
-        }
-
-        log.info(String.format("Resolved: %s", location));
-        return location;
-    }
-
-    private Manufacturer resolveManufacturer(String name) {
-        Manufacturer m = (Manufacturer) session.createCriteria(Manufacturer.class)
-                .add(Restrictions.eq("deleted", Boolean.FALSE))
-                .add(Restrictions.eq("name", name)).
-                uniqueResult();
-
-        if (m == null) {
-            m = new Manufacturer();
-            m.setName(name);
-        }
-        log.info(String.format("Resolved: %s", m));
-        return m;
-    }
-
-    private KindOfPart resolveKindOfPart(Part part) throws XMLParseException {
-
-        if (part.getKindOfPartName() == null) {
-            throw new XMLParseException(String.format("Kind of part not defined for %s", part.getName()));
-        }
-
-        KindOfPart kop = (KindOfPart) session.createCriteria(KindOfPart.class)
-                .add(Restrictions.eq("name", part.getKindOfPartName()))
-                .add(Restrictions.eq("deleted", Boolean.FALSE))
-                .uniqueResult();
-
-        if (kop == null) {
-            throw new XMLParseException(String.format("Not resolved kind of part for: %s", part));
-        }
-
-        return kop;
     }
 
     private PartAttrList resolveAttribute(Attribute attr, Part part) throws Exception {
