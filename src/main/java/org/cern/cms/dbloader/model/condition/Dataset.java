@@ -187,7 +187,6 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "CHANNEL")
     @XmlJavaTypeAdapter(value = ChannelBaseAdapter.class)
     @JsonProperty("Channel")
-    // @JsonDeserialize(using = ChannelDeserializer.class)
     private ChannelBase channel;
 
     @Transient

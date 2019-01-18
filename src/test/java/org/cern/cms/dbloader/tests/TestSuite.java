@@ -6,20 +6,21 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    ChannelLoadZipTest.class,
-    PartLoadTest.class,
-    PartLoadJsonTest.class,
-    CondInfoTest.class,
-    ConditionXmlTest.class,
-    CondLoadTest.class,
-    CondLoadJsonTest.class,
-    // RequestLoadTest.class,
-    // ShipmentLoadTest.class,
-    CondLoadZipTest.class,
-    LobManagerTest.class,
-    PropertiesTest.class,
-    PropertyTypeTest.class,
-    TablePrinterTest.class
+//    ChannelLoadZipTest.class,
+//    PartLoadTest.class,
+//    PartLoadJsonTest.class,
+//    CondInfoTest.class,
+//    ConditionXmlTest.class,
+//    CondLoadTest.class,
+//    CondLoadJsonTest.class,
+//    //RequestLoadTest.class,
+//    // ShipmentLoadTest.class,
+//    CondLoadZipTest.class,
+//    LobManagerTest.class,
+//    PropertiesTest.class,
+//    PropertyTypeTest.class,
+//    TablePrinterTest.class
+    TrackingLoadTest.class
 })
 public class TestSuite {
 
