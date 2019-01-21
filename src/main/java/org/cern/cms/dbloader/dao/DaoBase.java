@@ -84,7 +84,7 @@ public abstract class DaoBase {
 
     }
     
-    protected Location resolveInstituteLocation(String institutionName, String locationName) {
+    protected final Location resolveInstituteLocation(String institutionName, String locationName) {
 
         Institution institution = (Institution) session.createCriteria(Institution.class)
                 .add(Restrictions.eq("deleted", Boolean.FALSE))

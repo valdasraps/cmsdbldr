@@ -13,6 +13,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,6 +57,15 @@ import org.cern.cms.dbloader.model.managemnt.Location;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Shipment extends EntityBase {
     
+    public static enum ShipmentStatus {
+        
+        PACKAGING,
+        SHIPPED,
+        RECEIVED,
+        CANCELED
+        
+    }
+    
     @Id
     @Column(name = "SHP_ID")
     @XmlElement(name = "ID")
@@ -79,7 +90,8 @@ public class Shipment extends EntityBase {
     @Column(name = "SHP_STATUS")
     @XmlElement(name = "STATUS")
     @JsonProperty("Status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ShipmentStatus status;
 
     @Basic
     @Column(name = "SHP_PERSON")

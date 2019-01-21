@@ -13,6 +13,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -58,6 +60,14 @@ import org.cern.cms.dbloader.model.managemnt.Location;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Request extends EntityBase {
     
+    public static enum RequestStatus {
+        
+        OPEN,
+        CLOSED,
+        CANCELED
+        
+    }
+    
     @Id
     @Column(name = "REQ_ID")
     @XmlElement(name = "ID")
@@ -76,7 +86,8 @@ public class Request extends EntityBase {
     @Column(name = "REQ_STATUS")
     @XmlElement(name = "STATUS")
     @JsonProperty("Status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private RequestStatus status;
 
     @Basic
     @Column(name = "REQ_PERSON")

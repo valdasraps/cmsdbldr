@@ -9,8 +9,10 @@ import javax.management.modelmbean.XMLParseException;
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.construct.ext.Request;
+import org.cern.cms.dbloader.model.construct.ext.Request.RequestStatus;
 import org.cern.cms.dbloader.model.construct.ext.RequestItem;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
+import org.cern.cms.dbloader.model.construct.ext.Shipment.ShipmentStatus;
 import org.cern.cms.dbloader.model.construct.ext.ShipmentItem;
 import org.cern.cms.dbloader.model.managemnt.Location;
 import org.hibernate.criterion.Restrictions;
@@ -18,9 +20,15 @@ import org.hibernate.criterion.Restrictions;
 @Log4j
 public class TrackingDao extends DaoBase {
 
+    private static final String IN_TRANSITION_LOCATION = "In transition";
+    private static final String IN_TRANSITION_INSTITUTION = "In transition";
+    
+    private final Location inTransitionLocation;
+    
     @Inject
     public TrackingDao(@Assisted SessionManager sm) throws Exception {
         super(sm);
+        this.inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION);
     }
     
     public void save(Request xmlRequest, AuditLog alog) throws Exception {
@@ -55,7 +63,7 @@ public class TrackingDao extends DaoBase {
             dbRequest = xmlRequest;
             
             if (dbRequest.getStatus() == null) {
-                dbRequest.setStatus("OPEN");
+                dbRequest.setStatus(RequestStatus.OPEN);
             }
             
             dbRequest.setLocation(location);
@@ -162,7 +170,7 @@ public class TrackingDao extends DaoBase {
             dbShipment = xmlShipment;
             
             if (dbShipment.getStatus() == null) {
-                dbShipment.setStatus("PACKAGING");
+                dbShipment.setStatus(ShipmentStatus.PACKAGING);
             }
             
         } else {
@@ -226,27 +234,47 @@ public class TrackingDao extends DaoBase {
             
         }
 
-        for (ShipmentItem dbItem: dbShipment.getItems()) {
+        for (ShipmentItem item: dbShipment.getItems()) {
             
-            if (dbItem.getRequestName() != null) {
+            if (item.getRequestName() != null) {
 
                 RequestItem requestItem = (RequestItem) session.createCriteria(RequestItem.class)
-                        .add(Restrictions.eq("kindOfPart", dbItem.getPart().getKindOfPart()))
+                        .add(Restrictions.eq("kindOfPart", item.getPart().getKindOfPart()))
                         .createCriteria("request")
-                            .add(Restrictions.eq("name", dbItem.getRequestName()))
+                            .add(Restrictions.eq("name", item.getRequestName()))
                             .add(Restrictions.eq("location", dbShipment.getToLocation()))
                         .uniqueResult();
 
                 if (requestItem == null) {
-                    throw new XMLParseException(String.format("Shipment item request not found for %s", dbItem));
+                    throw new XMLParseException(String.format("Shipment item request not found for %s", item));
                 }
 
-                dbItem.setRequestItem(requestItem);
+                item.setRequestItem(requestItem);
 
             }
             
-            if (dbItem.getShipment() == null) {
-                dbItem.setShipment(dbShipment);
+            if (item.getShipment() == null) {
+                item.setShipment(dbShipment);
+            }
+
+            switch (dbShipment.getStatus()) {
+                
+                case PACKAGING:
+                case CANCELED:
+                    
+                    item.getPart().setLocation(dbShipment.getFromLocation());
+                    break;
+                    
+                case SHIPPED:
+                    
+                    item.getPart().setLocation(inTransitionLocation);
+                    break;
+
+                case RECEIVED:
+                    
+                    item.getPart().setLocation(dbShipment.getToLocation());
+                    break;
+                    
             }
             
         }

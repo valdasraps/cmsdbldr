@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import static junit.framework.TestCase.*;
 import org.cern.cms.dbloader.model.construct.ext.Request;
+import org.cern.cms.dbloader.model.construct.ext.Request.RequestStatus;
 
 public class TrackRequestLoadTest extends TestBase {
 
@@ -46,7 +47,7 @@ public class TrackRequestLoadTest extends TestBase {
 
                 assertEquals("Requesting packs and boards to 904", req.getComment());
                 //assertEquals(DATE_FORMAT.parse("2019-01-21 00:00:00"), req.getDate());
-                assertEquals("OPEN", req.getStatus());
+                assertEquals(RequestStatus.OPEN, req.getStatus());
                 assertEquals("Artiom Poluden", req.getPerson());
                 assertEquals("904", req.getLocation().getName());
                 assertEquals("CERN", req.getLocation().getInstitution().getName());
@@ -64,7 +65,7 @@ public class TrackRequestLoadTest extends TestBase {
 
                 assertEquals("Requesting some too", req.getComment());
                 //assertEquals(DATE_FORMAT.parse("2019-01-20 00:00:00 GMT"), req.getDate());
-                assertEquals("OPEN", req.getStatus());
+                assertEquals(RequestStatus.OPEN, req.getStatus());
                 assertEquals("Artiom Poluden", req.getPerson());
                 assertEquals("MIF Baltupiai", req.getLocation().getName());
                 assertEquals("Vilnius University", req.getLocation().getInstitution().getName());
@@ -119,7 +120,7 @@ public class TrackRequestLoadTest extends TestBase {
 
                 assertEquals("Requesting packs and boards to 904", req.getComment());
                 //assertEquals(DATE_FORMAT.parse("2019-01-21 00:00:00"), req.getDate());
-                assertEquals("OPEN", req.getStatus());
+                assertEquals(RequestStatus.OPEN, req.getStatus());
                 assertEquals("Artiom Poluden", req.getPerson());
                 assertEquals("904", req.getLocation().getName());
                 assertEquals("CERN", req.getLocation().getInstitution().getName());
@@ -137,7 +138,7 @@ public class TrackRequestLoadTest extends TestBase {
 
                 assertEquals("No need after all", req.getComment());
                 //assertEquals(DATE_FORMAT.parse("2019-01-20 00:00:00 GMT"), req.getDate());
-                assertEquals("CANCELED", req.getStatus());
+                assertEquals(RequestStatus.CANCELED, req.getStatus());
                 assertEquals("Artiom Poluden", req.getPerson());
                 assertEquals("MIF Baltupiai", req.getLocation().getName());
                 assertEquals("Vilnius University", req.getLocation().getInstitution().getName());
