@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -58,7 +59,7 @@ public class Shipment extends EntityBase {
     @Column(name = "SHP_ID")
     @XmlElement(name = "ID")
     @GeneratedValue(generator = "ANY_SHIPMENTS_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ANY_SHIPMENTS_ID_SEQ", sequenceName = "ANY_SHIPMENTS_ID_SEQ")
+    @SequenceGenerator(name = "ANY_SHIPMENTS_ID_SEQ", sequenceName = "ANY_SHIPMENTS_ID_SEQ", allocationSize = 20)
     @JsonProperty("Id")
     private BigInteger id;
 
@@ -128,7 +129,7 @@ public class Shipment extends EntityBase {
     @XmlElementWrapper(name="ITEMS")
     @XmlElement(name="ITEM", type = ShipmentItem.class)
     @JsonProperty("Items")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shipment")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shipment", cascade = CascadeType.ALL)
     private List<ShipmentItem> items;
     
 }

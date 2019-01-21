@@ -34,14 +34,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.cern.cms.dbloader.manager.ChannelDeserializer;
 import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;

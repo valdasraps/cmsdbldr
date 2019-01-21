@@ -53,7 +53,7 @@ public class RequestItem extends EntityBase {
     @Column(name = "RQI_ID")
     @XmlElement(name = "ID")
     @GeneratedValue(generator = "ANY_REQUEST_ITM_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ANY_REQUEST_ITM_ID_SEQ", sequenceName = "ANY_REQUEST_ITM_ID_SEQ")
+    @SequenceGenerator(name = "ANY_REQUEST_ITM_ID_SEQ", sequenceName = "ANY_REQUEST_ITM_ID_SEQ", allocationSize = 20)
     @JsonProperty("Id")
     private BigInteger id;
 

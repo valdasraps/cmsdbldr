@@ -122,6 +122,21 @@ PROMPT Deleting CMS_TST_CORE_MANAGEMNT.INSTITUTIONS table.
 delete from CMS_TST_CORE_MANAGEMNT.INSTITUTIONS
 /
 
+PROMPT connecting to CMS_TST_TEST_CONSTRUCT
+connect CMS_TST_TEST_CONSTRUCT/testing@&&1
+
+delete from SHIPMENT_ITEMS
+/
+
+delete from SHIPMENTS
+/
+
+delete from REQUEST_ITEMS
+/
+
+delete from REQUESTS
+/
+
 @create.sql
 
 quit

@@ -17,10 +17,10 @@ public class PropertyTypeTest {
 
         pt1.property = PropertyType.BLOB;
         pt1.property = PropertyType.OTHER;
-        assertNotEquals(pt1.property.ordinal(), 3);
-        assertEquals(pt1.property.ordinal(), 0);
+        assertNotEquals(3, pt1.property.ordinal());
+        assertEquals(0, pt1.property.ordinal());
 
         pt2.property = PropertyType.CLOB;
-        assertEquals(pt2.property.ordinal(), 2);
+        assertEquals(3, pt2.property.ordinal());
     }
 }

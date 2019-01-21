@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <SHIPMENTS>
+
+        <SHIPMENT>
+
+            <COMPANY_NAME>DHL</COMPANY_NAME>
+            <TRACKING_NUMBER>SEAPS5000495784V3</TRACKING_NUMBER>
+            <DATE>2019-01-22</DATE>
+            <PERSON>Artiom Poluden</PERSON>
+            
+            <!-- One of (1+2 or 3) is required -->
+            <FROM_LOCATION>FNAL</FROM_LOCATION>
+            <FROM_INSTITUTION>FNAL</FROM_INSTITUTION>
+            <!-- FROM_LOCATION_ID>100</FROM_LOCATION_ID-->
+
+            <!-- One of (1+2 or 3) is required -->
+            <TO_LOCATION>904</TO_LOCATION>
+            <TO_INSTITUTION>CERN</TO_INSTITUTION>
+            <!-- TO_LOCATION_ID>111</TO_LOCATION_ID-->
+                        
+            <!-- Optional -->
+            
+            <COMMENT_DESCRIPTION>Shipping requested parts</COMMENT_DESCRIPTION>
+            
+            <ITEMS>
+                <ITEM>
+
+                    <PART_ASSEMBLY>
+                      <PARENT_PART>
+                        <KIND_OF_PART>TEST Pack</KIND_OF_PART>
+                        <SERIAL_NUMBER>serial 01</SERIAL_NUMBER>
+                      </PARENT_PART>
+                      <CHILD_UNIQUELY_IDENTIFIED_BY>
+                        <ATTRIBUTE>
+                          <NAME>TEST Position</NAME>
+                          <VALUE>3</VALUE>
+                        </ATTRIBUTE>
+                      </CHILD_UNIQUELY_IDENTIFIED_BY>
+                    </PART_ASSEMBLY>
+
+                    <REQUEST_NAME>Request 1</REQUEST_NAME>
+                    <COMMENT_DESCRIPTION>Shipping board by assembly</COMMENT_DESCRIPTION>
+
+                </ITEM>
+            </ITEMS>
+            
+        </SHIPMENT>
+        
+    </SHIPMENTS>
+</ROOT>

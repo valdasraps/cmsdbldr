@@ -56,7 +56,7 @@ public class ShipmentItem extends EntityBase {
     @Column(name = "SHI_ID")
     @XmlElement(name = "ID")
     @GeneratedValue(generator = "ANY_SHIPMENT_ITM_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ANY_SHIPMENT_ITM_ID_SEQ", sequenceName = "ANY_SHIPMENT_ITM_ID_SEQ")
+    @SequenceGenerator(name = "ANY_SHIPMENT_ITM_ID_SEQ", sequenceName = "ANY_SHIPMENT_ITM_ID_SEQ", allocationSize = 20)
     @JsonProperty("Id")
     private BigInteger id;
 
@@ -71,7 +71,7 @@ public class ShipmentItem extends EntityBase {
     private BigInteger requestId;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SHI_REQ_ID")
+    @JoinColumn(name = "SHI_RQI_ID")
     @XmlTransient
     private RequestItem requestItem;
     

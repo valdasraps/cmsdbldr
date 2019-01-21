@@ -2,13 +2,8 @@ package org.cern.cms.dbloader.tests;
 
 import junit.framework.TestCase;
 import org.cern.cms.dbloader.DbLoader;
-import org.cern.cms.dbloader.app.PartApp;
-import org.cern.cms.dbloader.dao.PartDao;
-import org.cern.cms.dbloader.handler.AuditLogHandler;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.XmlManager;
-import org.cern.cms.dbloader.manager.file.ArchiveFile;
-import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
@@ -258,7 +253,7 @@ public class PartLoadJsonTest extends TestBase {
         assertEquals("TEST Tower", tower.getKindOfPartName());
         assertEquals("101010", tower.getBarcode());
         assertEquals("TEST Tower 01 json", tower.getComment());
-        assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
+        assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56 GMT"), tower.getInstalledDate());
         assertEquals("LENOVO", tower.getManufacturerName());
         assertEquals("University of Iowa", tower.getLocationName());
         assertEquals("University of Iowa", tower.getInstitutionName());
@@ -329,7 +324,7 @@ public class PartLoadJsonTest extends TestBase {
         assertEquals("TEST Tower", tower    .getKindOfPartName());
         assertEquals("101010", tower.getBarcode());
         assertEquals("TEST Tower 01 json", tower.getComment());
-        assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
+        assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56 GMT"), tower.getInstalledDate());
         assertEquals("LENOVO", tower.getManufacturerName());
         assertEquals("University of Iowa", tower.getLocationName());
         assertEquals("University of Iowa", tower.getInstitutionName());
@@ -400,7 +395,7 @@ public class PartLoadJsonTest extends TestBase {
             assertEquals("TEST Tower", tower.getKindOfPart().getName());
             assertEquals("101010", tower.getBarcode());
             assertEquals("TEST Tower 01 json", tower.getComment());
-            assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56"), tower.getInstalledDate());
+            assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56 GMT"), tower.getInstalledDate());
             assertEquals("LENOVO", tower.getManufacturer().getName());
             assertEquals("University of Iowa", tower.getLocation().getName());
             assertEquals("University of Iowa", tower.getLocation().getInstitution().getName());
@@ -549,7 +544,7 @@ public class PartLoadJsonTest extends TestBase {
     /*
         Converts xml to json
      */
-    @Test
+    //@Test
     public void convertConstructXmlToJson() throws Exception {
         boolean unique = true;
         // String xmlPath = "src/test/xml/samples/Load_FNAL_TB2SModule_Rocs.xml";

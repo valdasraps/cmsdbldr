@@ -354,7 +354,7 @@ public class CondLoadJsonTest extends TestBase {
         Run run = header.getRun();
         assertEquals("1", run.getNumber());
         assertEquals("1", run.getRunType());
-        assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00"), run.getBeginTime());
+        assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00 GMT"), run.getBeginTime());
         // Hint
         assertNotNull(header.getHint());
         Hint hint = header.getHint();
@@ -400,7 +400,7 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals(1, datasetList.size());
         Dataset dataset = datasetList.get(0);
         assertEquals("Any comment", dataset.getComment());
-        assertEquals(DATE_FORMAT.parse("2011-06-17 00:00:00"), dataset.getCreateTimestamp());
+        assertEquals(DATE_FORMAT.parse("2011-06-17 00:00:00 GMT"), dataset.getCreateTimestamp());
         assertEquals("apoluden", dataset.getCreatedByUser());
         assertEquals("AUG_20_2018", dataset.getVersion());
         assertEquals("2", dataset.getSubversion());
@@ -449,7 +449,7 @@ public class CondLoadJsonTest extends TestBase {
         Run run = header.getRun();
         assertEquals("1", run.getNumber());
         assertEquals("1", run.getRunType());
-        assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00"), run.getBeginTime());
+        assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00 GMT"), run.getBeginTime());
         // Hint
         assertNotNull(header.getHint());
         Hint hint = header.getHint();
@@ -461,7 +461,7 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals(1, datasetList.size());
         Dataset dataset = datasetList.get(0);
         assertEquals("Any comment", dataset.getComment());
-        assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00"), dataset.getCreateTimestamp());
+        assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00 GMT"), dataset.getCreateTimestamp());
         assertEquals("apoluden", dataset.getCreatedByUser());
         assertEquals("AUG_21_2018", dataset.getVersion());
         assertEquals("1", dataset.getSubversion());
@@ -519,7 +519,7 @@ public class CondLoadJsonTest extends TestBase {
         Run run = header.getRun();
         assertEquals("164654", run.getNumber());
         assertEquals("LOCAL-RUN", run.getRunType());
-        assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00"), run.getBeginTime());
+        assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00 GMT"), run.getBeginTime());
         assertEquals("LOCAL-RUN", run.getRunType());
         assertEquals("apoluden", run.getInitiatedByUser());
         assertEquals("P5", run.getLocation());
@@ -530,8 +530,8 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals(1, datasetList.size());
         Dataset dataset = datasetList.get(0);
         assertEquals("dataset comment", dataset.getComment());
-        assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00"), dataset.getSetBeginTime());
-        assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00"), dataset.getSetEndTime());
+        assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00 GMT"), dataset.getSetBeginTime());
+        assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00 GMT"), dataset.getSetEndTime());
         assertEquals("apoluden", dataset.getCreatedByUser());
         assertEquals("AUG_22_2018", dataset.getVersion());
         assertEquals("1", dataset.getSubversion());

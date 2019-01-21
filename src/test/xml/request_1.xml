@@ -8,27 +8,26 @@
         
             <!-- Required -->
             
-            <NAME>Some request</NAME>
-            <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
-            <DATE>2018-09-06</DATE>
+            <NAME>Request 1</NAME>
+            <COMMENT_DESCRIPTION>Requesting packs and boards to 904</COMMENT_DESCRIPTION>
+            <DATE>2019-01-21</DATE>
             <PERSON>Artiom Poluden</PERSON>
-            <LOCATION>University of Iowa</LOCATION>
-            <INSTITUTION>University of Iowa</INSTITUTION>
+            <LOCATION>904</LOCATION>
+            <INSTITUTION>CERN</INSTITUTION>
 
             <!-- Optional -->
             
-            <STATUS>OPEN</STATUS> <!-- Default: OPEN -->
             <ITEMS>
                 <ITEM>
                     
                     <!-- Required -->
                     
-                    <KIND_OF_PART>TEST Tower</KIND_OF_PART>
-                    <QUANTITY>10</QUANTITY>
+                    <KIND_OF_PART>TEST Pack</KIND_OF_PART>
+                    <QUANTITY>5</QUANTITY>
                     
                     <!-- Optional -->
                     
-                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+                    <COMMENT_DESCRIPTION>Need test packs</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
@@ -36,11 +35,11 @@
                     <!-- Required -->
                     
                     <KIND_OF_PART>TEST Board</KIND_OF_PART>
-                    <QUANTITY>100</QUANTITY>
+                    <QUANTITY>10</QUANTITY>
                     
                     <!-- Optional -->
                     
-                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+                    <COMMENT_DESCRIPTION>Need test Boards</COMMENT_DESCRIPTION>
 
                 </ITEM>
             </ITEMS>
@@ -53,15 +52,15 @@
         
             <!-- Required -->
             
-            <NAME>Some second request</NAME>
+            <NAME>Request 1</NAME>
             <LOCATION>MIF Baltupiai</LOCATION>
             <INSTITUTION>Vilnius University</INSTITUTION>
 
             <!-- Optional -->
             
-            <STATUS>CLOSED</STATUS> <!-- Default: OPEN -->
-            <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
-            <DATE>2018-09-06</DATE>
+            <STATUS>OPEN</STATUS> <!-- Default: OPEN -->
+            <COMMENT_DESCRIPTION>Requesting some too</COMMENT_DESCRIPTION>
+            <DATE>2019-01-20</DATE>
             <PERSON>Artiom Poluden</PERSON>
             <ITEMS>
                 <ITEM>
@@ -73,23 +72,23 @@
 
                     <!-- Required -->
                     
-                    <QUANTITY>20</QUANTITY>
+                    <QUANTITY>2</QUANTITY>
                     
                     <!-- Optional -->
                     
-                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+                    <COMMENT_DESCRIPTION>Tower please</COMMENT_DESCRIPTION>
 
                 </ITEM>
                 <ITEM>
                     
                     <!-- Required -->
                     
-                    <KIND_OF_PART>TEST Pack</KIND_OF_PART>
-                    <QUANTITY>222</QUANTITY>
+                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                    <QUANTITY>15</QUANTITY>
                     
                     <!-- Optional -->
                     
-                    <COMMENT_DESCRIPTION>Some comment</COMMENT_DESCRIPTION>
+                    <COMMENT_DESCRIPTION>And some boards too</COMMENT_DESCRIPTION>
 
                 </ITEM>
             </ITEMS>

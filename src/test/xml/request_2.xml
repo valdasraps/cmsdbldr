@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <REQUESTS>
+        
+        <!-- New REQUEST -->
+        
+        <REQUEST>
+        
+            <!-- Required -->
+            
+            <NAME>Request 1</NAME>
+            <LOCATION>904</LOCATION>
+            <INSTITUTION>CERN</INSTITUTION>
+
+            <!-- Optional -->
+            
+            <ITEMS>
+                <ITEM>
+                    
+                    <!-- Required -->
+                    
+                    <KIND_OF_PART>TEST Board</KIND_OF_PART>
+                    <QUANTITY>5</QUANTITY>
+                    
+                    <!-- Optional -->
+                    
+                    <COMMENT_DESCRIPTION>5 boards enough</COMMENT_DESCRIPTION>
+
+                </ITEM>
+            </ITEMS>
+            
+        </REQUEST>
+        
+        <!-- Update REQUEST -->
+        
+        <REQUEST>
+        
+            <!-- Required -->
+            
+            <NAME>Request 1</NAME>
+            <LOCATION>MIF Baltupiai</LOCATION>
+            <INSTITUTION>Vilnius University</INSTITUTION>
+
+            <!-- Optional -->
+            
+            <STATUS>CANCELED</STATUS> <!-- Default: OPEN -->
+            <COMMENT_DESCRIPTION>No need after all</COMMENT_DESCRIPTION>
+            
+        </REQUEST>
+    </REQUESTS>
+</ROOT>

@@ -8,7 +8,6 @@ import javax.management.modelmbean.XMLParseException;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.manager.SessionManager;
-import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.RequestItem;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
@@ -40,8 +39,10 @@ public class TrackingDao extends DaoBase {
 
         Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName());
 
-        for (RequestItem item: xmlRequest.getItems()) {
-            item.setKindOfPart(resolveKindOfPart(item.getKindOfPartName()));
+        if (xmlRequest.getItems() != null) {
+            for (RequestItem item: xmlRequest.getItems()) {
+                item.setKindOfPart(resolveKindOfPart(item.getKindOfPartName()));
+            }
         }
         
         Request dbRequest = (Request) session.createCriteria(Request.class)
@@ -52,6 +53,11 @@ public class TrackingDao extends DaoBase {
         if (dbRequest == null) {
             
             dbRequest = xmlRequest;
+            
+            if (dbRequest.getStatus() == null) {
+                dbRequest.setStatus("OPEN");
+            }
+            
             dbRequest.setLocation(location);
             
         } else {
@@ -72,31 +78,33 @@ public class TrackingDao extends DaoBase {
                 dbRequest.setPerson(xmlRequest.getPerson());
             }
 
-            for (RequestItem xmlItem: xmlRequest.getItems()) {
-                
-                boolean found = false;
-                for (RequestItem dbItem: dbRequest.getItems()) {
-                    
-                    if (xmlItem.getKindOfPart().equals(dbItem.getKindOfPart())) {
-                        found = true;
-                        
-                        if (xmlItem.getQuantity() != null) {
-                            dbItem.setQuantity(xmlItem.getQuantity());
+            if (xmlRequest.getItems() != null) {
+                for (RequestItem xmlItem: xmlRequest.getItems()) {
+
+                    boolean found = false;
+                    for (RequestItem dbItem: dbRequest.getItems()) {
+
+                        if (xmlItem.getKindOfPart().equals(dbItem.getKindOfPart())) {
+                            found = true;
+
+                            if (xmlItem.getQuantity() != null) {
+                                dbItem.setQuantity(xmlItem.getQuantity());
+                            }
+
+                            if (xmlItem.getComment() != null) {
+                                dbItem.setComment(xmlItem.getComment());
+                            }
+
+                            break;
                         }
 
-                        if (xmlItem.getComment() != null) {
-                            dbItem.setComment(xmlItem.getComment());
-                        }
-                        
-                        break;
                     }
-                    
+
+                    if (!found) {
+                        dbRequest.getItems().add(xmlItem);
+                    }
+
                 }
-                
-                if (!found) {
-                    dbRequest.getItems().add(xmlItem);
-                }
-                
             }
 
             
@@ -124,23 +132,25 @@ public class TrackingDao extends DaoBase {
             xmlShipment.setToLocation(resolveInstituteLocation(xmlShipment.getToInstitutionName(), xmlShipment.getToLocationName()));
         }
         
-        for (ShipmentItem item: xmlShipment.getItems()) {
-            
-            if ((item.getPart() != null && item.getPartAssembly() != null) ||
-                (item.getPart() == null && item.getPartAssembly() == null)) {
-                throw new XMLParseException(String.format("One and Only One of Part and PartAssembly must be defined for Shipment Item %s", item));
-            }
-            
-            if (item.getPart() != null) {
-                
-                item.setPart(resolvePart(item.getPart(), true));
-                
-            } else if (item.getPartAssembly() != null) {
+        if (xmlShipment.getItems() != null) {
+            for (ShipmentItem item: xmlShipment.getItems()) {
 
-                item.setPart(resolvePartAssembly(item.getPartAssembly(), true));
+                if ((item.getPart() != null && item.getPartAssembly() != null) ||
+                    (item.getPart() == null && item.getPartAssembly() == null)) {
+                    throw new XMLParseException(String.format("One and Only One of Part and PartAssembly must be defined for Shipment Item %s", item));
+                }
 
+                if (item.getPart() != null) {
+
+                    item.setPart(resolvePart(item.getPart(), true));
+
+                } else if (item.getPartAssembly() != null) {
+
+                    item.setPart(resolvePartAssembly(item.getPartAssembly(), true));
+
+                }
+                
             }
-            
         }
         
         Shipment dbShipment = (Shipment) session.createCriteria(Shipment.class)
@@ -150,6 +160,10 @@ public class TrackingDao extends DaoBase {
         if (dbShipment == null) {
             
             dbShipment = xmlShipment;
+            
+            if (dbShipment.getStatus() == null) {
+                dbShipment.setStatus("PACKAGING");
+            }
             
         } else {
 
@@ -181,51 +195,60 @@ public class TrackingDao extends DaoBase {
                 dbShipment.setPerson(xmlShipment.getPerson());
             }
 
-            for (ShipmentItem xmlItem: xmlShipment.getItems()) {
-                
-                if (xmlItem.getRequestName() != null) {
-                    
-                    RequestItem requestItem = (RequestItem) session.createCriteria(RequestItem.class)
-                            .add(Restrictions.eq("kindOfPart", xmlItem.getPart().getKindOfPart()))
-                            .createCriteria("request")
-                                .add(Restrictions.eq("name", xmlItem.getRequestName()))
-                                .add(Restrictions.eq("location", dbShipment.getToLocation()))
-                            .uniqueResult();
-                    
-                    if (requestItem == null) {
-                        throw new XMLParseException(String.format("Shipment item request not found %s", xmlItem));
-                    }
-                    
-                    xmlItem.setRequestItem(requestItem);
-                    
-                }
-                
-                boolean found = false;
-                for (ShipmentItem dbItem: dbShipment.getItems()) {
-                    
-                    if (xmlItem.getPart().equals(dbItem.getPart())) {
-                        found = true;
-                        
-                        if (xmlItem.getComment() != null) {
-                            dbItem.setComment(xmlItem.getComment());
-                        }
-                        
-                        break;
-                    }
-                    
-                }
-                
-                if (!found) {
-                    dbShipment.getItems().add(xmlItem);
-                }
-                
-            }
+            if (xmlShipment.getItems() != null) {
+                for (ShipmentItem xmlItem: xmlShipment.getItems()) {
 
+                    boolean found = false;
+                    for (ShipmentItem dbItem: dbShipment.getItems()) {
+
+                        if (xmlItem.getPart().equals(dbItem.getPart())) {
+                            found = true;
+
+                            if (xmlItem.getComment() != null) {
+                                dbItem.setComment(xmlItem.getComment());
+                            }
+
+                            if (xmlItem.getRequestItem() != null) {
+                                dbItem.setRequestItem(xmlItem.getRequestItem());
+                            }
+                            
+                            break;
+                        }
+
+                    }
+
+                    if (!found) {
+                        dbShipment.getItems().add(xmlItem);
+                    }
+
+                }
+            }
             
         }
 
         for (ShipmentItem dbItem: dbShipment.getItems()) {
-            dbItem.setShipment(dbShipment);
+            
+            if (dbItem.getRequestName() != null) {
+
+                RequestItem requestItem = (RequestItem) session.createCriteria(RequestItem.class)
+                        .add(Restrictions.eq("kindOfPart", dbItem.getPart().getKindOfPart()))
+                        .createCriteria("request")
+                            .add(Restrictions.eq("name", dbItem.getRequestName()))
+                            .add(Restrictions.eq("location", dbShipment.getToLocation()))
+                        .uniqueResult();
+
+                if (requestItem == null) {
+                    throw new XMLParseException(String.format("Shipment item request not found for %s", dbItem));
+                }
+
+                dbItem.setRequestItem(requestItem);
+
+            }
+            
+            if (dbItem.getShipment() == null) {
+                dbItem.setShipment(dbShipment);
+            }
+            
         }
         
         session.save(dbShipment);

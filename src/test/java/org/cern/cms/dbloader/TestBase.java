@@ -21,7 +21,7 @@ import org.junit.Ignore;
 @Ignore
 public abstract class TestBase {
 
-    protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss z");
     
     protected static PropertiesManager pm;
     protected static Injector injector;
