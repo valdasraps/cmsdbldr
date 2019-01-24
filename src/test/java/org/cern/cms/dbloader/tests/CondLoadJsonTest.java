@@ -1,25 +1,15 @@
 package org.cern.cms.dbloader.tests;
 
-import com.sun.org.omg.SendingContext.CodeBase;
 import junit.framework.TestCase;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
-import org.cern.cms.dbloader.app.CondApp;
-import org.cern.cms.dbloader.app.PartApp;
-import org.cern.cms.dbloader.dao.CondDao;
-import org.cern.cms.dbloader.dao.PartDao;
-import org.cern.cms.dbloader.handler.AuditLogHandler;
 import org.cern.cms.dbloader.manager.*;
-import org.cern.cms.dbloader.manager.file.ArchiveFile;
-import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.manager.xml.CondJsonManager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
-import org.cern.cms.dbloader.metadata.EntityClass;
 import org.cern.cms.dbloader.model.condition.*;
 import org.cern.cms.dbloader.model.construct.Part;
-import org.cern.cms.dbloader.model.construct.PartTree;
 import org.cern.cms.dbloader.model.iov.Iov;
 import org.cern.cms.dbloader.model.iov.Tag;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
@@ -30,14 +20,10 @@ import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.model.serial.map.*;
 import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.w3c.dom.Attr;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,11 +31,8 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 
 public class CondLoadJsonTest extends TestBase {

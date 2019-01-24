@@ -4,6 +4,8 @@ import org.cern.cms.dbloader.model.managemnt.AuditLog;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import java.util.HashSet;
+import java.util.Set;
 import javax.management.modelmbean.XMLParseException;
 
 import lombok.extern.log4j.Log4j;
@@ -11,6 +13,7 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.Request.RequestStatus;
 import org.cern.cms.dbloader.model.construct.ext.RequestItem;
+import org.cern.cms.dbloader.model.construct.ext.RequestStat;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.construct.ext.Shipment.ShipmentStatus;
 import org.cern.cms.dbloader.model.construct.ext.ShipmentItem;
@@ -23,6 +26,9 @@ public class TrackingDao extends DaoBase {
     private static final String IN_TRANSITION_LOCATION = "In transition";
     private static final String IN_TRANSITION_INSTITUTION = "In transition";
     
+    /**
+     * In transition location cache.
+     */
     private final Location inTransitionLocation;
     
     @Inject
@@ -31,44 +37,61 @@ public class TrackingDao extends DaoBase {
         this.inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION);
     }
     
+    /**
+     * Processing request.
+     * @param xmlRequest request object.
+     * @param alog log object.
+     * @throws Exception on any error.
+     */
     public void save(Request xmlRequest, AuditLog alog) throws Exception {
         
+        // Name has to be defined!
         if (xmlRequest.getName() == null || xmlRequest.getName().isEmpty()) {
             throw new XMLParseException(String.format("Request name not defined in %s", xmlRequest));
         }
 
+        // Institution has to be defined!
         if (xmlRequest.getInstitutionName() == null || xmlRequest.getInstitutionName().isEmpty()) {
             throw new XMLParseException(String.format("Institution not defined in %s", xmlRequest));
         }
         
+        // Location has to be defined!
         if (xmlRequest.getLocationName() == null || xmlRequest.getLocationName().isEmpty()) {
             throw new XMLParseException(String.format("Location not defined in %s", xmlRequest));
         }
 
+        // Resolving location.
         Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName());
 
+        // Resolving Kind of Conditions.
         if (xmlRequest.getItems() != null) {
             for (RequestItem item: xmlRequest.getItems()) {
                 item.setKindOfPart(resolveKindOfPart(item.getKindOfPartName()));
             }
         }
         
+        // Load Request from database if exists.
         Request dbRequest = (Request) session.createCriteria(Request.class)
                 .add(Restrictions.eq("name", xmlRequest.getName()))
                 .add(Restrictions.eq("location", location))
                 .uniqueResult();
 
+        // If in DB not found
         if (dbRequest == null) {
             
             dbRequest = xmlRequest;
             
+            // Default status
             if (dbRequest.getStatus() == null) {
                 dbRequest.setStatus(RequestStatus.OPEN);
             }
             
+            // Setting location
             dbRequest.setLocation(location);
             
         } else {
+            
+            // Setting updates data
             
             if (xmlRequest.getStatus() != null) {
                 dbRequest.setStatus(xmlRequest.getStatus());
@@ -118,8 +141,9 @@ public class TrackingDao extends DaoBase {
             
         }
 
-        for (RequestItem dbItem: dbRequest.getItems()) {
-            dbItem.setRequest(dbRequest);
+        // Set reverse link between items and container.
+        for (RequestItem item: dbRequest.getItems()) {
+            item.setRequest(dbRequest);
         }
         
         session.save(dbRequest);
@@ -234,6 +258,8 @@ public class TrackingDao extends DaoBase {
             
         }
 
+        Set<Request> requests = new HashSet<>();
+        
         for (ShipmentItem item: dbShipment.getItems()) {
             
             if (item.getRequestName() != null) {
@@ -250,9 +276,11 @@ public class TrackingDao extends DaoBase {
                 }
 
                 item.setRequestItem(requestItem);
+                requests.add(requestItem.getRequest());
 
             }
             
+            // Set reverse link between items and container.
             if (item.getShipment() == null) {
                 item.setShipment(dbShipment);
             }
@@ -260,6 +288,21 @@ public class TrackingDao extends DaoBase {
             switch (dbShipment.getStatus()) {
                 
                 case PACKAGING:
+
+                    // New item!
+                    if (item.getId() == null) {
+                        
+                        if (item.getPart().getLocation() == null) {
+                            throw new XMLParseException(String.format("Shipment item location not defined %s", item));
+                        }
+
+                        if (!item.getPart().getLocation().equals(dbShipment.getFromLocation())) {
+                            throw new XMLParseException(String.format("Shipment item location not match shipment source location %s", item));
+                        }
+                        
+                    }
+                    break;
+                    
                 case CANCELED:
                     
                     item.getPart().setLocation(dbShipment.getFromLocation());
@@ -280,6 +323,19 @@ public class TrackingDao extends DaoBase {
         }
         
         session.save(dbShipment);
+        
+        // Close completed requests
+        requests.forEach((request) -> {
+            RequestStat stat = request.getStatistics();
+            
+            if (request.getStatus() == RequestStatus.OPEN) {
+                if (stat.getRequested() <= stat.getShipped()) {
+                    request.setStatus(RequestStatus.CLOSED);
+                    session.save(request);
+                }
+            }
+            
+        });
         
     }
 

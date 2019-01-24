@@ -32,18 +32,23 @@ public class TrackingApp extends AppBase {
         int count = 0;
 
         if (file.getType() == DataFileType.REQUEST) {
+            
             alog.setExtensionTableName("[REQUEST]");
             for (Request request: root.getRequests()) {
                 dao.save(request, alog);
                 count++;
             }
-        } else 
-        if (file.getType() == DataFileType.SHIPMENT) {
-            alog.setExtensionTableName("[SHIPMENT]");
-            for (Shipment shipment: root.getShipments()) {
-                dao.save(shipment, alog);
-                count++;
+            
+        } else {
+            
+            if (file.getType() == DataFileType.SHIPMENT) {
+                alog.setExtensionTableName("[SHIPMENT]");
+                for (Shipment shipment: root.getShipments()) {
+                    dao.save(shipment, alog);
+                    count++;
+                }
             }
+            
         }
 
         alog.setDatasetRecordCount(count);
