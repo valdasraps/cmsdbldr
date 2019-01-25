@@ -1,13 +1,10 @@
 package org.cern.cms.dbloader.model.construct.ext;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,11 +21,11 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @Getter @Setter @ToString
 @EqualsAndHashCode(callSuper = false, of = {"id"})
-public class RequestStat implements Serializable {
+public class RequestStat {
     
     @Id
-    @OneToOne(mappedBy = "REQ_ID", fetch = FetchType.LAZY)
-    private Request request;
+    @Column(name = "REQ_ID")
+    private BigInteger id;
 
     @Basic
     @Column(name = "REQUESTED")

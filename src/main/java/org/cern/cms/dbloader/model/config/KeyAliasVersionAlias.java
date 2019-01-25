@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.cern.cms.dbloader.model.ConfigBase;
-import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.condition.KindOfCondition;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigInteger;
 
@@ -19,9 +17,7 @@ import java.math.BigInteger;
 
 @Entity
 @Table(name="CONFIG_KEY_VERSION_ALIAS_MAPS")
-@Getter
-@Setter
-@ToString
+@Getter @Setter @ToString
 public class KeyAliasVersionAlias extends ConfigBase {
 
     @Id
@@ -49,8 +45,8 @@ public class KeyAliasVersionAlias extends ConfigBase {
     private Boolean movedToHistory = false;
 
     @Basic
-    @Column(name="IS_RECORD_DELETED")
-    @Type(type="true_false")
+    @Column(name = "IS_RECORD_DELETED")
+    @Type(type = "true_false")
     @XmlTransient
     private Boolean deleted = false;
 

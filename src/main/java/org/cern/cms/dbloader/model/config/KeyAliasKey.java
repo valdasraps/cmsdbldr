@@ -4,15 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.cern.cms.dbloader.model.ConfigBase;
-import org.cern.cms.dbloader.model.DeleteableBase;
-import org.cern.cms.dbloader.model.EntityBase;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigInteger;
-import java.util.Date;
-import java.util.Set;
 
 /**
  * Created by aisi0860 on 6/5/17.

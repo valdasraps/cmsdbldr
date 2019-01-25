@@ -39,7 +39,7 @@ import org.cern.cms.dbloader.model.serial.part.PartAssembly;
  */
 @Entity
 @Table(name = "SHIPMENT_ITEMS", uniqueConstraints = @UniqueConstraint(columnNames = {"SHI_SHP_ID", "SHI_PART_ID"}))
-@Getter @Setter @ToString
+@Getter @Setter @ToString(exclude = { "shipment" })
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ 
     "id",

@@ -17,6 +17,8 @@
                         <PART>
                             <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                             <SERIAL_NUMBER>serial 01</SERIAL_NUMBER>
+                            <LOCATION>FNAL</LOCATION>
+                            <INSTITUTION>FNAL</INSTITUTION>
                             <CHILDREN>
                                 <PART>
                                     <KIND_OF_PART>TEST Board</KIND_OF_PART>
@@ -47,12 +49,16 @@
                                             <VALUE>3</VALUE>
                                         </ATTRIBUTE>
                                     </PREDEFINED_ATTRIBUTES> 
+                                    <LOCATION>FNAL</LOCATION>
+                                    <INSTITUTION>FNAL</INSTITUTION>
                                 </PART>
                             </CHILDREN>
                         </PART>
                         <PART>
                             <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                             <SERIAL_NUMBER>serial 02</SERIAL_NUMBER>
+                            <LOCATION>FNAL</LOCATION>
+                            <INSTITUTION>FNAL</INSTITUTION>
                             <CHILDREN>
                                 <PART>
                                     <KIND_OF_PART>TEST Board</KIND_OF_PART>
@@ -89,6 +95,8 @@
                         <PART>
                             <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                             <SERIAL_NUMBER>serial 03</SERIAL_NUMBER>
+                            <LOCATION>FNAL</LOCATION>
+                            <INSTITUTION>FNAL</INSTITUTION>
                             <CHILDREN>
                                 <PART>
                                     <KIND_OF_PART>TEST Board</KIND_OF_PART>

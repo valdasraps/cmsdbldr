@@ -33,7 +33,7 @@
                     <!-- Required -->
                     
                     <PART>
-                        <SERIAL_NUMBER>serial a</SERIAL_NUMBER>
+                        <SERIAL_NUMBER>serial 01</SERIAL_NUMBER>
                         <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                     </PART>
 
@@ -48,7 +48,7 @@
                     <!-- Required -->
                     
                     <PART>
-                        <SERIAL_NUMBER>serial b</SERIAL_NUMBER>
+                        <SERIAL_NUMBER>serial 02</SERIAL_NUMBER>
                         <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                     </PART>
 
@@ -63,7 +63,7 @@
                     <!-- Required -->
                     
                     <PART>
-                        <SERIAL_NUMBER>serial c</SERIAL_NUMBER>
+                        <SERIAL_NUMBER>serial 03</SERIAL_NUMBER>
                         <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                     </PART>
 

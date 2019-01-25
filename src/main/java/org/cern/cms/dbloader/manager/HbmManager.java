@@ -11,6 +11,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.hibernate.HibernateException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -55,14 +56,15 @@ public class HbmManager implements AutoCloseable {
             for (CondEntityHandler eh : condm.getConditionHandlers()) {
                 classPool.add(eh.getEntityClass().getC());
             }
+            
             for (ChannelEntityHandler eh : condm.getChannelHandlers()) {
                 classPool.add(eh.getEntityClass().getC());
             }
-            
+
             for (Class<?> entityClass : classPool) {
                 cfg.addAnnotatedClass(entityClass);
             }
-
+            
             cfg.configure();
             cfg.buildSessionFactory(
                     new ServiceRegistryBuilder().applySettings(
@@ -121,7 +123,7 @@ public class HbmManager implements AutoCloseable {
             if (this.sessionFactory != null) {
                 this.sessionFactory.close();
             }
-        } catch (Exception ex) {
+        } catch (HibernateException ex) {
             log.warn("Exception while closing SessionManager.", ex);
         }
     }

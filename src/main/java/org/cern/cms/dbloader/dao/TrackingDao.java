@@ -293,11 +293,11 @@ public class TrackingDao extends DaoBase {
                     if (item.getId() == null) {
                         
                         if (item.getPart().getLocation() == null) {
-                            throw new XMLParseException(String.format("Shipment item location not defined %s", item));
+                            throw new XMLParseException(String.format("Part location is missing at %s", item));
                         }
 
                         if (!item.getPart().getLocation().equals(dbShipment.getFromLocation())) {
-                            throw new XMLParseException(String.format("Shipment item location not match shipment source location %s", item));
+                            throw new XMLParseException(String.format("Part location not match shipment source location %s", item));
                         }
                         
                     }
@@ -326,7 +326,7 @@ public class TrackingDao extends DaoBase {
         
         // Close completed requests
         requests.forEach((request) -> {
-            RequestStat stat = request.getStatistics();
+            RequestStat stat = (RequestStat) session.get(RequestStat.class, request.getId());
             
             if (request.getStatus() == RequestStatus.OPEN) {
                 if (stat.getRequested() <= stat.getShipped()) {

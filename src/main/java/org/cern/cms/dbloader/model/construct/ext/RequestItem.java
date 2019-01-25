@@ -36,7 +36,7 @@ import org.cern.cms.dbloader.model.construct.KindOfPart;
  */
 @Entity
 @Table(name = "REQUEST_ITEMS", uniqueConstraints = @UniqueConstraint(columnNames = {"RQI_REQ_ID", "RQI_KIND_OF_PART_ID"}))
-@Getter @Setter @ToString
+@Getter @Setter @ToString(exclude = {"request"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ 
     "id",

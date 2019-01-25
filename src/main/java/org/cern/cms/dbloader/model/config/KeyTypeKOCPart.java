@@ -3,9 +3,7 @@ package org.cern.cms.dbloader.model.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.cern.cms.dbloader.model.ConfigBase;
-import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.condition.KindOfCondition;
-import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.hibernate.annotations.Type;
 
@@ -18,7 +16,7 @@ import java.util.Set;
  * Created by aisi0860 on 6/1/17.
  */
 
-@Entity
+@Entity()
 @Table(name = "CONFIG_TYPE_KOC_PART_MAPS")
 @Getter
 @Setter

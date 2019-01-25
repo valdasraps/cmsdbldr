@@ -3,7 +3,6 @@ package org.cern.cms.dbloader.model.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.cern.cms.dbloader.model.ConfigBase;
-import org.cern.cms.dbloader.model.EntityBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.hibernate.annotations.Type;
 
@@ -16,11 +15,10 @@ import java.math.BigInteger;
  */
 @Entity
 @Table(name = "CONFIG_KEY_VERSION_MAPS")
-@Getter
-@Setter
+@Getter @Setter
 @AttributeOverrides({
-        @AttributeOverride(name = "recordDelTime", column = @Column(name = "RECORD_LASTUPDATE_TIME")),
-        @AttributeOverride(name = "recordDelUser", column = @Column(name = "RECORD_LASTUPDATE_USER"))
+    @AttributeOverride(name = "recordDelTime", column = @Column(name = "RECORD_LASTUPDATE_TIME")),
+    @AttributeOverride(name = "recordDelUser", column = @Column(name = "RECORD_LASTUPDATE_USER"))
 })
 public class KeyDataset extends ConfigBase {
 
@@ -51,7 +49,5 @@ public class KeyDataset extends ConfigBase {
     @Type(type="true_false")
     @XmlTransient
     private Boolean movedToHistory = false;
-
-
 
 }
