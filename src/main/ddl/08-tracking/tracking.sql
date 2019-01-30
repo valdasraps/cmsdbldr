@@ -108,7 +108,7 @@ END;
 /
 
 create or replace TRIGGER TR_UPD_REQUESTS
-    BEFORE UPDATE
+    BEFORE UPDATE OR DELETE
     ON REQUESTS
     REFERENCING OLD AS OLD NEW AS NEW
     FOR EACH ROW
@@ -131,17 +131,21 @@ create or replace TRIGGER TR_UPD_REQUESTS
         recordChangeUser:= :old.RECORD_LASTUPDATE_USER;
     end if;
 
-    -- protect the original record data
-    :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
-    :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
-    :new.REQ_ID :=  :OLD.REQ_ID;
+    if UPDATING then
 
-   -- update last change record info, if needed
-    :new.RECORD_LASTUPDATE_TIME  := SYSDATE;
-
-   if :new.RECORD_LASTUPDATE_USER is null then
-       :new.RECORD_LASTUPDATE_USER := USER;
-   end if;
+      -- protect the original record data
+      :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
+      :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
+      :new.REQ_ID :=  :OLD.REQ_ID;
+  
+     -- update last change record info, if needed
+      :new.RECORD_LASTUPDATE_TIME  := SYSDATE;
+  
+      if :new.RECORD_LASTUPDATE_USER is null then
+        :new.RECORD_LASTUPDATE_USER := USER;
+      end if;
+    
+    end if;
 
     insert into REQUESTS_HST
     (
@@ -168,8 +172,8 @@ create or replace TRIGGER TR_UPD_REQUESTS
         :OLD.COMMENT_DESCRIPTION,
         :OLD.REQ_DATE,
         :OLD.REQ_PERSON,
-        :new.RECORD_LASTUPDATE_TIME,
-        :new.RECORD_LASTUPDATE_USER,
+        sysdate,
+        :OLD.RECORD_INSERTION_USER,
         recordChangeTime,
         recordChangeUser
     );
@@ -276,42 +280,45 @@ END;
 /
 
 create or replace TRIGGER TR_UPD_REQUEST_ITM
-    BEFORE UPDATE
-    ON REQUEST_ITEMS
+    BEFORE UPDATE OR DELETE ON REQUEST_ITEMS
     REFERENCING OLD AS OLD NEW AS NEW
     FOR EACH ROW
 DECLARE
+
     seqPkId number(38,0);
     recordChangeTime TIMESTAMP(6) WITH TIME ZONE;
     recordChangeUser VARCHAR2(50 );
+    
 BEGIN
+    
     SELECT ANY_REQUEST_ITM_HISTORY_ID_SEQ.NEXTVAL INTO seqPkId FROM dual;
 
     if :old.RECORD_LASTUPDATE_TIME is null then
         recordChangeTime:= :OLD.RECORD_INSERTION_TIME;
     else
-        recordChangeTime:= :old.RECORD_LASTUPDATE_TIME;
-
+        recordChangeTime:= :OLD.RECORD_LASTUPDATE_TIME;
     end if;
-
 
     if :old.RECORD_LASTUPDATE_USER is null then
         recordChangeUser:= :OLD.RECORD_INSERTION_USER;
     else
-        recordChangeUser:= :old.RECORD_LASTUPDATE_USER;
+        recordChangeUser:= :OLD.RECORD_LASTUPDATE_USER;
     end if;
 
-
     -- protect the original record data
-    :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
-    :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
-    :new.RQI_ID :=  :OLD.RQI_ID;
+    if UPDATING then
+    
+      :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
+      :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
+      :new.RQI_ID := :OLD.RQI_ID;
 
-    -- update last change record info, if needed
-        :new.RECORD_LASTUPDATE_TIME  := SYSDATE;
-
-    if :new.RECORD_LASTUPDATE_USER is null then
-        :new.RECORD_LASTUPDATE_USER := USER;
+      -- update last change record info, if needed
+      :new.RECORD_LASTUPDATE_TIME := SYSDATE;
+  
+      if :new.RECORD_LASTUPDATE_USER is null then
+          :new.RECORD_LASTUPDATE_USER := USER;
+      end if;
+      
     end if;
 
     insert into REQUEST_ITEMS_HST
@@ -329,14 +336,14 @@ BEGIN
     )
     values
     (
-            seqPkId    ,
+        seqPkId,
         :OLD.RQI_ID,
         :OLD.RQI_REQ_ID,
         :OLD.RQI_KIND_OF_PART_ID,
         :OLD.RQI_QUANTITY,
         :OLD.COMMENT_DESCRIPTION,
-        :new.RECORD_LASTUPDATE_TIME ,
-        :new.RECORD_LASTUPDATE_USER,
+        sysdate,
+        :OLD.RECORD_INSERTION_USER,
         recordChangeTime,
         recordChangeUser
     );
@@ -447,7 +454,7 @@ END ;
 /
 
 create or replace TRIGGER TR_UPD_SHIPMENTS
-    BEFORE UPDATE
+    BEFORE UPDATE OR DELETE
     ON SHIPMENTS
     REFERENCING OLD AS OLD NEW AS NEW
     FOR EACH ROW
@@ -472,17 +479,20 @@ end if;
         recordChangeUser:= :old.RECORD_LASTUPDATE_USER;
     end if;
 
+    if UPDATING then
 
-    -- protect the original record data
-    :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
-    :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
-    :new.SHP_ID :=  :OLD.SHP_ID;
-
-    -- update last change record info, if needed
+        -- protect the original record data
+        :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
+        :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
+        :new.SHP_ID :=  :OLD.SHP_ID;
+    
+        -- update last change record info, if needed
         :new.RECORD_LASTUPDATE_TIME  := SYSDATE;
 
-    if :new.RECORD_LASTUPDATE_USER is null then
-        :new.RECORD_LASTUPDATE_USER := USER;
+        if :new.RECORD_LASTUPDATE_USER is null then
+            :new.RECORD_LASTUPDATE_USER := USER;
+        end if;
+
     end if;
 
     insert into SHIPMENTS_HST
@@ -514,13 +524,11 @@ end if;
         :OLD.COMMENT_DESCRIPTION,
         :OLD.SHP_DATE,
         :OLD.SHP_PERSON,
-        :new.RECORD_LASTUPDATE_TIME ,
-        :new.RECORD_LASTUPDATE_USER,
+        sysdate,
+        :OLD.RECORD_INSERTION_USER,
         recordChangeTime,
         recordChangeUser
     );
-
-
 
     EXCEPTION
         WHEN OTHERS THEN
@@ -619,7 +627,7 @@ END ;
 /
 
 create or replace TRIGGER TR_UPD_SHIPMENT_ITM
-    BEFORE UPDATE
+    BEFORE UPDATE OR DELETE
     ON SHIPMENT_ITEMS
     REFERENCING OLD AS OLD NEW AS NEW
     FOR EACH ROW
@@ -645,18 +653,21 @@ end if;
        recordChangeUser:= :old.RECORD_LASTUPDATE_USER;
    end if;
 
+   if UPDATING then
 
-   -- protect the original record data
-   :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
-   :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
-   :new.SHI_ID :=  :OLD.SHI_ID;
+       -- protect the original record data
+       :new.RECORD_INSERTION_TIME := :OLD.RECORD_INSERTION_TIME;
+       :new.RECORD_INSERTION_USER := :OLD.RECORD_INSERTION_USER;
+       :new.SHI_ID :=  :OLD.SHI_ID;
+    
+       -- update last change record info, if needed
+           :new.RECORD_LASTUPDATE_TIME  := SYSDATE;
+    
+       if :new.RECORD_LASTUPDATE_USER is null then
+           :new.RECORD_LASTUPDATE_USER := USER;
+       end if;
 
-   -- update last change record info, if needed
-       :new.RECORD_LASTUPDATE_TIME  := SYSDATE;
-
-   if :new.RECORD_LASTUPDATE_USER is null then
-       :new.RECORD_LASTUPDATE_USER := USER;
-   end if;
+    end if;
 
     insert into SHIPMENT_ITEMS_HST
     (
@@ -679,8 +690,8 @@ end if;
         :OLD.SHI_PART_ID,
         :OLD.SHI_RQI_ID,
         :OLD.COMMENT_DESCRIPTION,
-        :new.RECORD_LASTUPDATE_TIME ,
-        :new.RECORD_LASTUPDATE_USER,
+        sysdate,
+        :OLD.RECORD_INSERTION_USER,
         recordChangeTime,
         recordChangeUser
     );
