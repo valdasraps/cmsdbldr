@@ -67,7 +67,8 @@ public class PartDao extends DaoBase {
         int count = 0;
         while (!pairs.isEmpty()) {
             PartsPair pp = pairs.pop();
-            resolvePartTree(pp.getPart(), pp.getParent(), rootPart);
+            PartTree partTree = resolvePartTree(pp.getPart(), pp.getParent(), rootPart);
+            session.save(partTree);
             count++;
         }
         
@@ -140,6 +141,7 @@ public class PartDao extends DaoBase {
 
         partTree.setParentPartTree(parentTree);
         part.setPartTree(partTree);
+        partTree.setDeleted(Boolean.FALSE);
 
         return partTree;
 
