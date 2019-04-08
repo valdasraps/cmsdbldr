@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
     ChannelLoadZipTest.class,
     PartLoadTest.class,
     PartLoadJsonTest.class,
-    CondInfoTest.class,
+    GenericTablesInfoTest.class,
     ConditionXmlTest.class,
     CondLoadTest.class,
     CondLoadJsonTest.class,

@@ -11,7 +11,7 @@ import java.util.List;
 import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.dao.ChannelDao;
-import org.cern.cms.dbloader.manager.CondManager;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
@@ -23,7 +23,7 @@ import org.cern.cms.dbloader.model.serial.Root;
 public class ChannelApp extends AppBase {
 
     @Inject
-    private CondManager condm;
+    private DynamicEntityGenerator enGenerator;
 
     @Inject
     private ResourceFactory rf;
@@ -39,8 +39,8 @@ public class ChannelApp extends AppBase {
             
             for (ChannelUpdate update : updates) {
 
-                if (condm.getChannelHandler(update.getExtensionTableName()) == null) {
-                    condm.registerChannelEntityHandler(update.getExtensionTableName());
+                if (enGenerator.getChannelHandler(update.getExtensionTableName()) == null) {
+                    enGenerator.registerChannelEntityHandler(update.getExtensionTableName());
                 }
 
                 Path path = Paths.get(file.getFile().toURI()).resolveSibling(update.getFileName());

@@ -12,6 +12,7 @@ import lombok.ToString;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.cern.cms.dbloader.manager.PropertyType;
 import org.cern.cms.dbloader.model.condition.CondBase;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 
 
 @Getter
@@ -76,6 +77,14 @@ public class PropertyHandler {
 	}
 	
 	public <T extends CondBase, V> void setValue(T data,V value) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		BeanUtilsBean.getInstance().getPropertyUtils().setProperty(data, this.name, value);
+	}
+
+	public <T extends PartDetailsBase> Object getValue(T data) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		return BeanUtilsBean.getInstance().getPropertyUtils().getProperty(data, this.name);
+	}
+
+	public <T extends PartDetailsBase, V> void setValue(T data,V value) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		BeanUtilsBean.getInstance().getPropertyUtils().setProperty(data, this.name, value);
 	}
 }

@@ -5,7 +5,7 @@ import javax.management.modelmbean.XMLParseException;
 import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.dao.CondDao;
-import org.cern.cms.dbloader.manager.CondManager;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.HelpPrinter;
 import org.cern.cms.dbloader.manager.LobManager;
@@ -35,7 +35,7 @@ public class CondApp extends AppBase {
     private PropertiesManager props;
 
     @Inject
-    private CondManager condm;
+    private DynamicEntityGenerator enGenerator;
 
     @Inject
     private ResourceFactory rf;
@@ -44,18 +44,18 @@ public class CondApp extends AppBase {
     public boolean handleInfo() throws Exception {
 
         if (props.isConditionsList()) {
-            HelpPrinter.outputConditionList(System.out, condm);
+            HelpPrinter.outputConditionList(System.out, enGenerator);
             return true;
         }
 
         if (props.isChannelsList()) {
-            HelpPrinter.outputChannelList(System.out, condm);
+            HelpPrinter.outputChannelList(System.out, enGenerator);
             return true;
         }
 
         if (props.isConditionDesc()) {
             OptId optId = props.getConditionDesc();
-            EntityHandler<CondBase> tm = condm.getConditionHandler(optId);
+            EntityHandler<CondBase> tm = enGenerator.getConditionHandler(optId);
             if (tm == null) {
                 throw new IllegalArgumentException(String.format("[%s] condition not found!", optId.getName()));
             }
@@ -65,10 +65,10 @@ public class CondApp extends AppBase {
 
         if (props.isChannelDesc()) {
             String chanName = props.getChannelDesc();
-            EntityHandler<ChannelBase> tm = condm.getChannelHandler(chanName);
+            EntityHandler<ChannelBase> tm = enGenerator.getChannelHandler(chanName);
             if (tm == null) {
-                condm.registerChannelEntityHandler(chanName);
-                tm = condm.getChannelHandler(chanName);
+                enGenerator.registerChannelEntityHandler(chanName);
+                tm = enGenerator.getChannelHandler(chanName);
             }
             if (tm == null) {
                 throw new IllegalArgumentException(String.format("[%s] channel not found!", chanName));
@@ -79,7 +79,7 @@ public class CondApp extends AppBase {
 
         if (props.isConditionClass()) {
             OptId optId = props.getConditionClass();
-            EntityHandler<CondBase> tm = condm.getConditionHandler(optId);
+            EntityHandler<CondBase> tm = enGenerator.getConditionHandler(optId);
             if (tm == null) {
                 throw new IllegalArgumentException(String.format("[%s] condition not found!", optId.getName()));
             }
@@ -89,7 +89,7 @@ public class CondApp extends AppBase {
 
         if (props.isConditionXml()) {
             OptId optId = props.getConditionXml();
-            CondEntityHandler ceh = condm.getConditionHandler(optId);
+            CondEntityHandler ceh = enGenerator.getConditionHandler(optId);
             if (ceh == null) {
                 throw new IllegalArgumentException(String.format("[%s] condition not found!", optId.getName()));
             }
@@ -100,10 +100,10 @@ public class CondApp extends AppBase {
 
         if (props.isChannelClass()) {
             String chName = props.getChannelClass();
-            EntityHandler<ChannelBase> tm = condm.getChannelHandler(chName);
+            EntityHandler<ChannelBase> tm = enGenerator.getChannelHandler(chName);
             if (tm == null) {
-                condm.registerChannelEntityHandler(chName);
-                tm = condm.getChannelHandler(chName);
+                enGenerator.registerChannelEntityHandler(chName);
+                tm = enGenerator.getChannelHandler(chName);
             }
             if (tm == null) {
                 throw new IllegalArgumentException(String.format("[%s] channel not found!", chName));
@@ -133,7 +133,7 @@ public class CondApp extends AppBase {
             throw new XMLParseException("No Kind of Condition name defined!");
         }
 
-        CondEntityHandler condeh = condm.getConditionHandler(h.getKindOfCondition().getName());
+        CondEntityHandler condeh = enGenerator.getConditionHandler(h.getKindOfCondition().getName());
         if (condeh == null) {
             throw new XMLParseException(String.format("Kind of Condition not resolved: %s", h.getKindOfCondition()));
         }
@@ -141,7 +141,7 @@ public class CondApp extends AppBase {
         ChannelEntityHandler chaneh = null;
         if (h.getHint() != null) {
             if (h.getHint().getChannelMap() != null) {
-                chaneh = condm.getChannelHandler(h.getHint().getChannelMap());
+                chaneh = enGenerator.getChannelHandler(h.getHint().getChannelMap());
                 if (chaneh == null) {
                     throw new XMLParseException(String.format("Channel Map not resolved: %s", h.getHint()));
                 }

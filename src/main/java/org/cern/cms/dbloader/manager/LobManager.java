@@ -13,9 +13,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NullArgumentException;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
+import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.serial.Root;
 
 @Getter
@@ -33,6 +36,35 @@ public class LobManager {
                     if ((prop.getType().equals(PropertyType.CLOB) || prop.getType().equals(PropertyType.BLOB))
                             && prop.getValue(data) == null) {
                         PropertyHandler fileProp = condeh.getPropertyByName(prop.getName().replaceAll("[CB]lob$", "File"));
+                        if (fileProp != null) {
+                            String fileName = (String) fileProp.getValue(data);
+                            if (fileName != null) {
+                                if ((prop.getType().equals(PropertyType.CLOB))) {
+                                    prop.setValue(data, fileProcessClob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
+                                } else if (prop.getType().equals(PropertyType.BLOB)) {
+                                    prop.setValue(data, fileProcessBlob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void lobParserParts(final Root root, final ConstructEntityHandler coneh, final DataFile file) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+        if (root == null | coneh == null | file == null) {
+            throw new NullArgumentException(null);
+        }
+        List<PropertyHandler> properties = coneh.getProperties();
+        List<Part> parts = root.getParts();
+        for (Part p : parts) {
+            PartDetailsBase data = p.getPartDetails();
+            if (data != null) {
+                for (PropertyHandler prop : properties) {
+                    if ((prop.getType().equals(PropertyType.CLOB) || prop.getType().equals(PropertyType.BLOB))
+                            && prop.getValue(data) == null) {
+                        PropertyHandler fileProp = coneh.getPropertyByName(prop.getName().replaceAll("[CB]lob$", "File"));
                         if (fileProp != null) {
                             String fileName = (String) fileProp.getValue(data);
                             if (fileName != null) {

@@ -23,12 +23,6 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
-import static org.cern.cms.dbloader.manager.file.DataFileType.CHANNEL;
-import static org.cern.cms.dbloader.manager.file.DataFileType.CONDITION;
-import static org.cern.cms.dbloader.manager.file.DataFileType.KEY;
-import static org.cern.cms.dbloader.manager.file.DataFileType.KEY_ALIAS;
-import static org.cern.cms.dbloader.manager.file.DataFileType.PART;
-import static org.cern.cms.dbloader.manager.file.DataFileType.VERSION_ALIAS;
 import org.cern.cms.dbloader.manager.file.FileBase;
 
 @Log4j
@@ -78,8 +72,8 @@ public class DbLoader {
 
         if (props.isCondDatasets()) {
             OptId optId = props.getCondDatasets();
-            CondManager cm = injector.getInstance(CondManager.class);
-            CondEntityHandler ch = cm.getConditionHandler(optId);
+            DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
+            CondEntityHandler ch = enG.getConditionHandler(optId);
             try (SessionManager sm = injector.getInstance(SessionManager.class)) {
                 DatasetDao dao = rf.createDatasetDao(sm);
                 HelpPrinter.outputDatasetList(System.out, dao.getCondDatasets(ch));
@@ -89,14 +83,14 @@ public class DbLoader {
 
         if (props.isCondDataset()) {
             BigInteger dataSetId = props.getCondDataset();
-            CondManager cm = injector.getInstance(CondManager.class);
+            DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
 
             try (SessionManager sm = injector.getInstance(SessionManager.class)) {
                     
                 DatasetDao dao = rf.createDatasetDao(sm);
                 Dataset dataset = dao.getDataset(dataSetId);
                 BigInteger id = dataset.getKindOfCondition().getId();
-                CondEntityHandler ceh = cm.getConditionHandler(id);
+                CondEntityHandler ceh = enG.getConditionHandler(id);
                 if (ceh == null) {
                     throw new IllegalArgumentException(String.format("[%s] dataset not found!", dataSetId));
                 }

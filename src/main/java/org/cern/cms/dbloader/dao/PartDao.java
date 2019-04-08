@@ -4,6 +4,7 @@ import java.util.Stack;
 
 import javax.management.modelmbean.XMLParseException;
 
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.construct.PartAttrList;
@@ -33,11 +34,12 @@ public class PartDao extends DaoBase {
     public PartDao(@Assisted SessionManager sm) throws Exception {
         super(sm);
     }
-    
+
+
     public void savePart(Root root, AuditLog alog) throws Exception {
         
         // Read ROOT part
-        
+
         Part rootPart = (Part) session.createCriteria(Part.class)
             .add(Restrictions.eq("id", props.getRootPartId()))
             .add(Restrictions.eq("deleted", Boolean.FALSE))
@@ -114,8 +116,34 @@ public class PartDao extends DaoBase {
             }
         }
 
-        return dbPart;
+        if (xmlPart.getPartDetails() != null) {
+            PartDetailsBase details = resolvePartDetails(dbPart, xmlPart);
+            session.save(details);
+        }
+        session.save(dbPart);
 
+        return dbPart;
+//
+    }
+
+    private PartDetailsBase resolvePartDetails(Part dbPart, Part xmlPart) throws Exception {
+
+        PartDetailsBase partDetailsEn = (PartDetailsBase) session.createCriteria(PartDetailsBase.class)
+                .add(Restrictions.eq("part", dbPart))
+                .uniqueResult();
+
+        PartDetailsBase partDetailsBase = xmlPart.getPartDetails();
+
+        if (partDetailsEn == null) {
+            partDetailsBase.setPart(dbPart);
+
+            return partDetailsBase;
+
+        } else {
+            partDetailsEn.copyProps(partDetailsBase);
+
+            return partDetailsEn;
+        }
     }
 
     private PartTree resolvePartTree(Part part, Part parent, Part rootPart) throws Exception {

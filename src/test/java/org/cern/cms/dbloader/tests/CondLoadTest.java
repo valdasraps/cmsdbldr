@@ -10,7 +10,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
-import org.cern.cms.dbloader.manager.CondManager;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.HbmManager;
@@ -32,13 +32,13 @@ public class CondLoadTest extends TestBase {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
 
-        CondManager condm = injector.getInstance(CondManager.class);
-        CondEntityHandler ch = condm.getConditionHandler("IV");
+        DynamicEntityGenerator enGenerator = injector.getInstance(DynamicEntityGenerator.class);
+        CondEntityHandler ch = enGenerator.getConditionHandler("IV");
 
         String exampleFile = "target/iv_example.xml";
         
-        assertEquals(ch, condm.getConditionHandler(ch.getId()));
-        assertEquals(ch, condm.getConditionHandler(new OptId(ch.getId().toString())));
+        assertEquals(ch, enGenerator.getConditionHandler(ch.getId()));
+        assertEquals(ch, enGenerator.getConditionHandler(new OptId(ch.getId().toString())));
         
         CondXmlManager xmlm = new CondXmlManager(ch, null);
         
@@ -62,7 +62,7 @@ public class CondLoadTest extends TestBase {
         String [] files = new String [] {
              "src/test/xml/02_condition.xml"
             ,"src/test/xml/03_condition.xml"
-            ,"src/test/xml/04_condition.xml"
+//            ,"src/test/xml/04_condition.xml"
         };
         
         DbLoader loader = new DbLoader(pm);

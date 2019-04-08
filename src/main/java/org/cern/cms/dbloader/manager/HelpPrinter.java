@@ -12,7 +12,7 @@ import org.cern.cms.dbloader.util.TableBuilder;
 
 public class HelpPrinter {
 
-    public static final void outputConditionList(PrintStream out, CondManager mdm) {
+    public static final void outputConditionList(PrintStream out, DynamicEntityGenerator mdm) {
         TableBuilder tb = new TableBuilder();
         for (CondEntityHandler ceh : mdm.getConditionHandlers()) {
             tb.startRow()
@@ -91,7 +91,7 @@ public class HelpPrinter {
                 .print(out);
     }
 
-    public static final void outputChannelList(PrintStream out, CondManager mdm) {
+    public static final void outputChannelList(PrintStream out, DynamicEntityGenerator mdm) {
         TableBuilder tb = new TableBuilder();
         for (ChannelEntityHandler ceh : mdm.getChannelHandlers()) {
             tb.startRow()

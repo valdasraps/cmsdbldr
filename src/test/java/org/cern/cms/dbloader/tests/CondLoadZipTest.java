@@ -59,6 +59,39 @@ public class CondLoadZipTest extends TestBase {
     }
 
     @Test
+    public void successExampleTestConstruct() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/partWithExtension.zip"))) {
+
+            loader.loadArchive(injector, fb);
+        }
+
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+//            PartDetailsBase pdb = (PartDetailsBase) session.createCriteria(PartDetailsBase.class)
+//                    .add(Restrictions.eq("NUMBER_TYPE", BigInteger.valueOf(313)))
+//                    .uniqueResult();
+//
+//            if (pdb == null){
+//                throw new XMLParseException(String.format("Not resolved: "));
+//
+//            }
+
+//            Part part = (Part) session.createCriteria(Part.class)
+//                    .add(Restrictions.eq("id", BigInteger.valueOf(1020)))
+//                    .uniqueResult();
+//
+//            if (part == null){
+//                throw new XMLParseException(String.format("Not resolved: "));
+//
+//            }
+        }
+    }
+
+    @Test
     public void failureExampleTest() throws Throwable {
 
         FilesManager fm = injector.getInstance(FilesManager.class);

@@ -1,8 +1,6 @@
 package org.cern.cms.dbloader.metadata;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import javassist.CtMethod;
@@ -32,7 +30,15 @@ public abstract class EntityFactory<T> {
             + "return org.apache.commons.lang.builder.ToStringBuilder.reflectionToString(this);	"
             + "}";
 
+    private static final String COPY_PROPS_METHOD
+            = "public String copyProps() {"
+            + "return 'Ahaha';"
+            + "}";
+
     private static final Map<String, EntityClass<?>> LOADED_CLASSES = new HashMap<>();
+
+    private Set<PropertyHandler> properties = new HashSet<>();
+
 
     @SuppressWarnings("unchecked")
     public EntityClass<T> createClass(EntityHandler<T> tmd) throws Exception {
@@ -77,6 +83,8 @@ public abstract class EntityFactory<T> {
 
             pb.build();
 
+            properties.add(cmd);
+
         }
 
         CtMethod m = CtNewMethod.make(TO_STRING_METHOD, cb.getCc());
@@ -104,7 +112,9 @@ public abstract class EntityFactory<T> {
      * Custom property modification
      * @param pb 
      */
-    public void modifyProperty(PropertyBuilder pb) { }
+    public void modifyProperty(PropertyBuilder pb) {
+
+    }
 
     public static String getJavaName(String dbName) {
         String ename = "";

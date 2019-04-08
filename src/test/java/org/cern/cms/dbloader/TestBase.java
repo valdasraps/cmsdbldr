@@ -1,6 +1,6 @@
 package org.cern.cms.dbloader;
 
-import org.cern.cms.dbloader.tests.CondInfoTest;
+import org.cern.cms.dbloader.tests.GenericTablesInfoTest;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -33,7 +33,7 @@ public abstract class TestBase {
         if (pm != null) return;
         
         Properties p = new Properties();
-        try (InputStream is = CondInfoTest.class.getResourceAsStream("/properties/test.properties")) {
+        try (InputStream is = GenericTablesInfoTest.class.getResourceAsStream("/properties/test.properties")) {
             p.load(is);
         }
         

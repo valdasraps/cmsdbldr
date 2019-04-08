@@ -2,7 +2,6 @@ package org.cern.cms.dbloader.model.construct;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -31,8 +30,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -40,6 +37,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
+import org.cern.cms.dbloader.manager.xml.PartDetailsBaseAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.managemnt.Location;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
@@ -205,6 +203,11 @@ public class Part extends DeleteableBase {
     // @JsonProperty("CHILDREN")
     @JsonProperty("Children")
     private List<Part> children = new ArrayList<>();
+
+    @Transient
+    @XmlElement(name = "PART_EXTENSION")
+    @XmlJavaTypeAdapter(value = PartDetailsBaseAdapter.class)
+    private PartDetailsBase partDetails;
 
     public void addChild(Part part) {
         this.children.add(part);

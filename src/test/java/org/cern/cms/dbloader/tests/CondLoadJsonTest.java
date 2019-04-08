@@ -307,15 +307,15 @@ public class CondLoadJsonTest extends TestBase {
     public void testJsonToBeanCase0() throws ParseException, IOException {
 
         // Root root = this.jmanager.deserialize(new File(case0)); // paprastas deserializatorius
-        CondManager condMngr = null;
+        DynamicEntityGenerator enGenerator = null;
         try {
-            condMngr = new CondManager(pm);
+            enGenerator = new DynamicEntityGenerator(pm);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // ChannelEntityHandler chaneh = condMngr.getChannelHandler(root.getHeader().getHint().getChannelMap());
-        ChannelEntityHandler chaneh = condMngr.getChannelHandler("TEST_CHANNELS");
-        CondEntityHandler condeh = condMngr.getConditionHandler("IV");
+        // ChannelEntityHandler chaneh = enGenerator.getChannelHandler(root.getHeader().getHint().getChannelMap());
+        ChannelEntityHandler chaneh = enGenerator.getChannelHandler("TEST_CHANNELS");
+        CondEntityHandler condeh = enGenerator.getConditionHandler("IV");
 
         CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
 
@@ -406,15 +406,15 @@ public class CondLoadJsonTest extends TestBase {
      */
     @Test
     public void testJsonToBeanCase1() throws ParseException, IOException {
-        CondManager condMngr = null;
+        DynamicEntityGenerator enGenerator = null;
         try {
-            condMngr = new CondManager(pm);
+            enGenerator = new DynamicEntityGenerator(pm);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // ChannelEntityHandler chaneh = condMngr.getChannelHandler(root.getHeader().getHint().getChannelMap());
-        ChannelEntityHandler chaneh = condMngr.getChannelHandler("TEST_CHANNELS");
-        CondEntityHandler condeh = condMngr.getConditionHandler("IV");
+        // ChannelEntityHandler chaneh = enGenerator.getChannelHandler(root.getHeader().getHint().getChannelMap());
+        ChannelEntityHandler chaneh = enGenerator.getChannelHandler("TEST_CHANNELS");
+        CondEntityHandler condeh = enGenerator.getConditionHandler("IV");
 
         CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
 
@@ -477,15 +477,15 @@ public class CondLoadJsonTest extends TestBase {
      */
     @Test
     public void testJsonToBeanCase2() throws IOException, ParseException {
-        CondManager condMngr = null;
+        DynamicEntityGenerator enGenerator = null;
         try {
-            condMngr = new CondManager(pm);
+            enGenerator = new DynamicEntityGenerator(pm);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // ChannelEntityHandler chaneh = condMngr.getChannelHandler(root.getHeader().getHint().getChannelMap());
-        ChannelEntityHandler chaneh = condMngr.getChannelHandler("TEST_CHANNELS");
-        CondEntityHandler condeh = condMngr.getConditionHandler("IV");
+        // ChannelEntityHandler chaneh = enGenerator.getChannelHandler(root.getHeader().getHint().getChannelMap());
+        ChannelEntityHandler chaneh = enGenerator.getChannelHandler("TEST_CHANNELS");
+        CondEntityHandler condeh = enGenerator.getConditionHandler("IV");
 
         CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
         Root root = jmanager.deserialize(new File(case2));
