@@ -9,6 +9,8 @@ import java.util.List;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import org.apache.commons.beanutils.BeanUtils;
 import org.cern.cms.dbloader.manager.xml.*;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
@@ -27,11 +29,9 @@ public class CondXmlManager extends XmlManager {
     private final CondEntityHandler condeh;
     private final ChannelEntityHandler channeleh;
 
-    public CondXmlManager(CondEntityHandler condeh) throws Exception {
-        this(condeh, null);
-    }
-
-    public CondXmlManager(CondEntityHandler condeh, ChannelEntityHandler channeleh) throws Exception {
+    @Inject
+    public CondXmlManager(DynamicEntityGenerator enGenerator, @Assisted CondEntityHandler condeh, @Assisted ChannelEntityHandler channeleh) throws Exception {
+        super(enGenerator);
         this.condeh = condeh;
         this.channeleh = channeleh;
         this.boundClass(condeh.getEntityClass().getC());

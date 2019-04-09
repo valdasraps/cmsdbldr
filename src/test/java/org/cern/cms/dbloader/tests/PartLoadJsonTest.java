@@ -545,29 +545,29 @@ public class PartLoadJsonTest extends TestBase {
         Converts xml to json
      */
     //@Test
-    public void convertConstructXmlToJson() throws Exception {
-        boolean unique = true;
-        // String xmlPath = "src/test/xml/samples/Load_FNAL_TB2SModule_Rocs.xml";
-        // String xmlPath = "src/test/xml/samples/LoadTrackerSensors.xml"; Load_8CBC2_Flex_Prototypes.xml
-        // String xmlPath = "src/test/xml/samples/Load_8CBC2_Flex_Prototypes.xml"; Attach_8CBC2_Rocs_To_Flex.xml
-        // String xmlPath = "src/test/xml/samples/Attach_8CBC2_Rocs_To_Flex.xml";
-        // String xmlPath = "src/test/xml/samples/Attach_FlexToHybrid.xml";
-        String xmlPath = "src/test/xml/samples/Build_TB2SProto_Module.xml";
-        File xmlFile = new File(xmlPath);
-        XmlManager xmlMngr = new XmlManager();
-        JsonManager jsonMngr = new JsonManager();
-        Root root = xmlMngr.unmarshal(xmlFile);
-        if (!root.getParts().isEmpty()) {
-            if (unique) modifyParts(root.getParts());
-            // for (Part part : root.getParts()) {
-            //    part.setInsertUser("apoluden");
-            //    if (part.getSerialNumber() != null) part.setSerialNumber(prefix.concat(part.getSerialNumber()));
-            //    if (part.getBarcode() != null) part.setBarcode(prefix.concat(part.getBarcode()));
-            // }
-        }
-        String json = jsonMngr.<Root>serialiaze(root);
-        System.out.println(json);
-    }
+//    public void convertConstructXmlToJson() throws Exception {
+//        boolean unique = true;
+//        // String xmlPath = "src/test/xml/samples/Load_FNAL_TB2SModule_Rocs.xml";
+//        // String xmlPath = "src/test/xml/samples/LoadTrackerSensors.xml"; Load_8CBC2_Flex_Prototypes.xml
+//        // String xmlPath = "src/test/xml/samples/Load_8CBC2_Flex_Prototypes.xml"; Attach_8CBC2_Rocs_To_Flex.xml
+//        // String xmlPath = "src/test/xml/samples/Attach_8CBC2_Rocs_To_Flex.xml";
+//        // String xmlPath = "src/test/xml/samples/Attach_FlexToHybrid.xml";
+//        String xmlPath = "src/test/xml/samples/Build_TB2SProto_Module.xml";
+//        File xmlFile = new File(xmlPath);
+//        XmlManager xmlMngr = new XmlManager();
+//        JsonManager jsonMngr = new JsonManager();
+//        Root root = xmlMngr.unmarshal(xmlFile);
+//        if (!root.getParts().isEmpty()) {
+//            if (unique) modifyParts(root.getParts());
+//            // for (Part part : root.getParts()) {
+//            //    part.setInsertUser("apoluden");
+//            //    if (part.getSerialNumber() != null) part.setSerialNumber(prefix.concat(part.getSerialNumber()));
+//            //    if (part.getBarcode() != null) part.setBarcode(prefix.concat(part.getBarcode()));
+//            // }
+//        }
+//        String json = jsonMngr.<Root>serialiaze(root);
+//        System.out.println(json);
+//    }
 
     /*
         Modifies part: Barcode and SerialNumber with prefix

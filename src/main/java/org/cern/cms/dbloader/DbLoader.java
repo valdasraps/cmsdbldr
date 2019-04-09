@@ -100,7 +100,7 @@ public class DbLoader {
                     throw new IllegalArgumentException(String.format("[%s] dataset data not found!", dataSetId));
                 }
 
-                CondXmlManager xmlm = new CondXmlManager(ceh);
+                CondXmlManager xmlm = rf.createCondXmlManager(ceh, null);
                 xmlm.printDatasetDataXML(dataset, dataSetData);
 
             }

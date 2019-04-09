@@ -3,7 +3,10 @@ package org.cern.cms.dbloader.dao;
 import java.util.Stack;
 
 import javax.management.modelmbean.XMLParseException;
+import org.cern.cms.dbloader.manager.file.DataFile;
 
+import org.cern.cms.dbloader.manager.*;
+import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Part;
@@ -18,13 +21,13 @@ import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
 import org.hibernate.criterion.Restrictions;
 
+
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.cern.cms.dbloader.manager.SessionManager;
 import org.hibernate.NonUniqueResultException;
 
 @Log4j
@@ -35,10 +38,20 @@ public class PartDao extends DaoBase {
         super(sm);
     }
 
+    @Inject
+    private DynamicEntityGenerator enGenerator;
 
-    public void savePart(Root root, AuditLog alog) throws Exception {
-        
+    private Root rootf;
+    private DataFile file;
+
+    public void savePart(Root root, AuditLog alog, DataFile file) throws Exception {
+
+        this.rootf = root;
+        this.file = file;
         // Read ROOT part
+
+//        LobManager lobManager = new LobManager();
+//        lobManager.lobParserParts(root, coneh, file);
 
         Part rootPart = (Part) session.createCriteria(Part.class)
             .add(Restrictions.eq("id", props.getRootPartId()))
@@ -123,16 +136,20 @@ public class PartDao extends DaoBase {
         session.save(dbPart);
 
         return dbPart;
-//
+
     }
 
     private PartDetailsBase resolvePartDetails(Part dbPart, Part xmlPart) throws Exception {
 
+
+        ConstructEntityHandler coneh = enGenerator.getConstructHandler(dbPart.getKindOfPart().getName());
+
+        PartDetailsBase partDetailsBase = xmlPart.getPartDetails().getRealClass(coneh.getEntityClass().getC());
+        LobManager lobManager = new LobManager();
+        lobManager.lobParserParts(partDetailsBase, coneh, file);
         PartDetailsBase partDetailsEn = (PartDetailsBase) session.createCriteria(PartDetailsBase.class)
                 .add(Restrictions.eq("part", dbPart))
                 .uniqueResult();
-
-        PartDetailsBase partDetailsBase = xmlPart.getPartDetails();
 
         if (partDetailsEn == null) {
             partDetailsBase.setPart(dbPart);

@@ -40,7 +40,7 @@ public class CondLoadTest extends TestBase {
         assertEquals(ch, enGenerator.getConditionHandler(ch.getId()));
         assertEquals(ch, enGenerator.getConditionHandler(new OptId(ch.getId().toString())));
         
-        CondXmlManager xmlm = new CondXmlManager(ch, null);
+        CondXmlManager xmlm = rf.createCondXmlManager(ch, null);
         
         FileOutputStream out = new FileOutputStream(exampleFile);
         xmlm.printExample(pm, out);

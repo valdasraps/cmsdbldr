@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -15,10 +16,8 @@ import java.math.BigInteger;
 @Getter
 @Setter
 @ToString
-//@EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
-//@JsonIgnoreProperties({"id"})
-public class PartDetailsBase {
+public abstract class PartDetailsBase {
 
     @Id
     @Column(name = "ID")
@@ -46,5 +45,6 @@ public class PartDetailsBase {
         }
     }
 
-//    public abstract void copyProps(PartDetailsBase newDetails);
+    public abstract <T extends PartDetailsBase> T getRealClass(Class<T> clazz) throws Exception;
+
 }

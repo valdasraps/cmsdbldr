@@ -93,7 +93,7 @@ public class CondApp extends AppBase {
             if (ceh == null) {
                 throw new IllegalArgumentException(String.format("[%s] condition not found!", optId.getName()));
             }
-            CondXmlManager xmlm = new CondXmlManager(ceh, null);
+            CondXmlManager xmlm = rf.createCondXmlManager(ceh, null);
             xmlm.printExample(props, System.out);
             return true;
         }
@@ -155,7 +155,7 @@ public class CondApp extends AppBase {
             root = jmanager.deserialize(file.getFile());
 
         } else {
-            CondXmlManager xmlm = new CondXmlManager(condeh, chaneh);
+            CondXmlManager xmlm = rf.createCondXmlManager(condeh, chaneh);
             root = (Root) xmlm.unmarshal(file.getFile());
         }
 

@@ -1,9 +1,6 @@
 package org.cern.cms.dbloader.tests;
 
 import java.util.Collections;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.fail;
 
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
@@ -11,11 +8,15 @@ import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
+import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
+
+import static junit.framework.TestCase.*;
 
 public class CondLoadZipTest extends TestBase {
        
@@ -71,23 +72,19 @@ public class CondLoadZipTest extends TestBase {
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
 
-//            PartDetailsBase pdb = (PartDetailsBase) session.createCriteria(PartDetailsBase.class)
-//                    .add(Restrictions.eq("NUMBER_TYPE", BigInteger.valueOf(313)))
-//                    .uniqueResult();
-//
-//            if (pdb == null){
-//                throw new XMLParseException(String.format("Not resolved: "));
-//
-//            }
+            Part dbPart = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("barcode", "321"))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
 
-//            Part part = (Part) session.createCriteria(Part.class)
-//                    .add(Restrictions.eq("id", BigInteger.valueOf(1020)))
-//                    .uniqueResult();
-//
-//            if (part == null){
-//                throw new XMLParseException(String.format("Not resolved: "));
-//
-//            }
+            assertNotNull(dbPart);
+
+            PartDetailsBase pdb = (PartDetailsBase) session.createCriteria(PartDetailsBase.class)
+                    .add(Restrictions.eq("part", dbPart))
+                    .uniqueResult();
+
+            assertNotNull(pdb);
+
         }
     }
 

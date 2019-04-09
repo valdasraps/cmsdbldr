@@ -52,27 +52,23 @@ public class LobManager {
         }
     }
 
-    public void lobParserParts(final Root root, final ConstructEntityHandler coneh, final DataFile file) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
-        if (root == null | coneh == null | file == null) {
+    public void lobParserParts(final PartDetailsBase partDetailsBase, final ConstructEntityHandler coneh, final DataFile file) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+        if (partDetailsBase == null | coneh == null | file == null) {
             throw new NullArgumentException(null);
         }
         List<PropertyHandler> properties = coneh.getProperties();
-        List<Part> parts = root.getParts();
-        for (Part p : parts) {
-            PartDetailsBase data = p.getPartDetails();
-            if (data != null) {
-                for (PropertyHandler prop : properties) {
-                    if ((prop.getType().equals(PropertyType.CLOB) || prop.getType().equals(PropertyType.BLOB))
-                            && prop.getValue(data) == null) {
-                        PropertyHandler fileProp = coneh.getPropertyByName(prop.getName().replaceAll("[CB]lob$", "File"));
-                        if (fileProp != null) {
-                            String fileName = (String) fileProp.getValue(data);
-                            if (fileName != null) {
-                                if ((prop.getType().equals(PropertyType.CLOB))) {
-                                    prop.setValue(data, fileProcessClob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
-                                } else if (prop.getType().equals(PropertyType.BLOB)) {
-                                    prop.setValue(data, fileProcessBlob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
-                                }
+        if (partDetailsBase != null) {
+            for (PropertyHandler prop : properties) {
+                if ((prop.getType().equals(PropertyType.CLOB) || prop.getType().equals(PropertyType.BLOB))
+                        && prop.getValue(partDetailsBase) == null) {
+                    PropertyHandler fileProp = coneh.getPropertyByName(prop.getName().replaceAll("[CB]lob$", "File"));
+                    if (fileProp != null) {
+                        String fileName = (String) fileProp.getValue(partDetailsBase);
+                        if (fileName != null) {
+                            if ((prop.getType().equals(PropertyType.CLOB))) {
+                                prop.setValue(partDetailsBase, fileProcessClob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
+                            } else if (prop.getType().equals(PropertyType.BLOB)) {
+                                prop.setValue(partDetailsBase, fileProcessBlob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
                             }
                         }
                     }
