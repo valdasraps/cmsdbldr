@@ -54,7 +54,7 @@ public class PartLoadTest extends TestBase {
                             .uniqueResult();
 
             assertEquals("TEST Tower 01", tower.getComment());
-            assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56 EEST"), tower.getInstalledDate());
+            assertEquals(DATE_FORMAT.parse("2012-10-17 10:04:56 GMT"), tower.getInstalledDate());
             assertEquals("IBM", tower.getManufacturer().getName());
             assertEquals("University of Iowa", tower.getLocation().getName());
             assertEquals("University of Iowa", tower.getLocation().getInstitution().getName());
