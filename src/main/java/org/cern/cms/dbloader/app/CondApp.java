@@ -27,6 +27,8 @@ import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 
+import java.util.Optional;
+
 @Log4j
 @Singleton
 public class CondApp extends AppBase {
@@ -93,7 +95,7 @@ public class CondApp extends AppBase {
             if (ceh == null) {
                 throw new IllegalArgumentException(String.format("[%s] condition not found!", optId.getName()));
             }
-            CondXmlManager xmlm = rf.createCondXmlManager(ceh, null);
+            CondXmlManager xmlm = rf.createCondXmlManager(ceh, Optional.empty());
             xmlm.printExample(props, System.out);
             return true;
         }
@@ -155,8 +157,13 @@ public class CondApp extends AppBase {
             root = jmanager.deserialize(file.getFile());
 
         } else {
-            CondXmlManager xmlm = rf.createCondXmlManager(condeh, chaneh);
-            root = (Root) xmlm.unmarshal(file.getFile());
+            if (chaneh==null){
+                CondXmlManager xmlm = rf.createCondXmlManager(condeh, Optional.empty());
+                root = (Root) xmlm.unmarshal(file.getFile());
+            } else {
+                CondXmlManager xmlm = rf.createCondXmlManager(condeh, Optional.of(chaneh));
+                root = (Root) xmlm.unmarshal(file.getFile());
+            }
         }
 
         LobManager lobManager = new LobManager();

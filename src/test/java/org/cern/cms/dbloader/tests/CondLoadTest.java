@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -26,7 +27,7 @@ import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 
 public class CondLoadTest extends TestBase {
-    
+
     @Test
     public void printAndLoadExampleTest() throws Throwable {
 
@@ -40,11 +41,11 @@ public class CondLoadTest extends TestBase {
         assertEquals(ch, enGenerator.getConditionHandler(ch.getId()));
         assertEquals(ch, enGenerator.getConditionHandler(new OptId(ch.getId().toString())));
         
-        CondXmlManager xmlm = rf.createCondXmlManager(ch, null);
-        
+        CondXmlManager xmlm = rf.createCondXmlManager(ch, Optional.empty());
+
         FileOutputStream out = new FileOutputStream(exampleFile);
         xmlm.printExample(pm, out);
-        
+
         DbLoader loader = new DbLoader(pm);
         for (FileBase df: fm.getFiles(Collections.singletonList(exampleFile))) {
 
@@ -62,7 +63,7 @@ public class CondLoadTest extends TestBase {
         String [] files = new String [] {
              "src/test/xml/02_condition.xml"
             ,"src/test/xml/03_condition.xml"
-//            ,"src/test/xml/04_condition.xml"
+            ,"src/test/xml/04_condition.xml"
         };
         
         DbLoader loader = new DbLoader(pm);

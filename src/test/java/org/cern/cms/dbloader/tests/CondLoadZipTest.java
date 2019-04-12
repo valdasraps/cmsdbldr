@@ -73,7 +73,7 @@ public class CondLoadZipTest extends TestBase {
             Session session = sm.getSession();
 
             Part dbPart = (Part) session.createCriteria(Part.class)
-                    .add(Restrictions.eq("barcode", "321"))
+                    .add(Restrictions.eq("name", "Super name label"))
                     .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .uniqueResult();
 

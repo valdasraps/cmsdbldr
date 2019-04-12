@@ -36,7 +36,8 @@ public class PartDetailsBaseAdapter extends XmlAdapter<Object, PartDetailsBase> 
 
 	@Override
 	public Object marshal(PartDetailsBase v) throws Exception {
-		throw new UnsupportedOperationException();
+//		throw new UnsupportedOperationException();
+		return null;
 	}
 
 }

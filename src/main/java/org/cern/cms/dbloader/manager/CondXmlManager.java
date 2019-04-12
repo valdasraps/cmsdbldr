@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -30,13 +31,13 @@ public class CondXmlManager extends XmlManager {
     private final ChannelEntityHandler channeleh;
 
     @Inject
-    public CondXmlManager(DynamicEntityGenerator enGenerator, @Assisted CondEntityHandler condeh, @Assisted ChannelEntityHandler channeleh) throws Exception {
+    public CondXmlManager(DynamicEntityGenerator enGenerator, @Assisted CondEntityHandler condeh, @Assisted Optional<ChannelEntityHandler> channeleh) throws Exception {
         super(enGenerator);
         this.condeh = condeh;
-        this.channeleh = channeleh;
+        this.channeleh = channeleh.orElse(null);
         this.boundClass(condeh.getEntityClass().getC());
-        if (channeleh != null) {
-            this.boundClass(channeleh.getEntityClass().getC());
+        if (channeleh.isPresent()) {
+            this.boundClass(this.channeleh.getEntityClass().getC());
         }
     }
 

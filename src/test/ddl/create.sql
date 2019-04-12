@@ -31,10 +31,4 @@ connect CMS_TST_CORE_IOV_MGMNT/testing@&&1
 
 @05-core-iov-mgmnt
 
-
-@06-core_attribute
-
-PROMPT Executing CMS_TST_CORE_CONSTRUCT stuff
-connect CMS_TST_CORE_CONSTRUCT/testing@&&1
-
 quit

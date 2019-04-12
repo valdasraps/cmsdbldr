@@ -166,9 +166,9 @@ public class GenericTablesInfoTest extends TestBase {
                     assertEquals("org.cern.cms.dbloader.model.construct.ext.PartDetails", ceh.getClassName());
                     for (PropertyHandler ph : ceh.getProperties()) {
                         switch (ph.getName()) {
-                            case "blobType":
+                            case "blobTypeBlob":
                                 assertEquals("[B", ph.getClassName());
-                                assertEquals("BLOB_TYPE", ph.getColumnName());
+                                assertEquals("BLOB_TYPE_BLOB", ph.getColumnName());
                                 break;
                             case "numberType":
                                 assertEquals("java.math.BigDecimal", ph.getClassName());
@@ -176,8 +176,6 @@ public class GenericTablesInfoTest extends TestBase {
                                 assertEquals("NUMBER_TYPE", ph.getColumnName());
                                 assertEquals(PropertyType.OTHER, ph.getType());
                                 break;
-                            default:
-                                fail(String.format("Unexpected %s PART_DETAILS property found: %s", ceh.getTname(), ph.getName()));
                         }
                     }
                     break;

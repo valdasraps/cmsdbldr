@@ -10,6 +10,7 @@ import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 
 import java.io.File;
+import java.util.Optional;
 
 public interface ResourceFactory {
 
@@ -23,6 +24,6 @@ public interface ResourceFactory {
 	ConfigDao createConfigDao(SessionManager sm);
 	DataFile createDataFile(FileBase archive, File file, DataFile.Type type);
 	ArchiveFile createArchiveFile(File file);
-    CondXmlManager createCondXmlManager(CondEntityHandler condeh, ChannelEntityHandler chaneh);
+    CondXmlManager createCondXmlManager(CondEntityHandler condeh, Optional<ChannelEntityHandler> chaneh);
 
 }

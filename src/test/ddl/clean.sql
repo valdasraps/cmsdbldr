@@ -137,6 +137,11 @@ delete from REQUEST_ITEMS
 delete from REQUESTS
 /
 
+delete from PART_DETAILS
+/
+
+delete from PART_DETAILS_HST
+
 @create.sql
 
 quit
