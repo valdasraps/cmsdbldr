@@ -66,6 +66,9 @@ public class CondLoadZipTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/partWithExtension.zip"))) {
 
+            assertNotNull(fm);
+            assertNotNull(loader);
+            assertNotNull(fb);   
             loader.loadArchive(injector, fb);
         }
 
