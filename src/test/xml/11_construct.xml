@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+    <PARTS>
+        <PART>
+            <KIND_OF_PART>TEST Tower</KIND_OF_PART>
+            <BARCODE>123000000001</BARCODE>
+            <COMMENT_DESCRIPTION>TEST Tower 01 eddited comment</COMMENT_DESCRIPTION>
+            <INSTALLED_DATE>2012-10-17 10:04:56</INSTALLED_DATE>
+            <MANUFACTURER>IBM</MANUFACTURER>
+            <LOCATION>University of Iowa</LOCATION>
+            <INSTITUTION>University of Iowa</INSTITUTION>
+            <SERIAL_NUMBER>Serial123</SERIAL_NUMBER>
+        </PART>
+    </PARTS>
+</ROOT>

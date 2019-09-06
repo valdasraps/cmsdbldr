@@ -103,6 +103,22 @@ public class PartDao extends DaoBase {
             dbPart = xmlPart;
             dbPart.setKindOfPart(kop);
             
+        } else {
+
+            if (xmlPart.getSerialNumber() != null) {
+                dbPart.setSerialNumber(xmlPart.getSerialNumber());
+            }
+
+            if (xmlPart.getBarcode() != null) {
+                dbPart.setBarcode(xmlPart.getBarcode());
+            }
+            if (xmlPart.getName() != null) {
+                dbPart.setName(xmlPart.getName());
+            }
+
+            if (xmlPart.getComment() != null) {
+                dbPart.setComment(xmlPart.getComment());
+            }
         }
 
         if (xmlPart.getLocationName() != null || xmlPart.getInstitutionName() != null) {
@@ -258,6 +274,7 @@ public class PartDao extends DaoBase {
         if (partlship == null) {
             throw new XMLParseException(String.format("Not resolved attribute to kind of part relationship for %s and %s", kop, catalog));
         }
+
 
         PartAttrList partAttrList = (PartAttrList) session.createCriteria(PartAttrList.class)
                 .add(Restrictions.eq("deleted", Boolean.FALSE))
