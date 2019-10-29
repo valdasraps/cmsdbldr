@@ -1,9 +1,6 @@
 package org.cern.cms.dbloader.tests;
 
 import java.util.Collections;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.fail;
 
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
@@ -11,11 +8,15 @@ import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
+import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
+
+import static junit.framework.TestCase.*;
 
 public class CondLoadZipTest extends TestBase {
        
@@ -56,6 +57,38 @@ public class CondLoadZipTest extends TestBase {
             }            
         }
                 
+    }
+
+    @Test
+    public void successExampleTestConstruct() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/partWithExtension.zip"))) {
+
+            assertNotNull(fm);
+            assertNotNull(loader);
+            assertNotNull(fb);   
+            loader.loadArchive(injector, fb);
+        }
+
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Part dbPart = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("name", "Super name label"))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
+            assertNotNull(dbPart);
+
+            PartDetailsBase pdb = (PartDetailsBase) session.createCriteria(PartDetailsBase.class)
+                    .add(Restrictions.eq("part", dbPart))
+                    .uniqueResult();
+
+            assertNotNull(pdb);
+
+        }
     }
 
     @Test

@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 
-import org.cern.cms.dbloader.manager.CondManager;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.CsvManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
@@ -20,7 +20,7 @@ import org.cern.cms.dbloader.model.serial.ChannelUpdate;
 public class ChannelDao extends DaoBase {
 
     @Inject
-    private CondManager condm;
+    private DynamicEntityGenerator enGenerator;
     
     private final CsvManager csv = new CsvManager();
 
@@ -31,7 +31,7 @@ public class ChannelDao extends DaoBase {
 
     public void process(ChannelUpdate update, AuditLog alog) throws Exception {
 
-        ChannelEntityHandler handler = condm.getChannelHandler(update.getExtensionTableName());
+        ChannelEntityHandler handler = enGenerator.getChannelHandler(update.getExtensionTableName());
         log.info(String.format("Channel handler for %s found: %s", update, handler));
 
         String [] mapping = handler.getProperties().stream().map(p -> p.getName()).toArray(i -> new String[i]);

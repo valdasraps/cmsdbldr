@@ -11,6 +11,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.hibernate.HibernateException;
 
 import org.hibernate.Session;
@@ -33,7 +34,7 @@ public class HbmManager implements AutoCloseable {
     private final Set<Class<?>> classPool = new HashSet<>();
 
     @Inject
-    private CondManager condm;
+    private DynamicEntityGenerator enGenerator;
 
     @Inject
     public HbmManager(final PropertiesManager props) throws Exception {
@@ -53,11 +54,15 @@ public class HbmManager implements AutoCloseable {
     public Session getSession() throws Exception {
         if (sessionFactory == null) {
 
-            for (CondEntityHandler eh : condm.getConditionHandlers()) {
+            for (CondEntityHandler eh : enGenerator.getConditionHandlers()) {
                 classPool.add(eh.getEntityClass().getC());
             }
             
-            for (ChannelEntityHandler eh : condm.getChannelHandlers()) {
+            for (ChannelEntityHandler eh : enGenerator.getChannelHandlers()) {
+                classPool.add(eh.getEntityClass().getC());
+            }
+
+            for (ConstructEntityHandler eh : enGenerator.getConstructHandlers()) {
                 classPool.add(eh.getEntityClass().getC());
             }
 

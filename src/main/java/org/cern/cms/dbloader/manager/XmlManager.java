@@ -12,10 +12,8 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
-import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
-import org.cern.cms.dbloader.manager.xml.DateAdapter;
-import org.cern.cms.dbloader.manager.xml.EventHandler;
+import org.cern.cms.dbloader.manager.xml.*;
+import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.cern.cms.dbloader.model.serial.Root;
 
 import com.google.inject.Inject;
@@ -30,11 +28,16 @@ public class XmlManager {
     private JAXBContext jaxb;
     private final Set<Class<?>> boundedClasses = new HashSet<>();
 
-    public XmlManager() {
+    @Inject
+    public XmlManager(DynamicEntityGenerator enGenerator) throws Exception {
         this.boundedClasses.add(Root.class);
+
+        for (ConstructEntityHandler eh : enGenerator.getConstructHandlers()) {
+            this.boundedClasses.add(eh.getEntityClass().getC());
+        }
     }
 
-    protected JAXBContext getJAXBContext() throws JAXBException {
+    public JAXBContext getJAXBContext() throws JAXBException {
         if (jaxb == null) {
             this.jaxb = JAXBContext.newInstance(boundedClasses.toArray(new Class<?>[]{}));
         }
@@ -56,6 +59,7 @@ public class XmlManager {
         ums.setAdapter(new DateAdapter());
         ums.setAdapter(CondBaseAdapter.class, new CondBaseAdapter());
         ums.setAdapter(ChannelBaseAdapter.class, new ChannelBaseAdapter());
+        ums.setAdapter(PartDetailsBaseAdapter.class, new PartDetailsBaseAdapter(getJAXBContext()));
 
         return (Root) ums.unmarshal(file);
     }

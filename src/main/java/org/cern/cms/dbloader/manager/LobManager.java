@@ -13,9 +13,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NullArgumentException;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.condition.Dataset;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
+import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.serial.Root;
 
 @Getter
@@ -41,6 +44,31 @@ public class LobManager {
                                 } else if (prop.getType().equals(PropertyType.BLOB)) {
                                     prop.setValue(data, fileProcessBlob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void lobParserParts(final PartDetailsBase partDetailsBase, final ConstructEntityHandler coneh, final DataFile file) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+        if (partDetailsBase == null | coneh == null | file == null) {
+            throw new NullArgumentException(null);
+        }
+        List<PropertyHandler> properties = coneh.getProperties();
+        if (partDetailsBase != null) {
+            for (PropertyHandler prop : properties) {
+                if ((prop.getType().equals(PropertyType.CLOB) || prop.getType().equals(PropertyType.BLOB))
+                        && prop.getValue(partDetailsBase) == null) {
+                    PropertyHandler fileProp = coneh.getPropertyByName(prop.getName().replaceAll("[CB]lob$", "File"));
+                    if (fileProp != null) {
+                        String fileName = (String) fileProp.getValue(partDetailsBase);
+                        if (fileName != null) {
+                            if ((prop.getType().equals(PropertyType.CLOB))) {
+                                prop.setValue(partDetailsBase, fileProcessClob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
+                            } else if (prop.getType().equals(PropertyType.BLOB)) {
+                                prop.setValue(partDetailsBase, fileProcessBlob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
                             }
                         }
                     }

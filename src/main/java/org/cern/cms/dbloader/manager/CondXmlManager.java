@@ -5,10 +5,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import org.apache.commons.beanutils.BeanUtils;
 import org.cern.cms.dbloader.manager.xml.*;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
@@ -27,16 +30,14 @@ public class CondXmlManager extends XmlManager {
     private final CondEntityHandler condeh;
     private final ChannelEntityHandler channeleh;
 
-    public CondXmlManager(CondEntityHandler condeh) throws Exception {
-        this(condeh, null);
-    }
-
-    public CondXmlManager(CondEntityHandler condeh, ChannelEntityHandler channeleh) throws Exception {
+    @Inject
+    public CondXmlManager(DynamicEntityGenerator enGenerator, @Assisted CondEntityHandler condeh, @Assisted Optional<ChannelEntityHandler> channeleh) throws Exception {
+        super(enGenerator);
         this.condeh = condeh;
-        this.channeleh = channeleh;
+        this.channeleh = channeleh.orElse(null);
         this.boundClass(condeh.getEntityClass().getC());
-        if (channeleh != null) {
-            this.boundClass(channeleh.getEntityClass().getC());
+        if (channeleh.isPresent()) {
+            this.boundClass(this.channeleh.getEntityClass().getC());
         }
     }
 

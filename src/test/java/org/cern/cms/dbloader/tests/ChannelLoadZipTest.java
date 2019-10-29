@@ -7,7 +7,7 @@ import static junit.framework.TestCase.assertEquals;
 
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
-import org.cern.cms.dbloader.manager.CondManager;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
@@ -24,14 +24,14 @@ public class ChannelLoadZipTest extends TestBase {
        
     @Test
     public void channelHandlerTest() throws Exception {
-        CondManager cm = injector.getInstance(CondManager.class);
+        DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
         
         for (String ext: Arrays.asList("TEST_CHANNELS", "TEST_COORDINATES")) {
             
-            ChannelEntityHandler tc = cm.getChannelHandler(ext);
+            ChannelEntityHandler tc = enG.getChannelHandler(ext);
             if (tc == null) {
-                cm.registerChannelEntityHandler(ext);
-                tc = cm.getChannelHandler(ext);
+                enG.registerChannelEntityHandler(ext);
+                tc = enG.getChannelHandler(ext);
             }
 
             TestCase.assertNotNull(tc);
@@ -40,17 +40,17 @@ public class ChannelLoadZipTest extends TestBase {
             assertEquals(c.getSuperclass(), ChannelBase.class);
         }
 
-        ChannelEntityHandler tc = cm.getChannelHandler("NOT_THERE");
+        ChannelEntityHandler tc = enG.getChannelHandler("NOT_THERE");
         TestCase.assertNull(tc);
         
         try {
-            cm.registerChannelEntityHandler("NOT_THERE");
+            enG.registerChannelEntityHandler("NOT_THERE");
             TestCase.fail("Should have failed...");
         } catch (Exception ex) {
             // OK!
         }
 
-        tc = cm.getChannelHandler("NOT_THERE");
+        tc = enG.getChannelHandler("NOT_THERE");
         TestCase.assertNull(tc);
         
     }
@@ -95,16 +95,16 @@ public class ChannelLoadZipTest extends TestBase {
             // OK!
         }
         
-        CondManager cm = injector.getInstance(CondManager.class);
+        DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
 
-            Long count = (Long) session.createCriteria(cm.getChannelHandler("TEST_CHANNELS").getEntityClass().getC())
+            Long count = (Long) session.createCriteria(enG.getChannelHandler("TEST_CHANNELS").getEntityClass().getC())
                 .setProjection(Projections.count("id"))
                 .uniqueResult();
             assertEquals((Long) 1000L, count);
             
-            count = (Long) session.createCriteria(cm.getChannelHandler("TEST_COORDINATES").getEntityClass().getC())
+            count = (Long) session.createCriteria(enG.getChannelHandler("TEST_COORDINATES").getEntityClass().getC())
                 .setProjection(Projections.count("id"))
                 .uniqueResult();
             assertEquals((Long) 3L, count);

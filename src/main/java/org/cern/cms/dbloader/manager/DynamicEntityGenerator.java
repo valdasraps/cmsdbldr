@@ -18,27 +18,33 @@ import lombok.extern.log4j.Log4j;
 import org.apache.log4j.Level;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.cern.cms.dbloader.model.OptId;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 
 @Log4j
 @Singleton
-public class CondManager {
+public class DynamicEntityGenerator {
 
     private final static String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
-    // ADDED TO QUERY KIND_OF_CONDITION_ID
+
     private final static String KINDS_OF_CONDITIONS_SQL = "select KIND_OF_CONDITION_ID, NAME, EXTENSION_TABLE_NAME from %s.KINDS_OF_CONDITIONS WHERE IS_RECORD_DELETED = 'F'";
     private final static String CHANNELS_SQL = "select distinct EXTENSION_TABLE_NAME from %s.CHANNEL_MAPS_BASE WHERE IS_RECORD_DELETED = 'F'";
+    private final static String PARTS_DETAILS_SQL = "select EXTENSION_TABLE_NAME, KIND_OF_PART_ID, DISPLAY_NAME from %s.KINDS_OF_PARTS WHERE IS_RECORD_DELETED = 'F'";
+
 
     private Set<CondEntityHandler> conditions = new HashSet<>();
     private Map<String, ChannelEntityHandler> channels = new HashMap<>();
-    
+    private Set<ConstructEntityHandler> parts_details = new HashSet<>();
+
+
     private final PropertiesManager props;
 
     @Inject
-    public CondManager(PropertiesManager props) throws Exception {
+    public DynamicEntityGenerator(PropertiesManager props) throws Exception {
         this.props = props;
         try (Connection conn = getConnection()) {
 
@@ -78,15 +84,41 @@ public class CondManager {
 
                         } catch (Exception ex) {
                             log.warn(String.format("Channel table [%s]: %s. Skipping..",
-                            		props.getExtConditionTable(extensionTable), ex.getMessage()),
+                                    props.getExtConditionTable(extensionTable), ex.getMessage()),
                                     props.getLogLevel().equals(Level.DEBUG) ? ex : null);
                         }
                     }
                 }
             }
 
-        }
+            // Collect KINDS_OF_PARTS extension tables
+            try (PreparedStatement stmt = conn.prepareStatement(String.format(PARTS_DETAILS_SQL, props.getCoreConstructSchemaName()))) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
 
+
+
+                        String table = rs.getString(1);
+                        String id = rs.getString(2);
+                        String kopName = rs.getString(3);
+                        String fullTable = props.getExtConstructTable(table);
+
+                        try (PreparedStatement stmt1 = conn.prepareStatement("select * from ".concat(fullTable))) {
+                            ResultSetMetaData md = stmt1.getMetaData();
+
+                            ConstructEntityHandler t = new ConstructEntityHandler(id, kopName, props.getExtConstructSchemaName(), table, md);
+
+                            parts_details.add(t);
+
+                        } catch (Exception ex) {
+                            log.warn(String.format("KOP extension table [%s]: %s. Skipping..",
+                                    fullTable, ex.getMessage()),
+                                    props.getLogLevel().equals(Level.DEBUG) ? ex : null);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private Connection getConnection() throws SQLException, ClassNotFoundException {
@@ -147,6 +179,24 @@ public class CondManager {
 
     public Collection<ChannelEntityHandler> getChannelHandlers() {
         return channels.values();
+    }
+
+    public ConstructEntityHandler getConstructHandler(String kopName) {
+        for (ConstructEntityHandler h : parts_details) {
+            if (h.getKopName().equals(kopName)) {
+                return h;
+            }
+        }
+
+        return null;
+    }
+
+    public PartDetailsBase copyParameters(PartDetailsBase x) {
+        Set<ConstructEntityHandler>  data = parts_details;
+        return x;
+    }
+    public Collection<ConstructEntityHandler> getConstructHandlers() {
+        return parts_details;
     }
 
 }

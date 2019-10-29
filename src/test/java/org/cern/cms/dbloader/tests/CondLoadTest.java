@@ -5,12 +5,13 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
-import org.cern.cms.dbloader.manager.CondManager;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.HbmManager;
@@ -26,25 +27,25 @@ import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 
 public class CondLoadTest extends TestBase {
-    
+
     @Test
     public void printAndLoadExampleTest() throws Throwable {
 
         FilesManager fm = injector.getInstance(FilesManager.class);
 
-        CondManager condm = injector.getInstance(CondManager.class);
-        CondEntityHandler ch = condm.getConditionHandler("IV");
+        DynamicEntityGenerator enGenerator = injector.getInstance(DynamicEntityGenerator.class);
+        CondEntityHandler ch = enGenerator.getConditionHandler("IV");
 
         String exampleFile = "target/iv_example.xml";
         
-        assertEquals(ch, condm.getConditionHandler(ch.getId()));
-        assertEquals(ch, condm.getConditionHandler(new OptId(ch.getId().toString())));
+        assertEquals(ch, enGenerator.getConditionHandler(ch.getId()));
+        assertEquals(ch, enGenerator.getConditionHandler(new OptId(ch.getId().toString())));
         
-        CondXmlManager xmlm = new CondXmlManager(ch, null);
-        
+        CondXmlManager xmlm = rf.createCondXmlManager(ch, Optional.empty());
+
         FileOutputStream out = new FileOutputStream(exampleFile);
         xmlm.printExample(pm, out);
-        
+
         DbLoader loader = new DbLoader(pm);
         for (FileBase df: fm.getFiles(Collections.singletonList(exampleFile))) {
 

@@ -6,32 +6,34 @@ import static junit.framework.TestCase.assertEquals;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.TestBase;
-import org.cern.cms.dbloader.manager.CondManager;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.PropertyType;
 import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
 import org.junit.Test;
 
-public class CondInfoTest extends TestBase {
-    
+public class GenericTablesInfoTest extends TestBase {
+
     @Test
     public void checkXml() throws Exception {
         XmlManager xmlm = injector.getInstance(XmlManager.class);
         xmlm.generateSchema("target");
     }
-    
+
     @Test
     public void checkCondEntityHandler() throws Exception {
-        
-        CondManager condm = injector.getInstance(CondManager.class);
+
+        DynamicEntityGenerator condm = injector.getInstance(DynamicEntityGenerator.class);
+//        DynamicEntityGenerator condm = injector.getInstance(DynamicEntityGenerator.class);
         for (CondEntityHandler ceh : condm.getConditionHandlers()) {
             switch (ceh.getName()) {
                 case "IV":
                     assertEquals("TEST_IV", ceh.getTableName());
                     assertEquals("org.cern.cms.dbloader.model.condition.ext.TestIv", ceh.getClassName());
-                    for (PropertyHandler ph: ceh.getProperties()) {
+                    for (PropertyHandler ph : ceh.getProperties()) {
                         switch (ph.getName()) {
                             case "voltage":
                                 assertEquals("java.math.BigDecimal", ph.getClassName());
@@ -45,7 +47,7 @@ public class CondInfoTest extends TestBase {
                                 assertEquals("CURR", ph.getColumnName());
                                 assertEquals(PropertyType.OTHER, ph.getType());
                                 break;
-                           case "commentDescription":
+                            case "commentDescription":
                                 assertEquals("java.lang.String", ph.getClassName());
                                 assertEquals(String.class, ph.getPropertyClass());
                                 assertEquals("COMMENT_DESCRIPTION", ph.getColumnName());
@@ -59,7 +61,7 @@ public class CondInfoTest extends TestBase {
                 case "FILES":
                     assertEquals("TEST_FILES", ceh.getTableName());
                     assertEquals("org.cern.cms.dbloader.model.condition.ext.TestFiles", ceh.getClassName());
-                    for (PropertyHandler ph: ceh.getProperties()) {
+                    for (PropertyHandler ph : ceh.getProperties()) {
                         switch (ph.getName()) {
                             case "testTextFile":
                                 assertEquals("java.lang.String", ph.getClassName());
@@ -85,7 +87,7 @@ public class CondInfoTest extends TestBase {
                                 assertEquals("TEST_MEDIA_BLOB", ph.getColumnName());
                                 assertEquals(PropertyType.BLOB, ph.getType());
                                 break;
-                           case "testComment":
+                            case "testComment":
                                 assertEquals("java.lang.String", ph.getClassName());
                                 assertEquals(String.class, ph.getPropertyClass());
                                 assertEquals("TEST_COMMENT", ph.getColumnName());
@@ -101,24 +103,25 @@ public class CondInfoTest extends TestBase {
                     break;
             }
         }
-        
+
     }
-    
+
     @Test
     public void checkChannelHandlers() throws Exception {
-        
+
         Logger.getLogger("java.sql.ResultSet").setLevel(Level.TRACE);
-        
-        CondManager condm = injector.getInstance(CondManager.class);
+
+//        DynamicEntityGenerator condm = injector.getInstance(DynamicEntityGenerator.class);
+        DynamicEntityGenerator condm = injector.getInstance(DynamicEntityGenerator.class);
         ChannelEntityHandler ceh = condm.getChannelHandler("TEST_CHANNELS");
         if (ceh == null) {
             condm.registerChannelEntityHandler("TEST_CHANNELS");
             ceh = condm.getChannelHandler("TEST_CHANNELS");
         }
-        
+
         assertEquals("TEST_CHANNELS", ceh.getTableName());
         assertEquals("org.cern.cms.dbloader.model.condition.ext.TestChannels", ceh.getClassName());
-        
+
         for (PropertyHandler ph: ceh.getProperties()) {
             switch (ph.getName()) {
                 case "subdet":
@@ -149,7 +152,39 @@ public class CondInfoTest extends TestBase {
                     fail(String.format("Unexpected %s channel property found: %s", ceh.getTableName(), ph.getName()));
             }
         }
-        
+
     }
-    
+
+    @Test
+    public void checkConstructEntityHandler() throws Exception {
+
+        DynamicEntityGenerator condm = injector.getInstance(DynamicEntityGenerator.class);
+        for (ConstructEntityHandler ceh : condm.getConstructHandlers()) {
+            switch (ceh.getTname()) {
+                case "PART_DETAILS":
+                    assertEquals("PART_DETAILS", ceh.getTableName());
+                    assertEquals("org.cern.cms.dbloader.model.construct.ext.PartDetails", ceh.getClassName());
+                    for (PropertyHandler ph : ceh.getProperties()) {
+                        switch (ph.getName()) {
+                            case "blobTypeBlob":
+                                assertEquals("[B", ph.getClassName());
+                                assertEquals("BLOB_TYPE_BLOB", ph.getColumnName());
+                                break;
+                            case "numberType":
+                                assertEquals("java.math.BigDecimal", ph.getClassName());
+                                assertEquals(java.math.BigDecimal.class, ph.getPropertyClass());
+                                assertEquals("NUMBER_TYPE", ph.getColumnName());
+                                assertEquals(PropertyType.OTHER, ph.getType());
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    fail(String.format("Unexpected Table found type found: %s", ceh.getTname()));
+                    break;
+            }
+        }
+
+    }
+
 }
