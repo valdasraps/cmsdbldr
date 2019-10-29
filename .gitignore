@@ -10,3 +10,5 @@ src/main/python/bin/cmsdbldr.jar
 *.pyc
 src/main/python/bin/venv/
 nbactions.xml
+.session.cache
+geckodriver.log
