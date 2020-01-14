@@ -173,6 +173,7 @@ public class DbLoader {
                         case KEY_ALIAS:
                         case VERSION_ALIAS:
                             app = configApp;
+                            break;
                         case REQUEST:
                         case SHIPMENT:
                             app = trackingApp;
