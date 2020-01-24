@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+    <!-- If DBloader throws 'XML Parse Exception: Dataset already exists:' change SUBVERSION NUMBER-->
+    <HEADER>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>HYBRID_TEST_METADATA</EXTENSION_TABLE_NAME>
+            <NAME>Tracker Hybrids Results Metadata</NAME>
+        </TYPE>
+        <RUN>
+            <RUN_NUMBER>1</RUN_NUMBER>
+            <RUN_TYPE>1</RUN_TYPE>
+            <RUN_BEGIN_TIMESTAMP>2020-01-22 08:00:00</RUN_BEGIN_TIMESTAMP>
+        </RUN>
+    </HEADER>
+    <DATA_SET>
+        <COMMENT_DESCRIPTION>Test METADATA condition entry</COMMENT_DESCRIPTION>
+        <CREATE_TIMESTAMP>2020-01-22 08:00:00</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>Aivaras</CREATED_BY_USER>
+        <VERSION>JUN_7_2012</VERSION>
+        <SUBVERSION>3</SUBVERSION>
+        <DATA>
+            <START_TIME>2020-01-22 09:00:00</START_TIME>
+            <END_TIME>2020-01-22 10:00:00</END_TIME>
+            <HOSTNAME>secret hostname </HOSTNAME>
+            <USERNAME>spongebob</USERNAME>
+            <SOFTWARE>UBUNTU 3000</SOFTWARE>
+            <PERSON_NAME>Aivaras Silale</PERSON_NAME>
+            <PATH> /usr/h/hybrids/test/restults</PATH>
+            <QUALIFICATION>GOOD</QUALIFICATION>
+            <COMMENT_DESCRIPTION>Testing 01</COMMENT_DESCRIPTION>
+        </DATA>
+        <CHILD_DATA_SET>
+            <HEADER>
+                <TYPE>
+                    <EXTENSION_TABLE_NAME>HYBRID_TEST_RESULTS</EXTENSION_TABLE_NAME>
+                    <NAME>Tracker Hybrids Test Results</NAME>
+                </TYPE>
+            </HEADER>
+            <DATA_SET>
+                <COMMENT_DESCRIPTION>Test HYBRIDS condition entry</COMMENT_DESCRIPTION>
+                <CREATE_TIMESTAMP>2020-01-22 08:00:00</CREATE_TIMESTAMP>
+                <CREATED_BY_USER>Aivaras</CREATED_BY_USER>
+                <VERSION>hybrid_test1</VERSION>
+                <SUBVERSION>1</SUBVERSION>
+                <PART>
+                    <KIND_OF_PART>Hybrid</KIND_OF_PART>
+                    <SERIAL_NUMBER>Hybrid serial</SERIAL_NUMBER>
+                </PART>
+                <DATA>
+                    <CURRENT_BEFORE>10.01</CURRENT_BEFORE>
+                    <CURRENT_AFTER>10.09</CURRENT_AFTER>
+                    <TEMP_BEFORE>36.6 </TEMP_BEFORE>
+                    <TEMP_AFTER>37.2</TEMP_AFTER>
+                    <NUMBER_OF_OPEN_CHANNELS>3</NUMBER_OF_OPEN_CHANNELS>
+                    <NUMBER_OF_SHORTED_CHANNELS>4</NUMBER_OF_SHORTED_CHANNELS>
+                    <TEST_RESULT> blah blah blah</TEST_RESULT>
+                    <ROOT_FILE>root.pdf</ROOT_FILE>
+                    <OPEN_CHANNELS>2, 3, 4</OPEN_CHANNELS>
+                    <SHORTED_CHANNELS>6, 7, 8, 9</SHORTED_CHANNELS>
+                </DATA>
+                <CHILD_DATA_SET>
+                    <HEADER>
+                        <TYPE>
+                            <EXTENSION_TABLE_NAME>CBC_TEST_RESULTS</EXTENSION_TABLE_NAME>
+                            <NAME>Tracker CBC Test Results</NAME>
+                        </TYPE>
+                    </HEADER>
+                    <DATA_SET>
+                        <COMMENT_DESCRIPTION>Test CBC condition entry</COMMENT_DESCRIPTION>
+                        <CREATE_TIMESTAMP>2020-01-22 08:00:00</CREATE_TIMESTAMP>
+                        <CREATED_BY_USER>Aivaras</CREATED_BY_USER>
+                        <VERSION>CBC_test1</VERSION>
+                        <SUBVERSION>1</SUBVERSION>
+                        <DATA>
+                            <ID>CBC_3000_1</ID>
+                            <NOISE_RMS>13.09</NOISE_RMS>
+                            <NOISE_AVG>63.6 </NOISE_AVG>
+                            <PEDESTAL_RMS>17.2</PEDESTAL_RMS>
+                            <PEDESTAL_AVG>34</PEDESTAL_AVG>
+                            <THRESHOLD> threshold value</THRESHOLD>
+                        </DATA>
+                    </DATA_SET>
+                </CHILD_DATA_SET>
+            </DATA_SET>
+        </CHILD_DATA_SET>
+    </DATA_SET>
+</ROOT>

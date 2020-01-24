@@ -1,0 +1,101 @@
+{
+  "Root": {
+    "Header": {
+      "Type": {
+        "Name": "Tracker Hybrids Results Metadata",
+        "ExtensionTableName": "HYBRID_TEST_METADATA"
+      },
+      "Run": {
+        "RunNumber": "2",
+        "RunType": "randomType",
+        "RunBeginTimestamp": "2020-01-22 08:00:00"
+      }
+    },
+    "Datasets": [
+      {
+        "Dataset": {
+          "CommentDescription": "Test METADATA condition entry",
+          "Version": "JSON_TEST_VERSION",
+          "CreateTimestamp": "2020-01-23 08:00:00",
+          "Subversion": "1",
+          "CreatedByUser": "Aivaras",
+          "Data": [
+            {
+              "StartTime": "2020-01-23 09:00:00",
+              "EndTime": "2020-01-23 10:00:00",
+              "HostName": "json hostname",
+              "UserName": "voveryte",
+              "SoftWare": "windows 3000",
+              "PersonName": "Aivaras Silale",
+              "Path": "/usr/test/path",
+              "Qualification": "BAD",
+              "comment_description": "Testing hybrids json metadata"
+            }
+          ],
+          "Child_Dataset": {
+            "Header": {
+              "Type": {
+                "Name": "Tracker Hybrids Test Results",
+                "ExtensionTableName": "HYBRID_TEST_RESULTS"
+              }
+            },
+            "Datasets": [
+              {
+                "Dataset": {
+                  "CommentDescription": "Test HYBRIDS condition entry",
+                  "Version": "JSON_TEST_VERSION2",
+                  "CreateTimestamp": "2020-01-23 08:00:00",
+                  "Subversion": "1",
+                  "CreatedByUser": "Aivaras",
+                  "Data": [
+                    {
+                      "CurrentBefore": "30.1",
+                      "CurrentAfter": "83.13",
+                      "TempBefore": "87.1",
+                      "TempAfter": "99.99",
+                      "NumbOfOpenChannels": "4",
+                      "NumbOfShortedChannels": "3",
+                      "TestResult": "good results",
+                      "RootFile": "root.pdf",
+                      "OpenChannels": "9, 8, 7, 6",
+                      "ShortedChannels": "3, 2, 1"
+                    }
+                  ],
+                  "Child_Dataset": {
+                    "Header": {
+                      "Type": {
+                        "ExtensionTableName": "CBC_TEST_RESULTS"
+                      }
+                    },
+                    "Datasets": [
+                      {
+                        "Dataset": {
+                          "CommentDescription": "Test CBC condition entry",
+                          "Version": "JSON_TEST_VERSION3",
+                          "CreateTimestamp": "2020-01-23 08:00:00",
+                          "Subversion": "1",
+                          "CreatedByUser": "Aivaras",
+                          "Data": [
+                            {
+                              "Id": "CBC_1",
+                              "NoiseRms": "3.13",
+                              "NoiseAvg": "17.13",
+                              "PedestalRms": "9.19",
+                              "PedestalAvg": "4",
+                              "Threshold": "random value"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
+
