@@ -4,15 +4,10 @@ import javax.management.modelmbean.XMLParseException;
 
 import lombok.extern.log4j.Log4j;
 
-import org.cern.cms.dbloader.dao.CondDao;
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
-import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.HelpPrinter;
-import org.cern.cms.dbloader.manager.LobManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.file.DataFile;
-import org.cern.cms.dbloader.manager.xml.CondJsonManager;
-import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.model.OptId;
@@ -27,7 +22,7 @@ import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 
-import java.util.Optional;
+import org.cern.cms.dbloader.manager.XmlManager;
 
 @Log4j
 @Singleton
@@ -42,6 +37,9 @@ public class CondApp extends AppBase {
     @Inject
     private ResourceFactory rf;
 
+    @Inject
+    private XmlManager xmlm;
+    
     @Override
     public boolean handleInfo() throws Exception {
 
@@ -95,8 +93,7 @@ public class CondApp extends AppBase {
             if (ceh == null) {
                 throw new IllegalArgumentException(String.format("[%s] condition not found!", optId.getName()));
             }
-            CondXmlManager xmlm = rf.createCondXmlManager(ceh, Optional.empty());
-            xmlm.printExample(props, System.out);
+            xmlm.printCondExample(props, ceh, System.out);
             return true;
         }
 
@@ -134,44 +131,9 @@ public class CondApp extends AppBase {
         if (h.getKindOfCondition().getName() == null) {
             throw new XMLParseException("No Kind of Condition name defined!");
         }
-
-        CondEntityHandler condeh = enGenerator.getConditionHandler(h.getKindOfCondition().getName());
-        if (condeh == null) {
-            throw new XMLParseException(String.format("Kind of Condition not resolved: %s", h.getKindOfCondition()));
-        }
-
-        ChannelEntityHandler chaneh = null;
-        if (h.getHint() != null) {
-            if (h.getHint().getChannelMap() != null) {
-                chaneh = enGenerator.getChannelHandler(h.getHint().getChannelMap());
-                if (chaneh == null) {
-                    throw new XMLParseException(String.format("Channel Map not resolved: %s", h.getHint()));
-                }
-            }
-        }
-        // So far - success!
-        log.info(String.format("%s (%s) with %d dataset and %s channel map to be processed", condeh.getId(), condeh.getName(), root.getDatasets().size(), chaneh));
-
-        if (file.getFileType() == DataFile.Type.JSON) {
-            CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
-            root = jmanager.deserialize(file.getFile());
-
-        } else {
-            if (chaneh==null){
-                CondXmlManager xmlm = rf.createCondXmlManager(condeh, Optional.empty());
-                root = (Root) xmlm.unmarshal(file.getFile());
-            } else {
-                CondXmlManager xmlm = rf.createCondXmlManager(condeh, Optional.of(chaneh));
-                root = (Root) xmlm.unmarshal(file.getFile());
-            }
-        }
-
-        LobManager lobManager = new LobManager();
-        lobManager.lobParser(root, condeh, file);
-
+        
         // Try to load the file!
-        CondDao dao = rf.createCondDao(sm);
-        dao.saveCondition(root, alog);
+        rf.createCondDao(sm).saveCondition(root, alog, file);
 
     }
 

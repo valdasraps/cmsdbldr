@@ -37,7 +37,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
-import org.cern.cms.dbloader.manager.xml.PartDetailsBaseAdapter;
+import org.cern.cms.dbloader.manager.xml.PartDetailsBaseProxyAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.managemnt.Location;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
@@ -206,7 +206,7 @@ public class Part extends DeleteableBase {
 
     @Transient
     @XmlElement(name = "PART_EXTENSION")
-    @XmlJavaTypeAdapter(value = PartDetailsBaseAdapter.class)
+    @XmlJavaTypeAdapter(value = PartDetailsBaseProxyAdapter.class)
     private PartDetailsBase partDetails;
 
     public void addChild(Part part) {

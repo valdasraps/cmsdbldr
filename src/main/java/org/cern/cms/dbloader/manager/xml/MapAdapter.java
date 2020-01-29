@@ -15,30 +15,30 @@ public class MapAdapter extends XmlAdapter<Element, Entry<String, String>> {
 
     @Override
     public Element marshal(Entry<String, String> e) throws Exception {
-    	if (e == null) {
-    		return null;
-    	}
-        
-    	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        if (e == null) {
+            return null;
+        }
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         Document doc = db.newDocument();
-        
+
         Element el = doc.createElement(e.getKey());
         el.setTextContent(e.getValue());
-        
+
         return el;
     }
 
     @Override
     public Entry<String, String> unmarshal(Element el) throws Exception {
-    	if (el == null) {
-    		return null;
-    	}
+        if (el == null) {
+            return null;
+        }
 
-    	Map<String, String> m = new HashMap<>();
-    	m.put(el.getNodeName(), el.getTextContent());
+        Map<String, String> m = new HashMap<>();
+        m.put(el.getNodeName(), el.getTextContent());
 
-		return m.entrySet().iterator().next();
+        return m.entrySet().iterator().next();
     }
 
 }

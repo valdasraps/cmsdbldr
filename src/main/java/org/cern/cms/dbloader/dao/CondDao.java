@@ -29,7 +29,14 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
+import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
+import org.cern.cms.dbloader.manager.LobManager;
 import org.cern.cms.dbloader.manager.SessionManager;
+import org.cern.cms.dbloader.manager.file.DataFile;
+import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
+import org.cern.cms.dbloader.metadata.CondEntityHandler;
+import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.CondAttrList;
 import org.cern.cms.dbloader.model.condition.CondToAttrRltSh;
 import org.cern.cms.dbloader.model.serial.map.AttrBase;
@@ -40,12 +47,34 @@ import org.cern.cms.dbloader.model.serial.map.Attribute;
 public class CondDao extends DaoBase {
 
     @Inject
+    private DynamicEntityGenerator enGenerator;
+    
+    private final LobManager lobm = new LobManager();
+    
+    @Inject
     public CondDao(@Assisted SessionManager sm) throws Exception {
         super(sm);
     }
 
-    public void saveCondition(Root root, AuditLog alog) throws Exception {
+    public void saveCondition(Root root, AuditLog alog, DataFile file) throws Exception {
 
+        Header header = root.getHeader();
+        
+        // Resolve Condition handler
+        CondEntityHandler condeh = enGenerator.getConditionHandler(header.getKindOfCondition().getName());
+        if (condeh == null) {
+            throw new XMLParseException(String.format("Kind of Condition not resolved: %s", header.getKindOfCondition()));
+        }
+        
+        // Resolve Channel handler
+        ChannelEntityHandler chaneh = null;
+        if (header.getHint() != null && header.getHint().getChannelMap() != null) {
+            chaneh = enGenerator.getChannelHandler(header.getHint().getChannelMap());
+            if (chaneh == null) {
+                throw new XMLParseException(String.format("Channel Map not resolved: %s", header.getHint()));
+            }
+        }
+        
         Map<BigInteger, Iov> iovMap = new HashMap<>();
 
         if (root.getElements() != null && root.getMaps() != null) {
@@ -82,6 +111,28 @@ public class CondDao extends DaoBase {
         // Assembling Datasets: resolving parts and assigning other values
         for (Dataset ds : root.getDatasets()) {
 
+            // Convert data from proxy to true objects
+            List<CondBase> data = (List<CondBase>) ds.getData();
+            for (int i = 0; i < data.size(); i++) {
+                CondBase cb = (CondBase) data.get(i);
+                if (cb != null) {
+                    CondBase d = cb.getDelegate(condeh.getEntityClass().getC());
+                    lobm.lobParser(d, condeh, file.getFile());
+                    data.set(i, d);
+                }
+            }
+            
+            // Convert channels from proxy to true objects
+            if (ds.getChannel() != null) {
+                
+                if (chaneh == null) {
+                    throw new XMLParseException(String.format("Channel Map not resolved: %s. Hint missing?", ds.getChannel()));
+                }
+                
+                ChannelBase cb = ds.getChannel();
+                ds.setChannel(cb.getDelegate(chaneh.getEntityClass().getC()));
+            }
+            
             if (ds.getVersion() == null) {
                 ds.setVersion(DEFAULT_VERSION);
             }

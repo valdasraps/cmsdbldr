@@ -117,7 +117,7 @@ public class PartLoadJsonTest extends TestBase {
                 tower.addChild(pack);
             }
             rootPart.addChild(tower);
-            String jsonString = this.jmanager.<Root>serialiaze(root);
+            String jsonString = this.jmanager.<Root>serialize(root);
             System.out.println(jsonString);
         }
     }
@@ -157,7 +157,7 @@ public class PartLoadJsonTest extends TestBase {
             attr.setValue("1");
             tower.addAttributes(attr);
             rootPart.addChild(tower);
-            String jsonString = this.jmanager.<Root>serialiaze(root);
+            String jsonString = this.jmanager.<Root>serialize(root);
             System.out.println(jsonString);
         }
     }
@@ -225,7 +225,7 @@ public class PartLoadJsonTest extends TestBase {
                 chamber.addChild(pack);
             }
             rootPart.addChild(chamber);
-            String jsonString = this.jmanager.<Root>serialiaze(root);
+            String jsonString = this.jmanager.<Root>serialize(root);
             System.out.println(jsonString);
         }
     }
@@ -567,7 +567,7 @@ public class PartLoadJsonTest extends TestBase {
             //    if (part.getBarcode() != null) part.setBarcode(prefix.concat(part.getBarcode()));
             // }
         }
-        String json = jsonMngr.<Root>serialiaze(root);
+        String json = jsonMngr.<Root>serialize(root);
         assertNotNull(json);
 //        System.out.println(json);
     }

@@ -29,18 +29,20 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
     }
 
     @Inject
-    public DataFile(XmlManager xmlm, JsonManager jmngr, @Assisted FileBase archive, @Assisted File file, @Assisted Type type) throws Exception {
+    public DataFile(XmlManager xmlm, 
+                    JsonManager jmngr, 
+                    @Assisted FileBase archive, 
+                    @Assisted File file, 
+                    @Assisted Type type) throws Exception {
         super(file);
+        
         this.archive = archive;
-        Root tmpRoot;
         if (type == Type.JSON) {
-            tmpRoot = jmngr.deserialize(file);
+            this.root = jmngr.deserialize(file);
         } else {
-            // XMA or XML
-            tmpRoot = xmlm.unmarshal(file);
+            this.root = xmlm.unmarshal(file);
         }
         this.fileType = type;
-        this.root = tmpRoot;
         this.type = DataFile.resolveType(this.root);
     }
 

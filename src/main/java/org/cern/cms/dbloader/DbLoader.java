@@ -2,7 +2,6 @@ package org.cern.cms.dbloader;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 
 import org.cern.cms.dbloader.app.*;
 import org.cern.cms.dbloader.handler.AuditLogHandler;
@@ -101,8 +100,8 @@ public class DbLoader {
                     throw new IllegalArgumentException(String.format("[%s] dataset data not found!", dataSetId));
                 }
 
-                CondXmlManager xmlm = rf.createCondXmlManager(ceh, Optional.empty());
-                xmlm.printDatasetDataXML(dataset, dataSetData);
+                XmlManager xmlm = injector.getInstance(XmlManager.class);
+                xmlm.printDatasetDataXML(dataset, ceh, dataSetData);
 
             }
 

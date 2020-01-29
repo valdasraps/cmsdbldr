@@ -5,7 +5,6 @@ import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.*;
 import org.cern.cms.dbloader.manager.file.FileBase;
-import org.cern.cms.dbloader.manager.xml.CondJsonManager;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.condition.*;
@@ -156,7 +155,7 @@ public class CondLoadJsonTest extends TestBase {
             add(ds);
         }});
 
-        String json = this.jmanager.serialiaze(root);
+        String json = this.jmanager.serialize(root);
         System.out.println(json);
     }
 
@@ -227,7 +226,7 @@ public class CondLoadJsonTest extends TestBase {
         }});
         root.setHeader(header);
 
-        String json = this.jmanager.serialiaze(root);
+        String json = this.jmanager.serialize(root);
         System.out.println(json);
 
     }
@@ -295,7 +294,7 @@ public class CondLoadJsonTest extends TestBase {
             add(ds);
         }});
 
-        String json = this.jmanager.serialiaze(root);
+        String json = this.jmanager.serialize(root);
         System.out.println(json);
     }
 
@@ -304,7 +303,7 @@ public class CondLoadJsonTest extends TestBase {
         Test JSON case0 map to Part class
      */
     @Test
-    public void testJsonToBeanCase0() throws ParseException, IOException {
+    public void testJsonToBeanCase0() throws Exception {
 
         // Root root = this.jmanager.deserialize(new File(case0)); // paprastas deserializatorius
         DynamicEntityGenerator enGenerator = null;
@@ -317,7 +316,7 @@ public class CondLoadJsonTest extends TestBase {
         ChannelEntityHandler chaneh = enGenerator.getChannelHandler("TEST_CHANNELS");
         CondEntityHandler condeh = enGenerator.getConditionHandler("IV");
 
-        CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
+        JsonManager jmanager = new JsonManager();
 
         Root root = jmanager.deserialize(new File(case0));
         assertNotNull(root.getHeader());
@@ -396,7 +395,7 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals(3, datas.size());
         for (int i = 0; i <= 2; i++) {
             assertEquals("org.cern.cms.dbloader.model.condition.ext.TestIv",
-                    datas.get(i).getClass().getTypeName());
+                    datas.get(i).getDelegate(condeh.getEntityClass().getC()).getClass().getTypeName());
 
         }
     }
@@ -405,7 +404,7 @@ public class CondLoadJsonTest extends TestBase {
         Test JSON case1 map to Part class
      */
     @Test
-    public void testJsonToBeanCase1() throws ParseException, IOException {
+    public void testJsonToBeanCase1() throws Exception {
         DynamicEntityGenerator enGenerator = null;
         try {
             enGenerator = new DynamicEntityGenerator(pm);
@@ -416,7 +415,7 @@ public class CondLoadJsonTest extends TestBase {
         ChannelEntityHandler chaneh = enGenerator.getChannelHandler("TEST_CHANNELS");
         CondEntityHandler condeh = enGenerator.getConditionHandler("IV");
 
-        CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
+        JsonManager jmanager = new JsonManager();
 
         Root root = jmanager.deserialize(new File(case1));
 
@@ -467,7 +466,7 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals(3, datas.size());
         for (int i = 0; i <= 2; i++) {
             assertEquals("org.cern.cms.dbloader.model.condition.ext.TestIv",
-                    datas.get(i).getClass().getTypeName());
+                    datas.get(i).getDelegate(condeh.getEntityClass().getC()).getClass().getTypeName());
 
         }
     }
@@ -476,7 +475,7 @@ public class CondLoadJsonTest extends TestBase {
         Test JSON case2 map to Part class
      */
     @Test
-    public void testJsonToBeanCase2() throws IOException, ParseException {
+    public void testJsonToBeanCase2() throws Exception {
         DynamicEntityGenerator enGenerator = null;
         try {
             enGenerator = new DynamicEntityGenerator(pm);
@@ -487,7 +486,7 @@ public class CondLoadJsonTest extends TestBase {
         ChannelEntityHandler chaneh = enGenerator.getChannelHandler("TEST_CHANNELS");
         CondEntityHandler condeh = enGenerator.getConditionHandler("IV");
 
-        CondJsonManager jmanager = new CondJsonManager(chaneh, condeh);
+        JsonManager jmanager = new JsonManager();
         Root root = jmanager.deserialize(new File(case2));
 
         // Asserting Header
@@ -536,7 +535,7 @@ public class CondLoadJsonTest extends TestBase {
 
         for (int i = 0; i <= 2; i++) {
             assertEquals("org.cern.cms.dbloader.model.condition.ext.TestIv",
-                    datas.get(i).getClass().getTypeName());
+                    datas.get(i).getDelegate(condeh.getEntityClass().getC()).getClass().getTypeName());
         }
     }
 

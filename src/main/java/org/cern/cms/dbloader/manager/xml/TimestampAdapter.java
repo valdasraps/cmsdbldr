@@ -1,6 +1,5 @@
 package org.cern.cms.dbloader.manager.xml;
 
-import java.sql.Timestamp;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;

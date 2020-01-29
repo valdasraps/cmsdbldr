@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
+import org.cern.cms.dbloader.manager.xml.ChannelBaseProxyAdapter;
 import org.cern.cms.dbloader.model.EntityBase;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.construct.Part;
@@ -89,7 +89,7 @@ public class ShipmentItem extends EntityBase {
     
     @Transient
     @XmlElement(name = "CHANNEL")
-    @XmlJavaTypeAdapter(value = ChannelBaseAdapter.class)
+    @XmlJavaTypeAdapter(value = ChannelBaseProxyAdapter.class)
     @JsonProperty("Channel")
     private ChannelBase channel;
 

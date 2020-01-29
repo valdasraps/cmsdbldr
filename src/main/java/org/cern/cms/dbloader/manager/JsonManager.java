@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.serial.Root;
@@ -15,60 +14,49 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.cern.cms.dbloader.manager.json.ChannelDeserializer;
+import org.cern.cms.dbloader.manager.json.CondDeserializer;
 
 public class JsonManager {
 
-    ChannelEntityHandler ceh;
-    private ObjectMapper mapper;
-
-    public JsonManager() {
-        this.mapper = new ObjectMapper();
-    }
-
-    public JsonManager(ChannelEntityHandler ceh) {
-        this.mapper = new ObjectMapper();
-        this.ceh = ceh;
-    }
-
-    public Root deserialize(File file) throws IOException {
-        Root root = null;
-        this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private ObjectMapper getMapper() {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        
         SimpleModule module = new SimpleModule();
-        JsonDeserializer<ChannelBase> cbj = new ChannelDeserilizerMock();
-        JsonDeserializer<CondBase> cbb = new CondDeserializerMock();
-        module.addDeserializer(CondBase.class, cbb);
-        module.addDeserializer(ChannelBase.class, cbj);
+        module.addDeserializer(CondBase.class, new CondDeserializer());
+        module.addDeserializer(ChannelBase.class, new ChannelDeserializer());
         mapper.registerModule(module);
-        root = this.mapper.readerFor(Root.class).readValue(file);
-        return root;
+
+        return mapper;
+    }
+    
+    public Root deserialize(File file) throws IOException {
+        
+        return getMapper().readerFor(Root.class).readValue(file);
+
     }
 
     public List<String> deserilizeRootArray(String data) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Object[] list = om.readerFor(Object[].class).readValue(data);
-        List<String> roots = new ArrayList<String>();
+        
+        ObjectMapper mapper = getMapper();
+        
+        Object[] list = mapper.readerFor(Object[].class).readValue(data);
+        List<String> roots = new ArrayList<>();
         for (Object elmnt: list) {
             roots.add(mapper.writeValueAsString(((LinkedHashMap) elmnt)));
         }
         return roots;
     }
 
-    /**
-     * Serializes bean to JSON string
-     *
-     * @param bean to serialize
-     * @return bean as JSON string
-     */
-    public <T> String serialiaze(T bean) {
-        String jsonStr = null;
-        // this.mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+    public <T> String serialize(T bean) {
         try {
-            jsonStr = this.mapper.writeValueAsString(bean);
+            return this.getMapper().writeValueAsString(bean);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
-        return jsonStr;
+        return null;
     }
 
 }

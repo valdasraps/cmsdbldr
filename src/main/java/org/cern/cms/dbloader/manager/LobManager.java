@@ -16,35 +16,27 @@ import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.ConstructEntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
 import org.cern.cms.dbloader.model.condition.CondBase;
-import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.construct.PartDetailsBase;
-import org.cern.cms.dbloader.model.construct.Part;
-import org.cern.cms.dbloader.model.serial.Root;
 
 @Getter
 public class LobManager {
 
-    public void lobParser(final Root root, final CondEntityHandler condeh, final DataFile file) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
-        if (root == null | condeh == null | file == null) {
+    public void lobParser(final CondBase data, final CondEntityHandler condeh, final File file) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+        if (data == null | condeh == null | file == null) {
             throw new NullArgumentException(null);
         }
         List<PropertyHandler> properties = condeh.getProperties();
-        List<Dataset> dataSet = root.getDatasets();
-        for (Dataset set : dataSet) {
-            for (CondBase data : set.getData()) {
-                for (PropertyHandler prop : properties) {
-                    if ((prop.getType().equals(PropertyType.CLOB) || prop.getType().equals(PropertyType.BLOB))
-                            && prop.getValue(data) == null) {
-                        PropertyHandler fileProp = condeh.getPropertyByName(prop.getName().replaceAll("[CB]lob$", "File"));
-                        if (fileProp != null) {
-                            String fileName = (String) fileProp.getValue(data);
-                            if (fileName != null) {
-                                if ((prop.getType().equals(PropertyType.CLOB))) {
-                                    prop.setValue(data, fileProcessClob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
-                                } else if (prop.getType().equals(PropertyType.BLOB)) {
-                                    prop.setValue(data, fileProcessBlob(buildPath(file.getFile().getAbsolutePath(), file.getFile().getName(), fileName)));
-                                }
-                            }
+        for (PropertyHandler prop : properties) {
+            if ((prop.getType().equals(PropertyType.CLOB) || prop.getType().equals(PropertyType.BLOB))
+                    && prop.getValue(data) == null) {
+                PropertyHandler fileProp = condeh.getPropertyByName(prop.getName().replaceAll("[CB]lob$", "File"));
+                if (fileProp != null) {
+                    String fileName = (String) fileProp.getValue(data);
+                    if (fileName != null) {
+                        if ((prop.getType().equals(PropertyType.CLOB))) {
+                            prop.setValue(data, fileProcessClob(buildPath(file.getAbsolutePath(), file.getName(), fileName)));
+                        } else if (prop.getType().equals(PropertyType.BLOB)) {
+                            prop.setValue(data, fileProcessBlob(buildPath(file.getAbsolutePath(), file.getName(), fileName)));
                         }
                     }
                 }

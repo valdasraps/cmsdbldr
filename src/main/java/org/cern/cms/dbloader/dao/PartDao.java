@@ -160,7 +160,7 @@ public class PartDao extends DaoBase {
 
         ConstructEntityHandler coneh = enGenerator.getConstructHandler(dbPart.getKindOfPart().getName());
 
-        PartDetailsBase partDetailsBase = xmlPart.getPartDetails().getRealClass(coneh.getEntityClass().getC());
+        PartDetailsBase partDetailsBase = xmlPart.getPartDetails().getDelegate(coneh.getEntityClass().getC());
         LobManager lobManager = new LobManager();
         lobManager.lobParserParts(partDetailsBase, coneh, file);
         PartDetailsBase partDetailsEn = (PartDetailsBase) session.createCriteria(PartDetailsBase.class)

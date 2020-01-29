@@ -5,19 +5,19 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import org.cern.cms.dbloader.model.ProxyBase;
 
 @MappedSuperclass
 @Getter
 @Setter
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class PartDetailsBase {
+public abstract class PartDetailsBase extends ProxyBase<PartDetailsBase> {
 
     @Id
     @Column(name = "ID")
@@ -35,7 +35,7 @@ public abstract class PartDetailsBase {
         for (Field f : this.getClass().getDeclaredFields()) {
             f.setAccessible(true);
             for (Field nf : newDetails.getClass().getDeclaredFields()){
-                if (nf.getName() == f.getName()){
+                if (nf.getName() == null ? f.getName() == null : nf.getName().equals(f.getName())){
                     nf.setAccessible(true);
                     Object newValue = nf.get(newDetails);
                     f.set(this, newValue);
@@ -44,7 +44,5 @@ public abstract class PartDetailsBase {
 
         }
     }
-
-    public abstract <T extends PartDetailsBase> T getRealClass(Class<T> clazz) throws Exception;
 
 }

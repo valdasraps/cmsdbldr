@@ -19,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.cern.cms.dbloader.model.ProxyBase;
 
 @MappedSuperclass
 @Getter
@@ -27,7 +28,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties({"id", "dataset"})
-public abstract class CondBase {
+public abstract class CondBase extends ProxyBase<CondBase> {
 
     @Id
     @Column(name = "RECORD_ID")

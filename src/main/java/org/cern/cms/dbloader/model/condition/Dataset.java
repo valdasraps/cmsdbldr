@@ -39,9 +39,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.cern.cms.dbloader.manager.xml.ChannelBaseAdapter;
-import org.cern.cms.dbloader.manager.xml.CondBaseAdapter;
+import org.cern.cms.dbloader.manager.xml.ChannelBaseProxyAdapter;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
+import org.cern.cms.dbloader.manager.xml.CondBaseProxyAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.iov.Iov;
@@ -182,7 +182,7 @@ public class Dataset extends DeleteableBase {
 
     @Transient
     @XmlElement(name = "CHANNEL")
-    @XmlJavaTypeAdapter(value = ChannelBaseAdapter.class)
+    @XmlJavaTypeAdapter(value = ChannelBaseProxyAdapter.class)
     @JsonProperty("Channel")
     private ChannelBase channel;
 
@@ -193,7 +193,7 @@ public class Dataset extends DeleteableBase {
 
     @Transient
     @XmlElement(name = "DATA")
-    @XmlJavaTypeAdapter(value = CondBaseAdapter.class)
+    @XmlJavaTypeAdapter(value = CondBaseProxyAdapter.class)
     @JsonProperty(value = "Data")
     private List<? extends CondBase> data;
 

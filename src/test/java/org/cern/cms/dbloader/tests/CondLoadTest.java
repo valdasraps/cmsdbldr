@@ -5,16 +5,15 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
-import org.cern.cms.dbloader.manager.CondXmlManager;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.HbmManager;
+import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.model.OptId;
@@ -41,10 +40,10 @@ public class CondLoadTest extends TestBase {
         assertEquals(ch, enGenerator.getConditionHandler(ch.getId()));
         assertEquals(ch, enGenerator.getConditionHandler(new OptId(ch.getId().toString())));
         
-        CondXmlManager xmlm = rf.createCondXmlManager(ch, Optional.empty());
-
+        XmlManager xmlm = injector.getInstance(XmlManager.class);
+        
         FileOutputStream out = new FileOutputStream(exampleFile);
-        xmlm.printExample(pm, out);
+        xmlm.printCondExample(pm, ch, out);
 
         DbLoader loader = new DbLoader(pm);
         for (FileBase df: fm.getFiles(Collections.singletonList(exampleFile))) {

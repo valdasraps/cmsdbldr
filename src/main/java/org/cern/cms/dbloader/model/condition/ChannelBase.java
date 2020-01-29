@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.cern.cms.dbloader.model.ProxyBase;
 import org.hibernate.annotations.Type;
 
 @Entity
@@ -36,7 +37,7 @@ import org.hibernate.annotations.Type;
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties({"deleted"})
-public abstract class ChannelBase {
+public abstract class ChannelBase extends ProxyBase<ChannelBase> {
 
     @Id
     @Column(name = "CHANNEL_MAP_ID")
