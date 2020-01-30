@@ -31,4 +31,14 @@ connect CMS_TST_CORE_IOV_MGMNT/testing@&&1
 
 @05-core-iov-mgmnt
 
+PROMPT Executing CMS_TST_TEST_CONSTRUCT stuff
+connect CMS_TST_TEST_CONSTRUCT/testing@&&1
+
+@06-part_extension
+
+PROMPT Executing CMS_TST_TEST_COND stuff
+connect CMS_TST_TEST_COND/testing@&&1
+
+@07-hybrids_testing
+
 quit
