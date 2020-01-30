@@ -44,7 +44,7 @@
                 <SUBVERSION>1</SUBVERSION>
                 <PART>
                     <KIND_OF_PART>Hybrid</KIND_OF_PART>
-                    <SERIAL_NUMBER>Hybrid serial</SERIAL_NUMBER>
+                                <SERIAL_NUMBER>Hybrid serial</SERIAL_NUMBER>
                 </PART>
                 <DATA>
                     <CURRENT_BEFORE>10.01</CURRENT_BEFORE>
@@ -72,7 +72,7 @@
                         <VERSION>CBC_test1</VERSION>
                         <SUBVERSION>1</SUBVERSION>
                         <DATA>
-                            <ID>CBC_3000_1</ID>
+                            <CBC_ID>CBC_3000_1</CBC_ID>
                             <NOISE_RMS>13.09</NOISE_RMS>
                             <NOISE_AVG>63.6 </NOISE_AVG>
                             <PEDESTAL_RMS>17.2</PEDESTAL_RMS>

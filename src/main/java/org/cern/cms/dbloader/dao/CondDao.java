@@ -18,7 +18,6 @@ import org.cern.cms.dbloader.model.iov.Tag;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.serial.Elements;
 import org.cern.cms.dbloader.model.serial.Header;
-import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.model.serial.map.MapIov;
 import org.cern.cms.dbloader.model.serial.map.MapTag;
 import org.cern.cms.dbloader.model.serial.map.Maps;
@@ -42,6 +41,7 @@ import org.cern.cms.dbloader.model.condition.CondToAttrRltSh;
 import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
+import org.cern.cms.dbloader.model.condition.DatasetRoot;
 
 @Log4j
 public class CondDao extends DaoBase {
@@ -56,9 +56,20 @@ public class CondDao extends DaoBase {
         super(sm);
     }
 
-    public void saveCondition(Root root, AuditLog alog, DataFile file) throws Exception {
-
+    public void saveCondition(DatasetRoot root, AuditLog alog, DataFile file, Dataset parent) throws Exception {
         Header header = root.getHeader();
+
+        if (root.getDatasets().isEmpty()) {
+            throw new XMLParseException("No dataset defined!");
+        }
+
+        if (header.getKindOfCondition() == null) {
+            throw new XMLParseException("No Kind of Conition defined!");
+        }
+
+        if (header.getKindOfCondition().getName() == null) {
+            throw new XMLParseException("No Kind of Condition name defined!");
+        }
         
         // Resolve Condition handler
         CondEntityHandler condeh = enGenerator.getConditionHandler(header.getKindOfCondition().getName());
@@ -132,6 +143,9 @@ public class CondDao extends DaoBase {
                 ChannelBase cb = ds.getChannel();
                 ds.setChannel(cb.getDelegate(chaneh.getEntityClass().getC()));
             }
+            
+            // Set parent
+            ds.setAggregatedDataset(parent);
             
             if (ds.getVersion() == null) {
                 ds.setVersion(DEFAULT_VERSION);

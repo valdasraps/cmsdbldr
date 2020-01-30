@@ -20,6 +20,7 @@ import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.serial.map.Maps;
+import org.cern.cms.dbloader.model.condition.DatasetRoot;
 
 @Getter
 @Setter
@@ -28,7 +29,7 @@ import org.cern.cms.dbloader.model.serial.map.Maps;
 @JsonRootName(value = "Root")
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Root {
+public class Root implements DatasetRoot {
 
 	@XmlElement(name = "HEADER")
 	@JsonProperty("Header")

@@ -14,7 +14,6 @@ import org.cern.cms.dbloader.model.OptId;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.CondBase;
 import org.cern.cms.dbloader.model.serial.Header;
-import org.cern.cms.dbloader.model.serial.Root;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -23,6 +22,8 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 
 import org.cern.cms.dbloader.manager.XmlManager;
+import org.cern.cms.dbloader.model.condition.Dataset;
+import org.cern.cms.dbloader.model.condition.DatasetRoot;
 
 @Log4j
 @Singleton
@@ -117,24 +118,40 @@ public class CondApp extends AppBase {
 
     @Override
     public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
-        Root root = file.getRoot();
-        Header h = root.getHeader();
 
-        if (root.getDatasets().isEmpty()) {
-            throw new XMLParseException("No dataset defined!");
+        saveDatasetRoot(sm, file.getRoot(), alog, file, null, null);
+        
+    }
+    
+    // Recursively process datasets and save
+    private void saveDatasetRoot(SessionManager sm, DatasetRoot root, 
+                                 AuditLog alog, DataFile file,
+                                 Dataset parent,
+                                 Header parentHeader) throws Exception {
+        
+        Header header = root.getHeader();
+        
+        if (header == null) {
+            throw new XMLParseException("Header is not defined!");
         }
 
-        if (h.getKindOfCondition() == null) {
-            throw new XMLParseException("No Kind of Conition defined!");
-        }
-
-        if (h.getKindOfCondition().getName() == null) {
-            throw new XMLParseException("No Kind of Condition name defined!");
+        if (root.getHeader().getRun() == null && parentHeader != null) {
+            root.getHeader().setRun(parentHeader.getRun());
         }
         
-        // Try to load the file!
-        rf.createCondDao(sm).saveCondition(root, alog, file);
+        // Save root dataset
+        rf.createCondDao(sm).saveCondition(root, alog, file, parent);
 
+        // Save children
+        for (Dataset d: root.getDatasets()) {
+            if (d.getChildDatasets() != null) {
+                for (DatasetRoot childRoot: d.getChildDatasets()) {
+
+                    saveDatasetRoot(sm, childRoot, alog, file, d, root.getHeader());
+
+                }
+            }
+        }
     }
-
+    
 }

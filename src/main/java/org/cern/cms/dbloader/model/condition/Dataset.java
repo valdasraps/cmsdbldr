@@ -97,6 +97,7 @@ public class Dataset extends DeleteableBase {
 
     @ManyToOne
     @JoinColumn(name = "AGGREGATED_COND_DATA_SET_ID")
+    @XmlTransient
     private Dataset aggregatedDataset;
 
     @Basic
@@ -220,5 +221,10 @@ public class Dataset extends DeleteableBase {
     @XmlElement(name = "INITIATED_BY_USER")
     @JsonProperty("InitiatedByUser")
     private String initiatedByUser;
+    
+    @Transient
+    @XmlElement(name = "CHILD_DATA_SET")
+    @JsonProperty("ChildDataset")
+    private List<ChildDatasetRoot> childDatasets;
 
 }

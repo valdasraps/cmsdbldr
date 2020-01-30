@@ -32,7 +32,7 @@
               "comment_description": "Testing hybrids json metadata"
             }
           ],
-          "Child_Dataset": {
+          "ChildDataset": {
             "Header": {
               "Type": {
                 "Name": "Tracker Hybrids Test Results",
@@ -61,7 +61,7 @@
                       "ShortedChannels": "3, 2, 1"
                     }
                   ],
-                  "Child_Dataset": {
+                  "ChildDataset": {
                     "Header": {
                       "Type": {
                         "ExtensionTableName": "CBC_TEST_RESULTS"
@@ -77,7 +77,7 @@
                           "CreatedByUser": "Aivaras",
                           "Data": [
                             {
-                              "Id": "CBC_1",
+                              "CbcId": "CBC_1",
                               "NoiseRms": "3.13",
                               "NoiseAvg": "17.13",
                               "PedestalRms": "9.19",

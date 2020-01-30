@@ -19,16 +19,16 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Header {
 
-	@XmlElement(name="TYPE", required = true)
-	@JsonProperty("Type")
-	private KindOfCondition kindOfCondition;
-	
-	@XmlElement(name="RUN")
-	@JsonProperty("Run")
-	private Run run;
-	
-	@XmlElement(name = "HINTS")
-	@JsonProperty("Hints")
-	private Hint hint;
-	
+    @XmlElement(name = "TYPE", required = true)
+    @JsonProperty("Type")
+    private KindOfCondition kindOfCondition;
+
+    @XmlElement(name = "RUN")
+    @JsonProperty("Run")
+    private Run run;
+
+    @XmlElement(name = "HINTS")
+    @JsonProperty("Hints")
+    private Hint hint;
+
 }
