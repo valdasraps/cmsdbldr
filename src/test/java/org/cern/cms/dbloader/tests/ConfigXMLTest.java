@@ -20,7 +20,7 @@ public class ConfigXMLTest extends TestBase {
     public void testAddAlias() throws Exception {
 
         XmlManager xmlm = injector.getInstance(XmlManager.class);
-        Root root = xmlm.unmarshal(new File("src/test/serial/10_addAlias.serial"));
+        Root root = xmlm.unmarshal(new File("src/test/xml/10_addAlias.xml"));
 
         //Doesn't exist
         Assert.assertNull(root.getDatasets());
@@ -56,7 +56,7 @@ public class ConfigXMLTest extends TestBase {
     public void testAddVersionAlias() throws Exception {
 
         XmlManager xmlm = injector.getInstance(XmlManager.class);
-        Root root = xmlm.unmarshal(new File("src/test/serial/08_addVersionAlias.serial"));
+        Root root = xmlm.unmarshal(new File("src/test/xml/08_addVersionAlias.xml"));
 
         //Doesn't exist
         Assert.assertNull(root.getDatasets());
@@ -82,7 +82,7 @@ public class ConfigXMLTest extends TestBase {
     public void testMakeKey() throws Exception {
 
         XmlManager xmlm = injector.getInstance(XmlManager.class);
-        Root root = xmlm.unmarshal(new File("src/test/serial/09_addKeys.serial"));
+        Root root = xmlm.unmarshal(new File("src/test/xml/09_addKeys.xml"));
 
         //Doesn't exist
         Assert.assertNull(root.getDatasets());
