@@ -38,7 +38,7 @@ public class ConfigDaoTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/serial/08_addVersionAlias.serial"))) {
+        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/08_addVersionAlias.xml"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -91,7 +91,7 @@ public class ConfigDaoTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/serial/09_addKeys.serial"))) {
+        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/09_addKeys.xml"))) {
 
             loader.loadArchive(injector, fb);
 
@@ -151,7 +151,7 @@ public class ConfigDaoTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
 
-        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/serial/10_addAlias.serial"))) {
+        for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/10_addAlias.xml"))) {
 
             loader.loadArchive(injector, fb);
 

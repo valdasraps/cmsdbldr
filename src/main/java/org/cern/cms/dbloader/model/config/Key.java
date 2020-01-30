@@ -20,7 +20,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name="CONFIG_KEYS")
+@Table(name="CONFIG_KEY")
 @Getter
 @Setter
 @ToString
