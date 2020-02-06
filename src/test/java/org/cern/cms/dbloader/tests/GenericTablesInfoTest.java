@@ -98,6 +98,18 @@ public class GenericTablesInfoTest extends TestBase {
                         }
                     }
                     break;
+                case "Tracker Hybrids Results Metadata": //TODO: add all columns
+                    assertEquals("HYBRID_TEST_METADATA", ceh.getTableName());
+                    assertEquals("org.cern.cms.dbloader.model.condition.ext.HybridTestMetadata", ceh.getClassName());
+                    break;
+                case "Tracker Hybrids Test Results":
+                    assertEquals("HYBRID_TEST_RESULTS", ceh.getTableName());
+                    assertEquals("org.cern.cms.dbloader.model.condition.ext.HybridTestResults", ceh.getClassName());
+                    break;
+                case "Tracker CBC Test Results":
+                    assertEquals("CBC_TEST_RESULTS", ceh.getTableName());
+                    assertEquals("org.cern.cms.dbloader.model.condition.ext.CbcTestResults", ceh.getClassName());
+                    break;
                 default:
                     fail(String.format("Unexpected condition type found: %s", ceh.getName()));
                     break;

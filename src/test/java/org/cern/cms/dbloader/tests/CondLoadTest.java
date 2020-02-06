@@ -97,11 +97,11 @@ public class CondLoadTest extends TestBase {
                 assertEquals("Some Test Tag", tag.getName());
                 assertEquals("TEST", tag.getDetectorName());
                 assertEquals("This is some comment", tag.getComment());
-                
+
                 AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
                         .add(Restrictions.eq("archiveFileName", "02_condition.xml"))
                         .uniqueResult();
-                
+
                 assertEquals("JUN_7_2011", alog.getVersion());
                 assertEquals((Integer) 2, alog.getSubversion());
                 assertEquals("1", alog.getRunType());
@@ -111,9 +111,9 @@ public class CondLoadTest extends TestBase {
                 assertEquals(new BigInteger("1"), alog.getIntervalOfValidityBegin());
                 assertEquals(new BigInteger("-1"), alog.getIntervalOfValidityEnd());
                 assertEquals("Some Test Tag", alog.getTagName());
-                
+
                 // Check all logs
-                
+
                 for (String file: files) {
                     File f = new File(file);
                     alog = (AuditLog) session.createCriteria(AuditLog.class)
@@ -128,13 +128,13 @@ public class CondLoadTest extends TestBase {
                     assertEquals("TEST", alog.getSubdetectorName());
                     assertEquals("IV", alog.getKindOfConditionName());
                     assertEquals("TEST_IV", alog.getExtensionTableName());
-                    
-                }                
-                
-            } finally {            
+
+                }
+
+            } finally {
                 session.close();
             }
-            
+
         }
                 
     }
@@ -151,5 +151,83 @@ public class CondLoadTest extends TestBase {
         }
                 
     }
-    
+
+
+    @Test
+    public void loadDatasetWithChilds() throws Throwable {
+
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/12_hybrids_condition.xml"))) {
+
+            loader.loadArchive(injector, fb);
+        }
+
+        // Check Datasets
+        try (HbmManager hbm = injector.getInstance(HbmManager.class)) {
+            Session session = hbm.getSession();
+            try {
+
+            // Check Hybrid Metadata dataset
+
+            Dataset dsMeta = (Dataset) session.createCriteria(Dataset.class)
+                .add(Restrictions.eq("version", "JUN_7_2013"))
+                .createCriteria("kindOfCondition")
+                .add(Restrictions.eq("name", "Tracker Hybrids Results Metadata"))
+                .uniqueResult();
+
+            assertEquals("HYBRID_TEST_METADATA", dsMeta.getExtensionTable());
+            assertEquals("1", dsMeta.getRun().getNumber());
+            assertEquals("HRT", dsMeta.getRun().getRunType());
+            assertEquals("Test METADATA condition entry", dsMeta.getComment());
+            assertEquals("Aivaras", dsMeta.getCreatedByUser());
+            assertEquals("3", dsMeta.getSubversion());
+
+
+            // Check Hybrid Test results dataset
+            Dataset ds = (Dataset) session.createCriteria(Dataset.class)
+                .add(Restrictions.eq("version", "hybrid_test1"))
+                .createCriteria("kindOfCondition")
+                .add(Restrictions.eq("name", "Tracker Hybrids Test Results"))
+                .uniqueResult();
+
+            assertEquals("HYBRID_TEST_RESULTS", ds.getExtensionTable());
+            assertEquals("1", ds.getRun().getNumber());
+            assertEquals("HRT", ds.getRun().getRunType());
+            assertEquals("Test HYBRIDS condition entry", ds.getComment());
+            assertEquals("Aivaras", ds.getCreatedByUser());
+            assertEquals("1", ds.getSubversion());
+            assertEquals(ds.getRun(), ds.getAggregatedDataset().getRun());
+            assertEquals("Test METADATA condition entry", ds.getAggregatedDataset().getComment());
+
+
+            // Check CBC test results dataset
+            ds = (Dataset) session.createCriteria(Dataset.class)
+                    .add(Restrictions.eq("version", "CBC_test1"))
+                    .createCriteria("kindOfCondition")
+                    .add(Restrictions.eq("name", "Tracker CBC Test Results"))
+                    .uniqueResult();
+
+            assertEquals("CBC_TEST_RESULTS", ds.getExtensionTable());
+            assertEquals("1", ds.getRun().getNumber());
+            assertEquals("HRT", ds.getRun().getRunType());
+            assertEquals("Test CBC condition entry", ds.getComment());
+            assertEquals("Aivaras", ds.getCreatedByUser());
+            assertEquals("1", ds.getSubversion());
+            assertEquals(ds.getRun(), ds.getAggregatedDataset().getRun());
+            assertEquals("Test HYBRIDS condition entry", ds.getAggregatedDataset().getComment());
+
+
+
+            // Test Condition data
+
+
+            } finally {
+                session.close();
+            }
+
+        }
+
+    }
 }
