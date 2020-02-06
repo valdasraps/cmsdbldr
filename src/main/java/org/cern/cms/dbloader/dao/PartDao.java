@@ -290,6 +290,10 @@ public class PartDao extends DaoBase {
             partAttrList.setAttrBase(attrbase);
             partAttrList.setPart(part);
             partAttrList.setDeleted(Boolean.FALSE);
+            if (part.getInsertUser() != null){
+                partAttrList.setInsertUser(part.getInsertUser());
+            }
+
             session.save(partAttrList);
 
         }

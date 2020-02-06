@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+    <PARTS>
+        <PART>
+            <KIND_OF_PART>GEM Foil</KIND_OF_PART>
+            <NAME_LABEL>GEM Foil attribute Test</NAME_LABEL>
+            <BARCODE>AivarasTest</BARCODE>
+            <RECORD_INSERTION_USER>Vavukas</RECORD_INSERTION_USER>
+            <PREDEFINED_ATTRIBUTES>
+                <ATTRIBUTE>
+                    <NAME>Foil Position</NAME>
+                    <VALUE>GEM1</VALUE>
+                </ATTRIBUTE>
+            </PREDEFINED_ATTRIBUTES>
+        </PART>
+    </PARTS>
+</ROOT>
