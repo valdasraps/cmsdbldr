@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cern.cms.dbloader.model.condition.CondBase;
 
@@ -17,11 +18,13 @@ public class CondDeserializer extends JsonDeserializer<CondBase> {
         return new CondBase() {
             
             private final JsonParser jsonParser_ = jsonParser;
+            private final JsonNode jsonNode = jsonParser.readValueAsTree();
             
             @Override
             public <T extends CondBase> T getDelegate(Class<T> clazz) throws Exception {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readerFor(clazz).readValue(jsonParser_);
+//                return mapper.readerFor(clazz).readValue(jsonParser_);
+                return mapper.treeToValue(jsonNode, clazz);
             }
             
         };
