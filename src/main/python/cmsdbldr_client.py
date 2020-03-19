@@ -30,11 +30,14 @@ class LoaderClient:
     def _allowed_file(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-    def run(self):
+    def run(self,iargs=[]):
 
         try:
 
-            (options, args) = self.parser.parse_args()
+            if len(iargs)!=0:
+                (options, args) = self.parser.parse_args(iargs)
+            else:
+                (options, args) = self.parser.parse_args()
 
             if options.url is None:
                 self.parser.error('Please provide service URL')
