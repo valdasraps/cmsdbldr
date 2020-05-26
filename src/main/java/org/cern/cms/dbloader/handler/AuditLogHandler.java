@@ -86,7 +86,7 @@ public class AuditLogHandler {
             if (this.log.getInsertTime() == null) {
                 this.log.setInsertTime(new Date());
                 this.log.setInsertUser(props.getOsUser());
-                this.log.setCreatedByUser(props.getFileUser());
+                this.log.setCreatedByUser(props.getOperatorValue());
                 this.log.setSubdetectorName(getSubDetectorName(sm));
             } else {
                 this.log.setLastUpdateTime(new Date());
