@@ -260,4 +260,48 @@ public class PartLoadTest extends TestBase {
 
     }
 
+
+    @Test
+    public void markAttributeAsDeleted() throws Throwable {
+
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/14_markAttributeDeleted.xml"))) {
+
+            loader.loadArchive(injector, fb);
+
+        }
+
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            // Tower checks
+
+            Part prt = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("serialNumber", "AIVARAS_TEST_ATTRIBUTES"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "GEM Foil"))
+                    .uniqueResult();
+
+            PartAttrList attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                    .add(Restrictions.eq("part.id", prt.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
+       // not finished. need DB
+//             assertNull(attrList);
+
+             attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                .add(Restrictions.eq("part.id", prt.getId()))
+                .add(Restrictions.eq("deleted", Boolean.TRUE));
+
+             //NOT FININSHED::::
+//             assertNotNull(attrList);
+
+        }
+
+    }
+
 }

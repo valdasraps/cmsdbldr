@@ -283,7 +283,11 @@ public class PartDao extends DaoBase {
                 .add(Restrictions.eq("part", part))
                 .uniqueResult();
 
-        if (partAttrList == null) {
+        if (partAttrList != null && attr.getDeleted() == true) {
+            partAttrList.setDeleted(Boolean.TRUE);
+            session.save(partAttrList);
+
+        } else if (partAttrList == null) {
 
             partAttrList = new PartAttrList();
             partAttrList.setPartToAttrRtlSh(partlship);
