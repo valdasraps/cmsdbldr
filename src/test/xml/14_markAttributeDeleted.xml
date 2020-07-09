@@ -7,7 +7,7 @@
                 <ATTRIBUTE>
                     <NAME>Foil Position</NAME>
                     <VALUE>GEM1</VALUE>
-                    <deleted>true</deleted>
+                    <DELETED>true</DELETED>
                 </ATTRIBUTE>
             </PREDEFINED_ATTRIBUTES>
         </PART>

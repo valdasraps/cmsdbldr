@@ -35,5 +35,6 @@ public class Attribute {
     @Basic
     @Column(name="IS_RECORD_DELETED")
     @Type(type="true_false")
+    @XmlElement(name="DELETED")
     private Boolean deleted = false;
 }
