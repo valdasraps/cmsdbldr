@@ -105,7 +105,7 @@ public class PropertiesTest extends TestBase {
         assertEquals(InetAddress.getLocalHost().getHostName(), pm.getHostName());
         assertEquals(Level.toLevel(log_lvl), pm.getLogLevel());
         assertEquals(System.getProperty("user.name"), pm.getOsUser());
-        assertEquals(props.getProperty("file-user"), pm.getFileUser());
+        assertEquals(props.getProperty("file-user"), pm.getOperatorUsername());
         assertNotNull(pm.getVersion());
         
         assertEquals(props.getProperty("password"), pm.getPassword());
@@ -129,6 +129,10 @@ public class PropertiesTest extends TestBase {
         }
         assertTrue(pm.isSchema());
         assertFalse(pm.isTest());
+        
+        assertFalse(pm.isOperatorConstructPermission());
+        assertFalse(pm.isOperatorConditionPermission());
+        assertFalse(pm.isOperatorTrackingPermission());
         
     }
     

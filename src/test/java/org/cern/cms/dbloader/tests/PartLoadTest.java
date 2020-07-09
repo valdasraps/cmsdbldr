@@ -260,4 +260,60 @@ public class PartLoadTest extends TestBase {
 
     }
 
+/*
+Test check if Part has attribute, after that we upload xml file to mark attribute as deleted and check again.
+ */
+    @Test
+    public void markAttributeAsDeleted() throws Throwable {
+
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+
+        // Check if Part has attribute. It should.
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Part prt = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("barcode", "Part with attribute"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "GEM Foil"))
+                    .uniqueResult();
+
+            PartAttrList attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                    .add(Restrictions.eq("part.id", prt.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
+            assertEquals("Vavukas", attrList.getInsertUser());
+            assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
+            assertNotNull(attrList);
+        }
+
+        // Upload XML file and mark attribute as deleted
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/14_markAttributeDeleted.xml"))) {
+
+            loader.loadArchive(injector, fb);
+
+        }
+
+        // Check if Part does not have attributes anymore
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Part prt = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("barcode", "Part with attribute"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "GEM Foil"))
+                    .uniqueResult();
+
+            PartAttrList attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                    .add(Restrictions.eq("part.id", prt.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
+             assertNull(attrList);
+        }
+    }
+
 }

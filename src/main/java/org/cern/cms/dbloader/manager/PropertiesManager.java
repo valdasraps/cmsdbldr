@@ -66,7 +66,11 @@ public abstract class PropertiesManager {
         TEST("upload test - proceed with the full upload process but rollback the transaction", false, false),
         LOG_LEVEL("log level, possible values OFF,FATAL,ERROR,WARN,INFO,DEBUG,TRACE. Default is " + DEFAULT_LEVEL.toString(), true, false),
         PRINT_SQL("print SQL queries to stdout", false, false),
-        FILE_USER("set file user, DEFAULT: process user", true, false);
+        OPERATOR_USERNAME("operator username, DEFAULT: process user", true, false),
+        OPERATOR_FULLNAME("operator fullname, DEFAULT: process user", true, false),
+        OPERATOR_CONSTRUCT_PERMISSION("operator construct permission", false, false),
+        OPERATOR_CONDITION_PERMISSION("operator condition permission", false, false),
+        OPERATOR_TRACKING_PERMISSION("operator tracking permission", false, false);
 
         public final String key;
         public final String description;
@@ -249,12 +253,36 @@ public abstract class PropertiesManager {
         return System.getProperty("user.name");
     }
     
-    public String getFileUser() {
-        if (this.values.containsKey(UserOption.FILE_USER)) {
-            return this.values.get(UserOption.FILE_USER);
+    public String getOperatorUsername() {
+        if (this.values.containsKey(UserOption.OPERATOR_USERNAME)) {
+            return this.values.get(UserOption.OPERATOR_USERNAME);
         } else {
             return getOsUser();
         }
+    }
+    
+    public String getOperatorFullname() {
+        if (this.values.containsKey(UserOption.OPERATOR_FULLNAME)) {
+            return this.values.get(UserOption.OPERATOR_FULLNAME);
+        } else {
+            return getOperatorUsername();
+        }
+    }
+    
+    public String getOperatorValue() {
+        return String.format("%s (%s)", getOperatorFullname(), getOperatorUsername());
+    }
+    
+    public boolean isOperatorConstructPermission() {
+        return this.values.containsKey(UserOption.OPERATOR_CONSTRUCT_PERMISSION);
+    }
+
+    public boolean isOperatorConditionPermission() {
+        return this.values.containsKey(UserOption.OPERATOR_CONDITION_PERMISSION);
+    }
+
+    public boolean isOperatorTrackingPermission() {
+        return this.values.containsKey(UserOption.OPERATOR_TRACKING_PERMISSION);
     }
 
     public String getVersion() {
