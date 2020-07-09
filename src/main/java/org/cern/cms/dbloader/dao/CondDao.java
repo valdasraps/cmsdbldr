@@ -218,6 +218,10 @@ public class CondDao extends DaoBase {
                 // Ignore
             }
 
+            ds.setLastUpdateUser(props.getOperatorValue());
+            if (ds.getInsertUser() == null) { 
+                ds.setInsertUser(props.getOperatorValue());
+            }
             session.save(ds);
 
             alog.setDatasetRecordCount(alog.getDatasetRecordCount() + ds.getData().size());
@@ -291,6 +295,8 @@ public class CondDao extends DaoBase {
             log.info(String.format("Resolved: %s", dbRun));
         } else {
             dbRun = xmRun;
+            dbRun.setLastUpdateUser(props.getOperatorValue());
+            dbRun.setInsertUser(props.getOperatorValue());
             log.info(String.format("Not resolved: %s. Will attempt to create.", dbRun));
         }
 
@@ -356,6 +362,12 @@ public class CondDao extends DaoBase {
                 iov.getTags().add(tag);
                 session.save(iov);
             }
+            
+            tag.setLastUpdateUser(props.getOperatorValue());
+            if (tag.getInsertUser() == null) { 
+                tag.setInsertUser(props.getOperatorValue());
+            }
+            
             session.save(tag);
         }
         return mapIov;

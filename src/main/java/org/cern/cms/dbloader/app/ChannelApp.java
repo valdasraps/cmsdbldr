@@ -12,12 +12,13 @@ import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.dao.ChannelDao;
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
-import org.cern.cms.dbloader.manager.ResourceFactory;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.serial.ChannelUpdate;
 import org.cern.cms.dbloader.model.serial.Root;
+import org.cern.cms.dbloader.util.NotAuthorizedException;
 
 @Log4j
 public class ChannelApp extends AppBase {
@@ -25,8 +26,12 @@ public class ChannelApp extends AppBase {
     @Inject
     private DynamicEntityGenerator enGenerator;
 
-    @Inject
-    private ResourceFactory rf;
+    @Override
+    public void checkPermission() throws NotAuthorizedException {
+        if (!props.isOperatorConstructPermission()) {
+            throw new NotAuthorizedException(PropertiesManager.UserOption.OPERATOR_CONSTRUCT_PERMISSION.name());
+        }
+    }
 
     @Override
     public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {

@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.HelpPrinter;
-import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
@@ -24,22 +23,24 @@ import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
+import org.cern.cms.dbloader.util.NotAuthorizedException;
 
 @Log4j
 @Singleton
 public class CondApp extends AppBase {
 
     @Inject
-    private PropertiesManager props;
-
-    @Inject
     private DynamicEntityGenerator enGenerator;
 
     @Inject
-    private ResourceFactory rf;
-
-    @Inject
     private XmlManager xmlm;
+
+    @Override
+    public void checkPermission() throws NotAuthorizedException {
+        if (!props.isOperatorConditionPermission()) {
+            throw new NotAuthorizedException(PropertiesManager.UserOption.OPERATOR_CONDITION_PERMISSION.name());
+        }
+    }
     
     @Override
     public boolean handleInfo() throws Exception {

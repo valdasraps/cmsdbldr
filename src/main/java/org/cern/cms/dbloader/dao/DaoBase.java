@@ -103,6 +103,8 @@ public abstract class DaoBase {
             institution = new Institution();
             institution.setName(institutionName);
             institution.setInstituteCode(0); // Hard Coded
+            institution.setLastUpdateUser(props.getOperatorValue());
+            institution.setInsertUser(props.getOperatorValue());
             session.save(institution);
         }
 
@@ -110,6 +112,8 @@ public abstract class DaoBase {
             location = new Location();
             location.setName(locationName);
             location.setInstitution(institution);
+            location.setLastUpdateUser(props.getOperatorValue());
+            location.setInsertUser(props.getOperatorValue());
             session.save(location);
             institution.getLocations().add(location);
         }

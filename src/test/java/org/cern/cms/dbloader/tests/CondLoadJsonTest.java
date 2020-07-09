@@ -25,9 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -306,18 +304,13 @@ public class CondLoadJsonTest extends TestBase {
     public void testJsonToBeanCase0() throws Exception {
 
         // Root root = this.jmanager.deserialize(new File(case0)); // paprastas deserializatorius
-        DynamicEntityGenerator enGenerator = null;
-        try {
-            enGenerator = new DynamicEntityGenerator(pm);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        DynamicEntityGenerator enGenerator = new DynamicEntityGenerator(pm);
+
         // ChannelEntityHandler chaneh = enGenerator.getChannelHandler(root.getHeader().getHint().getChannelMap());
         ChannelEntityHandler chaneh = enGenerator.getChannelHandler("TEST_CHANNELS");
         CondEntityHandler condeh = enGenerator.getConditionHandler("IV");
 
         JsonManager jmanager = new JsonManager();
-
         Root root = jmanager.deserialize(new File(case0));
         assertNotNull(root.getHeader());
         assertNotNull(root.getElements());
@@ -386,16 +379,18 @@ public class CondLoadJsonTest extends TestBase {
         assertEquals("apoluden", dataset.getCreatedByUser());
         assertEquals("AUG_20_2018", dataset.getVersion());
         assertEquals("2", dataset.getSubversion());
+        
         // Channel
-        ChannelBase cb = dataset.getChannel();
+        ChannelBase cb = dataset.getChannel().getDelegate(chaneh.getEntityClass().getC());
         assertEquals("org.cern.cms.dbloader.model.condition.ext.TestChannels", cb.getClass().getTypeName());
+        
         // Data
         assertNotNull(dataset.getData());
         List<? extends CondBase> datas = dataset.getData();
         assertEquals(3, datas.size());
         for (int i = 0; i <= 2; i++) {
-            assertEquals("org.cern.cms.dbloader.model.condition.ext.TestIv",
-                    datas.get(i).getDelegate(condeh.getEntityClass().getC()).getClass().getTypeName());
+            CondBase d = datas.get(i).getDelegate(condeh.getEntityClass().getC());
+            assertEquals("org.cern.cms.dbloader.model.condition.ext.TestIv", d.getClass().getTypeName());
 
         }
     }

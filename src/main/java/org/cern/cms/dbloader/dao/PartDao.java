@@ -83,6 +83,13 @@ public class PartDao extends DaoBase {
         while (!pairs.isEmpty()) {
             PartsPair pp = pairs.pop();
             PartTree partTree = resolvePartTree(pp.getPart(), pp.getParent(), rootPart);
+            
+            // Set operator value
+            partTree.setLastUpdateUser(props.getOperatorValue());
+            if (partTree.getInsertUser() == null) {
+                partTree.setInsertUser(props.getOperatorValue());
+            }
+            
             session.save(partTree);
             count++;
         }
@@ -131,6 +138,12 @@ public class PartDao extends DaoBase {
             dbPart.setManufacturer(resolveManufacturer(xmlPart.getManufacturerName()));
         }
 
+        // Set operator value
+        dbPart.setLastUpdateUser(props.getOperatorValue());
+        if (dbPart.getId() == null) {
+            dbPart.setInsertUser(props.getOperatorValue());
+        }
+        
         session.save(dbPart);
 
         if (xmlPart.getAttributes() != null) {
@@ -149,6 +162,13 @@ public class PartDao extends DaoBase {
             PartDetailsBase details = resolvePartDetails(dbPart, xmlPart);
             session.save(details);
         }
+
+        // Set operator value
+        dbPart.setLastUpdateUser(props.getOperatorValue());
+        if (dbPart.getId() == null) {
+            dbPart.setInsertUser(props.getOperatorValue());
+        }
+        
         session.save(dbPart);
 
         return dbPart;
@@ -187,8 +207,20 @@ public class PartDao extends DaoBase {
             parentTree.setPartId(parent.getId());
             parentTree.setParentPartTree(rootPart.getPartTree());
             parentTree.setRelationship(resolveRelationship(rootPart.getKindOfPart(), parent.getKindOfPart()));
+            
+            // Set operator value
+            parentTree.setLastUpdateUser(props.getOperatorValue());
+            if (parentTree.getInsertUser() == null) {
+                parentTree.setInsertUser(props.getOperatorValue());
+            }
             session.save(parentTree);
             parent.setPartTree(parentTree);
+            
+            // Set operator value
+            parent.setLastUpdateUser(props.getOperatorValue());
+            if (parent.getId() == null) {
+                parent.setInsertUser(props.getOperatorValue());
+            }
             session.save(parent);
         }
 
@@ -226,6 +258,10 @@ public class PartDao extends DaoBase {
             relationship.setComment(relationship.getName());
             relationship.setDeleted(Boolean.FALSE);
 
+            // Set operator value
+            relationship.setLastUpdateUser(props.getOperatorValue());
+            relationship.setInsertUser(props.getOperatorValue());
+            
             session.save(relationship);
 
         }
@@ -290,10 +326,8 @@ public class PartDao extends DaoBase {
             partAttrList.setAttrBase(attrbase);
             partAttrList.setPart(part);
             partAttrList.setDeleted(Boolean.FALSE);
-            if (part.getInsertUser() != null){
-                partAttrList.setInsertUser(part.getInsertUser());
-            }
-
+            partAttrList.setInsertUser(props.getOperatorValue());
+            
             session.save(partAttrList);
 
         }

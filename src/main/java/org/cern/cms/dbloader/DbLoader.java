@@ -178,8 +178,13 @@ public class DbLoader {
                             app = trackingApp;
                     }
 
-                    app.handleData(sm, data, dataLog.getLog());
-                    dataLog.saveSuccess();
+                    if (app != null) {
+                        
+                        app.checkPermission();
+                        app.handleData(sm, data, dataLog.getLog());
+                        dataLog.saveSuccess();
+                        
+                    }
 
                 } catch (Error ex) {
                 

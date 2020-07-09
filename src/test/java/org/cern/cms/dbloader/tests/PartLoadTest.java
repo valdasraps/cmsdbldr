@@ -65,7 +65,7 @@ public class PartLoadTest extends TestBase {
             assertNull(tower.getInstalledUser());
             assertNull(tower.getRemovedUser());
             assertNotNull(tower.getInsertTime());
-            assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", tower.getInsertUser());
+            assertEquals(pm.getOperatorValue(), tower.getInsertUser());
 
             assertEquals(new BigInteger("1000"), tower.getPartTree().getParentPartTree().getPartId());
 
@@ -92,7 +92,7 @@ public class PartLoadTest extends TestBase {
                 assertNull(pack.getInstalledUser());
                 assertNull(pack.getRemovedUser());
                 assertNotNull(pack.getInsertTime());
-                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", pack.getInsertUser());
+                assertEquals(pm.getOperatorValue(), pack.getInsertUser());
 
                 assertEquals(tower.getId(), pack.getPartTree().getParentPartTree().getPartId());
 
@@ -126,7 +126,7 @@ public class PartLoadTest extends TestBase {
                     assertNull(child.getInstalledUser());
                     assertNull(child.getRemovedUser());
                     assertNotNull(child.getInsertTime());
-                    assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", child.getInsertUser());
+                    assertEquals(pm.getOperatorValue(), child.getInsertUser());
 
                     assertEquals(pack.getId(), child.getPartTree().getParentPartTree().getPartId());
 
@@ -242,7 +242,7 @@ public class PartLoadTest extends TestBase {
                     .uniqueResult();
 
 
-            assertEquals("Vavukas", prt.getInsertUser());
+            assertEquals(pm.getOperatorValue(), prt.getInsertUser());
             assertEquals("GEM Foil attribute Test", prt.getName());
             assertNull(prt.getSerialNumber());
             assertNull(prt.getVersion());
@@ -255,7 +255,7 @@ public class PartLoadTest extends TestBase {
                     .add(Restrictions.eq("part.id", prt.getId()))
                     .uniqueResult();
 
-          assertEquals("Vavukas", prt.getInsertUser());
+          assertEquals(pm.getOperatorValue(), prt.getInsertUser());
         }
 
     }

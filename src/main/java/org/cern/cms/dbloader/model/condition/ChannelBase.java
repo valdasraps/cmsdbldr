@@ -20,10 +20,12 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.cern.cms.dbloader.manager.json.ChannelDeserializer;
 import org.cern.cms.dbloader.model.ProxyBase;
 import org.hibernate.annotations.Type;
 
@@ -36,7 +38,8 @@ import org.hibernate.annotations.Type;
 @ToString
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties({"deleted"})
+@JsonIgnoreProperties({"id", "deleted"})
+@JsonDeserialize(contentUsing = ChannelDeserializer.class)
 public abstract class ChannelBase extends ProxyBase<ChannelBase> {
 
     @Id

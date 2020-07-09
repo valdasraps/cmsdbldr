@@ -52,7 +52,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("904", req.getLocation().getName());
                 assertEquals("CERN", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", req.getInsertUser());
+                assertEquals(pm.getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
 
@@ -70,7 +70,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("MIF Baltupiai", req.getLocation().getName());
                 assertEquals("Vilnius University", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", req.getInsertUser());
+                assertEquals(pm.getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
             
@@ -125,7 +125,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("904", req.getLocation().getName());
                 assertEquals("CERN", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", req.getInsertUser());
+                assertEquals(pm.getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
 
@@ -143,7 +143,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("MIF Baltupiai", req.getLocation().getName());
                 assertEquals("Vilnius University", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", req.getInsertUser());
+                assertEquals(pm.getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
             

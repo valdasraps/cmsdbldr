@@ -36,7 +36,7 @@ public abstract class PropertiesManager {
     protected static final String DBLOADER_PROPERTIES = "/dbloader.properties";
     protected static final String VERSION_KEY = "version";
 
-    protected enum UserOption {
+    public enum UserOption {
 
         HELP("print usage", false, false),
         VERSION("print version", false, false),

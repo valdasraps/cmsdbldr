@@ -49,7 +49,7 @@ public class TrackShipmentLoadTest extends TestBase {
                 assertEquals("904", ship.getToLocation().getName());
                 assertEquals("CERN", ship.getToLocation().getInstitution().getName());
                 assertNotNull(ship.getInsertTime());
-                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", ship.getInsertUser());
+                assertEquals(pm.getOperatorValue(), ship.getInsertUser());
                 assertEquals(3, ship.getItems().size());
             }
         }
@@ -84,7 +84,7 @@ public class TrackShipmentLoadTest extends TestBase {
                 assertEquals("904", ship.getToLocation().getName());
                 assertEquals("CERN", ship.getToLocation().getInstitution().getName());
                 assertNotNull(ship.getInsertTime());
-                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", ship.getInsertUser());
+                assertEquals(pm.getOperatorValue(), ship.getInsertUser());
                 assertEquals(1, ship.getItems().size());
             }
 
