@@ -2,8 +2,7 @@
 <ROOT>
     <PARTS>
         <PART>
-            <SERIAL_NUMBER>AIVARAS_TEST_ATTRIBUTES</SERIAL_NUMBER>
-            <KIND_OF_PART>GEM Foil</KIND_OF_PART>
+            <BARCODE>Part with attribute</BARCODE>
             <PREDEFINED_ATTRIBUTES>
                 <ATTRIBUTE>
                     <NAME>Foil Position</NAME>
