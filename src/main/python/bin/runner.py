@@ -1,5 +1,7 @@
 import sys
 import os
+import re
+import ldap
 import shutil
 from pwd import getpwuid
 from optparse import OptionParser
@@ -8,6 +10,37 @@ from config import *
 import subprocess
 from shutil import copyfile
 from datetime import datetime
+
+def _cn_value(v): 
+    return { i.split('=')[0]: i.split('=')[1] for i in v.split(',') }['CN']
+
+def _cn_account(user_id):
+
+    l = ldap.initialize('ldap://xldap.cern.ch')
+    l.protocol_version = ldap.VERSION3
+
+    base_dn = "OU=Users,OU=Organic Units,DC=cern,DC=ch"
+    search_filter = "(CN=" + user_id + ")"
+    search_attribute = ["displayName","memberOf"]
+    i = l.search(base_dn, ldap.SCOPE_SUBTREE, search_filter, search_attribute)
+    d = l.result(i, 0)
+
+    if len(d[1]) > 0:
+        username = _cn_value(d[1][0][0])
+        fullname = d[1][0][1]['displayName'][0]
+        egroups = [ _cn_value(i) for i in d[1][0][1]['memberOf']]
+    else:
+        username = user_id
+        fullname = user_id
+        egroups = []
+
+    return (username, fullname, egroups)
+
+def _check_permission(username, egroups, alist):
+    egroups.append(username)
+    egroups = [ i.strip().upper() for i in egroups ]
+    alist = [ i.strip().upper() for i in alist.split(',') ]
+    return len(list(set(alist).intersection(egroups))) > 0 or "*" in alist
 
 def _allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -60,7 +93,8 @@ class Loader:
         if user is None:
             user = getpwuid(os.stat(file).st_uid).pw_name
         self.vprint("File user: %s", user)
-        
+        username, fullname, egroups = _cn_account(user)
+
         (file_folder, filename) = os.path.split(file)
         self.vprint("Filename: %s", filename)
         
@@ -77,6 +111,19 @@ class Loader:
         self.vprint("Properties: %s", prop)
         if not (os.path.exists(prop) and os.path.isfile(prop)):
             return self.error(2, '%s not found or is not a file?', prop)
+
+		# Load properties
+        with open(prop, 'r') as f:
+            properties = {}
+            for line in f.readlines():
+                line = re.sub('^[ \t]*','',line)
+                line = re.sub('[ \t\n]*$','',line)
+                if len(line) > 0 and not re.match("#", line) and re.search("=", line):
+                    _ = re.split('=', line, maxsplit=1)
+                    properties[_[0]] = _[1]
+            if 'operators-condition' not in properties: properties['operators-condition'] = ''
+            if 'operators-construct' not in properties: properties['operators-construct'] = ''
+            if 'operators-tracking' not in properties: properties['operators-tracking'] = ''
 
         # Creating temporary folder
 
@@ -115,14 +162,19 @@ class Loader:
         args = [ 
             RUN_EXEC, 
             '--properties=%s' % prop,
-            '--file-user=%s' % user,
+            '--operator-condition-permission' if _check_permission(username, egroups, properties['operators-condition']) else '',
+            '--operator-construct-permission' if _check_permission(username, egroups, properties['operators-construct']) else '',
+            '--operator-tracking-permission' if _check_permission(username, egroups, properties['operators-tracking']) else '',
+            '--operator-fullname=\"%s\"' % fullname,
+            '--operator-username=\"%s\"' % username,
             work
         ]
-        
+        command_line = ' '.join(args)
+
         status = 3
         with open(log, "w") as f:
             
-            status = subprocess.call(args, stdout = f, stderr = subprocess.STDOUT)
+            status = subprocess.call(command_line, stdout = f, stderr = subprocess.STDOUT, shell = True)
 
         copyfile(log, logs)
         

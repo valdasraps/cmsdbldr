@@ -30,4 +30,8 @@ fi
 
 _args="$_args -Djava.security.egd=file:///dev/urandom"
 
-$_java $_args $_exec $@
+for x in "${@}" ; do
+    grep -q "=" <<< "$x" && res="${res} `echo $x | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/g'`" || res="${res} ${x}"
+done
+
+/bin/bash -c "$_java $_args $_exec $res"

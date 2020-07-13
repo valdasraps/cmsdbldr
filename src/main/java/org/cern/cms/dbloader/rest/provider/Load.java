@@ -67,23 +67,18 @@ public class Load extends ProviderBase {
 
     private String writeToFileServer(InputStream inputStream, String path) throws IOException {
 
-        OutputStream outputStream = null;
-
-        try {
-            outputStream = new FileOutputStream(new File(path));
+        try (OutputStream outputStream = new FileOutputStream(new File(path))) {
+            
             int read = 0;
             byte[] bytes = new byte[1024];
             while ((read = inputStream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, read);
             }
             outputStream.flush();
+            
         }
         catch (IOException ioe) {
             ioe.printStackTrace();
-        }
-        finally{
-            //release resource, if any
-            outputStream.close();
         }
         return path;
     }
@@ -115,7 +110,7 @@ public class Load extends ProviderBase {
     public final Response loadJsonArray(final String data, final String ext)  throws Throwable {
         JsonManager jmnger = new JsonManager();
         List<String> roots = jmnger.deserilizeRootArray(data);
-        List<String> filePaths = new ArrayList<String>();
+        List<String> filePaths = new ArrayList<>();
         for (String root: roots) {
             final java.nio.file.Path file = Files.createTempFile("Load.", ".".concat(ext));
             Files.write(file, root.getBytes());
