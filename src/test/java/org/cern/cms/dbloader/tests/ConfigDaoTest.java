@@ -40,7 +40,7 @@ public class ConfigDaoTest extends TestBase {
 
         for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/08_addVersionAlias.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
@@ -93,7 +93,7 @@ public class ConfigDaoTest extends TestBase {
 
         for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/09_addKeys.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
@@ -153,7 +153,7 @@ public class ConfigDaoTest extends TestBase {
 
         for (FileBase fb : fm.getFiles(Collections.singletonList("src/test/xml/10_addAlias.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 

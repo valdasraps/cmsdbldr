@@ -18,6 +18,7 @@ import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.construct.ext.Shipment.ShipmentStatus;
 import org.cern.cms.dbloader.model.construct.ext.ShipmentItem;
 import org.cern.cms.dbloader.model.managemnt.Location;
+import org.cern.cms.dbloader.util.OperatorAuth;
 import org.hibernate.criterion.Restrictions;
 
 @Log4j
@@ -37,7 +38,7 @@ public class TrackingDao extends DaoBase {
      * @param alog log object.
      * @throws Exception on any error.
      */
-    public void save(Request xmlRequest, AuditLog alog) throws Exception {
+    public void save(Request xmlRequest, AuditLog alog, OperatorAuth auth) throws Exception {
         
         // Name has to be defined!
         if (xmlRequest.getName() == null || xmlRequest.getName().isEmpty()) {
@@ -55,7 +56,7 @@ public class TrackingDao extends DaoBase {
         }
 
         // Resolving location.
-        Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName());
+        Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName(), auth);
 
         // Resolving Kind of Conditions.
         if (xmlRequest.getItems() != null) {
@@ -141,35 +142,35 @@ public class TrackingDao extends DaoBase {
         }
         
         // Set operator value
-        dbRequest.setLastUpdateUser(props.getOperatorValue());
+        dbRequest.setLastUpdateUser(auth.getOperatorValue());
         for (RequestItem item: dbRequest.getItems()) {
-            item.setLastUpdateUser(props.getOperatorValue());
+            item.setLastUpdateUser(auth.getOperatorValue());
             if (item.getId() == null) {
-                item.setInsertUser(props.getOperatorValue());
+                item.setInsertUser(auth.getOperatorValue());
             }
         }
         if (dbRequest.getId() == null) {
-            dbRequest.setInsertUser(props.getOperatorValue());
+            dbRequest.setInsertUser(auth.getOperatorValue());
         }
         
         session.save(dbRequest);
         
     }
 
-    public void save(Shipment xmlShipment, AuditLog alog) throws Exception {
+    public void save(Shipment xmlShipment, AuditLog alog, OperatorAuth auth) throws Exception {
         
-        Location inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION);
+        Location inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION, auth);
         
         if (xmlShipment.getTrackingNumber() == null || xmlShipment.getTrackingNumber().isEmpty()) {
             throw new XMLParseException(String.format("Shipment tracking number not defined in %s", xmlShipment));
         }
 
         if (xmlShipment.getFromInstitutionName() != null && xmlShipment.getFromLocationName() != null) {
-            xmlShipment.setFromLocation(resolveInstituteLocation(xmlShipment.getFromInstitutionName(), xmlShipment.getFromLocationName()));
+            xmlShipment.setFromLocation(resolveInstituteLocation(xmlShipment.getFromInstitutionName(), xmlShipment.getFromLocationName(), auth));
         }
 
         if (xmlShipment.getToInstitutionName() != null && xmlShipment.getToLocationName() != null) {
-            xmlShipment.setToLocation(resolveInstituteLocation(xmlShipment.getToInstitutionName(), xmlShipment.getToLocationName()));
+            xmlShipment.setToLocation(resolveInstituteLocation(xmlShipment.getToInstitutionName(), xmlShipment.getToLocationName(), auth));
         }
         
         if (xmlShipment.getItems() != null) {
@@ -331,15 +332,15 @@ public class TrackingDao extends DaoBase {
         }
         
         // Set operator value
-        dbShipment.setLastUpdateUser(props.getOperatorValue());
+        dbShipment.setLastUpdateUser(auth.getOperatorValue());
         for (ShipmentItem item: dbShipment.getItems()) {
-            item.setLastUpdateUser(props.getOperatorValue());
+            item.setLastUpdateUser(auth.getOperatorValue());
             if (item.getId() == null) {
-                item.setInsertUser(props.getOperatorValue());
+                item.setInsertUser(auth.getOperatorValue());
             }
         }
         if (dbShipment.getId() == null) {
-            dbShipment.setInsertUser(props.getOperatorValue());
+            dbShipment.setInsertUser(auth.getOperatorValue());
         }
         
         session.save(dbShipment);
@@ -351,7 +352,7 @@ public class TrackingDao extends DaoBase {
             if (request.getStatus() == RequestStatus.OPEN) {
                 if (stat.getRequested() <= stat.getShipped()) {
                     request.setStatus(RequestStatus.CLOSED);
-                    request.setLastUpdateUser(props.getOperatorValue());
+                    request.setLastUpdateUser(auth.getOperatorValue());
                     session.save(request);
                 }
             }

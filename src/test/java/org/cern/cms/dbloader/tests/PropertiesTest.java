@@ -105,11 +105,11 @@ public class PropertiesTest extends TestBase {
         assertEquals(InetAddress.getLocalHost().getHostName(), pm.getHostName());
         assertEquals(Level.toLevel(log_lvl), pm.getLogLevel());
         assertEquals(System.getProperty("user.name"), pm.getOsUser());
-        assertEquals(props.getProperty("operator-username"), pm.getOperatorUsername());
-        assertEquals(props.getProperty("operator-fullname"), pm.getOperatorFullname());
-        assertTrue(pm.isOperatorConditionPermission());
-        assertTrue(pm.isOperatorConstructPermission());
-        assertTrue(pm.isOperatorTrackingPermission());
+        assertEquals(props.getProperty("operator-username"), pm.getOperatorAuth().getUsername());
+        assertEquals(props.getProperty("operator-fullname"), pm.getOperatorAuth().getFullname());
+        assertTrue(pm.getOperatorAuth().isConditionPermission());
+        assertTrue(pm.getOperatorAuth().isConstructPermission());
+        assertTrue(pm.getOperatorAuth().isTrackingPermission());
         assertNotNull(pm.getVersion());
         
         assertEquals(props.getProperty("password"), pm.getPassword());
@@ -134,9 +134,9 @@ public class PropertiesTest extends TestBase {
         assertTrue(pm.isSchema());
         assertFalse(pm.isTest());
         
-        assertTrue(pm.isOperatorConstructPermission());
-        assertTrue(pm.isOperatorConditionPermission());
-        assertTrue(pm.isOperatorTrackingPermission());
+        assertTrue(pm.getOperatorAuth().isConstructPermission());
+        assertTrue(pm.getOperatorAuth().isConditionPermission());
+        assertTrue(pm.getOperatorAuth().isTrackingPermission());
         
     }
     

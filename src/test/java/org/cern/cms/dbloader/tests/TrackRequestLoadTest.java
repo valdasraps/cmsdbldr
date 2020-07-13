@@ -29,7 +29,7 @@ public class TrackRequestLoadTest extends TestBase {
 
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/request_1.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
@@ -52,7 +52,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("904", req.getLocation().getName());
                 assertEquals("CERN", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals(pm.getOperatorValue(), req.getInsertUser());
+                assertEquals(pm.getOperatorAuth().getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
 
@@ -70,7 +70,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("MIF Baltupiai", req.getLocation().getName());
                 assertEquals("Vilnius University", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals(pm.getOperatorValue(), req.getInsertUser());
+                assertEquals(pm.getOperatorAuth().getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
             
@@ -102,7 +102,7 @@ public class TrackRequestLoadTest extends TestBase {
 
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/request_2.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
@@ -125,7 +125,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("904", req.getLocation().getName());
                 assertEquals("CERN", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals(pm.getOperatorValue(), req.getInsertUser());
+                assertEquals(pm.getOperatorAuth().getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
 
@@ -143,7 +143,7 @@ public class TrackRequestLoadTest extends TestBase {
                 assertEquals("MIF Baltupiai", req.getLocation().getName());
                 assertEquals("Vilnius University", req.getLocation().getInstitution().getName());
                 assertNotNull(req.getInsertTime());
-                assertEquals(pm.getOperatorValue(), req.getInsertUser());
+                assertEquals(pm.getOperatorAuth().getOperatorValue(), req.getInsertUser());
                 assertEquals(2, req.getItems().size());
             }
             

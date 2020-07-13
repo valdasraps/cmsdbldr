@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.manager.file.FileBase;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 @RequiredArgsConstructor
@@ -118,13 +119,13 @@ public class DbLoader {
         // Loop archives
         for (FileBase archive : fm.getFiles(props.getArgs())) {
 
-            loadArchive(injector, archive);
+            loadArchive(injector, archive, props.getOperatorAuth());
 
         }
 
     }
     
-    public void loadArchive(Injector injector, FileBase archive) throws Throwable {
+    public void loadArchive(Injector injector, FileBase archive, OperatorAuth auth) throws Throwable {
         
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
         CondApp condApp = injector.getInstance(CondApp.class);
@@ -137,7 +138,7 @@ public class DbLoader {
         AuditLogHandler archiveLog = null;
         if (archive.isArchive()) {
             archiveLog = rf.createAuditDao(archive);
-            archiveLog.saveProcessing();
+            archiveLog.saveProcessing(auth);
         }
         
         Throwable error = null;
@@ -150,7 +151,7 @@ public class DbLoader {
 
                 // Start datafile log
                 AuditLogHandler dataLog = rf.createAuditDao(data);
-                dataLog.saveProcessing();
+                dataLog.saveProcessing(auth);
 
                 try {
 
@@ -180,9 +181,9 @@ public class DbLoader {
 
                     if (app != null) {
                         
-                        app.checkPermission();
-                        app.handleData(sm, data, dataLog.getLog());
-                        dataLog.saveSuccess();
+                        app.checkPermission(auth);
+                        app.handleData(sm, data, dataLog.getLog(), auth);
+                        dataLog.saveSuccess(auth);
                         
                     }
 
@@ -201,7 +202,7 @@ public class DbLoader {
                 } finally {
                     
                     if (error != null) {
-                        dataLog.saveFailure(error);
+                        dataLog.saveFailure(error, auth);
                         throw error;
                     }
                     
@@ -237,12 +238,12 @@ public class DbLoader {
         
             if (error != null) {
                 if (archiveLog != null) {
-                    archiveLog.saveFailure(error);
+                    archiveLog.saveFailure(error, auth);
                 }
                 throw error;
             } else {
                 if (archiveLog != null) {
-                    archiveLog.saveSuccess();
+                    archiveLog.saveSuccess(auth);
                 }
             }
             

@@ -7,6 +7,7 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.util.NotAuthorizedException;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 public abstract class AppBase {
 
@@ -18,9 +19,10 @@ public abstract class AppBase {
 
     /**
      * Check action permission.On error - throw exception.
+     * @param auth Operator information.
      * @throws org.cern.cms.dbloader.util.NotAuthorizedException
      */
-    public abstract void checkPermission() throws NotAuthorizedException;
+    public abstract void checkPermission(OperatorAuth auth) throws NotAuthorizedException;
     
     /**
      * Information handler
@@ -38,9 +40,10 @@ public abstract class AppBase {
      * @param sm
      * @param file
      * @param alog
+     * @param auth
      * @throws Exception
      */
-    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
 
     }
 

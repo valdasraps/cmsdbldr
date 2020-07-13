@@ -61,7 +61,7 @@ public class ChannelLoadZipTest extends TestBase {
 
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/channels/channels.zip"))) {
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
         }
         
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
@@ -88,7 +88,7 @@ public class ChannelLoadZipTest extends TestBase {
         // Second load should fail...
         try {
             for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/channels/channels.zip"))) {
-                loader.loadArchive(injector, fb);
+                loader.loadArchive(injector, fb, pm.getOperatorAuth());
             }
             TestCase.fail("Should have failed here...");
         } catch (Exception ex) {

@@ -42,6 +42,7 @@ import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 public class CondDao extends DaoBase {
@@ -56,7 +57,7 @@ public class CondDao extends DaoBase {
         super(sm);
     }
 
-    public void saveCondition(DatasetRoot root, AuditLog alog, DataFile file, Dataset parent) throws Exception {
+    public void saveCondition(DatasetRoot root, AuditLog alog, DataFile file, Dataset parent, OperatorAuth auth) throws Exception {
         Header header = root.getHeader();
 
         if (root.getDatasets().isEmpty()) {
@@ -89,7 +90,7 @@ public class CondDao extends DaoBase {
         Map<BigInteger, Iov> iovMap = new HashMap<>();
 
         if (root.getElements() != null && root.getMaps() != null) {
-            iovMap = mapIov2Tag(root.getElements(), root.getMaps());
+            iovMap = mapIov2Tag(root.getElements(), root.getMaps(), auth);
         }
 
         KindOfCondition dbKoc = resolveKindOfCondition(root.getHeader());
@@ -97,7 +98,7 @@ public class CondDao extends DaoBase {
         alog.setExtensionTableName(dbKoc.getExtensionTable());
         alog.setKindOfConditionName(dbKoc.getName());
 
-        Run dbRun = resolveRun(root.getHeader());
+        Run dbRun = resolveRun(root.getHeader(), auth);
 
         if (dbRun != null) {
 
@@ -218,9 +219,9 @@ public class CondDao extends DaoBase {
                 // Ignore
             }
 
-            ds.setLastUpdateUser(props.getOperatorValue());
+            ds.setLastUpdateUser(auth.getOperatorValue());
             if (ds.getInsertUser() == null) { 
-                ds.setInsertUser(props.getOperatorValue());
+                ds.setInsertUser(auth.getOperatorValue());
             }
             session.save(ds);
 
@@ -260,7 +261,7 @@ public class CondDao extends DaoBase {
         return dbKoc;
     }
 
-    private Run resolveRun(Header header) throws Exception {
+    private Run resolveRun(Header header, OperatorAuth auth) throws Exception {
         Run xmRun = header.getRun();
         Run dbRun = null;
 
@@ -295,8 +296,8 @@ public class CondDao extends DaoBase {
             log.info(String.format("Resolved: %s", dbRun));
         } else {
             dbRun = xmRun;
-            dbRun.setLastUpdateUser(props.getOperatorValue());
-            dbRun.setInsertUser(props.getOperatorValue());
+            dbRun.setLastUpdateUser(auth.getOperatorValue());
+            dbRun.setInsertUser(auth.getOperatorValue());
             log.info(String.format("Not resolved: %s. Will attempt to create.", dbRun));
         }
 
@@ -339,7 +340,7 @@ public class CondDao extends DaoBase {
 
     }
 
-    private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps) {
+    private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps, OperatorAuth auth) {
 
         Map<BigInteger, Iov> mapIov = new HashMap<>();
         Map<BigInteger, Tag> mapTag = new HashMap<>();
@@ -363,9 +364,9 @@ public class CondDao extends DaoBase {
                 session.save(iov);
             }
             
-            tag.setLastUpdateUser(props.getOperatorValue());
+            tag.setLastUpdateUser(auth.getOperatorValue());
             if (tag.getInsertUser() == null) { 
-                tag.setInsertUser(props.getOperatorValue());
+                tag.setInsertUser(auth.getOperatorValue());
             }
             
             session.save(tag);

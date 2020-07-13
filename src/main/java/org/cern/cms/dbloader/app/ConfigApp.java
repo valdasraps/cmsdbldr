@@ -9,6 +9,7 @@ import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.util.NotAuthorizedException;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 /**
  * Created by aisi0860 on 5/24/17.
@@ -18,27 +19,27 @@ import org.cern.cms.dbloader.util.NotAuthorizedException;
 public class ConfigApp extends AppBase{
 
     @Override
-    public void checkPermission() throws NotAuthorizedException {
-        if (!props.isOperatorConditionPermission()) {
+    public void checkPermission(OperatorAuth auth) throws NotAuthorizedException {
+        if (!auth.isConditionPermission()) {
             throw new NotAuthorizedException(PropertiesManager.UserOption.OPERATOR_CONDITION_PERMISSION.name());
         }
     }
     
     @Override
-    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
 
         ConfigDao dao = rf.createConfigDao(sm);
         Root root = file.getRoot();
 
         switch (file.getType()) {
             case VERSION_ALIAS:
-                dao.saveVersionAliases(root.getMaps().getVersionAliases(), alog);
+                dao.saveVersionAliases(root.getMaps().getVersionAliases(), alog, auth);
             break;
             case KEY:
-                dao.saveKey(root.getMaps().getKey(), alog);
+                dao.saveKey(root.getMaps().getKey(), alog, auth);
                 break;
             case KEY_ALIAS:
-                dao.saveKeyAlias(root.getMaps().getKeyAlias(), alog);
+                dao.saveKeyAlias(root.getMaps().getKeyAlias(), alog, auth);
         }
 
     }

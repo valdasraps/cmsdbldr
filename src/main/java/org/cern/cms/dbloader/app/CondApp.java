@@ -24,6 +24,7 @@ import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
 import org.cern.cms.dbloader.util.NotAuthorizedException;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 @Singleton
@@ -36,8 +37,8 @@ public class CondApp extends AppBase {
     private XmlManager xmlm;
 
     @Override
-    public void checkPermission() throws NotAuthorizedException {
-        if (!props.isOperatorConditionPermission()) {
+    public void checkPermission(OperatorAuth auth) throws NotAuthorizedException {
+        if (!auth.isConditionPermission()) {
             throw new NotAuthorizedException(PropertiesManager.UserOption.OPERATOR_CONDITION_PERMISSION.name());
         }
     }
@@ -118,9 +119,9 @@ public class CondApp extends AppBase {
     }
 
     @Override
-    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
 
-        saveDatasetRoot(sm, file.getRoot(), alog, file, null, null);
+        saveDatasetRoot(sm, file.getRoot(), alog, file, null, null, auth);
         
     }
     
@@ -128,7 +129,8 @@ public class CondApp extends AppBase {
     private void saveDatasetRoot(SessionManager sm, DatasetRoot root, 
                                  AuditLog alog, DataFile file,
                                  Dataset parent,
-                                 Header parentHeader) throws Exception {
+                                 Header parentHeader,
+                                 OperatorAuth auth) throws Exception {
         
         Header header = root.getHeader();
         
@@ -141,14 +143,14 @@ public class CondApp extends AppBase {
         }
         
         // Save root dataset
-        rf.createCondDao(sm).saveCondition(root, alog, file, parent);
+        rf.createCondDao(sm).saveCondition(root, alog, file, parent, auth);
 
         // Save children
         for (Dataset d: root.getDatasets()) {
             if (d.getChildDatasets() != null) {
                 for (DatasetRoot childRoot: d.getChildDatasets()) {
 
-                    saveDatasetRoot(sm, childRoot, alog, file, d, root.getHeader());
+                    saveDatasetRoot(sm, childRoot, alog, file, d, root.getHeader(), auth);
 
                 }
             }

@@ -15,20 +15,21 @@ import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.util.NotAuthorizedException;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 @Singleton
 public class TrackingApp extends AppBase {
 
     @Override
-    public void checkPermission() throws NotAuthorizedException {
-        if (!props.isOperatorTrackingPermission()) {
+    public void checkPermission(OperatorAuth auth) throws NotAuthorizedException {
+        if (!auth.isTrackingPermission()) {
             throw new NotAuthorizedException(PropertiesManager.UserOption.OPERATOR_TRACKING_PERMISSION.name());
         }
     }
     
     @Override
-    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
         Root root = file.getRoot();
 
         TrackingDao dao = rf.createTrackingDao(sm);
@@ -39,7 +40,7 @@ public class TrackingApp extends AppBase {
             
             alog.setExtensionTableName("[REQUEST]");
             for (Request request: root.getRequests()) {
-                dao.save(request, alog);
+                dao.save(request, alog, auth);
                 count++;
             }
             
@@ -48,7 +49,7 @@ public class TrackingApp extends AppBase {
             if (file.getType() == DataFileType.SHIPMENT) {
                 alog.setExtensionTableName("[SHIPMENT]");
                 for (Shipment shipment: root.getShipments()) {
-                    dao.save(shipment, alog);
+                    dao.save(shipment, alog, auth);
                     count++;
                 }
             }

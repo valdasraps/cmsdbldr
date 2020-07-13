@@ -19,6 +19,7 @@ import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
+import org.cern.cms.dbloader.util.OperatorAuth;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
@@ -56,11 +57,11 @@ public class AuditLogHandler {
         this.log.setCreateTimestamp(new Date());
     }
     
-    public final void saveProcessing() throws Exception {
-        save(UploadStatus.Processing);
+    public final void saveProcessing(OperatorAuth auth) throws Exception {
+        save(UploadStatus.Processing, auth);
     }
     
-    public final void saveFailure(Throwable error) throws Exception {
+    public final void saveFailure(Throwable error, OperatorAuth auth) throws Exception {
         StringWriter sw = new StringWriter();
         error.printStackTrace(new PrintWriter(sw));
         String str = sw.toString();
@@ -68,14 +69,14 @@ public class AuditLogHandler {
             str = str.substring(0, 4000);
         }
         log.setUploadLogTrace(str);
-        save(UploadStatus.Failure);
+        save(UploadStatus.Failure, auth);
     }
     
-    public final void saveSuccess() throws Exception {
-        save(UploadStatus.Success);
+    public final void saveSuccess(OperatorAuth auth) throws Exception {
+        save(UploadStatus.Success, auth);
     }
 
-    private void save(UploadStatus status) throws Exception {
+    private void save(UploadStatus status, OperatorAuth auth) throws Exception {
         try (SessionManager sm = rf.createSessionManager()) {
             
             this.log.setStatus(status);
@@ -86,7 +87,7 @@ public class AuditLogHandler {
             if (this.log.getInsertTime() == null) {
                 this.log.setInsertTime(new Date());
                 this.log.setInsertUser(props.getOsUser());
-                this.log.setCreatedByUser(props.getOperatorValue());
+                this.log.setCreatedByUser(auth.getOperatorValue());
                 this.log.setSubdetectorName(getSubDetectorName(sm));
             } else {
                 this.log.setLastUpdateTime(new Date());

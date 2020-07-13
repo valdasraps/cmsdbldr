@@ -28,7 +28,7 @@ public class TrackShipmentLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/shipment_1.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
@@ -49,7 +49,7 @@ public class TrackShipmentLoadTest extends TestBase {
                 assertEquals("904", ship.getToLocation().getName());
                 assertEquals("CERN", ship.getToLocation().getInstitution().getName());
                 assertNotNull(ship.getInsertTime());
-                assertEquals(pm.getOperatorValue(), ship.getInsertUser());
+                assertEquals(pm.getOperatorAuth().getOperatorValue(), ship.getInsertUser());
                 assertEquals(3, ship.getItems().size());
             }
         }
@@ -63,7 +63,7 @@ public class TrackShipmentLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/shipment_2.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
@@ -84,7 +84,7 @@ public class TrackShipmentLoadTest extends TestBase {
                 assertEquals("904", ship.getToLocation().getName());
                 assertEquals("CERN", ship.getToLocation().getInstitution().getName());
                 assertNotNull(ship.getInsertTime());
-                assertEquals(pm.getOperatorValue(), ship.getInsertUser());
+                assertEquals(pm.getOperatorAuth().getOperatorValue(), ship.getInsertUser());
                 assertEquals(1, ship.getItems().size());
             }
 

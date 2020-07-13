@@ -381,7 +381,7 @@ public class PartLoadJsonTest extends TestBase {
         FilesManager fm = injector.getInstance(FilesManager.class);
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList(this.constr01Path))) {
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
         }
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
@@ -405,7 +405,7 @@ public class PartLoadJsonTest extends TestBase {
             assertNull(tower.getRemovedDate());
             assertNull(tower.getInstalledUser());
             assertNull(tower.getRemovedUser());
-            assertEquals(pm.getOperatorValue(), tower.getInsertUser());
+            assertEquals(pm.getOperatorAuth().getOperatorValue(), tower.getInsertUser());
             // Packs
             String[] serials = {"serial a", "serial b", "serial c"};
             for (String serialNumber: serials) {
@@ -426,7 +426,7 @@ public class PartLoadJsonTest extends TestBase {
                 assertNull(pack.getRemovedDate());
                 assertNull(pack.getInstalledUser());
                 assertNull(pack.getRemovedUser());
-                assertEquals(pm.getOperatorValue(), pack.getInsertUser());
+                assertEquals(pm.getOperatorAuth().getOperatorValue(), pack.getInsertUser());
                 // Packs children
                 List<Part> children = (List<Part>) session.createCriteria(Part.class)
                         .add(Subqueries.propertyIn("id",
@@ -449,7 +449,7 @@ public class PartLoadJsonTest extends TestBase {
                     assertNull(child.getRemovedDate());
                     assertNull(child.getInstalledUser());
                     assertNull(child.getRemovedUser());
-                    assertEquals(pm.getOperatorValue(), child.getInsertUser());
+                    assertEquals(pm.getOperatorAuth().getOperatorValue(), child.getInsertUser());
                 }
             }
         }
@@ -465,7 +465,7 @@ public class PartLoadJsonTest extends TestBase {
 
         for (FileBase fb: fm.getFiles(Collections.singletonList(this.constr05Path))) {
             try{
-                loader.loadArchive(injector, fb);
+                loader.loadArchive(injector, fb, pm.getOperatorAuth());
                 fail("Found catalogs dublicate. Should fail here.");
             }catch (XMLParseException ex){
                 // OK!
@@ -494,7 +494,7 @@ public class PartLoadJsonTest extends TestBase {
         FilesManager fm = injector.getInstance(FilesManager.class);
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList(this.constr07Path))) {
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
         }
         try(SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();

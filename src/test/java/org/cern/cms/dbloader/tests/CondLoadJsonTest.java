@@ -544,7 +544,7 @@ public class CondLoadJsonTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Arrays.asList(files))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
