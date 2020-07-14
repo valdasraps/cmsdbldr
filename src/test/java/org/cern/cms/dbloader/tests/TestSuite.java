@@ -19,7 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
     PropertyTypeTest.class,
     TablePrinterTest.class,
     TrackRequestLoadTest.class,
-    TrackShipmentLoadTest.class
+    TrackShipmentLoadTest.class,
+    AuthTest.class
 })
 public class TestSuite {
 
