@@ -15,6 +15,7 @@ import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.serial.ChannelUpdate;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 public class ChannelDao extends DaoBase {
@@ -25,8 +26,8 @@ public class ChannelDao extends DaoBase {
     private final CsvManager csv = new CsvManager();
 
     @Inject
-    public ChannelDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
+    public ChannelDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
 
     public void process(ChannelUpdate update, AuditLog alog) throws Exception {

@@ -143,7 +143,7 @@ public class CondApp extends AppBase {
         }
         
         // Save root dataset
-        rf.createCondDao(sm).saveCondition(root, alog, file, parent, auth);
+        rf.createCondDao(sm, auth).saveCondition(root, alog, file, parent);
 
         // Save children
         for (Dataset d: root.getDatasets()) {

@@ -60,7 +60,7 @@ public class ChannelApp extends AppBase {
 
             for (ChannelUpdate update : updates) {
 
-                ChannelDao dao = rf.createChannelDao(sm);
+                ChannelDao dao = rf.createChannelDao(sm, auth);
                 dao.process(update, alog);
                 
                 alog.setDatasetCount(alog.getDatasetCount() + 1);

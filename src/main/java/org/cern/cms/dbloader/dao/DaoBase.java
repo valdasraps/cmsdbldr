@@ -42,9 +42,11 @@ public abstract class DaoBase {
 
     protected final SessionManager sm;
     protected final Session session;
+    protected final OperatorAuth auth;
 
-    public DaoBase(SessionManager sm) throws Exception {
+    public DaoBase(SessionManager sm, OperatorAuth auth) throws Exception {
         this.sm = sm;
+        this.auth = auth;
         this.session = sm.getSession();
     }
     
@@ -84,7 +86,7 @@ public abstract class DaoBase {
 
     }
     
-    protected final Location resolveInstituteLocation(String institutionName, String locationName, OperatorAuth auth) {
+    protected final Location resolveInstituteLocation(String institutionName, String locationName) {
 
         Institution institution = (Institution) session.createCriteria(Institution.class)
                 .add(Restrictions.eq("deleted", Boolean.FALSE))

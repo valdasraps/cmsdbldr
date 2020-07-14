@@ -1,4 +1,4 @@
-package org.cern.cms.dbloader.handler;
+package org.cern.cms.dbloader.dao;
 
 import java.util.Date;
 
@@ -23,14 +23,15 @@ import org.cern.cms.dbloader.util.OperatorAuth;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-public class AuditLogHandler {
+public class AuditLogDao {
 
-    private static final Logger logger = LogManager.getLogger(AuditLogHandler.class);
+    private static final Logger logger = LogManager.getLogger(AuditLogDao.class);
     
     private static final String UNDEFINED_SUBDETECTOR_NAME = "UNDEFINED";
     
     @Getter
     private final AuditLog log;
+    private final OperatorAuth auth;
     
     @Inject
     private ResourceFactory rf;
@@ -41,8 +42,9 @@ public class AuditLogHandler {
     private final long startTime = System.currentTimeMillis();
     
     @Inject
-    public AuditLogHandler(@Assisted FileBase fb) throws Exception {
+    public AuditLogDao(@Assisted FileBase fb, @Assisted OperatorAuth auth) throws Exception {
         this.log = new AuditLog();
+        this.auth = auth;
         
         if (fb instanceof ArchiveFile) {
             this.log.setArchiveFileName(fb.getFilename());
@@ -57,11 +59,11 @@ public class AuditLogHandler {
         this.log.setCreateTimestamp(new Date());
     }
     
-    public final void saveProcessing(OperatorAuth auth) throws Exception {
-        save(UploadStatus.Processing, auth);
+    public final void saveProcessing() throws Exception {
+        save(UploadStatus.Processing);
     }
     
-    public final void saveFailure(Throwable error, OperatorAuth auth) throws Exception {
+    public final void saveFailure(Throwable error) throws Exception {
         StringWriter sw = new StringWriter();
         error.printStackTrace(new PrintWriter(sw));
         String str = sw.toString();
@@ -69,14 +71,14 @@ public class AuditLogHandler {
             str = str.substring(0, 4000);
         }
         log.setUploadLogTrace(str);
-        save(UploadStatus.Failure, auth);
+        save(UploadStatus.Failure);
     }
     
-    public final void saveSuccess(OperatorAuth auth) throws Exception {
-        save(UploadStatus.Success, auth);
+    public final void saveSuccess() throws Exception {
+        save(UploadStatus.Success);
     }
 
-    private void save(UploadStatus status, OperatorAuth auth) throws Exception {
+    private void save(UploadStatus status) throws Exception {
         try (SessionManager sm = rf.createSessionManager()) {
             
             this.log.setStatus(status);

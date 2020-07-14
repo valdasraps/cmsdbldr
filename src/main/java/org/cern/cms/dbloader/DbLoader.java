@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.cern.cms.dbloader.app.*;
-import org.cern.cms.dbloader.handler.AuditLogHandler;
+import org.cern.cms.dbloader.dao.AuditLogDao;
 import org.cern.cms.dbloader.dao.DatasetDao;
 import org.cern.cms.dbloader.manager.*;
 
@@ -60,6 +60,8 @@ public class DbLoader {
             xmlm.generateSchema(props.getSchemaParent());
             return;
         }
+        
+        OperatorAuth auth = props.getOperatorAuth();
 
         CondApp condApp = injector.getInstance(CondApp.class);
         if (condApp.handleInfo()) {
@@ -76,7 +78,7 @@ public class DbLoader {
             DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
             CondEntityHandler ch = enG.getConditionHandler(optId);
             try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-                DatasetDao dao = rf.createDatasetDao(sm);
+                DatasetDao dao = rf.createDatasetDao(sm, auth);
                 HelpPrinter.outputDatasetList(System.out, dao.getCondDatasets(ch));
             }
             return;
@@ -88,7 +90,7 @@ public class DbLoader {
 
             try (SessionManager sm = injector.getInstance(SessionManager.class)) {
                     
-                DatasetDao dao = rf.createDatasetDao(sm);
+                DatasetDao dao = rf.createDatasetDao(sm, auth);
                 Dataset dataset = dao.getDataset(dataSetId);
                 BigInteger id = dataset.getKindOfCondition().getId();
                 CondEntityHandler ceh = enG.getConditionHandler(id);
@@ -119,7 +121,7 @@ public class DbLoader {
         // Loop archives
         for (FileBase archive : fm.getFiles(props.getArgs())) {
 
-            loadArchive(injector, archive, props.getOperatorAuth());
+            loadArchive(injector, archive, auth);
 
         }
 
@@ -135,10 +137,10 @@ public class DbLoader {
         TrackingApp trackingApp = injector.getInstance(TrackingApp.class);
         
         // Start archive log if needed
-        AuditLogHandler archiveLog = null;
+        AuditLogDao archiveLog = null;
         if (archive.isArchive()) {
-            archiveLog = rf.createAuditDao(archive);
-            archiveLog.saveProcessing(auth);
+            archiveLog = rf.createAuditDao(archive, auth);
+            archiveLog.saveProcessing();
         }
         
         Throwable error = null;
@@ -150,8 +152,8 @@ public class DbLoader {
             for (DataFile data : archive.getDataFiles()) {
 
                 // Start datafile log
-                AuditLogHandler dataLog = rf.createAuditDao(data);
-                dataLog.saveProcessing(auth);
+                AuditLogDao dataLog = rf.createAuditDao(data, auth);
+                dataLog.saveProcessing();
 
                 try {
 
@@ -183,7 +185,7 @@ public class DbLoader {
                         
                         app.checkPermission(auth);
                         app.handleData(sm, data, dataLog.getLog(), auth);
-                        dataLog.saveSuccess(auth);
+                        dataLog.saveSuccess();
                         
                     }
 
@@ -202,7 +204,7 @@ public class DbLoader {
                 } finally {
                     
                     if (error != null) {
-                        dataLog.saveFailure(error, auth);
+                        dataLog.saveFailure(error);
                         throw error;
                     }
                     
@@ -238,12 +240,12 @@ public class DbLoader {
         
             if (error != null) {
                 if (archiveLog != null) {
-                    archiveLog.saveFailure(error, auth);
+                    archiveLog.saveFailure(error);
                 }
                 throw error;
             } else {
                 if (archiveLog != null) {
-                    archiveLog.saveSuccess(auth);
+                    archiveLog.saveSuccess();
                 }
             }
             

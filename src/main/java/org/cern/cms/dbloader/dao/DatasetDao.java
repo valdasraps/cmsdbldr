@@ -14,12 +14,13 @@ import org.hibernate.criterion.Restrictions;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import org.cern.cms.dbloader.manager.SessionManager;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 public class DatasetDao extends DaoBase {
 
     @Inject
-    public DatasetDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
+    public DatasetDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
 
     @SuppressWarnings("unchecked")

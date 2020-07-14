@@ -29,14 +29,14 @@ public class ConfigDao extends DaoBase {
     private ResourceFactory rf;
 
     @Inject
-    public ConfigDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
+    public ConfigDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
 
 
-    public void saveVersionAliases(Collection<VersionAlias> versionAliases, AuditLog alog, OperatorAuth auth) throws Exception {
+    public void saveVersionAliases(Collection<VersionAlias> versionAliases, AuditLog alog) throws Exception {
 
-        PartDao partDao = rf.createPartDao(sm);
+        PartDao partDao = rf.createPartDao(sm, auth);
 
         VersionAlias dbVersionAlias;
         Dataset dbDataset;
@@ -93,9 +93,9 @@ public class ConfigDao extends DaoBase {
 //TODO: if VersionAlias already exist - update or exception?
     }
 
-    public void saveKey(Collection<Key> keys, AuditLog auditLog, OperatorAuth auth) throws Exception {
+    public void saveKey(Collection<Key> keys, AuditLog auditLog) throws Exception {
 
-        PartDao partDao = rf.createPartDao(sm);
+        PartDao partDao = rf.createPartDao(sm, auth);
 
         Dataset dbDataset =  null;
         Dataset subverDs = null;
@@ -162,15 +162,13 @@ public class ConfigDao extends DaoBase {
 
     }
 
-    public void saveKeyAlias(Collection<KeyAlias> keyAliases, AuditLog auditLog, OperatorAuth auth) throws Exception {
+    public void saveKeyAlias(Collection<KeyAlias> keyAliases, AuditLog auditLog) throws Exception {
 
-        PartDao partDao = rf.createPartDao(sm);
-
-        Key dbKey = new Key();
-        Dataset dbDataset = new Dataset();
-        KindOfCondition dbKoc = new KindOfCondition();
-        Part dbPart = new Part();
-        VersionAlias dbVerAlias = new VersionAlias();
+        Key dbKey;
+        Dataset dbDataset;
+        KindOfCondition dbKoc;
+        Part dbPart;
+        VersionAlias dbVerAlias;
         KeyAliasKey dbKeyAliasKey = new KeyAliasKey();
 
         for (KeyAlias keyAlias : keyAliases){

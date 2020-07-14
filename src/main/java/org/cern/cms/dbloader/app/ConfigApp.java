@@ -28,18 +28,18 @@ public class ConfigApp extends AppBase{
     @Override
     public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
 
-        ConfigDao dao = rf.createConfigDao(sm);
+        ConfigDao dao = rf.createConfigDao(sm, auth);
         Root root = file.getRoot();
 
         switch (file.getType()) {
             case VERSION_ALIAS:
-                dao.saveVersionAliases(root.getMaps().getVersionAliases(), alog, auth);
+                dao.saveVersionAliases(root.getMaps().getVersionAliases(), alog);
             break;
             case KEY:
-                dao.saveKey(root.getMaps().getKey(), alog, auth);
+                dao.saveKey(root.getMaps().getKey(), alog);
                 break;
             case KEY_ALIAS:
-                dao.saveKeyAlias(root.getMaps().getKeyAlias(), alog, auth);
+                dao.saveKeyAlias(root.getMaps().getKeyAlias(), alog);
         }
 
     }

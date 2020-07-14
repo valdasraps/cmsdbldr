@@ -35,8 +35,8 @@ import org.hibernate.NonUniqueResultException;
 public class PartDao extends DaoBase {
 
     @Inject
-    public PartDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
+    public PartDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
 
     @Inject
@@ -45,7 +45,7 @@ public class PartDao extends DaoBase {
     private Root rootf;
     private DataFile file;
 
-    public void savePart(Root root, AuditLog alog, DataFile file, OperatorAuth auth) throws Exception {
+    public void savePart(Root root, AuditLog alog, DataFile file) throws Exception {
 
         this.rootf = root;
         this.file = file;
@@ -77,13 +77,13 @@ public class PartDao extends DaoBase {
         Stack<PartsPair> pairs = new Stack<>();
 
         for (Part part : root.getParts()) {
-            resolvePart(part, pairs, auth);
+            resolvePart(part, pairs);
         }
 
         int count = 0;
         while (!pairs.isEmpty()) {
             PartsPair pp = pairs.pop();
-            PartTree partTree = resolvePartTree(pp.getPart(), pp.getParent(), rootPart, auth);
+            PartTree partTree = resolvePartTree(pp.getPart(), pp.getParent(), rootPart);
             
             // Set operator value
             partTree.setLastUpdateUser(auth.getOperatorValue());
@@ -99,7 +99,7 @@ public class PartDao extends DaoBase {
 
     }
 
-    private Part resolvePart(Part part, Stack<PartsPair> pairs, OperatorAuth auth) throws Exception {
+    private Part resolvePart(Part part, Stack<PartsPair> pairs) throws Exception {
 
         Part xmlPart = part;
         KindOfPart kop;
@@ -132,7 +132,7 @@ public class PartDao extends DaoBase {
         if (xmlPart.getLocationName() != null || xmlPart.getInstitutionName() != null) {
             String locationName = part.getLocationName() != null ? part.getLocationName() : part.getInstitutionName();
             String institutionName = part.getInstitutionName() != null ? part.getInstitutionName() : part.getLocationName();
-            dbPart.setLocation(resolveInstituteLocation(institutionName, locationName, auth));
+            dbPart.setLocation(resolveInstituteLocation(institutionName, locationName));
         }
 
         if (xmlPart.getManufacturerName() != null) {
@@ -149,13 +149,13 @@ public class PartDao extends DaoBase {
 
         if (xmlPart.getAttributes() != null) {
             for (Attribute attr : xmlPart.getAttributes()) {
-                resolveAttribute(attr, dbPart, auth);
+                resolveAttribute(attr, dbPart);
             }
         }
 
         if (xmlPart.getChildren() != null) {
             for (Part child : xmlPart.getChildren()) {
-                pairs.push(new PartsPair(resolvePart(child, pairs, auth), dbPart));
+                pairs.push(new PartsPair(resolvePart(child, pairs), dbPart));
             }
         }
 
@@ -200,14 +200,14 @@ public class PartDao extends DaoBase {
         }
     }
 
-    private PartTree resolvePartTree(Part part, Part parent, Part rootPart, OperatorAuth auth) throws Exception {
+    private PartTree resolvePartTree(Part part, Part parent, Part rootPart) throws Exception {
 
         PartTree parentTree = parent.getPartTree();
         if (parentTree == null) {
             parentTree = new PartTree();
             parentTree.setPartId(parent.getId());
             parentTree.setParentPartTree(rootPart.getPartTree());
-            parentTree.setRelationship(resolveRelationship(rootPart.getKindOfPart(), parent.getKindOfPart(), auth));
+            parentTree.setRelationship(resolveRelationship(rootPart.getKindOfPart(), parent.getKindOfPart()));
             
             // Set operator value
             parentTree.setLastUpdateUser(auth.getOperatorValue());
@@ -230,7 +230,7 @@ public class PartDao extends DaoBase {
             partTree = new PartTree();
             partTree.setPartId(part.getId());
             partTree.setParentPartTree(parentTree);
-            partTree.setRelationship(resolveRelationship(parent.getKindOfPart(), part.getKindOfPart(), auth));
+            partTree.setRelationship(resolveRelationship(parent.getKindOfPart(), part.getKindOfPart()));
         }
 
         partTree.setParentPartTree(parentTree);
@@ -241,7 +241,7 @@ public class PartDao extends DaoBase {
 
     }
 
-    private PartRelationship resolveRelationship(KindOfPart parentKop, KindOfPart partKop, OperatorAuth auth) {
+    private PartRelationship resolveRelationship(KindOfPart parentKop, KindOfPart partKop) {
 
         PartRelationship relationship = (PartRelationship) session.createCriteria(PartRelationship.class)
                 .add(Restrictions.eq("deleted", Boolean.FALSE))
@@ -272,7 +272,7 @@ public class PartDao extends DaoBase {
         return relationship;
     }
 
-    private PartAttrList resolveAttribute(Attribute attr, Part part, OperatorAuth auth) throws Exception {
+    private PartAttrList resolveAttribute(Attribute attr, Part part) throws Exception {
 
         KindOfPart kop = part.getKindOfPart();
 

@@ -32,7 +32,7 @@ public class TrackingApp extends AppBase {
     public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
         Root root = file.getRoot();
 
-        TrackingDao dao = rf.createTrackingDao(sm);
+        TrackingDao dao = rf.createTrackingDao(sm, auth);
         alog.setKindOfConditionName("[CONSTRUCT]");
         int count = 0;
 
@@ -40,7 +40,7 @@ public class TrackingApp extends AppBase {
             
             alog.setExtensionTableName("[REQUEST]");
             for (Request request: root.getRequests()) {
-                dao.save(request, alog, auth);
+                dao.save(request, alog);
                 count++;
             }
             
@@ -49,7 +49,7 @@ public class TrackingApp extends AppBase {
             if (file.getType() == DataFileType.SHIPMENT) {
                 alog.setExtensionTableName("[SHIPMENT]");
                 for (Shipment shipment: root.getShipments()) {
-                    dao.save(shipment, alog, auth);
+                    dao.save(shipment, alog);
                     count++;
                 }
             }

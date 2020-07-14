@@ -53,11 +53,11 @@ public class CondDao extends DaoBase {
     private final LobManager lobm = new LobManager();
     
     @Inject
-    public CondDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
+    public CondDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
 
-    public void saveCondition(DatasetRoot root, AuditLog alog, DataFile file, Dataset parent, OperatorAuth auth) throws Exception {
+    public void saveCondition(DatasetRoot root, AuditLog alog, DataFile file, Dataset parent) throws Exception {
         Header header = root.getHeader();
 
         if (root.getDatasets().isEmpty()) {
@@ -90,7 +90,7 @@ public class CondDao extends DaoBase {
         Map<BigInteger, Iov> iovMap = new HashMap<>();
 
         if (root.getElements() != null && root.getMaps() != null) {
-            iovMap = mapIov2Tag(root.getElements(), root.getMaps(), auth);
+            iovMap = mapIov2Tag(root.getElements(), root.getMaps());
         }
 
         KindOfCondition dbKoc = resolveKindOfCondition(root.getHeader());
@@ -98,7 +98,7 @@ public class CondDao extends DaoBase {
         alog.setExtensionTableName(dbKoc.getExtensionTable());
         alog.setKindOfConditionName(dbKoc.getName());
 
-        Run dbRun = resolveRun(root.getHeader(), auth);
+        Run dbRun = resolveRun(root.getHeader());
 
         if (dbRun != null) {
 
@@ -261,7 +261,7 @@ public class CondDao extends DaoBase {
         return dbKoc;
     }
 
-    private Run resolveRun(Header header, OperatorAuth auth) throws Exception {
+    private Run resolveRun(Header header) throws Exception {
         Run xmRun = header.getRun();
         Run dbRun = null;
 
@@ -340,7 +340,7 @@ public class CondDao extends DaoBase {
 
     }
 
-    private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps, OperatorAuth auth) {
+    private Map<BigInteger, Iov> mapIov2Tag(Elements elements, Maps maps) {
 
         Map<BigInteger, Iov> mapIov = new HashMap<>();
         Map<BigInteger, Tag> mapTag = new HashMap<>();

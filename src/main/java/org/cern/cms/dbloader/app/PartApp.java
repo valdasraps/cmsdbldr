@@ -31,8 +31,8 @@ public class PartApp extends AppBase {
 
         Root root = file.getRoot();
 
-        PartDao dao = rf.createPartDao(sm);
-        dao.savePart(root, alog, file, auth);
+        PartDao dao = rf.createPartDao(sm, auth);
+        dao.savePart(root, alog, file);
     }
 
 }

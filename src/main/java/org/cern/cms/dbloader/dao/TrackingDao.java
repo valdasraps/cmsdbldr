@@ -28,8 +28,8 @@ public class TrackingDao extends DaoBase {
     private static final String IN_TRANSITION_INSTITUTION = "In transition";
     
     @Inject
-    public TrackingDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
+    public TrackingDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
     
     /**
@@ -38,7 +38,7 @@ public class TrackingDao extends DaoBase {
      * @param alog log object.
      * @throws Exception on any error.
      */
-    public void save(Request xmlRequest, AuditLog alog, OperatorAuth auth) throws Exception {
+    public void save(Request xmlRequest, AuditLog alog) throws Exception {
         
         // Name has to be defined!
         if (xmlRequest.getName() == null || xmlRequest.getName().isEmpty()) {
@@ -56,7 +56,7 @@ public class TrackingDao extends DaoBase {
         }
 
         // Resolving location.
-        Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName(), auth);
+        Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName());
 
         // Resolving Kind of Conditions.
         if (xmlRequest.getItems() != null) {
@@ -157,20 +157,20 @@ public class TrackingDao extends DaoBase {
         
     }
 
-    public void save(Shipment xmlShipment, AuditLog alog, OperatorAuth auth) throws Exception {
+    public void save(Shipment xmlShipment, AuditLog alog) throws Exception {
         
-        Location inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION, auth);
+        Location inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION);
         
         if (xmlShipment.getTrackingNumber() == null || xmlShipment.getTrackingNumber().isEmpty()) {
             throw new XMLParseException(String.format("Shipment tracking number not defined in %s", xmlShipment));
         }
 
         if (xmlShipment.getFromInstitutionName() != null && xmlShipment.getFromLocationName() != null) {
-            xmlShipment.setFromLocation(resolveInstituteLocation(xmlShipment.getFromInstitutionName(), xmlShipment.getFromLocationName(), auth));
+            xmlShipment.setFromLocation(resolveInstituteLocation(xmlShipment.getFromInstitutionName(), xmlShipment.getFromLocationName()));
         }
 
         if (xmlShipment.getToInstitutionName() != null && xmlShipment.getToLocationName() != null) {
-            xmlShipment.setToLocation(resolveInstituteLocation(xmlShipment.getToInstitutionName(), xmlShipment.getToLocationName(), auth));
+            xmlShipment.setToLocation(resolveInstituteLocation(xmlShipment.getToInstitutionName(), xmlShipment.getToLocationName()));
         }
         
         if (xmlShipment.getItems() != null) {
