@@ -18,6 +18,7 @@ import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.construct.ext.Shipment.ShipmentStatus;
 import org.cern.cms.dbloader.model.construct.ext.ShipmentItem;
 import org.cern.cms.dbloader.model.managemnt.Location;
+import org.cern.cms.dbloader.util.OperatorAuth;
 import org.hibernate.criterion.Restrictions;
 
 @Log4j
@@ -26,15 +27,9 @@ public class TrackingDao extends DaoBase {
     private static final String IN_TRANSITION_LOCATION = "In transition";
     private static final String IN_TRANSITION_INSTITUTION = "In transition";
     
-    /**
-     * In transition location cache.
-     */
-    private final Location inTransitionLocation;
-    
     @Inject
-    public TrackingDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
-        this.inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION);
+    public TrackingDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
     
     /**
@@ -146,11 +141,25 @@ public class TrackingDao extends DaoBase {
             item.setRequest(dbRequest);
         }
         
+        // Set operator value
+        dbRequest.setLastUpdateUser(auth.getOperatorValue());
+        for (RequestItem item: dbRequest.getItems()) {
+            item.setLastUpdateUser(auth.getOperatorValue());
+            if (item.getId() == null) {
+                item.setInsertUser(auth.getOperatorValue());
+            }
+        }
+        if (dbRequest.getId() == null) {
+            dbRequest.setInsertUser(auth.getOperatorValue());
+        }
+        
         session.save(dbRequest);
         
     }
 
     public void save(Shipment xmlShipment, AuditLog alog) throws Exception {
+        
+        Location inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION);
         
         if (xmlShipment.getTrackingNumber() == null || xmlShipment.getTrackingNumber().isEmpty()) {
             throw new XMLParseException(String.format("Shipment tracking number not defined in %s", xmlShipment));
@@ -322,6 +331,18 @@ public class TrackingDao extends DaoBase {
             
         }
         
+        // Set operator value
+        dbShipment.setLastUpdateUser(auth.getOperatorValue());
+        for (ShipmentItem item: dbShipment.getItems()) {
+            item.setLastUpdateUser(auth.getOperatorValue());
+            if (item.getId() == null) {
+                item.setInsertUser(auth.getOperatorValue());
+            }
+        }
+        if (dbShipment.getId() == null) {
+            dbShipment.setInsertUser(auth.getOperatorValue());
+        }
+        
         session.save(dbShipment);
         
         // Close completed requests
@@ -331,6 +352,7 @@ public class TrackingDao extends DaoBase {
             if (request.getStatus() == RequestStatus.OPEN) {
                 if (stat.getRequested() <= stat.getShipped()) {
                     request.setStatus(RequestStatus.CLOSED);
+                    request.setLastUpdateUser(auth.getOperatorValue());
                     session.save(request);
                 }
             }

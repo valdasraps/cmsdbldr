@@ -5,8 +5,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.daemon.Daemon;
@@ -16,14 +14,13 @@ import org.cern.cms.dbloader.manager.EntityModificationManager;
 import org.cern.cms.dbloader.manager.LogManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
-import org.cern.cms.dbloader.rest.provider.Load;
+import org.cern.cms.dbloader.rest.service.AuthService;
+import org.cern.cms.dbloader.rest.service.LoadService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
-import org.glassfish.jersey.servlet.ServletContainer;
 
 /**
  * RESTful API application for the single Loader
@@ -34,10 +31,7 @@ public class Application implements Daemon {
     
     private final static String PORT_KEY = "api-port";
     
-    public static PropertiesManager pm;
     public static Injector injector;
-    public static ResourceFactory rf;
-    
     private Server server;
 
     public void setup(String[] args) throws Exception {
@@ -67,7 +61,7 @@ public class Application implements Daemon {
     
     private void initLoader(final Properties props) throws Exception {
         
-        pm = new PropertiesManager(props, new String[]{ }) {
+        PropertiesManager pm = new PropertiesManager(props, new String[]{ }) {
             @Override
             public boolean printHelp() {
                 throw new UnsupportedOperationException("Not supported yet.");
@@ -82,12 +76,12 @@ public class Application implements Daemon {
             protected void configure() {
 
                 bind(PropertiesManager.class).toInstance(pm);
+                bind(AuthService.class).toInstance(new AuthService(props));
+                bind(LoadService.class).toInstance(new LoadService());
                 install(new FactoryModuleBuilder().build(ResourceFactory.class));
 
             }
         });
-
-        rf = injector.getInstance(ResourceFactory.class);
 
     }
         

@@ -17,6 +17,7 @@ import org.cern.cms.dbloader.util.PropertiesException;
 
 import java.io.IOException;
 import java.util.Arrays;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @SuppressWarnings("static-access")
 public abstract class PropertiesManager {
@@ -36,7 +37,7 @@ public abstract class PropertiesManager {
     protected static final String DBLOADER_PROPERTIES = "/dbloader.properties";
     protected static final String VERSION_KEY = "version";
 
-    protected enum UserOption {
+    public enum UserOption {
 
         HELP("print usage", false, false),
         VERSION("print version", false, false),
@@ -66,8 +67,8 @@ public abstract class PropertiesManager {
         TEST("upload test - proceed with the full upload process but rollback the transaction", false, false),
         LOG_LEVEL("log level, possible values OFF,FATAL,ERROR,WARN,INFO,DEBUG,TRACE. Default is " + DEFAULT_LEVEL.toString(), true, false),
         PRINT_SQL("print SQL queries to stdout", false, false),
-        OPERATOR_USERNAME("operator username, DEFAULT: process user", true, false),
-        OPERATOR_FULLNAME("operator fullname, DEFAULT: process user", true, false),
+        OPERATOR_USERNAME("operator username, DEFAULT: operator user", true, false),
+        OPERATOR_FULLNAME("operator fullname, DEFAULT: operator user", true, false),
         OPERATOR_CONSTRUCT_PERMISSION("operator construct permission", false, false),
         OPERATOR_CONDITION_PERMISSION("operator condition permission", false, false),
         OPERATOR_TRACKING_PERMISSION("operator tracking permission", false, false);
@@ -253,36 +254,14 @@ public abstract class PropertiesManager {
         return System.getProperty("user.name");
     }
     
-    public String getOperatorUsername() {
-        if (this.values.containsKey(UserOption.OPERATOR_USERNAME)) {
-            return this.values.get(UserOption.OPERATOR_USERNAME);
-        } else {
-            return getOsUser();
-        }
-    }
-    
-    public String getOperatorFullname() {
-        if (this.values.containsKey(UserOption.OPERATOR_FULLNAME)) {
-            return this.values.get(UserOption.OPERATOR_FULLNAME);
-        } else {
-            return getOperatorUsername();
-        }
-    }
-    
-    public String getOperatorValue() {
-        return String.format("%s (%s)", getOperatorFullname(), getOperatorUsername());
-    }
-    
-    public boolean isOperatorConstructPermission() {
-        return this.values.containsKey(UserOption.OPERATOR_CONSTRUCT_PERMISSION);
-    }
-
-    public boolean isOperatorConditionPermission() {
-        return this.values.containsKey(UserOption.OPERATOR_CONDITION_PERMISSION);
-    }
-
-    public boolean isOperatorTrackingPermission() {
-        return this.values.containsKey(UserOption.OPERATOR_TRACKING_PERMISSION);
+    public OperatorAuth getOperatorAuth() {
+        return new OperatorAuth(
+                this.values.containsKey(UserOption.OPERATOR_USERNAME) ? this.values.get(UserOption.OPERATOR_USERNAME) : getOsUser(),
+                this.values.containsKey(UserOption.OPERATOR_FULLNAME) ? this.values.get(UserOption.OPERATOR_FULLNAME) : getOsUser(),
+                this.values.containsKey(UserOption.OPERATOR_CONSTRUCT_PERMISSION),
+                this.values.containsKey(UserOption.OPERATOR_CONDITION_PERMISSION),
+                this.values.containsKey(UserOption.OPERATOR_TRACKING_PERMISSION)
+        );
     }
 
     public String getVersion() {

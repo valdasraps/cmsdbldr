@@ -1,4 +1,4 @@
-package org.cern.cms.dbloader.handler;
+package org.cern.cms.dbloader.dao;
 
 import java.util.Date;
 
@@ -19,17 +19,19 @@ import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
+import org.cern.cms.dbloader.util.OperatorAuth;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
-public class AuditLogHandler {
+public class AuditLogDao {
 
-    private static final Logger logger = LogManager.getLogger(AuditLogHandler.class);
+    private static final Logger logger = LogManager.getLogger(AuditLogDao.class);
     
     private static final String UNDEFINED_SUBDETECTOR_NAME = "UNDEFINED";
     
     @Getter
     private final AuditLog log;
+    private final OperatorAuth auth;
     
     @Inject
     private ResourceFactory rf;
@@ -40,8 +42,9 @@ public class AuditLogHandler {
     private final long startTime = System.currentTimeMillis();
     
     @Inject
-    public AuditLogHandler(@Assisted FileBase fb) throws Exception {
+    public AuditLogDao(@Assisted FileBase fb, @Assisted OperatorAuth auth) throws Exception {
         this.log = new AuditLog();
+        this.auth = auth;
         
         if (fb instanceof ArchiveFile) {
             this.log.setArchiveFileName(fb.getFilename());
@@ -86,7 +89,7 @@ public class AuditLogHandler {
             if (this.log.getInsertTime() == null) {
                 this.log.setInsertTime(new Date());
                 this.log.setInsertUser(props.getOsUser());
-                this.log.setCreatedByUser(props.getOperatorValue());
+                this.log.setCreatedByUser(auth.getOperatorValue());
                 this.log.setSubdetectorName(getSubDetectorName(sm));
             } else {
                 this.log.setLastUpdateTime(new Date());

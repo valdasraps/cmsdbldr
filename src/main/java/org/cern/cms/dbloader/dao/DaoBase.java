@@ -9,7 +9,6 @@ import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.condition.ChannelMap;
-import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.construct.KindOfPart;
 import org.cern.cms.dbloader.model.construct.Manufacturer;
 import org.cern.cms.dbloader.model.construct.Part;
@@ -23,6 +22,7 @@ import org.cern.cms.dbloader.model.serial.map.CondAlgorithm;
 import org.cern.cms.dbloader.model.serial.map.ModeStage;
 import org.cern.cms.dbloader.model.serial.map.PositionSchema;
 import org.cern.cms.dbloader.model.serial.part.PartAssembly;
+import org.cern.cms.dbloader.util.OperatorAuth;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -42,9 +42,11 @@ public abstract class DaoBase {
 
     protected final SessionManager sm;
     protected final Session session;
+    protected final OperatorAuth auth;
 
-    public DaoBase(SessionManager sm) throws Exception {
+    public DaoBase(SessionManager sm, OperatorAuth auth) throws Exception {
         this.sm = sm;
+        this.auth = auth;
         this.session = sm.getSession();
     }
     
@@ -103,6 +105,8 @@ public abstract class DaoBase {
             institution = new Institution();
             institution.setName(institutionName);
             institution.setInstituteCode(0); // Hard Coded
+            institution.setLastUpdateUser(auth.getOperatorValue());
+            institution.setInsertUser(auth.getOperatorValue());
             session.save(institution);
         }
 
@@ -110,6 +114,8 @@ public abstract class DaoBase {
             location = new Location();
             location.setName(locationName);
             location.setInstitution(institution);
+            location.setLastUpdateUser(auth.getOperatorValue());
+            location.setInsertUser(auth.getOperatorValue());
             session.save(location);
             institution.getLocations().add(location);
         }

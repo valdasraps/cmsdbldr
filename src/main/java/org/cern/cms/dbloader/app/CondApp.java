@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.HelpPrinter;
-import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.metadata.CondEntityHandler;
 import org.cern.cms.dbloader.metadata.EntityHandler;
@@ -24,22 +23,25 @@ import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.manager.XmlManager;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
+import org.cern.cms.dbloader.util.NotAuthorizedException;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 @Singleton
 public class CondApp extends AppBase {
 
     @Inject
-    private PropertiesManager props;
-
-    @Inject
     private DynamicEntityGenerator enGenerator;
 
     @Inject
-    private ResourceFactory rf;
-
-    @Inject
     private XmlManager xmlm;
+
+    @Override
+    public void checkPermission(OperatorAuth auth) throws NotAuthorizedException {
+        if (!auth.isConditionPermission()) {
+            throw new NotAuthorizedException(PropertiesManager.UserOption.OPERATOR_CONDITION_PERMISSION.name());
+        }
+    }
     
     @Override
     public boolean handleInfo() throws Exception {
@@ -117,9 +119,9 @@ public class CondApp extends AppBase {
     }
 
     @Override
-    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
 
-        saveDatasetRoot(sm, file.getRoot(), alog, file, null, null);
+        saveDatasetRoot(sm, file.getRoot(), alog, file, null, null, auth);
         
     }
     
@@ -127,7 +129,8 @@ public class CondApp extends AppBase {
     private void saveDatasetRoot(SessionManager sm, DatasetRoot root, 
                                  AuditLog alog, DataFile file,
                                  Dataset parent,
-                                 Header parentHeader) throws Exception {
+                                 Header parentHeader,
+                                 OperatorAuth auth) throws Exception {
         
         Header header = root.getHeader();
         
@@ -140,14 +143,14 @@ public class CondApp extends AppBase {
         }
         
         // Save root dataset
-        rf.createCondDao(sm).saveCondition(root, alog, file, parent);
+        rf.createCondDao(sm, auth).saveCondition(root, alog, file, parent);
 
         // Save children
         for (Dataset d: root.getDatasets()) {
             if (d.getChildDatasets() != null) {
                 for (DatasetRoot childRoot: d.getChildDatasets()) {
 
-                    saveDatasetRoot(sm, childRoot, alog, file, d, root.getHeader());
+                    saveDatasetRoot(sm, childRoot, alog, file, d, root.getHeader(), auth);
 
                 }
             }

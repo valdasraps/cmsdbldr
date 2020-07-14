@@ -16,6 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import org.cern.cms.dbloader.manager.json.ChannelDeserializer;
 import org.cern.cms.dbloader.manager.json.CondDeserializer;
+import org.cern.cms.dbloader.manager.json.PartDetailsDeserializer;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 
 public class JsonManager {
 
@@ -23,10 +25,13 @@ public class JsonManager {
         
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
         
         SimpleModule module = new SimpleModule();
         module.addDeserializer(CondBase.class, new CondDeserializer());
         module.addDeserializer(ChannelBase.class, new ChannelDeserializer());
+        module.addDeserializer(PartDetailsBase.class, new PartDetailsDeserializer());
         mapper.registerModule(module);
 
         return mapper;

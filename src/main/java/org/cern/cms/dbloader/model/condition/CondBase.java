@@ -15,10 +15,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.cern.cms.dbloader.manager.json.CondDeserializer;
 import org.cern.cms.dbloader.model.ProxyBase;
 
 @MappedSuperclass
@@ -28,6 +30,7 @@ import org.cern.cms.dbloader.model.ProxyBase;
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties({"id", "dataset"})
+@JsonDeserialize(contentUsing = CondDeserializer.class)
 public abstract class CondBase extends ProxyBase<CondBase> {
 
     @Id

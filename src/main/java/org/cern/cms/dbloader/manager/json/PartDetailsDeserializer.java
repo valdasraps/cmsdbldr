@@ -6,26 +6,26 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cern.cms.dbloader.model.condition.CondBase;
 
 import java.io.IOException;
+import org.cern.cms.dbloader.model.construct.PartDetailsBase;
 
-public class CondDeserializer extends JsonDeserializer<CondBase> {
+public class PartDetailsDeserializer extends JsonDeserializer<PartDetailsBase> {
 
     @Override
-    public CondBase deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        
-        return new CondBase() {
+    public PartDetailsBase deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+
+        return new PartDetailsBase() {
             
             private final JsonNode jsonNode = jsonParser.readValueAsTree();
             
             @Override
-            public <T extends CondBase> T getDelegate(Class<T> clazz) throws Exception {
+            public <T extends PartDetailsBase> T getDelegate(Class<T> clazz) throws Exception {
                 ObjectMapper mapper = new ObjectMapper();
                 return mapper.treeToValue(jsonNode, clazz);
             }
             
         };
-        
+
     }
 }

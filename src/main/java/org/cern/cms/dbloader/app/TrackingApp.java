@@ -3,31 +3,36 @@ package org.cern.cms.dbloader.app;
 
 import lombok.extern.log4j.Log4j;
 
-import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.manager.file.DataFile;
 import org.cern.cms.dbloader.model.serial.Root;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.cern.cms.dbloader.dao.TrackingDao;
+import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.DataFileType;
 import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
+import org.cern.cms.dbloader.util.NotAuthorizedException;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 @Singleton
 public class TrackingApp extends AppBase {
 
-    @Inject
-    private ResourceFactory rf;
-
     @Override
-    public void handleData(SessionManager sm, DataFile file, AuditLog alog) throws Exception {
+    public void checkPermission(OperatorAuth auth) throws NotAuthorizedException {
+        if (!auth.isTrackingPermission()) {
+            throw new NotAuthorizedException(PropertiesManager.UserOption.OPERATOR_TRACKING_PERMISSION.name());
+        }
+    }
+    
+    @Override
+    public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
         Root root = file.getRoot();
 
-        TrackingDao dao = rf.createTrackingDao(sm);
+        TrackingDao dao = rf.createTrackingDao(sm, auth);
         alog.setKindOfConditionName("[CONSTRUCT]");
         int count = 0;
 

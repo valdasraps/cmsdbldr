@@ -3,7 +3,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.1.7</version>
+    <version>0.1.8</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -334,6 +334,11 @@
             <version>9.4.11.v20180605</version>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>9.4.11.v20180605</version>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
             <version>2.27</version>
@@ -371,17 +376,17 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.9.6</version>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.9.6</version>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
-            <version>2.9.6</version>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>

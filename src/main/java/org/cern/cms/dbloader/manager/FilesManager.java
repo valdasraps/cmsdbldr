@@ -45,9 +45,13 @@ public class FilesManager {
 
             if (ZIP_FILE.matcher(f.getAbsolutePath()).find()) {
                 files.add(rf.createArchiveFile(f));
-            } else if(JSON_FILE.matcher(f.getAbsolutePath()).find()) {
+            } else 
+                
+            if(JSON_FILE.matcher(f.getAbsolutePath()).find()) {
                 files.add(rf.createDataFile(rf.createArchiveFile(f), f, DataFile.Type.JSON));
-            } else {
+            } 
+            
+            else {
                 throw new IllegalArgumentException(String.format("unknown file type (%s). Only .zip and .serial files accepted", fileName));
             }
 

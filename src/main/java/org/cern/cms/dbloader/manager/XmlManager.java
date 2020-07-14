@@ -134,6 +134,9 @@ public final class XmlManager {
 
         Marshaller ms = jaxb.createMarshaller();
         ms.setAdapter(CondBaseProxyAdapter.class, new CondBaseProxyAdapter(jaxb, condeh.getEntityClass().getC()));
+        ms.setAdapter(ChannelBaseProxyAdapter.class, new ChannelBaseProxyAdapter(jaxb));
+        ms.setAdapter(PartDetailsBaseProxyAdapter.class, new PartDetailsBaseProxyAdapter(jaxb));
+
         ms.setEventHandler(new EventHandler());
         ms.setAdapter(new DateAdapter());
         ms.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

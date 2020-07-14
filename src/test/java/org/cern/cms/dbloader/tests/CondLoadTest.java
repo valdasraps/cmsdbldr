@@ -48,7 +48,7 @@ public class CondLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase df: fm.getFiles(Collections.singletonList(exampleFile))) {
 
-            loader.loadArchive(injector, df);
+            loader.loadArchive(injector, df, pm.getOperatorAuth());
 
         }
                 
@@ -68,7 +68,7 @@ public class CondLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Arrays.asList(files))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
             
@@ -146,7 +146,7 @@ public class CondLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/lob/lob_test.zip"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
                 
@@ -161,7 +161,7 @@ public class CondLoadTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/12_hybrids_condition.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
         }
 
         // Check Datasets

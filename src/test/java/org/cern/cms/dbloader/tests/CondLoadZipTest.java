@@ -27,7 +27,7 @@ public class CondLoadZipTest extends TestBase {
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/loading.zip"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
         
@@ -69,7 +69,7 @@ public class CondLoadZipTest extends TestBase {
             assertNotNull(fm);
             assertNotNull(loader);
             assertNotNull(fb);   
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
         }
 
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
@@ -101,7 +101,7 @@ public class CondLoadZipTest extends TestBase {
 
             try {
                 
-                loader.loadArchive(injector, fb);
+                loader.loadArchive(injector, fb, pm.getOperatorAuth());
                 fail("Should have failed here!");
                 
             } catch (Exception ex) {

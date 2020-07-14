@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.cern.cms.dbloader.app.*;
-import org.cern.cms.dbloader.handler.AuditLogHandler;
+import org.cern.cms.dbloader.dao.AuditLogDao;
 import org.cern.cms.dbloader.dao.DatasetDao;
 import org.cern.cms.dbloader.manager.*;
 
@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.manager.file.FileBase;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 @RequiredArgsConstructor
@@ -59,6 +60,8 @@ public class DbLoader {
             xmlm.generateSchema(props.getSchemaParent());
             return;
         }
+        
+        OperatorAuth auth = props.getOperatorAuth();
 
         CondApp condApp = injector.getInstance(CondApp.class);
         if (condApp.handleInfo()) {
@@ -75,7 +78,7 @@ public class DbLoader {
             DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
             CondEntityHandler ch = enG.getConditionHandler(optId);
             try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-                DatasetDao dao = rf.createDatasetDao(sm);
+                DatasetDao dao = rf.createDatasetDao(sm, auth);
                 HelpPrinter.outputDatasetList(System.out, dao.getCondDatasets(ch));
             }
             return;
@@ -87,7 +90,7 @@ public class DbLoader {
 
             try (SessionManager sm = injector.getInstance(SessionManager.class)) {
                     
-                DatasetDao dao = rf.createDatasetDao(sm);
+                DatasetDao dao = rf.createDatasetDao(sm, auth);
                 Dataset dataset = dao.getDataset(dataSetId);
                 BigInteger id = dataset.getKindOfCondition().getId();
                 CondEntityHandler ceh = enG.getConditionHandler(id);
@@ -118,13 +121,13 @@ public class DbLoader {
         // Loop archives
         for (FileBase archive : fm.getFiles(props.getArgs())) {
 
-            loadArchive(injector, archive);
+            loadArchive(injector, archive, auth);
 
         }
 
     }
     
-    public void loadArchive(Injector injector, FileBase archive) throws Throwable {
+    public void loadArchive(Injector injector, FileBase archive, OperatorAuth auth) throws Throwable {
         
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
         CondApp condApp = injector.getInstance(CondApp.class);
@@ -134,9 +137,9 @@ public class DbLoader {
         TrackingApp trackingApp = injector.getInstance(TrackingApp.class);
         
         // Start archive log if needed
-        AuditLogHandler archiveLog = null;
+        AuditLogDao archiveLog = null;
         if (archive.isArchive()) {
-            archiveLog = rf.createAuditDao(archive);
+            archiveLog = rf.createAuditDao(archive, auth);
             archiveLog.saveProcessing();
         }
         
@@ -149,7 +152,7 @@ public class DbLoader {
             for (DataFile data : archive.getDataFiles()) {
 
                 // Start datafile log
-                AuditLogHandler dataLog = rf.createAuditDao(data);
+                AuditLogDao dataLog = rf.createAuditDao(data, auth);
                 dataLog.saveProcessing();
 
                 try {
@@ -178,8 +181,13 @@ public class DbLoader {
                             app = trackingApp;
                     }
 
-                    app.handleData(sm, data, dataLog.getLog());
-                    dataLog.saveSuccess();
+                    if (app != null) {
+                        
+                        app.checkPermission(auth);
+                        app.handleData(sm, data, dataLog.getLog(), auth);
+                        dataLog.saveSuccess();
+                        
+                    }
 
                 } catch (Error ex) {
                 

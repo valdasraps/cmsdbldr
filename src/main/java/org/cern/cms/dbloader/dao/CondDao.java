@@ -42,6 +42,7 @@ import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
+import org.cern.cms.dbloader.util.OperatorAuth;
 
 @Log4j
 public class CondDao extends DaoBase {
@@ -52,8 +53,8 @@ public class CondDao extends DaoBase {
     private final LobManager lobm = new LobManager();
     
     @Inject
-    public CondDao(@Assisted SessionManager sm) throws Exception {
-        super(sm);
+    public CondDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
+        super(sm, auth);
     }
 
     public void saveCondition(DatasetRoot root, AuditLog alog, DataFile file, Dataset parent) throws Exception {
@@ -218,6 +219,10 @@ public class CondDao extends DaoBase {
                 // Ignore
             }
 
+            ds.setLastUpdateUser(auth.getOperatorValue());
+            if (ds.getInsertUser() == null) { 
+                ds.setInsertUser(auth.getOperatorValue());
+            }
             session.save(ds);
 
             alog.setDatasetRecordCount(alog.getDatasetRecordCount() + ds.getData().size());
@@ -291,6 +296,8 @@ public class CondDao extends DaoBase {
             log.info(String.format("Resolved: %s", dbRun));
         } else {
             dbRun = xmRun;
+            dbRun.setLastUpdateUser(auth.getOperatorValue());
+            dbRun.setInsertUser(auth.getOperatorValue());
             log.info(String.format("Not resolved: %s. Will attempt to create.", dbRun));
         }
 
@@ -356,6 +363,12 @@ public class CondDao extends DaoBase {
                 iov.getTags().add(tag);
                 session.save(iov);
             }
+            
+            tag.setLastUpdateUser(auth.getOperatorValue());
+            if (tag.getInsertUser() == null) { 
+                tag.setInsertUser(auth.getOperatorValue());
+            }
+            
             session.save(tag);
         }
         return mapIov;
