@@ -106,7 +106,7 @@ public class ConfigDaoTest extends TestBase {
 
             Assert.assertNotNull(key);
             Assert.assertEquals("022-gena-test", key.getName());
-            Assert.assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", key.getInsertUser());
+            Assert.assertEquals("Petras Petrauskas (petriukas)", key.getInsertUser());
             Assert.assertEquals("VGhlIHBvc2l0aXZlIFogYXhpcyBiYXJyZWwgaGFzIGJlZW4gdHVybmVkIG9mZg", key.getComment());
 
             KeyType keyType = (KeyType) session.createCriteria(KeyType.class)

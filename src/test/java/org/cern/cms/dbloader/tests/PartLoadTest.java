@@ -285,7 +285,7 @@ Test check if Part has attribute, after that we upload xml file to mark attribut
                     .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .uniqueResult();
 
-            assertEquals("Vavukas", attrList.getInsertUser());
+            assertEquals("Petras Petrauskas (petriukas)", attrList.getInsertUser());
             assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
             assertNotNull(attrList);
         }
@@ -293,7 +293,7 @@ Test check if Part has attribute, after that we upload xml file to mark attribut
         // Upload XML file and mark attribute as deleted
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/14_markAttributeDeleted.xml"))) {
 
-            loader.loadArchive(injector, fb);
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
 
         }
 
