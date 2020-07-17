@@ -84,6 +84,17 @@ if [[ 1 -eq $aopt ]]; then
 
 cat << EOF > /etc/httpd/conf.d/cmsdbldr_${det}_${dat}.conf
 <Location /${det}/${dat}>
+
+  SSLRequireSSL
+  AuthType shibboleth
+  ShibRequestSetting requireSession 1
+  require shib-session
+  ShibUseHeaders On
+
+  RequestHeader add "ADFS-LOGIN" "%{ADFS_LOGIN}e" "env=ADFS_LOGIN"
+  RequestHeader add "ADFS-FULLNAME" "%{ADFS_FULLNAME}e" "env=ADFS_FULLNAME"
+  RequestHeader add "ADFS-GROUP" "%{ADFS_GROUP}e" "env=ADFS_GROUP"
+
   ProxyPass http://127.0.0.1:$API_PORT
   ProxyPassReverse http://127.0.0.1:$API_PORT
 </Location>

@@ -145,8 +145,14 @@
                         <require>incron</require>
                         <require>httpd</require>
                         <require>python</require>
-			<require>oracle-instantclient-tnsnames.ora</require>
+                        <require>oracle-instantclient-tnsnames.ora</require>
                         <require>apache-commons-daemon-jsvc</require>
+                        <require>log4shib</require>
+                        <require>xmltooling-schemas</require>
+                        <require>opensaml-schemas</require>
+                        <require>shibboleth</require>
+                        <require>openssl-devel</require>
+                        <require>mod_ssl</require>
                     </requires>
                     <mappings>
                         <mapping>

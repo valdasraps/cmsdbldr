@@ -16,7 +16,11 @@ import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.ResourceFactory;
 import org.cern.cms.dbloader.rest.service.AuthService;
 import org.cern.cms.dbloader.rest.service.LoadService;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -89,12 +93,18 @@ public class Application implements Daemon {
         
         org.eclipse.jetty.util.log.Log.setLog(LogFactory.createLogger());
 
+        HttpConfiguration config = new HttpConfiguration();
+        config.setRequestHeaderSize(65535);
+        
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         context.setContextPath("/");
 
-        server = new Server(port);
+        server = new Server();
+        ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(config));
+        http.setPort(port);
         server.setHandler(context);
-        
+        server.setConnectors(new Connector[]{ http });
+
         server.setRequestLog(LogFactory.createRequestLogger());
 
         ServletHolder jersey = context.addServlet(org.glassfish.jersey.servlet.ServletContainer.class, "/*");
