@@ -1,0 +1,57 @@
+---+ Write API
+
+Client script/module is available from these locations:
+
+GPN: /afs/cern.ch/user/v/valdo/public/cmsdbldr_client.py
+Web: wget https://raw.githubusercontent.com/valdasraps/cmsdbldr/master/src/main/python/cmsdbldr_client.py
+Usage scenarios:
+
+# not secure (http)
+python cmsdbldr_client.py --url=http://dbloader-tracker/trker/int2r PHS_testas.xml
+
+# secure (https) from lxplus, GPN or other kerberos enabled terminal
+python cmsdbldr_client.py --krb --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
+
+# secure (https) with PEM certificates
+python cmsdbldr_client.py --cert=~/private/myCert.pem:~/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
+
+# secure (https) with user lightweight login
+python cmsdbldr_client.py --login --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
+
+---+ Write API setup
+
+---++ Kerberos setup
+
+In Kerberos-enabled CERN machine install python package:
+
+sudo yum install python-requests-kerberos
+sudo yum install python3-requests-kerberos
+
+python cmsdbldr_client.py --krb --url=https://cmsdca.cern.ch/trk_loader/trker/int2r LoadTrackerUmJoSensorWafers.xml
+
+---++ Certificate setup
+
+Save P12 certificate to filesystem with password. Convert certificates and key to PEM format and store in secure place:
+
+openssl pkcs12 -clcerts -nokeys -in myCert.p12 -out ~/private/myCert.pem
+openssl pkcs12 -nocerts -in myCert.p12 -out ~/private/myCert.tmp.key
+openssl rsa -in ~/private/myCert.tmp.key -out ~/private/myCert.key
+
+python cmsdbldr_client.py --cert=~/private/myCert.pem:~/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
+
+---++ Lightweight user login
+
+In case you do not have CERN account or intend to use it for application permanent access, please request CERN Lightweight account from https://account.cern.ch/account/Externals/RegisterAccount.aspx
+
+Request account to be added to certain e-group if needed. Make sure you have required dependencies installed, i.e.
+
+      sudo pip3 install selenium webdriverdownloader ilock
+
+Download firefox driver. Driver file (geckodriver) must be present in PATH. Usually it is placed in /home/$USER/bin which is in PATH.
+
+webdriverdownloader firefox
+
+Execute upload job. During the first execution the script the will ask username and password. Both will be cached (stored) in a file .session.cache for other consequent uses. Cookies once expired will be refreshed automatically:
+
+python3 cmsdbldr_client.py --login --url=https://cmsdca.cern.ch/trk_loader/trker/int2r LoadTrackerUmJoSensorWafers.xml
+

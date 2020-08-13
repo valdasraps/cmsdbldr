@@ -1,3 +1,10 @@
+# Copyright (C) 2017, CERN
+# This software is distributed under the terms of the GNU General Public
+# Licence version 3 (GPL Version 3), copied verbatim in the file "LICENSE".
+# In applying this license, CERN does not waive the privileges and immunities
+# granted to it by virtue of its status as Intergovernmental Organization
+# or submit itself to any jurisdiction.
+
 from optparse import OptionParser
 import requests
 import sys
@@ -10,20 +17,6 @@ import logging
 
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-USAGE = 'usage: %prog --url=URL FILE'
-
-DEFAULT_USER = getpass.getuser()
-SSO_LOGIN_URL = "https://login.cern.ch/"
-
-ALLOWED_EXTENSIONS = ['xml','zip']
-
-# Copyright (C) 2017, CERN
-# This software is distributed under the terms of the GNU General Public
-# Licence version 3 (GPL Version 3), copied verbatim in the file "LICENSE".
-# In applying this license, CERN does not waive the privileges and immunities
-# granted to it by virtue of its status as Intergovernmental Organization
-# or submit itself to any jurisdiction.
 
 class CernSSO:
 
@@ -200,7 +193,7 @@ class CernLoginSSO:
 
         with ILock(cache_lock_id):
 
-            if force_level == 1 and cache_time != file_mtime(cache_file):
+            if force_level == 1 and cache_time != self.file_mtime(cache_file):
                 force_level = 0
 
             if force_level == 2:
@@ -257,10 +250,13 @@ class CernLoginSSO:
         return cache['cookies']
 
 class LoaderClient:
+
+    USAGE = 'usage: %prog --url=URL FILE'
+    ALLOWED_EXTENSIONS = ['xml','zip']
     
     def __init__(self):
         
-        self.parser = OptionParser(USAGE)
+        self.parser = OptionParser(self.USAGE)
         self.parser.add_option("-u", "--url",     dest = "url",     help = "service URL", metavar = "url")
         self.parser.add_option("-l", "--login",   dest = "login",   help = "use simple login provider cache (requires selenium, stores pwd in not secure way!)", metavar = "login", action = "store_true", default = False)
         self.parser.add_option("-k", "--krb",     dest = "krb",     help = "use kerberos login provider", metavar = "krb", action = "store_true", default = False)
@@ -269,9 +265,11 @@ class LoaderClient:
         self.parser.add_option("-v", "--verbose", dest = "verbose", help = "Print debug information (verbose output). Be carefull: this might expose password to terminal!", action = "store_true", default = False)
 
     def _allowed_file(self, filename):
-        return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+        return '.' in filename and filename.rsplit('.', 1)[1] in self.ALLOWED_EXTENSIONS
 
     def run(self, iargs = []):
+
+        SSO_LOGIN_URL = "https://login.cern.ch/"
 
         try:
 
@@ -310,7 +308,7 @@ class LoaderClient:
                 return 2
 
             if not self._allowed_file(f):
-                self.parser.error('File [%s] allowed? Allowed extensions are (%s)' % (f, ','.join(ALLOWED_EXTENSIONS)))
+                self.parser.error('File [%s] allowed? Allowed extensions are (%s)' % (f, ','.join(self.ALLOWED_EXTENSIONS)))
                 return 2
 
             files = {'uploadFile': open(f, 'rb')}
