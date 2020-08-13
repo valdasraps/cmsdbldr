@@ -1,7 +1,9 @@
 package org.cern.cms.dbloader.tests;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.cern.cms.dbloader.DbLoader;
@@ -66,6 +68,10 @@ public class PartLoadTest extends TestBase {
             assertNull(tower.getRemovedUser());
             assertNotNull(tower.getInsertTime());
             assertEquals(pm.getOperatorAuth().getOperatorValue(), tower.getInsertUser());
+            // <PRODUCTION_DATE>2012-10-16</PRODUCTION_DATE>
+            assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2012-10-16"), tower.getProductionDate());
+            // <BATCH_NUMBER>1.A.1</BATCH_NUMBER>
+            assertEquals("1.A.1", tower.getBatchNumber());
 
             assertEquals(new BigInteger("1000"), tower.getPartTree().getParentPartTree().getPartId());
 

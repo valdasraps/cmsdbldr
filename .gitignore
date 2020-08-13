@@ -12,3 +12,4 @@ src/main/python/bin/venv/
 nbactions.xml
 .session.cache
 geckodriver.log
+nb-configuration.xml

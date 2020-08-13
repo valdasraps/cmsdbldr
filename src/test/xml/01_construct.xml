@@ -13,6 +13,8 @@
                     <MANUFACTURER>IBM</MANUFACTURER>
                     <LOCATION>University of Iowa</LOCATION>
                     <INSTITUTION>University of Iowa</INSTITUTION>
+                    <PRODUCTION_DATE>2012-10-16</PRODUCTION_DATE>
+                    <BATCH_NUMBER>1.A.1</BATCH_NUMBER>
                     <CHILDREN>
                         <PART>
                             <KIND_OF_PART>TEST Pack</KIND_OF_PART>

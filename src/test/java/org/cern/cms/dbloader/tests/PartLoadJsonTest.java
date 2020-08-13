@@ -27,6 +27,7 @@ import javax.management.modelmbean.XMLParseException;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -257,6 +258,8 @@ public class PartLoadJsonTest extends TestBase {
         assertEquals("LENOVO", tower.getManufacturerName());
         assertEquals("University of Iowa", tower.getLocationName());
         assertEquals("University of Iowa", tower.getInstitutionName());
+        assertEquals("2012-10-16", new SimpleDateFormat("yyyy-MM-dd").format(tower.getProductionDate()));
+        assertEquals("1.B.2", tower.getBatchNumber());
         assertNull(tower.getSerialNumber());
         assertNull(tower.getVersion());
         assertNull(tower.getName());

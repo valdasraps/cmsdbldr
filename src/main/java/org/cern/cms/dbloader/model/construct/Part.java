@@ -136,6 +136,22 @@ public class Part extends DeleteableBase {
     // @JsonProperty("NAME_LABEL")
     @JsonProperty("NameLabel")
     private String name;
+    
+    @Basic
+    @Temporal(TemporalType.DATE)
+    @Column(name = "PRODUCTION_DATE")
+    @XmlElement(name = "PRODUCTION_DATE")
+    @XmlJavaTypeAdapter(DateAdapter.class)
+    @JsonProperty("ProductionDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone="UTC")
+    private Date productionDate;
+
+    @Basic
+    @Column(name = "BATCH_NUMBER")
+    @XmlElement(name = "BATCH_NUMBER")
+    // @JsonProperty("NAME_LABEL")
+    @JsonProperty("BatchNumber")
+    private String batchNumber;
 
     @Basic
     @Temporal(TemporalType.TIMESTAMP)
