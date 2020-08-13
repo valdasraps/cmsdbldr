@@ -141,7 +141,7 @@
                         <provide>cmsdbldr</provide>
                     </provides>
                     <requires>
-                        <require>java-1.8.0-oracle</require>
+                        <require>java-11-openjdk</require>
                         <require>python</require>
                         <require>incron</require>
                         <require>httpd</require>
