@@ -2,7 +2,7 @@ package org.cern.cms.dbloader.rest;
 
 import java.io.IOException;
 import org.apache.log4j.LogManager;
-import org.eclipse.jetty.server.AbstractNCSARequestLog;
+import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.util.log.AbstractLogger;
 
 /**
@@ -15,14 +15,14 @@ public class LogFactory {
         return new RequestLogger(Application.class);
     }
     
-    public static class RequestLogger extends AbstractNCSARequestLog {
+    public static class RequestLogger extends NCSARequestLog {
     
         private final org.apache.log4j.Logger logger;
         
         public RequestLogger(Class clazz) {
             this.logger = LogManager.getLogger(clazz.getCanonicalName());
         }
-        
+
         @Override
         protected boolean isEnabled() {
             return true;

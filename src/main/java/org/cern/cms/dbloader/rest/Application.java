@@ -112,7 +112,11 @@ public class Application implements Daemon {
         jersey.setInitOrder(0);
         // http://qaru.site/questions/11412132/no-injection-source-found-for-a-parameter-of-type-public-javaxwsrscoreresponse-jersey-multipartfeature
         jersey.setInitParameter(ServerProperties.PROVIDER_CLASSNAMES, MultiPartFeature.class.getCanonicalName());
-        jersey.setInitParameter("jersey.config.server.provider.packages", "org.cern.cms.dbloader.rest.provider");
+        jersey.setInitParameter(ServerProperties.PROVIDER_PACKAGES, "org.cern.cms.dbloader.rest.provider");
+        
+//        jerseyServlet.setInitParameter(
+//       "jersey.config.server.provider.classnames",
+//       EntryPoint.class.getCanonicalName());
         
     }
         
