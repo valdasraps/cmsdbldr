@@ -258,9 +258,9 @@ class LoaderClient:
         
         self.parser = OptionParser(self.USAGE)
         self.parser.add_option("-u", "--url",     dest = "url",     help = "service URL", metavar = "url")
-        self.parser.add_option("-l", "--login",   dest = "login",   help = "use simple login provider cache (requires selenium, stores pwd in not secure way!)", metavar = "login", action = "store_true", default = False)
+        self.parser.add_option("-o", "--login",   dest = "login",   help = "use simple login provider cache (requires selenium, stores pwd in not secure way!)", metavar = "login", action = "store_true", default = False)
         self.parser.add_option("-k", "--krb",     dest = "krb",     help = "use kerberos login provider", metavar = "krb", action = "store_true", default = False)
-        self.parser.add_option("-c", "--cert",    dest = "cert",    help = "pem certificate and key files in form cert_file:key_file", metavar = "cert")
+        self.parser.add_option("-t", "--cert",    dest = "cert",    help = "pem certificate and key files in form cert_file:key_file", metavar = "cert")
         self.parser.add_option("-q", "--quiet",   dest = "quiet",   help = "Do not print error, just return its code. OK = 0", action = "store_true", default = False)
         self.parser.add_option("-v", "--verbose", dest = "verbose", help = "Print debug information (verbose output). Be carefull: this might expose password to terminal!", action = "store_true", default = False)
 
@@ -292,7 +292,7 @@ class LoaderClient:
 
             if re.search("^https", url):
                 if sum((options.login, options.krb, options.cert is not None)) != 1:
-                    self.parser.error('For secure access pleasae provide one of --krb, --cert or --login')
+                    self.parser.error('For secure access please provide one of --krb, --cert or --login')
                     return 1
 
             load_url = url + "/load/file"
