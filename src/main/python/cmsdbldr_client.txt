@@ -13,7 +13,7 @@ python cmsdbldr_client.py --url=http://dbloader-tracker/trker/int2r PHS_testas.x
 python cmsdbldr_client.py --krb --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
 
 # secure (https) with PEM certificates
-python cmsdbldr_client.py --cert=~/private/myCert.pem:~/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
+python cmsdbldr_client.py --cert=/home/user/private/myCert.pem:/home/user/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
 
 # secure (https) with user lightweight login
 python cmsdbldr_client.py --login --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
@@ -33,11 +33,11 @@ python cmsdbldr_client.py --krb --url=https://cmsdca.cern.ch/trk_loader/trker/in
 
 Save P12 certificate to filesystem with password. Convert certificates and key to PEM format and store in secure place:
 
-openssl pkcs12 -clcerts -nokeys -in myCert.p12 -out ~/private/myCert.pem
-openssl pkcs12 -nocerts -in myCert.p12 -out ~/private/myCert.tmp.key
-openssl rsa -in ~/private/myCert.tmp.key -out ~/private/myCert.key
+openssl pkcs12 -clcerts -nokeys -in myCert.p12 -out /home/user/private/myCert.pem
+openssl pkcs12 -nocerts -in myCert.p12 -out /home/user/private/myCert.tmp.key
+openssl rsa -in ~/private/myCert.tmp.key -out /home/user/private/myCert.key
 
-python cmsdbldr_client.py --cert=~/private/myCert.pem:~/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
+python cmsdbldr_client.py --cert=/home/user/private/myCert.pem:/home/user/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
 
 ---++ Lightweight user login
 
