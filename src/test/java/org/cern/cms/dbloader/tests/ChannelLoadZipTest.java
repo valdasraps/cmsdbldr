@@ -3,7 +3,6 @@ package org.cern.cms.dbloader.tests;
 import java.util.Arrays;
 import java.util.Collections;
 import junit.framework.TestCase;
-import static junit.framework.TestCase.assertEquals;
 
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
@@ -13,12 +12,17 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.metadata.ChannelEntityHandler;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
+import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class ChannelLoadZipTest extends TestBase {
        
@@ -34,7 +38,7 @@ public class ChannelLoadZipTest extends TestBase {
                 tc = enG.getChannelHandler(ext);
             }
 
-            TestCase.assertNotNull(tc);
+            assertNotNull(tc);
 
             Class<? extends ChannelBase> c = tc.getEntityClass().getC();
             assertEquals(c.getSuperclass(), ChannelBase.class);
@@ -73,12 +77,12 @@ public class ChannelLoadZipTest extends TestBase {
                 .uniqueResult();
 
             assertEquals(UploadStatus.Success, alog.getStatus());
-            
+
             alog = (AuditLog) session.createCriteria(AuditLog.class)
                 .add(Restrictions.eq("archiveFileName", "channels.zip"))
                 .add(Restrictions.eq("dataFileName", "testChannels.xml"))
                 .uniqueResult();
-            
+
             assertEquals(UploadStatus.Success, alog.getStatus());
             assertEquals((Integer) 2, alog.getDatasetCount());
             assertEquals((Integer) 1003, alog.getDatasetRecordCount());
@@ -103,14 +107,58 @@ public class ChannelLoadZipTest extends TestBase {
                 .setProjection(Projections.count("id"))
                 .uniqueResult();
             assertEquals((Long) 1000L, count);
-            
+
             count = (Long) session.createCriteria(enG.getChannelHandler("TEST_COORDINATES").getEntityClass().getC())
                 .setProjection(Projections.count("id"))
                 .uniqueResult();
             assertEquals((Long) 3L, count);
-            
+
         }
         
+    }
+
+    /*
+        Load Part and channel together in one XML file.
+        PART and CHANNEL should pass
+        PART and PartAttribute should fail
+     */
+
+    @Test
+    public void PartwithChannels() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/15_channelWithPart.xml"))) {
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+        }
+
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Dataset ds = (Dataset) session.createCriteria(Dataset.class)
+                    .add(Restrictions.eq("version", "JUN_7_2020"))
+                    .createCriteria("kindOfCondition")
+                    .add(Restrictions.eq("name", "IV"))
+                    .uniqueResult();
+
+            assertNotNull("Not found", ds);
+            assertNull("Part Assembly should be null", ds.getPartAssembly());
+            assertNotNull("Channel Map should be found", ds.getChannelMap());
+            assertEquals("Hybrid serial", ds.getPart().getSerialNumber());
+        }
+
+        // Second load should fail...
+        try {
+            for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/16_channelWithPartAndPartAssembly.xml"))) {
+                loader.loadArchive(injector, fb, pm.getOperatorAuth());
+            }
+            TestCase.fail("Should have failed here...");
+        } catch (Exception ex) {
+            // OK!
+        }
+
+
+
     }
     
 }

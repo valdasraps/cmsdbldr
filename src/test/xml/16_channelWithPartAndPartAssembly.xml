@@ -24,7 +24,18 @@
             <KIND_OF_PART>Hybrid</KIND_OF_PART>
             <SERIAL_NUMBER>Hybrid serial</SERIAL_NUMBER>
         </PART>
-
+        <PART_ASSEMBLY>
+            <PARENT_PART>
+                <KIND_OF_PART>Hybrid</KIND_OF_PART>
+                <SERIAL_NUMBER>Hybrid serial</SERIAL_NUMBER>
+            </PARENT_PART>
+            <CHILD_UNIQUELY_IDENTIFIED_BY>
+                <ATTRIBUTE>
+                    <NAME>TEST Position</NAME>
+                    <VALUE>3</VALUE>
+                </ATTRIBUTE>
+            </CHILD_UNIQUELY_IDENTIFIED_BY>
+        </PART_ASSEMBLY>
         <CHANNEL>
             <EXTENSION_TABLE_NAME>TEST_CHANNELS</EXTENSION_TABLE_NAME>
             <SUBDET>TEST</SUBDET>

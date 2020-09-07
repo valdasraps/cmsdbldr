@@ -161,11 +161,15 @@ public class CondDao extends DaoBase {
                     alog.setTagName(iov.getTags().iterator().next().getName());
                 }
             }
+//
+//            if ((ds.getPart() != null && ds.getChannel() != null) ||
+//                (ds.getPart() != null && ds.getPartAssembly() != null) ||
+//                (ds.getChannel() != null && ds.getPartAssembly() != null)) {
+//                throw new XMLParseException(String.format("One and Only One of Part, PartAssembly and Channel must be defined for Dataset %s", ds));
+//            }
 
-            if ((ds.getPart() != null && ds.getChannel() != null) ||
-                (ds.getPart() != null && ds.getPartAssembly() != null) ||
-                (ds.getChannel() != null && ds.getPartAssembly() != null)) {
-                throw new XMLParseException(String.format("One and Only One of Part, PartAssembly and Channel must be defined for Dataset %s", ds));
+            if ((ds.getPart() != null && ds.getPartAssembly() != null)) {
+                throw new XMLParseException(String.format("One and Only One of Part and PartAssembly must be defined for Dataset %s", ds));
             }
 
             if (ds.getPart() != null) {
@@ -184,16 +188,16 @@ public class CondDao extends DaoBase {
                     throw new XMLParseException(String.format("%s is not allowed with %s", dbPart.getKindOfPart(), dbKoc));
                 }
 
-            } else if (ds.getChannel() != null) {
-
-                ds.setChannelMap(resolveChannelMap(ds.getChannel(), true));
-
             } else if (ds.getPartAssembly() != null) {
 
                 ds.setPart(resolvePartAssembly(ds.getPartAssembly(), true));
 
             }
 
+            if (ds.getChannel() != null) {
+
+                ds.setChannelMap(resolveChannelMap(ds.getChannel(), true));
+            }
             ds.setRun(root.getHeader().getRun());
             ds.setKindOfCondition(root.getHeader().getKindOfCondition());
             ds.setExtensionTable(root.getHeader().getKindOfCondition().getExtensionTable());
@@ -265,30 +269,21 @@ public class CondDao extends DaoBase {
         Run xmRun = header.getRun();
         Run dbRun = null;
 
-        if (NO_RUN_MODE.equals(xmRun.getMode())) {
+        if (xmRun.getName() == null && (xmRun.getNumber() == null || xmRun.getRunType() == null)) {
+            throw new XMLParseException(String.format("%s identification not correct: (name or (number and type)) must be provided", xmRun));
+        }
 
-            log.info(String.format("No Run mode: %s", xmRun));
-            dbRun = (Run) session.get(Run.class, DEFAULT_EMAP_RUN_ID);
-
+        if (xmRun.getName() != null) {
+            dbRun = (Run) session.createCriteria(Run.class)
+                    .add(Restrictions.eq("name", xmRun.getName()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
         } else {
-
-            if (xmRun.getName() == null && (xmRun.getNumber() == null || xmRun.getRunType() == null)) {
-                throw new XMLParseException(String.format("%s identification not correct: (name or (number and type)) must be provided", xmRun));
-            }
-
-            if (xmRun.getName() != null) {
-                dbRun = (Run) session.createCriteria(Run.class)
-                        .add(Restrictions.eq("name", xmRun.getName()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                        .uniqueResult();
-            } else {
-                dbRun = (Run) session.createCriteria(Run.class)
-                        .add(Restrictions.eq("number", xmRun.getNumber()))
-                        .add(Restrictions.eq("runType", xmRun.getRunType()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                        .uniqueResult();
-            }
-
+            dbRun = (Run) session.createCriteria(Run.class)
+                    .add(Restrictions.eq("number", xmRun.getNumber()))
+                    .add(Restrictions.eq("runType", xmRun.getRunType()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
         }
 
         if (dbRun != null) {

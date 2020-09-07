@@ -2,6 +2,7 @@ package org.cern.cms.dbloader.dao;
 
 import com.google.inject.Inject;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import javax.management.modelmbean.XMLParseException;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -34,8 +35,6 @@ import org.hibernate.criterion.Subqueries;
 public abstract class DaoBase {
 
     protected static final String DEFAULT_VERSION = "1.0";
-    protected static final String NO_RUN_MODE = "no-run";
-    protected static final long DEFAULT_EMAP_RUN_ID = 10000000L;
 
     @Inject
     protected PropertiesManager props;

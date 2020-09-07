@@ -11,20 +11,19 @@
             <RUN_TYPE>1</RUN_TYPE>
             <RUN_BEGIN_TIMESTAMP>2020-08-03 19:00:00</RUN_BEGIN_TIMESTAMP>
         </RUN>
-        <!--<RUN mode="no-run"/>-->
         <HINTS channelmap="TEST_CHANNELS"/>
     </HEADER>
     <DATA_SET>
-        <COMMENT_DESCRIPTION>HELAU</COMMENT_DESCRIPTION>
+        <COMMENT_DESCRIPTION>Channel with PART</COMMENT_DESCRIPTION>
         <CREATE_TIMESTAMP>2020-08-14 00:00:00.0</CREATE_TIMESTAMP>
         <CREATED_BY_USER>Aivarauskas</CREATED_BY_USER>
         <VERSION>JUN_7_2020</VERSION>
         <SUBVERSION>1</SUBVERSION>
 
-        <!--<PART>-->
-            <!--<KIND_OF_PART>Hybrid</KIND_OF_PART>-->
-            <!--<SERIAL_NUMBER>Hybrid serial</SERIAL_NUMBER>-->
-        <!--</PART>-->
+        <PART>
+            <KIND_OF_PART>Hybrid</KIND_OF_PART>
+            <SERIAL_NUMBER>Hybrid serial</SERIAL_NUMBER>
+        </PART>
 
         <CHANNEL>
             <EXTENSION_TABLE_NAME>TEST_CHANNELS</EXTENSION_TABLE_NAME>
