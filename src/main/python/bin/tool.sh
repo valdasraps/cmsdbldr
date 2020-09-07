@@ -91,9 +91,9 @@ cat << EOF > /etc/httpd/conf.d/cmsdbldr_${det}_${dat}.conf
   require shib-session
   ShibUseHeaders On
 
-  RequestHeader add "ADFS-LOGIN" "%{ADFS_LOGIN}e" "env=ADFS_LOGIN"
-  RequestHeader add "ADFS-FULLNAME" "%{ADFS_FULLNAME}e" "env=ADFS_FULLNAME"
-  RequestHeader add "ADFS-GROUP" "%{ADFS_GROUP}e" "env=ADFS_GROUP"
+  RequestHeader add "CERN-LOGIN" "%{CERN_LOGIN}e" "env=CERN_LOGIN"
+  RequestHeader add "CERN-FULLNAME" "%{CERN_FULLNAME}e" "env=CERN_FULLNAME"
+  RequestHeader add "CERN-ROLES" "%{CERN_ROLES}e" "env=CERN_ROLES"
 
   ProxyPass http://127.0.0.1:$API_PORT
   ProxyPassReverse http://127.0.0.1:$API_PORT

@@ -18,9 +18,9 @@ import org.cern.cms.dbloader.util.OperatorAuth;
  */
 public class AuthService {
     
-    private final static String USERNAME_HEADER = "ADFS-LOGIN";
-    private final static String FULLNAME_HEADER = "ADFS-FULLNAME";
-    private final static String EGROUP_HEADER = "ADFS-GROUP";
+    private final static String USERNAME_HEADER = "CERN-LOGIN";
+    private final static String FULLNAME_HEADER = "CERN-FULLNAME";
+    private final static String EGROUP_HEADER = "CERN-ROLES";
     private final static String ANY_KEY = "*";
     
     public enum Operator {
