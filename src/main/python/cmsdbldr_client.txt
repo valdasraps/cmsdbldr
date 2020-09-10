@@ -12,44 +12,27 @@ python cmsdbldr_client.py --url=http://dbloader-tracker/trker/int2r PHS_testas.x
 # secure (https) from lxplus, GPN or other kerberos enabled terminal
 python cmsdbldr_client.py --krb --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
 
-# secure (https) with PEM certificates
-python cmsdbldr_client.py --cert=/home/user/private/myCert.pem:/home/user/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
-
 # secure (https) with user lightweight login
 python cmsdbldr_client.py --login --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
 
----+ Write API setup
+---+ Secure write API setup
 
 ---++ Kerberos setup
 
-In Kerberos-enabled CERN machine install python package:
+Make sure that auth-get-sso-cookie utility is installed, i.e. check
 
-sudo yum install python-requests-kerberos
-sudo yum install python3-requests-kerberos
+auth-get-sso-cookie -h
+If this utility is available you can proceed in executing application, i.e. from lxplus
 
-python cmsdbldr_client.py --krb --url=https://cmsdca.cern.ch/trk_loader/trker/int2r LoadTrackerUmJoSensorWafers.xml
-
----++ Certificate setup
-
-Save P12 certificate to filesystem with password. Convert certificates and key to PEM format and store in secure place:
-
-openssl pkcs12 -clcerts -nokeys -in myCert.p12 -out /home/user/private/myCert.pem
-openssl pkcs12 -nocerts -in myCert.p12 -out /home/user/private/myCert.tmp.key
-openssl rsa -in ~/private/myCert.tmp.key -out /home/user/private/myCert.key
-
-python cmsdbldr_client.py --cert=/home/user/private/myCert.pem:/home/user/private/myCert.key --url=https://cmsdca.cern.ch/trk_loader/trker/int2r PHS_testas.zip
+python3 cmsdbldr_client.py --krb --url=https://cmsdca.cern.ch/trk_loader/trker/int2r LoadTrackerUmJoSensorWafers.xml
 
 ---++ Lightweight user login
 
 In case you do not have CERN account or intend to use it for application permanent access, please request CERN Lightweight account from https://account.cern.ch/account/Externals/RegisterAccount.aspx
 
-Request account to be added to certain e-group if needed. Make sure you have required dependencies installed, i.e.
+Request account to be added to certain e-group if needed (see above). Make sure you have required dependencies installed, i.e.
 
-      sudo pip3 install selenium webdriverdownloader ilock
-
-Download firefox driver. Driver file (geckodriver) must be present in PATH. Usually it is placed in /home/$USER/bin which is in PATH.
-
-webdriverdownloader firefox
+sudo pip3 install requests ilock
 
 Execute upload job. During the first execution the script the will ask username and password. Both will be cached (stored) in a file .session.cache for other consequent uses. Cookies once expired will be refreshed automatically:
 

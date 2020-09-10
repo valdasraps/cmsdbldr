@@ -1,9 +1,3 @@
-# Copyright (C) 2017, CERN
-# This software is distributed under the terms of the GNU General Public
-# Licence version 3 (GPL Version 3), copied verbatim in the file "LICENSE".
-# In applying this license, CERN does not waive the privileges and immunities
-# granted to it by virtue of its status as Intergovernmental Organization
-# or submit itself to any jurisdiction.
 
 from optparse import OptionParser
 import requests
@@ -11,160 +5,46 @@ import sys
 import os
 import re
 import importlib
-from requests.auth import HTTPBasicAuth
 import getpass
 import logging
+import tempfile
+import subprocess
+import json
+import warnings
+from base64 import b64encode, b64decode
+import xml.etree.ElementTree as ET
 
 import urllib3
+from urllib.parse import urlparse
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+if sys.version_info < (3,):
+    from cookielib import Cookie, MozillaCookieJar
+else:
+    from http.cookiejar import Cookie, MozillaCookieJar
 
 class CernSSO:
 
     DEFAULT_TIMEOUT_SECONDS = 10
 
-    def _init_session(self, s, url, cookiejar, auth_url_fragment):
-        """
-        Internal helper function: initialise the sesion by trying to access
-        a given URL, setting up cookies etc.
-
-        :param: auth_url_fragment: a URL fragment which will be joined to
-        the base URL after the redirect, before the parameters. Examples are
-        auth/integrated/ (kerberos) and auth/sslclient/ (SSL)
-        """
-
-        from six.moves.urllib.parse import urlparse, urljoin
-
-        # Try getting the URL we really want, and get redirected to SSO
-        logging.debug("Fetching URL: %s" % url)
-        r1 = s.get(url, timeout=self.DEFAULT_TIMEOUT_SECONDS, verify = False, cookies = cookiejar)
-
-        # Parse out the session keys from the GET arguments:
-        redirect_url = urlparse(r1.url)
-        logging.debug("Was redirected to SSO URL: %s" % str(redirect_url))
-
-        # ...and inject them into the Kerberos authentication URL
-        final_auth_url = "{auth_url}?{parameters}".format(
-            auth_url=urljoin(r1.url, auth_url_fragment),
-            parameters=redirect_url.query)
-
-        return final_auth_url
-
-    def _finalise_login(self, s, auth_results):
-        """
-        Perform the final POST authentication steps to fully authenticate
-        the session, saving any cookies in s' cookie jar.
-        """
-
-        import xml.etree.ElementTree as ET
-
-        r2 = auth_results
-
-        # Did it work? Raise Exception otherwise.
-        r2.raise_for_status()
-
-        # Get the contents
-        try:
-            tree = ET.fromstring(r2.content)
-        except ET.ParseError as e:
-            logging.error("Could not parse response from server!")
-            logging.error("The contents returned was:\n{}".format(r2.content))
-            raise e
-
-        action = tree.findall("body/form")[0].get('action')
-
-        # Unpack the hidden form data fields
-        form_data = dict((
-            (elm.get('name'), elm.get('value'))
-            for elm in tree.findall("body/form/input")))
-
-        # ...and submit the form (WHY IS THIS STEP EVEN HERE!?)
-        logging.debug("Performing final authentication POST to %s" % action)
-        r3 = s.post(url = action, data = form_data, timeout = self.DEFAULT_TIMEOUT_SECONDS, allow_redirects=False)
-
-        # Did _that_ work?
-        r3.raise_for_status()
-
-        # The session cookie jar should now contain the necessary cookies.
-        logging.debug("Cookie jar now contains: %s" % str(s.cookies))
-
-        return s.cookies
+    def load_cookies_from_mozilla(self, filename):
+        ns_cookiejar = MozillaCookieJar()
+        ns_cookiejar.load(filename, ignore_discard=True, ignore_expires=True)
+        return ns_cookiejar
 
     def krb_sign_on(self, url, cookiejar={}, force_level = 0):
-        """
-        Perform Kerberos-backed single-sign on against a provided
-        (protected) URL.
 
-        It is assumed that the current session has a working Kerberos
-        ticket.
-
-        Returns a Requests `CookieJar`, which can be accessed as a
-        dictionary, but most importantly passed directly into a request or
-        session via the `cookies` keyword argument.
-
-        If a cookiejar-like object (such as a dictionary) is passed as the
-        cookiejar keword argument, this is passed on to the Session.
-        """
-
-        from requests_kerberos import HTTPKerberosAuth, OPTIONAL
-
-        kerberos_auth = HTTPKerberosAuth(mutual_authentication=OPTIONAL)
-
-        with requests.Session() as s:
-
-            krb_auth_url = self._init_session(s=s, url=url, cookiejar=cookiejar,
-                                        auth_url_fragment=u"auth/integrated/")
-
-            # Perform actual Kerberos authentication
-            logging.debug("Performing Kerberos authentication against %s"
-                    % krb_auth_url)
-
-            r2 = s.get(krb_auth_url, auth=kerberos_auth,
-                      timeout=self.DEFAULT_TIMEOUT_SECONDS)
-
-            return self._finalise_login(s, auth_results=r2)
-
-
-    def cert_sign_on(self, url, cert_file, key_file, cookiejar={}):
-        """
-        Perform Single-Sign On with a robot/user certificate specified by
-        cert_file and key_file agains the target url. Note that the key
-        needs to be passwordless. cookiejar, if provided, will be used to
-        store cookies, and can be a Requests CookieJar, or a
-        MozillaCookieJar. Or even a dict.
-
-        Cookies will be returned on completion, but cookiejar will also be
-        modified in-place.
-
-        If you have a PKCS12 (.p12) file, you need to convert it. These
-        steps will not work for passwordless keys.
-
-        `openssl pkcs12 -clcerts -nokeys -in myCert.p12 -out ~/private/myCert.pem`
-
-        `openssl pkcs12 -nocerts -in myCert.p12 -out ~/private/myCert.tmp.key`
-
-        `openssl rsa -in ~/private/myCert.tmp.key -out ~/private/myCert.key`
-
-        Note that the resulting key file is *unencrypted*!
-
-        """
-
-        with requests.Session() as s:
-
-            # Set up the certificates (this needs to be done _before_ any
-            # connection is opened!)
-            s.cert = (cert_file, key_file)
-
-            cert_auth_url = self._init_session(s=s, url=url, cookiejar=cookiejar,
-                                          auth_url_fragment=u"auth/sslclient/")
-
-            logging.debug("Performing SSL Cert authentication against %s"
-                    % cert_auth_url)
-
-            r2 = s.get(cert_auth_url, cookies = cookiejar, verify = False, timeout = self.DEFAULT_TIMEOUT_SECONDS)
-
-            return self._finalise_login(s, auth_results=r2)
-
-class CernLoginSSO:
+        tfile = tempfile.mktemp()
+        cmd = 'auth-get-sso-cookie -u "%s" -o "%s" -v --nocertverify' % (url,tfile)
+        p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
+        logging.debug("%s returned %s" % (cmd, p.returncode))
+        logging.debug(p.stdout.read())
+        err = p.stderr.read()
+        logging.debug(err)
+        cookies = self.load_cookies_from_mozilla(tfile)
+        os.remove(tfile)
+        return cookies
 
     def file_mtime(self, file_path):
         try:
@@ -172,19 +52,36 @@ class CernLoginSSO:
         except OSError:
             return -1
 
-    def login(self, url, cache_file = ".session.cache", force_level = 0):
+    def html_root(self, r):
+        c = r.content.decode('utf-8')
+        c = re.sub('<meta [^>]*>','', c, flags = re.IGNORECASE)
+        c = re.sub('<hr>','', c, flags = re.IGNORECASE)
+        c = re.sub("=\\'([^']*)\\'",'="\g<1>"', c, flags = re.IGNORECASE)
+        c = re.sub(" autofocus "," ", c, flags = re.IGNORECASE)
+        c = re.sub('<img ([^>]*)>','<img \g<1>/>',c, flags = re.IGNORECASE)
+        c = re.sub('<script>[^<]*</script>','',c, flags = re.IGNORECASE)
+        return ET.fromstring(c)
 
-        import json
+    def read_form(self, r):
+        root = self.html_root(r)
+        form = root.find(".//{http://www.w3.org/1999/xhtml}form")
+        action = form.get('action')
+        form_data = dict(((e.get('name'), e.get('value')) for e in form.findall(".//{http://www.w3.org/1999/xhtml}input")))
+        return action, form_data
+
+    def is_email(self, s):
+        regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+        return re.search(regex, s)
+
+    def split_url(self, url):
+        a = len(urlparse(url).query) + len(urlparse(url).path)
+        return url[:-(a + 1)], url[len(url) - a - 1:]
+
+    def login_sign_on(self, url, cache_file = ".session.cache", force_level = 0):
+
+        from ilock import ILock
         from getpass import getpass
         from os import remove, path
-        import requests
-        import warnings
-        from base64 import b64encode, b64decode
-        from ilock import ILock
-        from selenium import webdriver
-        from selenium.webdriver.firefox.options import Options
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver.support import expected_conditions as EC
 
         cache = None
         cache_file = path.abspath(cache_file)
@@ -220,34 +117,45 @@ class CernLoginSSO:
                     password = getpass("Password: ")
                     logging.warning('Credentials will be stored in a NOT secure way!')
 
-                options = Options()
-                options.headless = True
-                driver = webdriver.Firefox(options = options)
-                driver.get(url)
+                with requests.Session() as s:
 
-                in_login = driver.find_element_by_xpath("//td[@class='box_login']//input")
-                in_login.clear()
-                in_login.send_keys(username)
-                in_passw = driver.find_element_by_xpath("//td[@class='box_password']//input")
-                in_passw.clear()
-                in_passw.send_keys(password)
-                in_submit = driver.find_element_by_xpath("//td[@class='box_signinbutton']//input")
-                in_submit.click()
+                    r1 = s.get(url, timeout = 10, verify = False, allow_redirects = True)
+                    r1.raise_for_status()
 
-                WebDriverWait(driver, 10).until(EC.url_to_be(url))
+                    if self.is_email(username):
+                        logging.debug("%s is guest account." % username)
 
-                cache = {
-                    'secret': b64encode((username + '/' + b64encode(password.encode()).decode()).encode()).decode(),
-                    'location': driver.current_url,
-                    'cookies': { i['name']: i['value'] for i in driver.get_cookies() }
-                }
+                        root = self.html_root(r1)
+                        link = root.find(".//{http://www.w3.org/1999/xhtml}a[@id='zocial-guest']")
+                        guest_url = self.split_url(r1.url)[0] + self.split_url(link.get('href'))[1]
+                        logging.debug(guest_url)
+                        r1 = s.get(guest_url, timeout = 10, verify = False, allow_redirects = True)
+                        r1.raise_for_status()
 
-                driver.close()
+                    else:
+                        logging.debug("%s is a regular account." % username)
 
-                with open(cache_file, 'w') as f:
-                    f.write(json.dumps(cache))
+                    action, form_data = self.read_form(r1)
 
-        return cache['cookies']
+                    form_data['username'] = username
+                    form_data['password'] = password
+
+                    r2 = s.post(url = action, data = form_data, timeout = self.DEFAULT_TIMEOUT_SECONDS, allow_redirects = True)
+                    r2.raise_for_status()
+                    action, form_data = self.read_form(r2)
+
+                    r3 = s.post(url = action, data = form_data, timeout = self.DEFAULT_TIMEOUT_SECONDS, allow_redirects = True)
+                
+                    cache = {
+                        'secret': b64encode((username + '/' + b64encode(password.encode()).decode()).encode()).decode(),
+                        'location': url,
+                        'cookies': { c.name: c.value for c in s.cookies }
+                    }
+
+                    with open(cache_file, 'w') as f:
+                        f.write(json.dumps(cache))
+
+            return cache['cookies']
 
 class LoaderClient:
 
@@ -258,9 +166,8 @@ class LoaderClient:
         
         self.parser = OptionParser(self.USAGE)
         self.parser.add_option("-u", "--url",     dest = "url",     help = "service URL", metavar = "url")
-        self.parser.add_option("-o", "--login",   dest = "login",   help = "use simple login provider cache (requires selenium, stores pwd in not secure way!)", metavar = "login", action = "store_true", default = False)
+        self.parser.add_option("-o", "--login",   dest = "login",   help = "use simple login provider cache (stores pwd in not secure way!)", metavar = "login", action = "store_true", default = False)
         self.parser.add_option("-k", "--krb",     dest = "krb",     help = "use kerberos login provider", metavar = "krb", action = "store_true", default = False)
-        self.parser.add_option("-t", "--cert",    dest = "cert",    help = "pem certificate and key files in form cert_file:key_file", metavar = "cert")
         self.parser.add_option("-q", "--quiet",   dest = "quiet",   help = "Do not print error, just return its code. OK = 0", action = "store_true", default = False)
         self.parser.add_option("-v", "--verbose", dest = "verbose", help = "Print debug information (verbose output). Be carefull: this might expose password to terminal!", action = "store_true", default = False)
 
@@ -269,7 +176,7 @@ class LoaderClient:
 
     def run(self, iargs = []):
 
-        SSO_LOGIN_URL = "https://login.cern.ch/"
+        SSO_LOGIN_URL = "https://auth.cern.ch/"
 
         try:
 
@@ -291,8 +198,8 @@ class LoaderClient:
                 return 1
 
             if re.search("^https", url):
-                if sum((options.login, options.krb, options.cert is not None)) != 1:
-                    self.parser.error('For secure access please provide one of --krb, --cert or --login')
+                if sum((options.login, options.krb)) != 1:
+                    self.parser.error('For secure access please provide one of --krb or --login')
                     return 1
 
             load_url = url + "/load/file"
@@ -318,13 +225,10 @@ class LoaderClient:
                 cookies = None
                 if re.search("^https", url):
                     if options.login:
-                        cookies = CernLoginSSO().login(url, force_level = force_level)
+                        cookies = CernSSO().login_sign_on(url, force_level = force_level)
                     if options.krb:
                         cookies = CernSSO().krb_sign_on(url)
                         force_level = 2
-                    if options.cert is not None:
-                        cert_file, key_file = options.cert.split(':')
-                        cookies = CernSSO().cert_sign_on(url, cert_file, key_file)
             
                 r = requests.post(url = load_url, files = files, cookies = cookies, verify = False)
 
@@ -334,7 +238,7 @@ class LoaderClient:
                         continue
                     else:
                         if not options.login and not options.krb:
-                            raise Exception('Resource is secured by SSO. Please try --login or --krb or --cert')
+                            raise Exception('Resource is secured by SSO. Please try --krb or --login')
                         else:
                             raise Exception('Error while logging to HTTPS/SSO')
 
