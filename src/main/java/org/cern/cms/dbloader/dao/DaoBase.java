@@ -85,7 +85,7 @@ public abstract class DaoBase {
 
     }
     
-    protected final Location resolveInstituteLocation(String institutionName, String locationName) {
+    protected final Location resolveInstituteLocation(String institutionName, String locationName, String insertionUsr) {
 
         Institution institution = (Institution) session.createCriteria(Institution.class)
                 .add(Restrictions.eq("deleted", Boolean.FALSE))
@@ -104,8 +104,8 @@ public abstract class DaoBase {
             institution = new Institution();
             institution.setName(institutionName);
             institution.setInstituteCode(0); // Hard Coded
-            institution.setLastUpdateUser(auth.getOperatorValue());
-            institution.setInsertUser(auth.getOperatorValue());
+            institution.setLastUpdateUser(resolveInsertionUser(insertionUsr));
+            institution.setInsertUser(resolveInsertionUser(insertionUsr));
             session.save(institution);
         }
 
@@ -113,8 +113,8 @@ public abstract class DaoBase {
             location = new Location();
             location.setName(locationName);
             location.setInstitution(institution);
-            location.setLastUpdateUser(auth.getOperatorValue());
-            location.setInsertUser(auth.getOperatorValue());
+            location.setLastUpdateUser(resolveInsertionUser(insertionUsr));
+            location.setInsertUser(resolveInsertionUser(insertionUsr));
             session.save(location);
             institution.getLocations().add(location);
         }
@@ -293,5 +293,14 @@ public abstract class DaoBase {
         return child;
 
     }
-    
+
+    protected String resolveInsertionUser (String insertionUser) {
+
+        if (insertionUser != null) {
+                return insertionUser;
+            } else {
+                return auth.getOperatorValue();
+        }
+    }
+
 }

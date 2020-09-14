@@ -56,7 +56,7 @@ public class TrackingDao extends DaoBase {
         }
 
         // Resolving location.
-        Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName());
+        Location location = resolveInstituteLocation(xmlRequest.getInstitutionName(), xmlRequest.getLocationName(), xmlRequest.getInsertUser());
 
         // Resolving Kind of Conditions.
         if (xmlRequest.getItems() != null) {
@@ -64,7 +64,7 @@ public class TrackingDao extends DaoBase {
                 item.setKindOfPart(resolveKindOfPart(item.getKindOfPartName()));
             }
         }
-        
+
         // Load Request from database if exists.
         Request dbRequest = (Request) session.createCriteria(Request.class)
                 .add(Restrictions.eq("name", xmlRequest.getName()))
@@ -73,33 +73,33 @@ public class TrackingDao extends DaoBase {
 
         // If in DB not found
         if (dbRequest == null) {
-            
+
             dbRequest = xmlRequest;
-            
+
             // Default status
             if (dbRequest.getStatus() == null) {
                 dbRequest.setStatus(RequestStatus.OPEN);
             }
-            
+
             // Setting location
             dbRequest.setLocation(location);
-            
+
         } else {
-            
+
             // Setting updates data
-            
+
             if (xmlRequest.getStatus() != null) {
                 dbRequest.setStatus(xmlRequest.getStatus());
             }
-            
+
             if (xmlRequest.getComment() != null) {
                 dbRequest.setComment(xmlRequest.getComment());
             }
-            
+
             if (xmlRequest.getDate() != null) {
                 dbRequest.setDate(xmlRequest.getDate());
             }
-            
+
             if (xmlRequest.getPerson() != null) {
                 dbRequest.setPerson(xmlRequest.getPerson());
             }
@@ -140,17 +140,20 @@ public class TrackingDao extends DaoBase {
         for (RequestItem item: dbRequest.getItems()) {
             item.setRequest(dbRequest);
         }
-        
+        String insertionUser = resolveInsertionUser(dbRequest.getInsertUser());
+        dbRequest.setLastUpdateUser(insertionUser);
+        dbRequest.setInsertUser(insertionUser);
         // Set operator value
-        dbRequest.setLastUpdateUser(auth.getOperatorValue());
+
         for (RequestItem item: dbRequest.getItems()) {
-            item.setLastUpdateUser(auth.getOperatorValue());
+            String itemInserUser = resolveInsertionUser(item.getInsertUser());
+            item.setLastUpdateUser(itemInserUser);
             if (item.getId() == null) {
-                item.setInsertUser(auth.getOperatorValue());
+                item.setInsertUser(itemInserUser);
             }
         }
         if (dbRequest.getId() == null) {
-            dbRequest.setInsertUser(auth.getOperatorValue());
+            dbRequest.setInsertUser(insertionUser);
         }
         
         session.save(dbRequest);
@@ -159,20 +162,20 @@ public class TrackingDao extends DaoBase {
 
     public void save(Shipment xmlShipment, AuditLog alog) throws Exception {
         
-        Location inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION);
-        
+        Location inTransitionLocation = resolveInstituteLocation(IN_TRANSITION_INSTITUTION, IN_TRANSITION_LOCATION, xmlShipment.getInsertUser());
+
         if (xmlShipment.getTrackingNumber() == null || xmlShipment.getTrackingNumber().isEmpty()) {
             throw new XMLParseException(String.format("Shipment tracking number not defined in %s", xmlShipment));
         }
 
         if (xmlShipment.getFromInstitutionName() != null && xmlShipment.getFromLocationName() != null) {
-            xmlShipment.setFromLocation(resolveInstituteLocation(xmlShipment.getFromInstitutionName(), xmlShipment.getFromLocationName()));
+            xmlShipment.setFromLocation(resolveInstituteLocation(xmlShipment.getFromInstitutionName(), xmlShipment.getFromLocationName(), xmlShipment.getInsertUser()));
         }
 
         if (xmlShipment.getToInstitutionName() != null && xmlShipment.getToLocationName() != null) {
-            xmlShipment.setToLocation(resolveInstituteLocation(xmlShipment.getToInstitutionName(), xmlShipment.getToLocationName()));
+            xmlShipment.setToLocation(resolveInstituteLocation(xmlShipment.getToInstitutionName(), xmlShipment.getToLocationName(), xmlShipment.getInsertUser()));
         }
-        
+
         if (xmlShipment.getItems() != null) {
             for (ShipmentItem item: xmlShipment.getItems()) {
 
@@ -332,15 +335,18 @@ public class TrackingDao extends DaoBase {
         }
         
         // Set operator value
-        dbShipment.setLastUpdateUser(auth.getOperatorValue());
+        String shpInsertionUser = resolveInsertionUser(dbShipment.getInsertUser());
+        dbShipment.setLastUpdateUser(shpInsertionUser);
+
         for (ShipmentItem item: dbShipment.getItems()) {
-            item.setLastUpdateUser(auth.getOperatorValue());
+            String shipItemUsr = resolveInsertionUser(item.getInsertUser());
+            item.setLastUpdateUser(shipItemUsr);
             if (item.getId() == null) {
-                item.setInsertUser(auth.getOperatorValue());
+                item.setInsertUser(shipItemUsr);
             }
         }
         if (dbShipment.getId() == null) {
-            dbShipment.setInsertUser(auth.getOperatorValue());
+            dbShipment.setInsertUser(shpInsertionUser);
         }
         
         session.save(dbShipment);
@@ -352,7 +358,7 @@ public class TrackingDao extends DaoBase {
             if (request.getStatus() == RequestStatus.OPEN) {
                 if (stat.getRequested() <= stat.getShipped()) {
                     request.setStatus(RequestStatus.CLOSED);
-                    request.setLastUpdateUser(auth.getOperatorValue());
+                    request.setLastUpdateUser(resolveInsertionUser(request.getInsertUser()));
                     session.save(request);
                 }
             }

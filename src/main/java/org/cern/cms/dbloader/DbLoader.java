@@ -151,6 +151,9 @@ public class DbLoader {
             // Loop data files in archive
             for (DataFile data : archive.getDataFiles()) {
 
+                // set Mask to hide real user
+                auth.setOperatorName(data.getRoot().getOperatorName());
+
                 // Start datafile log
                 AuditLogDao dataLog = rf.createAuditDao(data, auth);
                 dataLog.saveProcessing();

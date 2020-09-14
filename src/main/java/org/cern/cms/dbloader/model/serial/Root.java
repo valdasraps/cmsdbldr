@@ -2,9 +2,10 @@ package org.cern.cms.dbloader.model.serial;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Transient;
+import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -21,6 +22,7 @@ import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.serial.map.Maps;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
+import org.hibernate.annotations.Type;
 
 @Getter
 @Setter
@@ -65,7 +67,10 @@ public class Root implements DatasetRoot {
 	@XmlElement(name="SHIPMENT", type=Shipment.class)
 	@JsonProperty("Shipments")
 	private List<Shipment> shipments;
-        
+
+	@Transient
+	@XmlAttribute(name = "operator_name")
+	private String operatorName;
 }
 
 

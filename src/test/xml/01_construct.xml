@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ROOT>
+<ROOT operator_name="Ignas">
     <PARTS>
         <PART>
             <KIND_OF_PART>TEST ROOT</KIND_OF_PART>
@@ -15,12 +15,14 @@
                     <INSTITUTION>University of Iowa</INSTITUTION>
                     <PRODUCTION_DATE>2012-10-16</PRODUCTION_DATE>
                     <BATCH_NUMBER>1.A.1</BATCH_NUMBER>
+                    <RECORD_INSERTION_USER>Alpha</RECORD_INSERTION_USER>
                     <CHILDREN>
                         <PART>
                             <KIND_OF_PART>TEST Pack</KIND_OF_PART>
                             <SERIAL_NUMBER>serial 01</SERIAL_NUMBER>
                             <LOCATION>FNAL</LOCATION>
                             <INSTITUTION>FNAL</INSTITUTION>
+                            <RECORD_INSERTION_USER>Different User</RECORD_INSERTION_USER>
                             <CHILDREN>
                                 <PART>
                                     <KIND_OF_PART>TEST Board</KIND_OF_PART>

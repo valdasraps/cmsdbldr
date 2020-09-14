@@ -28,10 +28,11 @@ public class AuditLogDao {
     private static final Logger logger = LogManager.getLogger(AuditLogDao.class);
     
     private static final String UNDEFINED_SUBDETECTOR_NAME = "UNDEFINED";
-    
+
     @Getter
     private final AuditLog log;
     private final OperatorAuth auth;
+    private String operatorName;
     
     @Inject
     private ResourceFactory rf;
@@ -45,18 +46,20 @@ public class AuditLogDao {
     public AuditLogDao(@Assisted FileBase fb, @Assisted OperatorAuth auth) throws Exception {
         this.log = new AuditLog();
         this.auth = auth;
-        
+
         if (fb instanceof ArchiveFile) {
             this.log.setArchiveFileName(fb.getFilename());
         }
         
         if (fb instanceof DataFile) {
             this.log.setArchiveFileName(((DataFile) fb).getArchive().getFilename());
+            this.operatorName = ((DataFile) fb).getRoot().getOperatorName();
         }
 
         this.log.setDataFileName(fb.getFilename());        
         this.log.setDataFileChecksum(fb.getMd5());
         this.log.setCreateTimestamp(new Date());
+
     }
     
     public final void saveProcessing() throws Exception {
@@ -88,12 +91,21 @@ public class AuditLogDao {
             
             if (this.log.getInsertTime() == null) {
                 this.log.setInsertTime(new Date());
-                this.log.setInsertUser(props.getOsUser());
-                this.log.setCreatedByUser(auth.getOperatorValue());
+                if (this.operatorName != null) {
+                    this.log.setCreatedByUser(this.operatorName);
+                    this.log.setInsertUser(this.operatorName);
+                } else {
+                    this.log.setCreatedByUser(auth.getOperatorValue());
+                    this.log.setInsertUser(props.getOsUser());
+                }
                 this.log.setSubdetectorName(getSubDetectorName(sm));
             } else {
+                if (this.operatorName != null) {
+                    this.log.setLastUpdateUser(this.operatorName);
+                } else {
+                    this.log.setLastUpdateUser(auth.getOperatorValue());
+                }
                 this.log.setLastUpdateTime(new Date());
-                this.log.setLastUpdateUser(props.getOsUser());
             }
 
             sm.getSession().saveOrUpdate(this.log);

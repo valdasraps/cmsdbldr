@@ -68,12 +68,12 @@ public class ConfigDao extends DaoBase {
                     verAlDataset.setDataset(dbDataset);
                     verAlDataset.setVersionAlias(xmlVersionAlias);
                     dbVerAlDataset.add(verAlDataset);
-                    dbVersionAlias.setInsertUser(auth.getOperatorValue());
+                    dbVersionAlias.setInsertUser(resolveInsertionUser(xmlVersionAlias.getInsertUser()));
                     session.save(dbVersionAlias);
                     
                     // Set operator value
                     if (dbPart.getId() == null) {
-                        verAlDataset.setInsertUser(auth.getOperatorValue());
+                        verAlDataset.setInsertUser(resolveInsertionUser(xmlVersionAlias.getInsertUser()));
                     }
 
                     session.save(verAlDataset);
@@ -127,7 +127,7 @@ public class ConfigDao extends DaoBase {
                 if (dbDataset.getKindOfCondition().equals(dbKoc) && dbDataset.getPart().equals(dbPart)) {
 
                     if (key.getInsertUser() == null) { 
-                        key.setInsertUser(auth.getOperatorValue());
+                        key.setInsertUser(resolveInsertionUser(key.getInsertUser()));
                     }
                     session.save(key);
 
@@ -135,7 +135,7 @@ public class ConfigDao extends DaoBase {
                     keyTypeKOCPart.setKoc(dbKoc);
                     keyTypeKOCPart.setKeyType(dbKeyType);
                     keyTypeKOCPart.setPart(dbPart);
-                    keyTypeKOCPart.setInsertUser(auth.getOperatorValue());
+                    keyTypeKOCPart.setInsertUser(resolveInsertionUser(key.getInsertUser()));
                     session.save(keyTypeKOCPart);
 
                     KeyDataset keyDataset = new KeyDataset();
@@ -143,7 +143,7 @@ public class ConfigDao extends DaoBase {
                     keyDataset.setKey(key);
                     keyDataset.setKeyTypeKOCPart(keyTypeKOCPart);
                     keyDataset.setSubDataset(dbDataset);
-                    keyDataset.setInsertUser(auth.getOperatorValue());
+                    keyDataset.setInsertUser(resolveInsertionUser(key.getInsertUser()));
                     session.save(keyDataset);
                 }
 
@@ -174,9 +174,8 @@ public class ConfigDao extends DaoBase {
         for (KeyAlias keyAlias : keyAliases){
 
             resolveKeyAlias(keyAlias);
-            if (keyAlias.getInsertUser() == null) { 
-                keyAlias.setInsertUser(auth.getOperatorValue());
-            }
+            keyAlias.setInsertUser(resolveInsertionUser(keyAlias.getInsertUser()));
+
             session.save(keyAlias);
             for (Key key : keyAlias.getKey()){
 
@@ -199,9 +198,8 @@ public class ConfigDao extends DaoBase {
 
                 dbKeyAliasKey.setKey(dbKey);
                 dbKeyAliasKey.setKeyAlias(keyAlias);
-                if (dbKeyAliasKey.getInsertUser() == null) { 
-                    dbKeyAliasKey.setInsertUser(auth.getOperatorValue());
-                }
+                dbKeyAliasKey.setInsertUser(resolveInsertionUser(dbKeyAliasKey.getInsertUser()));
+
                 session.save(dbKeyAliasKey);
 
                 for (VersionAlias verAlias : key.getVersionAlias()){
@@ -215,10 +213,8 @@ public class ConfigDao extends DaoBase {
                     keyAlVerAl.setKeyAlias(keyAlias);
                     keyAlVerAl.setVersionAlias(dbVerAlias);
                     keyAlVerAl.setKoc(dbKoc);
+                    keyAlVerAl.setInsertUser(resolveInsertionUser(keyAlVerAl.getInsertUser()));
 
-                    if (keyAlVerAl.getInsertUser() == null) { 
-                        keyAlVerAl.setInsertUser(auth.getOperatorValue());
-                    }
                     session.save(keyAlVerAl);
                 }
 

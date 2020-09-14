@@ -67,7 +67,8 @@ public class PartLoadTest extends TestBase {
             assertNull(tower.getInstalledUser());
             assertNull(tower.getRemovedUser());
             assertNotNull(tower.getInsertTime());
-            assertEquals(pm.getOperatorAuth().getOperatorValue(), tower.getInsertUser());
+            assertEquals("Alpha", tower.getInsertUser());
+//            assertEquals(pm.getOperatorAuth().getOperatorValue(), tower.getInsertUser());
             // <PRODUCTION_DATE>2012-10-16</PRODUCTION_DATE>
             assertEquals(new SimpleDateFormat("yyyy-MM-dd").parse("2012-10-16"), tower.getProductionDate());
             // <BATCH_NUMBER>1.A.1</BATCH_NUMBER>
@@ -75,9 +76,16 @@ public class PartLoadTest extends TestBase {
 
             assertEquals(new BigInteger("1000"), tower.getPartTree().getParentPartTree().getPartId());
 
-            // Serial packs
+            Part serial01 = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("serialNumber", "serial 01"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "TEST Pack"))
+                    .uniqueResult();
 
-            for (String serialNumber: new String[] {"serial 01", "serial 02", "serial 03"}) {
+            assertEquals("Different User", serial01.getInsertUser());
+
+            // Serial packs
+            for (String serialNumber: new String[] {"serial 02", "serial 03"}) {
 
                 Part pack = (Part) session.createCriteria(Part.class)
                                 .add(Restrictions.eq("serialNumber", serialNumber))
@@ -98,7 +106,7 @@ public class PartLoadTest extends TestBase {
                 assertNull(pack.getInstalledUser());
                 assertNull(pack.getRemovedUser());
                 assertNotNull(pack.getInsertTime());
-                assertEquals(pm.getOperatorAuth().getOperatorValue(), pack.getInsertUser());
+                assertEquals("Ignas", pack.getInsertUser());
 
                 assertEquals(tower.getId(), pack.getPartTree().getParentPartTree().getPartId());
 
@@ -132,7 +140,7 @@ public class PartLoadTest extends TestBase {
                     assertNull(child.getInstalledUser());
                     assertNull(child.getRemovedUser());
                     assertNotNull(child.getInsertTime());
-                    assertEquals(pm.getOperatorAuth().getOperatorValue(), child.getInsertUser());
+                    assertEquals("Ignas", child.getInsertUser());
 
                     assertEquals(pack.getId(), child.getPartTree().getParentPartTree().getPartId());
 
@@ -248,7 +256,7 @@ public class PartLoadTest extends TestBase {
                     .uniqueResult();
 
 
-            assertEquals(pm.getOperatorAuth().getOperatorValue(), prt.getInsertUser());
+            assertEquals("Vavukas", prt.getInsertUser());
             assertEquals("GEM Foil attribute Test", prt.getName());
             assertNull(prt.getSerialNumber());
             assertNull(prt.getVersion());
@@ -261,7 +269,7 @@ public class PartLoadTest extends TestBase {
                     .add(Restrictions.eq("part.id", prt.getId()))
                     .uniqueResult();
 
-          assertEquals(pm.getOperatorAuth().getOperatorValue(), prt.getInsertUser());
+          assertEquals("Vavukas", prt.getInsertUser());
         }
 
     }
@@ -291,7 +299,7 @@ Test check if Part has attribute, after that we upload xml file to mark attribut
                     .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .uniqueResult();
 
-            assertEquals("Petras Petrauskas (petriukas)", attrList.getInsertUser());
+            assertEquals("Vavukas", attrList.getInsertUser());
             assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
             assertNotNull(attrList);
         }

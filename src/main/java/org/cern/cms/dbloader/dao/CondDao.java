@@ -49,7 +49,7 @@ public class CondDao extends DaoBase {
 
     @Inject
     private DynamicEntityGenerator enGenerator;
-    
+
     private final LobManager lobm = new LobManager();
     
     @Inject
@@ -223,10 +223,10 @@ public class CondDao extends DaoBase {
                 // Ignore
             }
 
-            ds.setLastUpdateUser(auth.getOperatorValue());
-            if (ds.getInsertUser() == null) { 
-                ds.setInsertUser(auth.getOperatorValue());
-            }
+            String insertionUser = resolveInsertionUser(ds.getInsertUser());
+            ds.setLastUpdateUser(insertionUser);
+            ds.setInsertUser(insertionUser);
+
             session.save(ds);
 
             alog.setDatasetRecordCount(alog.getDatasetRecordCount() + ds.getData().size());
@@ -291,8 +291,9 @@ public class CondDao extends DaoBase {
             log.info(String.format("Resolved: %s", dbRun));
         } else {
             dbRun = xmRun;
-            dbRun.setLastUpdateUser(auth.getOperatorValue());
-            dbRun.setInsertUser(auth.getOperatorValue());
+            String insertionUser = resolveInsertionUser(dbRun.getInsertUser());
+            dbRun.setLastUpdateUser(insertionUser);
+            dbRun.setInsertUser(insertionUser);
             log.info(String.format("Not resolved: %s. Will attempt to create.", dbRun));
         }
 
@@ -358,12 +359,10 @@ public class CondDao extends DaoBase {
                 iov.getTags().add(tag);
                 session.save(iov);
             }
-            
-            tag.setLastUpdateUser(auth.getOperatorValue());
-            if (tag.getInsertUser() == null) { 
-                tag.setInsertUser(auth.getOperatorValue());
-            }
-            
+
+            String insertionUser = resolveInsertionUser(tag.getInsertUser());
+            tag.setLastUpdateUser(insertionUser);
+            tag.setInsertUser(insertionUser);
             session.save(tag);
         }
         return mapIov;

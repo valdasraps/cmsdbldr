@@ -408,7 +408,7 @@ public class PartLoadJsonTest extends TestBase {
             assertNull(tower.getRemovedDate());
             assertNull(tower.getInstalledUser());
             assertNull(tower.getRemovedUser());
-            assertEquals(pm.getOperatorAuth().getOperatorValue(), tower.getInsertUser());
+            assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", tower.getInsertUser());
             // Packs
             String[] serials = {"serial a", "serial b", "serial c"};
             for (String serialNumber: serials) {
@@ -429,7 +429,7 @@ public class PartLoadJsonTest extends TestBase {
                 assertNull(pack.getRemovedDate());
                 assertNull(pack.getInstalledUser());
                 assertNull(pack.getRemovedUser());
-                assertEquals(pm.getOperatorAuth().getOperatorValue(), pack.getInsertUser());
+                assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", pack.getInsertUser());
                 // Packs children
                 List<Part> children = (List<Part>) session.createCriteria(Part.class)
                         .add(Subqueries.propertyIn("id",
@@ -452,7 +452,7 @@ public class PartLoadJsonTest extends TestBase {
                     assertNull(child.getRemovedDate());
                     assertNull(child.getInstalledUser());
                     assertNull(child.getRemovedUser());
-                    assertEquals(pm.getOperatorAuth().getOperatorValue(), child.getInsertUser());
+                    assertEquals("CMS_TST_PRTTYPE_TEST_WRITER", child.getInsertUser());
                 }
             }
         }
