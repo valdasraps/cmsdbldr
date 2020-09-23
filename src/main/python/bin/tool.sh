@@ -85,16 +85,17 @@ if [[ 1 -eq $aopt ]]; then
 cat << EOF > /etc/httpd/conf.d/cmsdbldr_${det}_${dat}.conf
 <Location /${det}/${dat}>
 
-  SSLRequireSSL
-  AuthType shibboleth
-  ShibRequestSetting requireSession 1
-  require shib-session
-  ShibUseHeaders On
+#  SSLRequireSSL
+#  AuthType shibboleth
+#  ShibRequestSetting requireSession 1
+#  require shib-session
+#  ShibUseHeaders On
 
   RequestHeader add "CERN-LOGIN" "%{CERN_LOGIN}e" "env=CERN_LOGIN"
   RequestHeader add "CERN-FULLNAME" "%{CERN_FULLNAME}e" "env=CERN_FULLNAME"
   RequestHeader add "CERN-ROLES" "%{CERN_ROLES}e" "env=CERN_ROLES"
 
+  Require host cmsdca.cern.ch
   ProxyPass http://127.0.0.1:$API_PORT
   ProxyPassReverse http://127.0.0.1:$API_PORT
 </Location>
@@ -110,8 +111,8 @@ Description=Start and stop CMS DB Loader service for ${det} at ${dat}
 Type=simple
 TimeoutSec=10sec
 PIDFile=/var/run/cmsdbldr_${det}_${dat}.pid
-ExecStart=/usr/bin/jsvc -server -pidfile /var/run/cmsdbldr_${det}_${dat}.pid -outfile /var/cmsdbldr/rest_${det}_${dat}.out.log -errfile /var/cmsdbldr/rest_${det}_${dat}.err.log -wait 30 -cp /opt/cmsdbldr/bin/cmsdbldr.jar -Doracle.net.tns_admin=/etc org.cern.cms.dbloader.rest.Application $PROPS
-ExecStop=/usr/bin/jsvc -server -pidfile /var/run/cmsdbldr_${det}_${dat}.pid -outfile /var/cmsdbldr/rest_${det}_${dat}.out.log -errfile /var/cmsdbldr/rest_${det}_${dat}.err.log -wait 30 -stop -cp /opt/cmsdbldr/bin/cmsdbldr.jar -Doracle.net.tns_admin=/etc org.cern.cms.dbloader.rest.Application $PROPS
+ExecStart=/opt/cmsdbldr/bin/service.sh ${det} ${dat} start
+ExecStop=/opt/cmsdbldr/bin/service.sh ${det} ${dat} stop
 
 EOF
 

@@ -4,6 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import java.io.FileInputStream;
 import java.util.Properties;
 import lombok.extern.log4j.Log4j;
@@ -34,6 +36,10 @@ import org.glassfish.jersey.server.ServerProperties;
 public class Application implements Daemon {
     
     private final static String PORT_KEY = "api-port";
+    private final static String XSD_FILE_KEY = "xsd-file";
+    private final static String DOC_FILE_KEY = "doc-file";
+    public final static Named XSD_NAME = Names.named(XSD_FILE_KEY);
+    public final static Named DOC_NAME = Names.named(DOC_FILE_KEY);
     
     public static Injector injector;
     private Server server;
@@ -66,10 +72,12 @@ public class Application implements Daemon {
     private void initLoader(final Properties props) throws Exception {
         
         PropertiesManager pm = new PropertiesManager(props, new String[]{ }) {
+            
             @Override
             public boolean printHelp() {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
+            
         };
 
         LogManager.setLogging(pm);
@@ -83,6 +91,13 @@ public class Application implements Daemon {
                 bind(AuthService.class).toInstance(new AuthService(props));
                 bind(LoadService.class).toInstance(new LoadService());
                 install(new FactoryModuleBuilder().build(ResourceFactory.class));
+                
+                if (props.getProperty(XSD_FILE_KEY) != null) {
+                    bindConstant().annotatedWith(XSD_NAME).to(props.getProperty(XSD_FILE_KEY));
+                }
+                if (props.getProperty(DOC_FILE_KEY) != null) {
+                    bindConstant().annotatedWith(DOC_NAME).to(props.getProperty(DOC_FILE_KEY));
+                }
 
             }
         });

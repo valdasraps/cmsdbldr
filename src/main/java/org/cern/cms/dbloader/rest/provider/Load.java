@@ -1,6 +1,8 @@
 package org.cern.cms.dbloader.rest.provider;
 
 
+import com.google.inject.Binding;
+import com.google.inject.Key;
 import java.io.*;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -10,6 +12,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FilenameUtils;
 import org.cern.cms.dbloader.manager.PropertiesManager;
@@ -37,7 +40,7 @@ public class Load {
     private final AuthService aservice = Application.injector.getInstance(AuthService.class);
     
     @GET
-    public final Response info(@Context HttpHeaders headers) {
+    public final Response info(@Context HttpHeaders headers, @Context UriInfo uriInfo) {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
         OperatorAuth auth = aservice.getOperatorAuth(headers);
         node.put("version", pm.getVersion());
@@ -46,6 +49,17 @@ public class Load {
         node.put("construct_permission", auth.isConstructPermission());
         node.put("condition_permission", auth.isConditionPermission());
         node.put("tracking_permission", auth.isTrackingPermission());
+        
+        Binding<String> binding = Application.injector.getExistingBinding(Key.get(String.class, Application.XSD_NAME));
+        if (binding != null) {
+            node.put("xsd_uri", "/doc/xsd");
+        }
+        
+        binding = Application.injector.getExistingBinding(Key.get(String.class, Application.DOC_NAME));
+        if (binding != null) {
+            node.put("doc_uri", "doc/doc");
+        }
+        
         return Response.ok(node.toString(), MediaType.APPLICATION_JSON).build();
     }
     

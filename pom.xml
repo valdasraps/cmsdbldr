@@ -4,7 +4,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.1.10</version>
+    <version>0.1.11</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -154,6 +154,7 @@
                         <require>shibboleth</require>
                         <require>openssl-devel</require>
                         <require>mod_ssl</require>
+                        <require>libxslt</require>
                     </requires>
                     <mappings>
                         <mapping>
@@ -182,6 +183,18 @@
                             <filemode>755</filemode>
                             <username>dbspool</username>
                             <groupname>dbspool</groupname>
+                        </mapping>
+                        <mapping>
+                            <directory>/opt/cmsdbldr/doc</directory>
+                            <configuration>noreplace</configuration>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/python/doc</location>
+                                </source>
+                            </sources>
                         </mapping>
                         <mapping>
                             <directory>/var/cmsdbldr/work</directory>
