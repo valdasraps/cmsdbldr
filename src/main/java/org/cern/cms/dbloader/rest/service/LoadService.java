@@ -31,7 +31,8 @@ public class LoadService {
     public enum Extension {
         
         JSON,
-        XML;
+        XML,
+        ZIP;
         
         public static Extension get(String name) {
             return Extension.valueOf(name.toUpperCase());
