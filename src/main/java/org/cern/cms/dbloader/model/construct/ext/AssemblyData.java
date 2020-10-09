@@ -32,24 +32,14 @@ import org.cern.cms.dbloader.model.condition.Dataset;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false, of = {"id"})
-//@JsonIgnoreProperties({ "kindOfPart",
-//        "partTree",
-//        "manufacturer",
-//        "insertTime",
-//        "lastUpdateTime",
-//        "lastUpdateUser",
-//        "deleted",
-//        "id",
-//        "version",
-//        "installedUser",
-//        "removedUser",
-//        "removedDate",
-//        "mode",
-//        "serialNumber",
-//        "location"
-//})
-//@JsonPropertyOrder({"", ""})
-@JsonRootName("ASSEMBLY_DATA")
+@JsonIgnoreProperties({ 
+    "id",
+    "step",
+    "dataDefinition",
+    "dataset"
+})
+@JsonPropertyOrder({"", ""})
+@JsonRootName("AssemblyData")
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssemblyData {

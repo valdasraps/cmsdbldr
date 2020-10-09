@@ -38,26 +38,15 @@ import org.cern.cms.dbloader.model.managemnt.Location;
 @Table(name = "ASSEMBLY_STEPS", uniqueConstraints = @UniqueConstraint(columnNames = {"ASS_ASD_ID", "ASS_PART_ID"}))
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false, of = {"id"})
-//@JsonIgnoreProperties({ "kindOfPart",
-//        "partTree",
-//        "manufacturer",
-//        "insertTime",
-//        "lastUpdateTime",
-//        "lastUpdateUser",
-//        "deleted",
-//        "id",
-//        "version",
-//        "installedUser",
-//        "removedUser",
-//        "removedDate",
-//        "mode",
-//        "serialNumber",
-//        "location"
-//})
-//@JsonPropertyOrder({"", ""})
-@JsonRootName("ASSEMBLY_STEP")
+@JsonIgnoreProperties({ 
+    "id",
+    "stepDefinition",
+    "location"
+})
+@JsonPropertyOrder({"", ""})
+@JsonRootName("AssemblyStep")
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssemblyStep extends EntityBase {
@@ -77,6 +66,7 @@ public class AssemblyStep extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "ASS_PART_ID")
     @XmlElement(name = "PART")
+    @JsonProperty("Product")
     private Part part;
     
     @Transient
@@ -98,7 +88,7 @@ public class AssemblyStep extends EntityBase {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "step", cascade = CascadeType.ALL)
     @XmlElementWrapper(name = "ASSEMBLY_PARTS")
     @XmlElement(name = "ASSEMBLY_PART", type = AssemblyPart.class)
-    @JsonProperty("AssemblyPart")
+    @JsonProperty("AssemblyParts")
     private List<AssemblyPart> assemblyParts = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "step", cascade = CascadeType.ALL)

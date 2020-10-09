@@ -12,7 +12,7 @@
             <NUMBER>1</NUMBER>
             
             <!-- Assembly step status (INPROGRESS, COMPLETE, FAILED) -->
-            <STATUS>COMPLETE</STATUS>
+            <STATUS>COMPLETED</STATUS>
             
             <COMMENT_DESCRIPTION>This is some step comment</COMMENT_DESCRIPTION>
             

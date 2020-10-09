@@ -31,24 +31,13 @@ import org.cern.cms.dbloader.model.construct.Part;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false, of = {"id"})
-//@JsonIgnoreProperties({ "kindOfPart",
-//        "partTree",
-//        "manufacturer",
-//        "insertTime",
-//        "lastUpdateTime",
-//        "lastUpdateUser",
-//        "deleted",
-//        "id",
-//        "version",
-//        "installedUser",
-//        "removedUser",
-//        "removedDate",
-//        "mode",
-//        "serialNumber",
-//        "location"
-//})
-//@JsonPropertyOrder({"", ""})
-@JsonRootName("ASSEMBLY_PART")
+@JsonIgnoreProperties({ 
+    "id",
+    "step",
+    "partDefinition"
+})
+@JsonPropertyOrder({"", ""})
+@JsonRootName("AssemblyPart")
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssemblyPart {
@@ -78,6 +67,7 @@ public class AssemblyPart {
     @ManyToOne
     @JoinColumn(name = "ASP_PART_ID")
     @XmlElement(name = "PART")
+    @JsonProperty("Part")
     private Part part;
 
 }
