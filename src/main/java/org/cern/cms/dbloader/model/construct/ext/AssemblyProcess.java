@@ -24,7 +24,7 @@ import org.cern.cms.dbloader.model.construct.KindOfPart;
 
 @Entity
 @Table(name = "ASSEMBLY_PROCESSES", uniqueConstraints = @UniqueConstraint(columnNames = {"APR_NAME"}))
-@Getter @Setter @ToString
+@Getter @Setter @ToString(exclude = {"steps"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 public class AssemblyProcess {
     

@@ -90,11 +90,5 @@ public class AssemblyStep extends EntityBase {
     @XmlElement(name = "ASSEMBLY_PART", type = AssemblyPart.class)
     @JsonProperty("AssemblyParts")
     private List<AssemblyPart> assemblyParts = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "step", cascade = CascadeType.ALL)
-    @XmlElementWrapper(name = "ASSEMBLY_DATA")
-    @XmlElement(name = "ASSEMBLY_DATA", type = AssemblyData.class)
-    @JsonProperty("AssemblyData")
-    private List<AssemblyData> assemblyData = new ArrayList<>();
     
 }

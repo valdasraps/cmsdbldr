@@ -17,6 +17,30 @@
             <COMMENT_DESCRIPTION>This is some step comment</COMMENT_DESCRIPTION>
             
             <ASSEMBLY_PARTS>
+                
+                <ASSEMBLY_PART>
+                    
+                    <!-- Assembly part number -->
+                    <NUMBER>1</NUMBER>
+                    
+                    <!-- Part definition -->
+                    <PART>
+                        <PART_ID>2186</PART_ID>
+                    </PART>
+                    
+                    <ASSEMBLY_DATA>
+                        <ASSEMBLY_DATA>
+
+                            <!-- Assembly data number -->
+                            <NUMBER>1</NUMBER>
+
+                            <!-- Put this file into same zip while submitting -->
+                            <DATA_FILE>some-file-in-same-zip.csv</DATA_FILE>
+
+                        </ASSEMBLY_DATA>
+                    </ASSEMBLY_DATA>
+                </ASSEMBLY_PART>
+                
                 <ASSEMBLY_PART>
                     
                     <!-- Assembly part number -->
@@ -29,18 +53,6 @@
                     
                 </ASSEMBLY_PART>
             </ASSEMBLY_PARTS>
-            
-            <ASSEMBLY_DATA>
-                <ASSEMBLY_DATA>
-                    
-                    <!-- Assembly data number -->
-                    <NUMBER>1</NUMBER>
-                    
-                    <!-- Put this file into same zip while submitting -->
-                    <DATA_FILE>some-file-in-same-zip.csv</DATA_FILE>
-                    
-                </ASSEMBLY_DATA>
-            </ASSEMBLY_DATA>
             
         </ASSEMBLY_STEP>
     </ASSEMBLY_STEPS>

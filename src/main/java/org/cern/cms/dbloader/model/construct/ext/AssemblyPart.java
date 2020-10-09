@@ -16,7 +16,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,7 +35,7 @@ import org.cern.cms.dbloader.model.construct.Part;
 @Table(name = "ASSEMBLY_PARTS", uniqueConstraints = @UniqueConstraint(columnNames = {"ASP_APD_ID","ASP_ASS_ID","ASP_PART_ID"}))
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"step"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ 
     "id",
@@ -62,12 +68,18 @@ public class AssemblyPart {
     @Transient
     @XmlElement(name = "NUMBER")
     @JsonProperty("Number")
-    private String number;
+    private Integer number;
     
     @ManyToOne
     @JoinColumn(name = "ASP_PART_ID")
     @XmlElement(name = "PART")
     @JsonProperty("Part")
     private Part part;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assemblyPart", cascade = CascadeType.ALL)
+    @XmlElementWrapper(name = "ASSEMBLY_DATA")
+    @XmlElement(name = "ASSEMBLY_DATA", type = AssemblyData.class)
+    @JsonProperty("AssemblyData")
+    private List<AssemblyData> assemblyData = new ArrayList<>();
 
 }

@@ -27,10 +27,10 @@ import org.cern.cms.dbloader.model.condition.Dataset;
 
 
 @Entity
-@Table(name = "ASSEMBLY_DATA", uniqueConstraints = @UniqueConstraint(columnNames = {"AED_ADD_ID","AED_ASS_ID","AED_DATA_SET_ID"}))
+@Table(name = "ASSEMBLY_DATA", uniqueConstraints = @UniqueConstraint(columnNames = {"AED_ADD_ID","AED_ASP_ID","AED_DATA_SET_ID"}))
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"assemblyPart"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ 
     "id",
@@ -53,8 +53,8 @@ public class AssemblyData {
     
     @XmlTransient
     @ManyToOne
-    @JoinColumn(name = "AED_ASS_ID")
-    private AssemblyStep step;
+    @JoinColumn(name = "AED_ASP_ID")
+    private AssemblyPart assemblyPart;
     
     @XmlTransient
     @ManyToOne
@@ -64,7 +64,7 @@ public class AssemblyData {
     @Transient
     @XmlElement(name = "NUMBER")
     @JsonProperty("Number")
-    private String number;
+    private Integer number;
 
     @Transient
     @XmlElement(name = "DATA_FILE")

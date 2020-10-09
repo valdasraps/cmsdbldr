@@ -5,6 +5,7 @@ import org.cern.cms.dbloader.manager.file.DataFile;
 
 import com.google.inject.Singleton;
 import org.cern.cms.dbloader.dao.AssemblyDao;
+import org.cern.cms.dbloader.model.construct.ext.AssemblyStep;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.serial.Root;
 import org.cern.cms.dbloader.util.NotAuthorizedException;
@@ -30,9 +31,11 @@ public class AssemblyApp extends AppBase {
     public void handleData(SessionManager sm, DataFile file, AuditLog alog, OperatorAuth auth) throws Exception {
 
         Root root = file.getRoot();
-
-        AssemblyDao dao = rf.createAssemblyDao(sm, auth);
-        dao.saveAssembly(root, alog, file);
+        
+        for (AssemblyStep step: root.getAssemblySteps()) {
+            AssemblyDao dao = rf.createAssemblyDao(sm, auth);
+            dao.saveAssembly(step, alog, file);
+        }
     }
 
 }

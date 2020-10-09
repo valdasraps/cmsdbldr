@@ -14,20 +14,29 @@
                     "AssemblyParts": [
                         {
                             "AssemblyPart": {
+                                "Number": 1,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 2186
+                                    }
+                                },
+                                "AssemblyData": [
+                                    {
+                                        "AssemblyData": {
+                                            "Number": 1,
+                                            "DataFile": "some-file-in-same-zip.csv"
+                                        }
+                                    }
+                                ]
+                            }
+                        }, {
+                            "AssemblyPart": {
                                 "Number": 2,
                                 "Part": {
                                     "Part": {
                                         "Id": 15421
                                     }
                                 }
-                            }
-                        }
-                    ],
-                    "AssemblyData": [
-                        {
-                            "AssemblyData": {
-                                "Number": 1,
-                                "DataFile": "some-file-in-same-zip.csv"
                             }
                         }
                     ]
