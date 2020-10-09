@@ -18,6 +18,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,7 +35,7 @@ import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.managemnt.Location;
 
 @Entity
-@Table(name = "ASSEMBLY_STEPS", uniqueConstraints = @UniqueConstraint(columnNames = {"ASS_ASD_ID", "ASS_PRODUCT_ID"}))
+@Table(name = "ASSEMBLY_STEPS", uniqueConstraints = @UniqueConstraint(columnNames = {"ASS_ASD_ID", "ASS_PART_ID"}))
 @Getter
 @Setter
 @ToString
@@ -88,5 +94,17 @@ public class AssemblyStep extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "LOCATION_ID")
     private Location location;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "step", cascade = CascadeType.ALL)
+    @XmlElementWrapper(name = "ASSEMBLY_PARTS")
+    @XmlElement(name = "ASSEMBLY_PART", type = AssemblyPart.class)
+    @JsonProperty("AssemblyPart")
+    private List<AssemblyPart> assemblyParts = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "step", cascade = CascadeType.ALL)
+    @XmlElementWrapper(name = "ASSEMBLY_DATA")
+    @XmlElement(name = "ASSEMBLY_DATA", type = AssemblyData.class)
+    @JsonProperty("AssemblyData")
+    private List<AssemblyData> assemblyData = new ArrayList<>();
+    
 }

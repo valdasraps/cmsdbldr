@@ -1,8 +1,11 @@
+CREATE SEQUENCE  "ANY_ASSEMBLY_ID_SEQ";
+
 --------------------------------------------------------
 --  Tables
 --------------------------------------------------------
 
 CREATE TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" (
+    "AAD_ID" NUMBER, 
     "AAD_APD_ID" NUMBER, 
     "AAD_ATTRIBUTE_ID" NUMBER(38,0), 
     "AAD_IS_SELECTABLE" CHAR(1 BYTE)
@@ -74,7 +77,7 @@ CREATE TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" (
 --  Indexes
 --------------------------------------------------------
 
-  CREATE UNIQUE INDEX "AAD_PK" ON "ASSEMBLY_ATTRIBUTE_DEFINITIONS" ("AAD_APD_ID", "AAD_ATTRIBUTE_ID");
+  CREATE UNIQUE INDEX "AAD_PK" ON "ASSEMBLY_ATTRIBUTE_DEFINITIONS" ("AAD_ID");
   CREATE UNIQUE INDEX "AED_PK" ON "ASSEMBLY_DATA" ("AED_ID");
   CREATE UNIQUE INDEX "AED_UK" ON "ASSEMBLY_DATA" ("AED_ADD_ID", "AED_ASS_ID", "AED_DATA_SET_ID");
   CREATE UNIQUE INDEX "ADD_PK" ON "ASSEMBLY_DATA_DEFINITIONS" ("ADD_ID");
@@ -106,7 +109,7 @@ CREATE TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" (
     BEGIN
 
         if :new.aed_id is null then
-            SELECT AED_ID_SEQ.NEXTVAL INTO :new.aed_id FROM dual;
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.aed_id FROM dual;
         end if;
 
     EXCEPTION
@@ -128,7 +131,7 @@ ALTER TRIGGER "AED_INSERT_TRG" ENABLE;
     BEGIN
 
         if :new.add_id is null then
-            SELECT ADD_ID_SEQ.NEXTVAL INTO :new.add_id FROM dual;
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.add_id FROM dual;
         end if;
 
     EXCEPTION
@@ -148,7 +151,7 @@ ALTER TRIGGER "ADD_INSERT_TRG" ENABLE;
     BEGIN
 
         if :new.apd_id is null then
-            SELECT APD_ID_SEQ.NEXTVAL INTO :new.apd_id FROM dual;
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.apd_id FROM dual;
         end if;
 
     EXCEPTION
@@ -168,7 +171,7 @@ ALTER TRIGGER "APD_INSERT_TRG" ENABLE;
     BEGIN
 
         if :new.asp_id is null then
-            SELECT ASP_ID_SEQ.NEXTVAL INTO :new.asp_id FROM dual;
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.asp_id FROM dual;
         end if;
 
     EXCEPTION
@@ -188,7 +191,7 @@ ALTER TRIGGER "ASP_INSERT_TRG" ENABLE;
     BEGIN
 
         if :new.apr_id is null then
-            SELECT APR_ID_SEQ.NEXTVAL INTO :new.apr_id FROM dual;
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.apr_id FROM dual;
         end if;
 
     EXCEPTION
@@ -208,7 +211,7 @@ ALTER TRIGGER "APR_INSERT_TRG" ENABLE;
     BEGIN
 
         if :new.asd_id is null then
-            SELECT ASD_ID_SEQ.NEXTVAL INTO :new.asd_id FROM dual;
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.asd_id FROM dual;
         end if;
 
     EXCEPTION
@@ -228,7 +231,7 @@ ALTER TRIGGER "ASD_INSERT_TRG" ENABLE;
     BEGIN
 
         if :new.ass_id is null then
-            SELECT ASS_ID_SEQ.NEXTVAL INTO :new.ass_id FROM dual;
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.ass_id FROM dual;
         end if;
 
     EXCEPTION
@@ -240,6 +243,26 @@ END;
 
 ALTER TRIGGER "ASS_INSERT_TRG" ENABLE;
 
+  CREATE OR REPLACE TRIGGER "AAD_INSERT_TRG" 
+    BEFORE INSERT
+    ON ASSEMBLY_ATTRIBUTE_DEFINITIONS
+    REFERENCING OLD AS OLD NEW AS NEW
+    FOR EACH ROW
+    BEGIN
+
+        if :new.aad_id is null then
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.aad_id FROM dual;
+        end if;
+
+    EXCEPTION
+        WHEN OTHERS THEN
+        -- Consider logging the error and then re-raise
+        RAISE;
+END;
+/
+
+ALTER TRIGGER "AAD_INSERT_TRG" ENABLE;
+
 --------------------------------------------------------
 --  Constraints
 --------------------------------------------------------
@@ -248,7 +271,9 @@ ALTER TRIGGER "ASS_INSERT_TRG" ENABLE;
         'Y',
         'N'
     ) ) ENABLE;
-  ALTER TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" ADD CONSTRAINT "AAD_PK" PRIMARY KEY ("AAD_APD_ID", "AAD_ATTRIBUTE_ID");
+  ALTER TABLE ASSEMBLY_ATTRIBUTE_DEFINITIONS ADD CONSTRAINT AAD_PK PRIMARY KEY (  AAD_ID ) ENABLE;
+  ALTER TABLE ASSEMBLY_ATTRIBUTE_DEFINITIONS ADD CONSTRAINT AAD_UK UNIQUE (  AAD_APD_ID , AAD_ATTRIBUTE_ID ) ENABLE;
+  ALTER TABLE ASSEMBLY_ATTRIBUTE_DEFINITIONS  MODIFY (AAD_ID NOT NULL);
   ALTER TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" MODIFY ("AAD_APD_ID" NOT NULL ENABLE);
   ALTER TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" MODIFY ("AAD_ATTRIBUTE_ID" NOT NULL ENABLE);
   ALTER TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" MODIFY ("AAD_IS_SELECTABLE" NOT NULL ENABLE);

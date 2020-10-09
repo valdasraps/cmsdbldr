@@ -1,5 +1,6 @@
 package org.cern.cms.dbloader.model.construct.ext;
 
+import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,11 +24,13 @@ import org.hibernate.annotations.Type;
 public class AssemblyAttributeDefiniton {
     
     @Id
+    @Column(name = "AAD_ID")
+    private BigInteger id;
+    
     @ManyToOne
     @JoinColumn(name = "AAD_APD_ID")
     private AssemblyPartDefiniton assemblyPartDefinition;
 
-    @Id
     @ManyToOne
     @JoinColumn(name = "AAD_ATTRIBUTE_ID")
     private AttrBase attribute;

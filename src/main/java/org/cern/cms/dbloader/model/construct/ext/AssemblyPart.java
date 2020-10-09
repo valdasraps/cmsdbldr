@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.*;
-import javax.persistence.Basic;
 import javax.persistence.Transient;
 
 import lombok.EqualsAndHashCode;
