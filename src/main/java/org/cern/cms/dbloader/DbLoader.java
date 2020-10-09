@@ -135,6 +135,7 @@ public class DbLoader {
         ChannelApp channelApp = injector.getInstance(ChannelApp.class);
         ConfigApp configApp = injector.getInstance(ConfigApp.class);
         TrackingApp trackingApp = injector.getInstance(TrackingApp.class);
+        AssemblyApp assemblyApp = injector.getInstance(AssemblyApp.class);
         
         // Start archive log if needed
         AuditLogDao archiveLog = null;
@@ -182,6 +183,10 @@ public class DbLoader {
                         case REQUEST:
                         case SHIPMENT:
                             app = trackingApp;
+                            break;
+                        case ASSEMBLY_STEP:
+                            app = assemblyApp;
+                            break;
                     }
 
                     if (app != null) {

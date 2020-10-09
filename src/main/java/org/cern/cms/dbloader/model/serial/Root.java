@@ -20,6 +20,7 @@ import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.serial.map.Maps;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
+import org.cern.cms.dbloader.model.construct.ext.AssemblyStep;
 
 @Getter
 @Setter
@@ -59,6 +60,11 @@ public class Root implements DatasetRoot {
     @JsonProperty("Parts")
     private List<Part> parts;
 
+    @XmlElementWrapper(name="ASSEMBLY_STEPS")
+    @XmlElement(name="ASSEMBLY_STEP", type=AssemblyStep.class)
+    @JsonProperty("AssemblySteps")
+    private List<AssemblyStep> assemblySteps;
+    
     // Channels
     
     @XmlElement(name="CHANNEL_UPDATE", type=ChannelUpdate.class)

@@ -12,6 +12,7 @@ public enum DataFileType {
     KEY,
     KEY_ALIAS,
     REQUEST,
-    SHIPMENT
+    SHIPMENT,
+    ASSEMBLY_STEP
 
 }
