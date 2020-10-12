@@ -24,7 +24,7 @@
                                     {
                                         "AssemblyData": {
                                             "Number": 1,
-                                            "DataFile": "some-file-in-same-zip.csv"
+                                            "DataFilename": "some-file-in-same-zip.csv"
                                         }
                                     }
                                 ]

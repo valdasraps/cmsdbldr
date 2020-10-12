@@ -98,7 +98,7 @@ public class AssemblyDao extends DaoBase {
                     throw new IllegalArgumentException(String.format("Assembly step data number is mandatory: %s", adata));
                 }
                 
-                if (adata.getDataFile() == null) {
+                if (adata.getDataFilename() == null) {
                     throw new IllegalArgumentException(String.format("Assembly step data file is not defined: %s", adata));
                 }
 

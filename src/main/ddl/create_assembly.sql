@@ -8,6 +8,6 @@ PROMPT Setting parameters
 PROMPT Executing CMS_&det._&subdet._CONSTRUCT stuff
 connect CMS_&det._&subdet._CONSTRUCT/&owner_password@&&1
 
-@08-tracking/tracking
+@09-assembly/assembly
 
 quit

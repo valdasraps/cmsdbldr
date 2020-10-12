@@ -151,6 +151,72 @@ public class CondLoadZipTest extends TestBase {
                 
     }
     
+    @Test
+    public void loadCsvNoHeaderTest() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/07-data.zip"))) {
+
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+
+        }
+        
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Dataset ds = (Dataset) session.createCriteria(Dataset.class)
+                        .add(Restrictions.eq("version", "CSV.1"))
+                        .createCriteria("kindOfCondition")
+                            .add(Restrictions.eq("name", "IV"))
+                        .uniqueResult();
+
+            assertNotNull(ds);
+
+            AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
+                .add(Restrictions.eq("archiveFileName", "07-data.zip"))
+                    .add(Restrictions.eq("version", "CSV.1"))
+                .uniqueResult();
+
+            assertEquals(UploadStatus.Success, alog.getStatus());
+
+        }
+                
+    }
+    
+    @Test
+    public void loadCsvHeaderTest() throws Throwable {
+        FilesManager fm = injector.getInstance(FilesManager.class);
+
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/zip/08-data.zip"))) {
+
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+
+        }
+        
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Dataset ds = (Dataset) session.createCriteria(Dataset.class)
+                        .add(Restrictions.eq("version", "CSV.2"))
+                        .createCriteria("kindOfCondition")
+                            .add(Restrictions.eq("name", "IV"))
+                        .uniqueResult();
+
+            assertNotNull(ds);
+
+            AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
+                .add(Restrictions.eq("archiveFileName", "08-data.zip"))
+                    .add(Restrictions.eq("version", "CSV.2"))
+                .uniqueResult();
+
+            assertEquals(UploadStatus.Success, alog.getStatus());
+
+        }
+                
+    }
+    
 }
 
 

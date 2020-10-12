@@ -26,9 +26,15 @@ import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
+import org.apache.commons.io.FilenameUtils;
+import org.cern.cms.dbloader.manager.CsvManager;
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
 import org.cern.cms.dbloader.manager.LobManager;
 import org.cern.cms.dbloader.manager.SessionManager;
@@ -122,16 +128,48 @@ public class CondDao extends DaoBase {
 
         // Assembling Datasets: resolving parts and assigning other values
         for (Dataset ds : root.getDatasets()) {
+            
+            // Check if data is provided in separate CSV file?
+            Path dataFilepath = null;
+            if (ds.getDataFilename() != null) {
+                Path path = Paths.get(file.getFile().toURI()).resolveSibling(ds.getDataFilename());
+                if (Files.isRegularFile(path) && Files.exists(path) && Files.isReadable(path)) {
+                    String ext = FilenameUtils.getExtension(path.toAbsolutePath().toString());
+                    if ("csv".equalsIgnoreCase(ext)) {
+                        dataFilepath = path;
+                        log.info(String.format("Data file found: %s", dataFilepath));
+                    } else {
+                        log.warn(new Exception(String.format("Not a CSV data file: %s", path.toAbsolutePath().toString())));
+                    }
+                } else {
+                    log.warn(new FileNotFoundException(path.toAbsolutePath().toString()));
+                }
+            }
 
             // Convert data from proxy to true objects
             List<CondBase> data = (List<CondBase>) ds.getData();
-            for (int i = 0; i < data.size(); i++) {
-                CondBase cb = (CondBase) data.get(i);
-                if (cb != null) {
-                    CondBase d = cb.getDelegate(condeh.getEntityClass().getC());
-                    lobm.lobParser(d, condeh, file.getFile());
-                    data.set(i, d);
+            if (data != null) {
+                
+                for (int i = 0; i < data.size(); i++) {
+                    CondBase cb = (CondBase) data.get(i);
+                    if (cb != null) {
+                        CondBase d = cb.getDelegate(condeh.getEntityClass().getC());
+                        lobm.lobParser(d, condeh, file.getFile());
+                        data.set(i, d);
+                    }
                 }
+                
+            } else if (dataFilepath != null) {
+                
+                CsvManager csv = new CsvManager();
+                data =  (List<CondBase>) csv.read(condeh, dataFilepath.toAbsolutePath().toString());
+                log.info(String.format("%s loaded data items %d from %s", condeh.getName(), data.size(), dataFilepath));
+                ds.setData(data);
+                
+            }
+            
+            if (data == null) {
+                throw new XMLParseException(String.format("Data not found for dataset: %s", ds));
             }
             
             // Convert channels from proxy to true objects

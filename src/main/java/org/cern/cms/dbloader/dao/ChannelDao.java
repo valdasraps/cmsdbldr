@@ -3,7 +3,6 @@ package org.cern.cms.dbloader.dao;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
@@ -35,10 +34,7 @@ public class ChannelDao extends DaoBase {
         ChannelEntityHandler handler = enGenerator.getChannelHandler(update.getExtensionTableName());
         log.info(String.format("Channel handler for %s found: %s", update, handler));
 
-        String [] mapping = handler.getProperties().stream().map(p -> p.getName()).toArray(i -> new String[i]);
-        log.info(Arrays.toString(mapping));
-        List<? extends ChannelBase> list =  csv.read(handler.getEntityClass().getC(), 
-                mapping, update.getFileName());
+        List<? extends ChannelBase> list =  csv.read(handler, update.getFileName());
         
         log.info(String.format("%s loaded channels %d", update, list.size()));
         for (ChannelBase ch: list) {

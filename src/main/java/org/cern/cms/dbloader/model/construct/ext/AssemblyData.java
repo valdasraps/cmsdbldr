@@ -67,9 +67,9 @@ public class AssemblyData {
     private Integer number;
 
     @Transient
-    @XmlElement(name = "DATA_FILE")
-    @JsonProperty("DataFile")
-    private String dataFile;
+    @XmlElement(name = "DATA_FILE_NAME")
+    @JsonProperty("DataFilename")
+    private String dataFilename;
     
     @XmlTransient
     @OneToOne

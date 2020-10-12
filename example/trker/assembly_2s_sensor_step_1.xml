@@ -35,7 +35,7 @@
                             <NUMBER>1</NUMBER>
 
                             <!-- Put this file into same zip while submitting -->
-                            <DATA_FILE>some-file-in-same-zip.csv</DATA_FILE>
+                            <DATA_FILE_NAME>some-file-in-same-zip.csv</DATA_FILE_NAME>
 
                         </ASSEMBLY_DATA>
                     </ASSEMBLY_DATA>
