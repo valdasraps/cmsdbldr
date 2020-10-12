@@ -36,6 +36,8 @@ connect CMS_TST_TEST_CONSTRUCT/testing@&&1
 
 @06-part_extension
 
+@09-assembly_process
+
 PROMPT Executing CMS_TST_TEST_COND stuff
 connect CMS_TST_TEST_COND/testing@&&1
 

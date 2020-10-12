@@ -20,7 +20,8 @@ import org.junit.runners.Suite.SuiteClasses;
     TablePrinterTest.class,
     TrackRequestLoadTest.class,
     TrackShipmentLoadTest.class,
-    AuthTest.class
+    AuthTest.class,
+    AssemblyZipTest.class
 })
 public class TestSuite {
 
