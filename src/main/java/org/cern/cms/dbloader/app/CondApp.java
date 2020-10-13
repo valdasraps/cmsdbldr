@@ -138,8 +138,8 @@ public class CondApp extends AppBase {
             throw new XMLParseException("Header is not defined!");
         }
 
-        if (root.getHeader().getRun() == null && parentHeader != null) {
-            root.getHeader().setRun(parentHeader.getRun());
+        if (header.getRun() == null && parentHeader != null) {
+            header.setRun(parentHeader.getRun());
         }
         
         // Save root dataset

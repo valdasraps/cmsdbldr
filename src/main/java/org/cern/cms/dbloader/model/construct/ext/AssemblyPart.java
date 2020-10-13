@@ -51,8 +51,8 @@ public class AssemblyPart {
     @Id
     @XmlTransient
     @Column(name = "ASP_ID")
-    @GeneratedValue(generator = "ASP_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ASP_ID_SEQ", sequenceName = "ASS_ID_SEQ", allocationSize = 20)
+    @GeneratedValue(generator = "ANY_ASSEMBLY_ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ANY_ASSEMBLY_ID_SEQ", sequenceName = "ANY_ASSEMBLY_ID_SEQ", allocationSize = 20)
     private BigInteger id;
     
     @XmlTransient

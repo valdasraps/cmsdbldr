@@ -241,18 +241,21 @@ ALTER TRIGGER "ASD_INSERT_TRG" ENABLE;
 END;
 /
 
-ALTER TRIGGER "ASS_INSERT_TRG" ENABLE;
-
-  CREATE OR REPLACE TRIGGER "AAD_INSERT_TRG" 
-    BEFORE INSERT
-    ON ASSEMBLY_ATTRIBUTE_DEFINITIONS
+create or replace TRIGGER "ASS_INSERT_UPDATE_TRG"
+    BEFORE INSERT OR UPDATE
+    ON assembly_steps
     REFERENCING OLD AS OLD NEW AS NEW
     FOR EACH ROW
     BEGIN
 
-        if :new.aad_id is null then
-            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.aad_id FROM dual;
+        if INSERTING then
+            if :new.ass_id is null then
+                SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.ass_id FROM dual;
+            end if;
+            :new.RECORD_INSERTION_TIME := systimestamp;
         end if;
+
+        :new.RECORD_LASTUPDATE_TIME := systimestamp;
 
     EXCEPTION
         WHEN OTHERS THEN
@@ -261,7 +264,7 @@ ALTER TRIGGER "ASS_INSERT_TRG" ENABLE;
 END;
 /
 
-ALTER TRIGGER "AAD_INSERT_TRG" ENABLE;
+ALTER TRIGGER "ASS_INSERT_UPDATE_TRG" ENABLE;
 
 --------------------------------------------------------
 --  Constraints

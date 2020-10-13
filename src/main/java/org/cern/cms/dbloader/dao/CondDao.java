@@ -108,14 +108,7 @@ public class CondDao extends DaoBase {
 
         if (dbRun != null) {
 
-            if (dbRun.getNumber() != null) {
-                try {
-                    alog.setRunNumber(Integer.parseInt(dbRun.getNumber()));
-                } catch (Exception ex) {
-                    // Ignore
-                }
-            }
-
+            alog.setRunNumber(dbRun.getNumber());
             alog.setRunType(dbRun.getRunType());
             alog.setComment(dbRun.getComment());
 

@@ -7,7 +7,9 @@ import java.beans.PropertyEditorManager;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.metadata.EntityHandler;
 import org.cern.cms.dbloader.metadata.PropertyHandler;
@@ -23,8 +25,13 @@ public class CsvManager {
     
     private class Mapping {
         
-        boolean header = false;
-        String[] columns;
+        boolean header = true;
+        List<String> columns = new ArrayList<>();
+        
+        String [] toArray() {
+            int i = columns.size();
+            return columns.toArray(new String[i]);
+        }
         
     }
 
@@ -34,7 +41,7 @@ public class CsvManager {
         
         ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
         strategy.setType(eh.getEntityClass().getC());
-        strategy.setColumnMapping(mapping.columns);
+        strategy.setColumnMapping(mapping.toArray());
         
         CsvToBean csvToBean = new CsvToBean();
         try (FileReader fr = new FileReader(fileName)) {
@@ -46,18 +53,17 @@ public class CsvManager {
     
     private <T> Mapping getMapping(EntityHandler<T> eh, String filename) throws IOException {
         
-        boolean header = true;
+        Mapping map = new Mapping();
         
         // Read first line from file (aka header)
-        String[] fields;
+        String [] fields;
         try (FileReader fr = new FileReader(filename)) {
             CSVReader reader = new CSVReader(fr, ',', '"', 0);
             fields = reader.readNext();
         }
         
         // Loop fields found
-        for (int i = 0; i < fields.length; i++) {
-            String f = fields[i];
+        for (String f : fields) {
             String v = null;
             
             // Check if property exists... set right stuff
@@ -70,20 +76,19 @@ public class CsvManager {
             
             // If field not found, return default mapping
             if (v == null) {
-                fields = eh.getProperties().stream().map(p -> p.getName()).toArray(s -> new String[s]);
-                header = false;
+                map.header = false;
+                map.columns = eh.getProperties().stream().map(p -> p.getName()).collect(Collectors.toList());
                 log.debug(String.format("Mapping for field %s not found. Using default mapping for file %s.", f, filename));
+                break;
             } else {
-                fields[i] = v;
+                map.columns.add(v);
             }
         }
         
-        log.debug(String.format("Mapping for file %s: %s", filename, fields));
+        log.debug(String.format("Mapping for file %s: %s", filename, map.columns));
         
-        return new Mapping(){{
-            this.header = header;
-            this.columns = columns;
-        }};
+        return map;
+        
     }
     
 }

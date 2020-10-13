@@ -50,7 +50,7 @@ public class Run extends DeleteableBase {
     @Column(name = "RUN_NUMBER")
     @XmlElement(name = "RUN_NUMBER")
     @JsonProperty("RunNumber")
-    private String number;
+    private BigInteger number;
 
     @Basic
     @Column(name = "RUN_NAME")

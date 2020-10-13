@@ -47,8 +47,8 @@ public class AssemblyData {
     @Id
     @XmlTransient
     @Column(name = "AED_ID")
-    @GeneratedValue(generator = "AED_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "AED_ID_SEQ", sequenceName = "AED_ID_SEQ", allocationSize = 20)
+    @GeneratedValue(generator = "ANY_ASSEMBLY_ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ANY_ASSEMBLY_ID_SEQ", sequenceName = "ANY_ASSEMBLY_ID_SEQ", allocationSize = 20)
     private BigInteger id;
     
     @XmlTransient

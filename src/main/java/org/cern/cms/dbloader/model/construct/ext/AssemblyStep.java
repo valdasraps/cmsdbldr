@@ -54,8 +54,8 @@ public class AssemblyStep extends EntityBase {
     @Id
     @XmlTransient
     @Column(name = "ASS_ID")
-    @GeneratedValue(generator = "ASS_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ASS_ID_SEQ", sequenceName = "ASS_ID_SEQ", allocationSize = 20)
+    @GeneratedValue(generator = "ANY_ASSEMBLY_ID_SEQ", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "ANY_ASSEMBLY_ID_SEQ", sequenceName = "ANY_ASSEMBLY_ID_SEQ", allocationSize = 20)
     private BigInteger id;
     
     @XmlTransient
@@ -82,7 +82,7 @@ public class AssemblyStep extends EntityBase {
     
     @XmlTransient
     @ManyToOne
-    @JoinColumn(name = "LOCATION_ID")
+    @JoinColumn(name = "ASS_LOCATION_ID")
     private Location location;
     
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "step", cascade = CascadeType.ALL)
