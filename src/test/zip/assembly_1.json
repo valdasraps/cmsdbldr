@@ -5,7 +5,7 @@
                 "AssemblyStep": {
                     "Product": {
                         "Part": {
-                            "Id": 2186
+                            "Id": 1021
                         }
                     },
                     "Number": 1,
@@ -17,15 +17,14 @@
                                 "Number": 1,
                                 "Part": {
                                     "Part": {
-                                        "Id": 2186
+                                        "Id": 1021
                                     }
                                 },
                                 "AssemblyData": [
                                     {
                                         "AssemblyData": {
                                             "Number": 1,
-                                            "Version": "1",
-                                            "DataFilename": "some-file-in-same-zip.csv"
+                                            "DataFilename": "assembly_1.csv"
                                         }
                                     }
                                 ]
@@ -35,7 +34,7 @@
                                 "Number": 2,
                                 "Part": {
                                     "Part": {
-                                        "Id": 15421
+                                        "Id": 90
                                     }
                                 }
                             }

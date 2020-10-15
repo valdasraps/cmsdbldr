@@ -39,6 +39,7 @@
 
                             <!-- Assembly data number -->
                             <NUMBER>1</NUMBER>
+                            <VERSION>1</VERSION>
 
                             <!-- Put this file into same zip while submitting -->
                             <DATA_FILE_NAME>some-file-in-same-zip.csv</DATA_FILE_NAME>

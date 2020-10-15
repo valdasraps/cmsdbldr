@@ -32,6 +32,7 @@
                                     {
                                         "AssemblyData": {
                                             "Number": 1,
+                                            "Version": "1",
                                             "DataFilename": "some-file-in-same-zip.csv"
                                         }
                                     }

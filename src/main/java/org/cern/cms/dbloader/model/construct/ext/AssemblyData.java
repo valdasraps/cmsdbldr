@@ -44,6 +44,8 @@ import org.cern.cms.dbloader.model.condition.Dataset;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssemblyData {
     
+    private final static String DEFAULT_VERSION = "1";
+    
     @Id
     @XmlTransient
     @Column(name = "AED_ID")
@@ -65,6 +67,11 @@ public class AssemblyData {
     @XmlElement(name = "NUMBER")
     @JsonProperty("Number")
     private Integer number;
+
+    @Transient
+    @XmlElement(name = "VERSION")
+    @JsonProperty("Version")
+    private String version = DEFAULT_VERSION;
 
     @Transient
     @XmlElement(name = "DATA_FILE_NAME")

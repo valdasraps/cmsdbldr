@@ -2,7 +2,6 @@ package org.cern.cms.dbloader.dao;
 
 import com.google.inject.Inject;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 import javax.management.modelmbean.XMLParseException;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;

@@ -119,6 +119,10 @@ public class AssemblyDao extends DaoBase {
                 if (adata.getNumber() == null) {
                     throw new IllegalArgumentException(String.format("Assembly step data number is mandatory: %s", adata));
                 }
+
+                if (adata.getVersion() == null || adata.getVersion().trim().isEmpty()) {
+                    throw new IllegalArgumentException(String.format("Assembly step data version is mandatory: %s", adata));
+                }
                 
                 if (adata.getDataFilename() == null) {
                     throw new IllegalArgumentException(String.format("Assembly step data file is not defined: %s", adata));
@@ -200,6 +204,7 @@ public class AssemblyDao extends DaoBase {
         header.setRun(run);
         
         Dataset dataset = new Dataset();
+        dataset.setVersion(adata.getVersion());
         dataset.setDataFilename(adata.getDataFilename());
         root.setDatasets(Collections.singletonList(dataset));
         
