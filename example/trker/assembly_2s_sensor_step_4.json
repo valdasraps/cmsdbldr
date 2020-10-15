@@ -1,0 +1,55 @@
+{
+    "Root": {
+        "AssemblySteps": [
+            {
+                "AssemblyStep": {
+                    "Product": {
+                        "Part": {
+                            "Id": 2186
+                        }
+                    },
+                    "Number": 4,
+                    "Status": "COMPLETED",
+                    "CommentDescription": "This is some fourth step comment",
+                    "AssemblyParts": [
+                        {
+                            "AssemblyPart": {
+                                "Number": 1,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 2186,
+                                        "PredifinedAttributes": [
+                                            {
+                                                "Attribute": {
+                                                    "Name": "Construction phase",
+                                                    "Value": "Prepared for assembly"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                "AssemblyData": [
+                                    {
+                                        "AssemblyData": {
+                                            "Number": 1,
+                                            "DataFilename": "some-file-in-same-zip.csv"
+                                        }
+                                    }
+                                ]
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 2,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 15421
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

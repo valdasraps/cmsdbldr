@@ -1,0 +1,47 @@
+{
+    "Root": {
+        "AssemblySteps": [
+            {
+                "AssemblyStep": {
+                    "Product": {
+                        "Part": {
+                            "Id": 2186
+                        }
+                    },
+                    "Number": 2,
+                    "Status": "COMPLETED",
+                    "CommentDescription": "This is some second step comment",
+                    "AssemblyParts": [
+                        {
+                            "AssemblyPart": {
+                                "Number": 1,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 2186
+                                    }
+                                },
+                                "AssemblyData": [
+                                    {
+                                        "AssemblyData": {
+                                            "Number": 1,
+                                            "DataFilename": "some-file-in-same-zip.csv"
+                                        }
+                                    }
+                                ]
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 2,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 15421
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
