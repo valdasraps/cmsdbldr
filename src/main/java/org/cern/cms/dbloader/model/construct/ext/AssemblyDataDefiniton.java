@@ -34,7 +34,7 @@ public class AssemblyDataDefiniton {
     
     @ManyToOne
     @JoinColumn(name = "ADD_APD_ID")
-    private AssemblyPartDefiniton assemblyPartDefinition;
+    private AssemblyPartDefiniton partDefinition;
 
     @ManyToOne
     @JoinColumn(name = "ADD_KOC_ID")

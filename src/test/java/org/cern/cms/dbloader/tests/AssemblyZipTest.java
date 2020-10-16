@@ -30,48 +30,34 @@ public class AssemblyZipTest extends TestBase {
     private final static File JSON_FILE_BASE = new File("src/test/zip/assembly_1.json");
     private final static File DATA_FILE_BASE = new File("src/test/zip/assembly_1.csv");
 
-    private AssemblyProcess getAssemblyProcess() throws Exception {
-        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-            Session session = sm.getSession();
-
-            return (AssemblyProcess) session.createCriteria(AssemblyProcess.class)
-                        .add(Restrictions.eq("id", 1))
-                        .uniqueResult();
-
-        }
-    }
-    
-    private static Root readJSONFile(File f) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(f, Root.class);
-    }
-    
-    private static File writeJSONFile(Root root) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        File f = File.createTempFile("assembly_", ".json");
-        objectMapper.writeValue(f, root);
-        return f;
-    }
-    
     @Test
     public void step01Test() throws Throwable {
+        String datasetVersion = "1.0";
         
-        String versionNumber = "1";
+        stepTest(1, datasetVersion);
+        stepTest(2, datasetVersion);
+        stepTest(3, datasetVersion);
+        stepTest(4, datasetVersion);
+        
+        datasetVersion = "2.0";
+        
+        stepTest(1, datasetVersion);
+        stepTest(2, datasetVersion);
+        stepTest(3, datasetVersion);
+        stepTest(4, datasetVersion);
+        
+    }
+    
+    public void stepTest(Integer stepNumber, String datasetVersion) throws Throwable {
         
         Root root = readJSONFile(JSON_FILE_BASE);
         
         AssemblyStep step = root.getAssemblySteps().iterator().next();
+        step.setNumber(stepNumber);
         AssemblyPart prod = step.getAssemblyParts().iterator().next();
-        prod.getAssemblyData().iterator().next().setVersion(versionNumber);
+        prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
         
-        FilesManager fm = injector.getInstance(FilesManager.class);
-        File zipFile = fm.createZip(writeJSONFile(root), DATA_FILE_BASE);
-        DbLoader loader = new DbLoader(pm);
-        for (FileBase fb: fm.getFiles(Collections.singletonList(zipFile.getAbsolutePath()))) {
-
-            loader.loadArchive(injector, fb, pm.getOperatorAuth());
-
-        }
+        File zipFile = upload(root);
         
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
@@ -85,22 +71,59 @@ public class AssemblyZipTest extends TestBase {
                 if (apart.getPartDefinition().getType() == AssemblyPartDefiniton.AssemblyPartType.PRODUCT) {
                     
                     AssemblyData adata = apart.getAssemblyData().iterator().next();
-                    Assert.assertEquals(versionNumber, adata.getDataset().getVersion());
+                    Assert.assertEquals(datasetVersion, adata.getDataset().getVersion());
                     
                 }
             }
                     
             AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
                 .add(Restrictions.eq("archiveFileName", zipFile.getName()))
-                    .add(Restrictions.eq("version", versionNumber))
+                    .add(Restrictions.eq("version", datasetVersion))
                 .uniqueResult();
 
             Assert.assertEquals(UploadStatus.Success, alog.getStatus());
 
         }
+        
+    }
+    
+    private File upload(Root root) throws Throwable {
+            
+        FilesManager fm = injector.getInstance(FilesManager.class);
+        File zipFile = fm.createZip(writeJSONFile(root), DATA_FILE_BASE);
+        DbLoader loader = new DbLoader(pm);
+        for (FileBase fb: fm.getFiles(Collections.singletonList(zipFile.getAbsolutePath()))) {
+
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+
+        }
+        
+        return zipFile;
                 
     }
     
+    private static Root readJSONFile(File f) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(f, Root.class);
+    }
+    
+    private static File writeJSONFile(Root root) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        File f = File.createTempFile("assembly_", ".json");
+        objectMapper.writeValue(f, root);
+        return f;
+    }
+
+    private AssemblyProcess getAssemblyProcess() throws Exception {
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            return (AssemblyProcess) session.createCriteria(AssemblyProcess.class)
+                        .add(Restrictions.eq("id", 1))
+                        .uniqueResult();
+
+        }
+    }    
 }
 
 

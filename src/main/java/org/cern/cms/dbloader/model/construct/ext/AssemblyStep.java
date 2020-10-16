@@ -55,7 +55,7 @@ public class AssemblyStep extends EntityBase {
     @XmlTransient
     @Column(name = "ASS_ID")
     @GeneratedValue(generator = "ANY_ASSEMBLY_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ANY_ASSEMBLY_ID_SEQ", sequenceName = "ANY_ASSEMBLY_ID_SEQ", allocationSize = 20)
+    @SequenceGenerator(name = "ANY_ASSEMBLY_ID_SEQ", sequenceName = "ANY_ASSEMBLY_ID_SEQ")
     private BigInteger id;
     
     @XmlTransient

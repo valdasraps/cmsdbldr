@@ -162,6 +162,10 @@ public abstract class DaoBase {
                     .add(Restrictions.eq("id", xmlPart.getId()))
                     .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .uniqueResult();
+            
+            if (dbPart == null) {
+                throw new XMLParseException(String.format("Part for PART_ID not found: %s", xmlPart));
+            }    
 
         }
 

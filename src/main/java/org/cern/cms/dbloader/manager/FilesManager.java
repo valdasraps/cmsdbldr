@@ -64,7 +64,7 @@ public class FilesManager {
 
     public List<DataFile> getDataFiles(ArchiveFile archive) throws Exception {
         List<DataFile> files = new TreeList();
-        for (File f : FilesManager.extractZip(archive.getFile())) {
+        for (File f : extractZip(archive.getFile())) {
             if ((XML_FILE.matcher(f.getAbsolutePath()).find()) || XMA_FILE.matcher(f.getAbsolutePath()).find()) {
                 files.add(rf.createDataFile(archive, f, DataFile.Type.XML));
             } else if (JSON_FILE.matcher(f.getAbsolutePath()).find()) {
@@ -74,7 +74,7 @@ public class FilesManager {
         return files;
     }
 
-    public static Set<File> extractZip(File zipFile) throws ZipException, IOException {
+    public Set<File> extractZip(File zipFile) throws ZipException, IOException {
         Set<File> files = new HashSet<>();
         try (ZipFile zip = new ZipFile(zipFile)) {
 
@@ -110,7 +110,7 @@ public class FilesManager {
         return files;
     }
     
-    public static File createZip(File... files) throws ZipException, IOException {
+    public File createZip(File... files) throws ZipException, IOException {
         
         File zipFile = File.createTempFile("temp", ".zip", TMP_FOLDER);
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));

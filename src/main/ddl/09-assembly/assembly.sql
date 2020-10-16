@@ -1,4 +1,5 @@
 CREATE SEQUENCE  "ANY_ASSEMBLY_ID_SEQ";
+CREATE SEQUENCE  "ANY_ASSEMBLY_HISTORY_ID_SEQ";
 
 --------------------------------------------------------
 --  Tables
@@ -74,6 +75,43 @@ CREATE TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" (
    );
 
 --------------------------------------------------------
+--  History tables
+--------------------------------------------------------
+
+CREATE TABLE "ASSEMBLY_DATA_HST" (
+    "HISTORY_RECORD_ID" NUMBER(32,0) NOT NULL ENABLE,
+    "AED_ID" NUMBER, 
+    "AED_ADD_ID" NUMBER, 
+    "AED_ASP_ID" NUMBER, 
+    "AED_DATA_SET_ID" NUMBER(38,0),
+    CONSTRAINT "ASSEMBLY_DATA_HST_PK" PRIMARY KEY ("HISTORY_RECORD_ID")
+);
+
+CREATE TABLE "ASSEMBLY_PARTS_HST" (
+    "HISTORY_RECORD_ID" NUMBER(32,0) NOT NULL ENABLE,
+    "ASP_ID" NUMBER, 
+    "ASP_APD_ID" NUMBER, 
+    "ASP_ASS_ID" NUMBER, 
+    "ASP_PART_ID" NUMBER(38,0),
+    CONSTRAINT "ASSEMBLY_PARTS_HST_PK" PRIMARY KEY ("HISTORY_RECORD_ID")
+);
+
+CREATE TABLE "ASSEMBLY_STEPS_HST" (
+    "HISTORY_RECORD_ID" NUMBER(32,0) NOT NULL ENABLE,
+    "ASS_ID" NUMBER, 
+    "ASS_ASD_ID" NUMBER, 
+    "ASS_LOCATION_ID" NUMBER(38,0), 
+    "ASS_STATUS" VARCHAR2(30 BYTE), 
+    "ASS_PART_ID" NUMBER, 
+    "COMMENT_DESCRIPTION" VARCHAR2(400 BYTE), 
+    "RECORD_INSERTION_TIME" TIMESTAMP (6), 
+    "RECORD_LASTUPDATE_TIME" TIMESTAMP (6), 
+    "RECORD_INSERTION_USER" VARCHAR2(50 BYTE), 
+    "RECORD_LASTUPDATE_USER" VARCHAR2(50 BYTE),
+    CONSTRAINT "ASSEMBLY_STEPS_HST_PK" PRIMARY KEY ("HISTORY_RECORD_ID")
+);
+
+--------------------------------------------------------
 --  Indexes
 --------------------------------------------------------
 
@@ -101,7 +139,7 @@ CREATE TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" (
 --  Triggers
 --------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "AED_INSERT_TRG" 
+CREATE OR REPLACE TRIGGER "AED_INSERT_TRG" 
     BEFORE INSERT
     ON ASSEMBLY_DATA
     REFERENCING OLD AS OLD NEW AS NEW
@@ -118,12 +156,8 @@ CREATE TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" (
         RAISE;
 END;
 /
-ALTER TRIGGER "AED_INSERT_TRG" ENABLE;
---------------------------------------------------------
---  DDL for Trigger ADD_INSERT_TRG
---------------------------------------------------------
 
-  CREATE OR REPLACE TRIGGER "ADD_INSERT_TRG" 
+CREATE OR REPLACE TRIGGER "ADD_INSERT_TRG" 
     BEFORE INSERT
     ON assembly_data_definitions
     REFERENCING OLD AS OLD NEW AS NEW
@@ -141,11 +175,9 @@ ALTER TRIGGER "AED_INSERT_TRG" ENABLE;
 END;
 /
 
-ALTER TRIGGER "ADD_INSERT_TRG" ENABLE;
-
-  CREATE OR REPLACE TRIGGER "APD_INSERT_TRG" 
+CREATE OR REPLACE TRIGGER "APD_INSERT_TRG" 
     BEFORE INSERT
-    ON assembly_part_definitions
+    ON ASSEMBLY_PART_DEFINITIONS
     REFERENCING OLD AS OLD NEW AS NEW
     FOR EACH ROW
     BEGIN
@@ -161,9 +193,7 @@ ALTER TRIGGER "ADD_INSERT_TRG" ENABLE;
 END;
 /
 
-ALTER TRIGGER "APD_INSERT_TRG" ENABLE;
-
-  CREATE OR REPLACE TRIGGER "ASP_INSERT_TRG" 
+CREATE OR REPLACE TRIGGER "ASP_INSERT_TRG" 
     BEFORE INSERT
     ON assembly_parts
     REFERENCING OLD AS OLD NEW AS NEW
@@ -181,9 +211,7 @@ ALTER TRIGGER "APD_INSERT_TRG" ENABLE;
 END;
 /
 
-ALTER TRIGGER "ASP_INSERT_TRG" ENABLE;
-
-  CREATE OR REPLACE TRIGGER "APR_INSERT_TRG" 
+CREATE OR REPLACE TRIGGER "APR_INSERT_TRG" 
     BEFORE INSERT
     ON assembly_processes
     REFERENCING OLD AS OLD NEW AS NEW
@@ -201,9 +229,7 @@ ALTER TRIGGER "ASP_INSERT_TRG" ENABLE;
 END;
 /
 
-ALTER TRIGGER "APR_INSERT_TRG" ENABLE;
-
-  CREATE OR REPLACE TRIGGER "ASD_INSERT_TRG" 
+CREATE OR REPLACE TRIGGER "ASD_INSERT_TRG" 
     BEFORE INSERT
     ON assembly_step_definitions
     REFERENCING OLD AS OLD NEW AS NEW
@@ -221,9 +247,7 @@ ALTER TRIGGER "APR_INSERT_TRG" ENABLE;
 END;
 /
 
-ALTER TRIGGER "ASD_INSERT_TRG" ENABLE;
-
-  CREATE OR REPLACE TRIGGER "ASS_INSERT_TRG" 
+CREATE OR REPLACE TRIGGER "ASS_INSERT_TRG" 
     BEFORE INSERT
     ON assembly_steps
     REFERENCING OLD AS OLD NEW AS NEW
@@ -241,20 +265,17 @@ ALTER TRIGGER "ASD_INSERT_TRG" ENABLE;
 END;
 /
 
-create or replace TRIGGER "ASS_INSERT_UPDATE_TRG"
-    BEFORE INSERT OR UPDATE
+create or replace TRIGGER "ASS_INSERT_TRG"
+    BEFORE INSERT
     ON assembly_steps
     REFERENCING OLD AS OLD NEW AS NEW
     FOR EACH ROW
     BEGIN
 
-        if INSERTING then
-            if :new.ass_id is null then
-                SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.ass_id FROM dual;
-            end if;
-            :new.RECORD_INSERTION_TIME := systimestamp;
+        if :new.ass_id is null then
+            SELECT ANY_ASSEMBLY_ID_SEQ.NEXTVAL INTO :new.ass_id FROM dual;
         end if;
-
+        :new.RECORD_INSERTION_TIME := systimestamp;
         :new.RECORD_LASTUPDATE_TIME := systimestamp;
 
     EXCEPTION
@@ -264,7 +285,128 @@ create or replace TRIGGER "ASS_INSERT_UPDATE_TRG"
 END;
 /
 
-ALTER TRIGGER "ASS_INSERT_UPDATE_TRG" ENABLE;
+--------------------------------------------------------
+-- History triggers
+--------------------------------------------------------
+
+create or replace TRIGGER "AED_UPDATE_DELETE_TRG"
+    BEFORE UPDATE OR DELETE
+    ON ASSEMBLY_DATA
+    REFERENCING OLD AS OLD NEW AS NEW
+    FOR EACH ROW
+    DECLARE
+        l_hst_id number;
+    BEGIN
+
+        SELECT ANY_ASSEMBLY_HISTORY_ID_SEQ.NEXTVAL INTO l_hst_id FROM dual;
+    
+        insert into ASSEMBLY_DATA_HST
+        (
+            HISTORY_RECORD_ID,
+            AED_ID,
+            AED_ADD_ID,
+            AED_ASP_ID,
+            AED_DATA_SET_ID
+        ) values (
+            l_hst_id,
+            :OLD.AED_ID,
+            :OLD.AED_ADD_ID,
+            :OLD.AED_ASP_ID,
+            :OLD.AED_DATA_SET_ID
+        );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+        -- Consider logging the error and then re-raise
+        RAISE;
+END;
+/
+
+create or replace TRIGGER "ASP_UPDATE_DELETE_TRG"
+    BEFORE UPDATE OR DELETE
+    ON ASSEMBLY_PARTS
+    REFERENCING OLD AS OLD NEW AS NEW
+    FOR EACH ROW
+    DECLARE
+        l_hst_id number;
+    BEGIN
+
+        SELECT ANY_ASSEMBLY_HISTORY_ID_SEQ.NEXTVAL INTO l_hst_id FROM dual;
+    
+        insert into ASSEMBLY_PARTS_HST
+        (
+            HISTORY_RECORD_ID,
+            ASP_ID,
+            ASP_APD_ID,
+            ASP_ASS_ID,
+            ASP_PART_ID
+        ) values (
+            l_hst_id,
+            :OLD.ASP_ID,
+            :OLD.ASP_APD_ID,
+            :OLD.ASP_ASS_ID,
+            :OLD.ASP_PART_ID
+        );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+        -- Consider logging the error and then re-raise
+        RAISE;
+END;
+/
+
+create or replace TRIGGER "ASS_UPDATE_DELETE_TRG"
+    BEFORE UPDATE OR DELETE
+    ON assembly_steps
+    REFERENCING OLD AS OLD NEW AS NEW
+    FOR EACH ROW
+    DECLARE
+        l_hst_id number;
+    BEGIN
+
+        if UPDATING then
+            :new.RECORD_LASTUPDATE_TIME := systimestamp;
+            :new.RECORD_INSERTION_TIME := :old.RECORD_INSERTION_TIME;
+            :new.RECORD_INSERTION_USER := :old.RECORD_INSERTION_USER;
+        end if;
+        
+        SELECT ANY_ASSEMBLY_HISTORY_ID_SEQ.NEXTVAL INTO l_hst_id FROM dual;
+    
+        insert into assembly_steps_hst
+        (
+            HISTORY_RECORD_ID,
+            ASS_ID,
+            ASS_ASD_ID,
+            ASS_LOCATION_ID,
+            ASS_STATUS,
+            ASS_PART_ID,
+            COMMENT_DESCRIPTION,
+            RECORD_INSERTION_TIME,
+            RECORD_LASTUPDATE_TIME,
+            RECORD_INSERTION_USER,
+            RECORD_LASTUPDATE_USER
+        )
+        values
+        (
+            l_hst_id,
+            :OLD.ASS_ID,
+            :OLD.ASS_ASD_ID,
+            :OLD.ASS_LOCATION_ID,
+            :OLD.ASS_STATUS,
+            :OLD.ASS_PART_ID,
+            :OLD.COMMENT_DESCRIPTION,
+            :OLD.RECORD_INSERTION_TIME,
+            :OLD.RECORD_LASTUPDATE_TIME,
+            :OLD.RECORD_INSERTION_USER,
+            :OLD.RECORD_LASTUPDATE_USER
+        );
+
+    EXCEPTION
+        WHEN OTHERS THEN
+        -- Consider logging the error and then re-raise
+        RAISE;
+END;
+/
 
 --------------------------------------------------------
 --  Constraints
