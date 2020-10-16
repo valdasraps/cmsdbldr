@@ -4,20 +4,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.cern.cms.dbloader.DbLoader;
 import org.cern.cms.dbloader.TestBase;
 import org.cern.cms.dbloader.manager.FilesManager;
 import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
+import org.cern.cms.dbloader.model.construct.PartAttrList;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyData;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyPart;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyPartDefiniton;
-import org.cern.cms.dbloader.model.construct.ext.AssemblyProcess;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyStep;
+import org.cern.cms.dbloader.model.construct.ext.AssemblyStepDefiniton;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.serial.Root;
+import org.cern.cms.dbloader.model.serial.map.AttrBase;
+import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
+import org.cern.cms.dbloader.model.serial.map.Attribute;
+import org.cern.cms.dbloader.model.serial.map.PositionSchema;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -32,30 +39,103 @@ public class AssemblyZipTest extends TestBase {
 
     @Test
     public void step01Test() throws Throwable {
-        String datasetVersion = "1.0";
+        final String datasetVersion = "7.0";
+
+        stepTest(new Consumer<AssemblyStep>() {
+            @Override
+            public void accept(AssemblyStep step) {
+                step.setNumber(1);
+                AssemblyPart prod = step.getAssemblyParts().iterator().next();
+                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+            }
+        }, new BiConsumer<AssemblyStep, Session>() {
+            @Override
+            public void accept(AssemblyStep step, Session session) {
+                AssemblyStepDefiniton stepDef = step.getStepDefinition();
+                Assert.assertEquals((Integer) 1, stepDef.getNumber());
+            }
+        });
         
-        stepTest(1, datasetVersion);
-        stepTest(2, datasetVersion);
-        stepTest(3, datasetVersion);
-        stepTest(4, datasetVersion);
+        stepTest(new Consumer<AssemblyStep>() {
+            @Override
+            public void accept(AssemblyStep step) {
+                step.setNumber(2);
+                AssemblyPart prod = step.getAssemblyParts().iterator().next();
+                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+            }
+        }, new BiConsumer<AssemblyStep, Session>() {
+            @Override
+            public void accept(AssemblyStep step, Session session) {
+                AssemblyStepDefiniton stepDef = step.getStepDefinition();
+                Assert.assertEquals((Integer) 2, stepDef.getNumber());
+            }
+        });
+
+        stepTest(new Consumer<AssemblyStep>() {
+            @Override
+            public void accept(AssemblyStep step) {
+                step.setNumber(3);
+                AssemblyPart prod = step.getAssemblyParts().iterator().next();
+                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+            }
+        }, new BiConsumer<AssemblyStep, Session>() {
+            @Override
+            public void accept(AssemblyStep step, Session session) {
+                AssemblyStepDefiniton stepDef = step.getStepDefinition();
+                Assert.assertEquals((Integer) 3, stepDef.getNumber());
+            }
+        });
+
+        final Attribute attr = new Attribute();
+        attr.setName("Construction phase");
+        attr.setValue("Prepared for assembly");
         
-        datasetVersion = "2.0";
+        stepTest(new Consumer<AssemblyStep>() {
+            @Override
+            public void accept(AssemblyStep step) {
+                step.setNumber(4);
+                AssemblyPart prod = step.getAssemblyParts().iterator().next();
+                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+                prod.getPart().addAttributes(attr);
+            }
+        }, new BiConsumer<AssemblyStep, Session>() {
+            @Override
+            public void accept(AssemblyStep step, Session session) {
+                
+                AssemblyStepDefiniton stepDef = step.getStepDefinition();
+                Assert.assertEquals((Integer) 4, stepDef.getNumber());
+                
+                AttrCatalog catalog = (AttrCatalog) session.createCriteria(AttrCatalog.class)
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .add(Restrictions.eq("name", attr.getName()))
+                    .uniqueResult();
+             
+                AttrBase base = (AttrBase) session.createCriteria(PositionSchema.class)
+                        .add(Restrictions.eq("name", attr.getValue()))
+                        .add(Restrictions.eq("attrCatalog", catalog))
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
+                        .uniqueResult();
+                
+                PartAttrList partAttrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
+                        .add(Restrictions.eq("attrBase", base))
+                        .add(Restrictions.eq("part", step.getPart()))
+                        .uniqueResult();
+                
+                Assert.assertNotNull(partAttrList);
         
-        stepTest(1, datasetVersion);
-        stepTest(2, datasetVersion);
-        stepTest(3, datasetVersion);
-        stepTest(4, datasetVersion);
+            }
+        });
         
     }
     
-    public void stepTest(Integer stepNumber, String datasetVersion) throws Throwable {
+    public void stepTest(Consumer<AssemblyStep> update, BiConsumer<AssemblyStep, Session> check) throws Throwable {
         
         Root root = readJSONFile(JSON_FILE_BASE);
         
         AssemblyStep step = root.getAssemblySteps().iterator().next();
-        step.setNumber(stepNumber);
+        update.accept(step);
         AssemblyPart prod = step.getAssemblyParts().iterator().next();
-        prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
         
         File zipFile = upload(root);
         
@@ -71,14 +151,16 @@ public class AssemblyZipTest extends TestBase {
                 if (apart.getPartDefinition().getType() == AssemblyPartDefiniton.AssemblyPartType.PRODUCT) {
                     
                     AssemblyData adata = apart.getAssemblyData().iterator().next();
-                    Assert.assertEquals(datasetVersion, adata.getDataset().getVersion());
+                    Assert.assertEquals(prod.getAssemblyData().iterator().next().getVersion(), adata.getDataset().getVersion());
                     
                 }
             }
+            
+            check.accept(astep, session);
                     
             AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
                 .add(Restrictions.eq("archiveFileName", zipFile.getName()))
-                    .add(Restrictions.eq("version", datasetVersion))
+                    .add(Restrictions.eq("version", prod.getAssemblyData().iterator().next().getVersion()))
                 .uniqueResult();
 
             Assert.assertEquals(UploadStatus.Success, alog.getStatus());
@@ -114,16 +196,6 @@ public class AssemblyZipTest extends TestBase {
         return f;
     }
 
-    private AssemblyProcess getAssemblyProcess() throws Exception {
-        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-            Session session = sm.getSession();
-
-            return (AssemblyProcess) session.createCriteria(AssemblyProcess.class)
-                        .add(Restrictions.eq("id", 1))
-                        .uniqueResult();
-
-        }
-    }    
 }
 
 

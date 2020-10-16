@@ -42,17 +42,7 @@ public class PartDao extends DaoBase {
     @Inject
     private DynamicEntityGenerator enGenerator;
 
-    private Root rootf;
-    private DataFile file;
-
     public void savePart(Root root, AuditLog alog, DataFile file) throws Exception {
-
-        this.rootf = root;
-        this.file = file;
-        // Read ROOT part
-
-//        LobManager lobManager = new LobManager();
-//        lobManager.lobParserParts(root, coneh, file);
 
         Part rootPart = (Part) session.createCriteria(Part.class)
             .add(Restrictions.eq("id", props.getRootPartId()))
@@ -77,7 +67,7 @@ public class PartDao extends DaoBase {
         Stack<PartsPair> pairs = new Stack<>();
 
         for (Part part : root.getParts()) {
-            resolvePart(part, pairs);
+            resolvePart(part, pairs, file);
         }
 
         int count = 0;
@@ -98,7 +88,7 @@ public class PartDao extends DaoBase {
 
     }
 
-    private Part resolvePart(Part part, Stack<PartsPair> pairs) throws Exception {
+    private Part resolvePart(Part part, Stack<PartsPair> pairs, DataFile file) throws Exception {
 
         Part xmlPart = part;
         KindOfPart kop;
@@ -155,12 +145,12 @@ public class PartDao extends DaoBase {
 
         if (xmlPart.getChildren() != null) {
             for (Part child : xmlPart.getChildren()) {
-                pairs.push(new PartsPair(resolvePart(child, pairs), dbPart));
+                pairs.push(new PartsPair(resolvePart(child, pairs, file), dbPart));
             }
         }
 
         if (xmlPart.getPartDetails() != null) {
-            PartDetailsBase details = resolvePartDetails(dbPart, xmlPart);
+            PartDetailsBase details = resolvePartDetails(dbPart, xmlPart, file);
             session.save(details);
         }
 
@@ -178,7 +168,7 @@ public class PartDao extends DaoBase {
 
     }
 
-    private PartDetailsBase resolvePartDetails(Part dbPart, Part xmlPart) throws Exception {
+    private PartDetailsBase resolvePartDetails(Part dbPart, Part xmlPart, DataFile file) throws Exception {
 
 
         ConstructEntityHandler coneh = enGenerator.getConstructHandler(dbPart.getKindOfPart().getName());

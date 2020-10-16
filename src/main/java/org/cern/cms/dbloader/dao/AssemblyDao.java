@@ -96,15 +96,6 @@ public class AssemblyDao extends DaoBase {
             updateAssemblyPart(apart, alog, file);
         }
 
-        
-//        for (int i = 0; i < step.getAssemblyParts().size(); i++) {
-//            AssemblyPart apart = step.getAssemblyParts().get(i);
-//            
-//            apart.setStep(step);
-//            apart = updateAssemblyPart(apart, alog, file);
-//            step.getAssemblyParts().set(i, apart);
-//        }
-
         session.saveOrUpdate(step);
         
     }
@@ -120,7 +111,6 @@ public class AssemblyDao extends DaoBase {
         }
         
         {
-            
             BigInteger _id = (BigInteger) session.createCriteria(AssemblyStep.class)
                         .add(Restrictions.eq("stepDefinition", step.getStepDefinition()))
                         .add(Restrictions.eq("part", step.getPart()))
@@ -130,19 +120,6 @@ public class AssemblyDao extends DaoBase {
             if (_id != null) {
                 step.setId(_id);
             }
-
-            
-//            AssemblyStep _step = (AssemblyStep) session.createCriteria(AssemblyStep.class)
-//                        .add(Restrictions.eq("stepDefinition", step.getStepDefinition()))
-//                        .add(Restrictions.eq("part", step.getPart()))
-//                        .uniqueResult();
-//
-//            if (_step != null) {
-//                _step.setComment(step.getComment());
-//                _step.setStatus(step.getStatus());
-//                _step.setAssemblyParts(step.getAssemblyParts());
-//                step = _step;
-//            }
         }
         
         String insertUser = resolveInsertionUser(step.getInsertUser());
@@ -177,13 +154,15 @@ public class AssemblyDao extends DaoBase {
         if (!partDef.getKindOfPart().equals(part.getKindOfPart())) {
             throw new IllegalArgumentException(String.format("Assembly step part kind of part does not match: %s", apart));
         }
-
+        
         if (partDef.getType().equals(AssemblyPartDefiniton.AssemblyPartType.PRODUCT)) {
             step.setLocation(part.getLocation());
             if (!part.equals(step.getPart())) {
                 throw new IllegalArgumentException(String.format("Assembly step PRODUCT and part PRODUCT do not match: %s", apart));
             }
         }
+        
+        updatePart(apart.getPart(), alog, file);
 
         apart.setPartDefinition(partDef);
         
@@ -196,15 +175,6 @@ public class AssemblyDao extends DaoBase {
             if (_id != null) {
                 apart.setId(_id);
             }
-//            AssemblyPart _apart = (AssemblyPart) session.createCriteria(AssemblyPart.class)
-//                        .add(Restrictions.eq("partDefinition", partDef))
-//                        .add(Restrictions.eq("step", step))
-//                        .uniqueResult();
-//            if (_apart != null) {
-//                _apart.setPart(apart.getPart());
-//                _apart.setAssemblyData(apart.getAssemblyData());
-//                apart = _apart;
-//            }
         }
   
         for (AssemblyData adata: apart.getAssemblyData()) {
@@ -212,15 +182,14 @@ public class AssemblyDao extends DaoBase {
             updateAssemblyData(adata, alog, file);
         }
         
-//        for (int i = 0; i < apart.getAssemblyData().size(); i++) {
-//            AssemblyData adata = apart.getAssemblyData().get(i);
-//            
-//            adata.setAssemblyPart(apart);
-//            adata = updateAssemblyData(adata, alog, file);
-//            apart.getAssemblyData().set(i, adata);
-//        }
-        
         return apart;
+    }
+    
+    private void updatePart(Part part, AuditLog alog, DataFile file) throws Exception {
+        Root root = new Root();
+        root.setParts(Collections.singletonList(part));
+
+        rf.createPartDao(sm, auth).savePart(root, alog, file);
     }
     
     private AssemblyData updateAssemblyData(AssemblyData adata, AuditLog alog, DataFile file) throws Exception {
@@ -259,27 +228,15 @@ public class AssemblyDao extends DaoBase {
             if (_id != null) {
                 adata.setId(_id);
             }
-//            AssemblyData db = (AssemblyData) session.createCriteria(AssemblyData.class)
-//                        .add(Restrictions.eq("dataDefinition", dataDef))
-//                        .add(Restrictions.eq("assemblyPart", apart))
-//                        .uniqueResult();
-//            if (db != null) {
-//                db.setDataFilename(adata.getDataFilename());
-//                db.setNumber(adata.getNumber());
-//                db.setVersion(adata.getVersion());
-//                adata = db;
-//            }
         }
         
-        Root root = generateDataRoot(adata);
-        adata.setDataset(root.getDatasets().iterator().next());
-        rf.createCondDao(sm, auth).saveCondition(root, alog, file, null);
+        adata.setDataset(createDataset(adata, alog, file));
         
         return adata;
         
     }
     
-    private Root generateDataRoot(AssemblyData adata) {
+    private Dataset createDataset(AssemblyData adata, AuditLog alog, DataFile file) throws Exception {
         
         AssemblyStepDefiniton stepDef = adata.getAssemblyPart().getStep().getStepDefinition();
         Root root = new Root();
@@ -300,8 +257,10 @@ public class AssemblyDao extends DaoBase {
         dataset.setComment(adata.getDataDefinition().getDescription());
         dataset.setDataFilename(adata.getDataFilename());
         root.setDatasets(Collections.singletonList(dataset));
+
+        rf.createCondDao(sm, auth).saveCondition(root, alog, file, null);
         
-        return root;
+        return dataset;
     }
 
 }
