@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!-- If DBloader throws 'XML Parse Exception: Dataset already exists:' change SUBVERSION NUMBER-->
+    <HEADER>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>TEST_IV</EXTENSION_TABLE_NAME>
+            <NAME>IV</NAME>
+        </TYPE>
+        <RUN>
+            <RUN_NUMBER>3</RUN_NUMBER>
+            <RUN_TYPE>AppendTest</RUN_TYPE>
+            <RUN_BEGIN_TIMESTAMP>2020-10-21</RUN_BEGIN_TIMESTAMP>
+        </RUN>
+    </HEADER>
+
+    <DATA_SET>
+        <COMMENT_DESCRIPTION>Test condition data append</COMMENT_DESCRIPTION>
+        <CREATE_TIMESTAMP>2020-10-21</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>valdo</CREATED_BY_USER>
+        <VERSION>AppendTest</VERSION>
+        <SUBVERSION>3</SUBVERSION>
+        <PART>
+            <KIND_OF_PART>TEST Board</KIND_OF_PART>
+            <NAME_LABEL>B03</NAME_LABEL>
+        </PART>
+        <DATA>
+            <VOLTAGE>1.01</VOLTAGE>
+            <CURR>0.001</CURR>
+            <COMMENT_DESCRIPTION>Testing 1.01</COMMENT_DESCRIPTION>
+        </DATA>
+        <DATA>
+            <VOLTAGE>2.02</VOLTAGE>
+            <CURR>0.002</CURR>
+            <COMMENT_DESCRIPTION>Testing 2.02</COMMENT_DESCRIPTION>
+        </DATA>
+        <DATA>
+            <VOLTAGE>3.03</VOLTAGE>
+            <CURR>0.003</CURR>
+            <COMMENT_DESCRIPTION>Testing 3.03</COMMENT_DESCRIPTION>
+        </DATA>
+    </DATA_SET>
+</ROOT>

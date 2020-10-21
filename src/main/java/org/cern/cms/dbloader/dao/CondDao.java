@@ -192,12 +192,6 @@ public class CondDao extends DaoBase {
                     alog.setTagName(iov.getTags().iterator().next().getName());
                 }
             }
-//
-//            if ((ds.getPart() != null && ds.getChannel() != null) ||
-//                (ds.getPart() != null && ds.getPartAssembly() != null) ||
-//                (ds.getChannel() != null && ds.getPartAssembly() != null)) {
-//                throw new XMLParseException(String.format("One and Only One of Part, PartAssembly and Channel must be defined for Dataset %s", ds));
-//            }
 
             if ((ds.getPart() != null && ds.getPartAssembly() != null)) {
                 throw new XMLParseException(String.format("One and Only One of Part and PartAssembly must be defined for Dataset %s", ds));
@@ -242,7 +236,27 @@ public class CondDao extends DaoBase {
 
             // Check if the dataset does not exist?
             if (!newRun) {
-                checkDataset(ds);
+                Dataset _ds = resolveDataset(ds);
+                if(_ds != null) {
+                    if (!ds.isAppend()) {
+                        throw new XMLParseException(String.format("Dataset already exists: %s", ds));
+                    }
+                    _ds.setData(ds.getData());
+                    for (CondAttrList al1: ds.getAttrList()) {
+                        boolean exists = false;
+                        for (CondAttrList al2: _ds.getAttrList()) {
+                            if (al1.getAttrBase().getId() == al2.getAttrBase().getId()) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if (!exists) {
+                            al1.setDataset(_ds);
+                            _ds.getAttrList().add(al1);
+                        }
+                    }
+                    ds = _ds;
+                }
             }
 
             alog.setVersion(ds.getVersion());
@@ -256,9 +270,11 @@ public class CondDao extends DaoBase {
 
             String insertionUser = resolveInsertionUser(ds.getInsertUser());
             ds.setLastUpdateUser(insertionUser);
-            ds.setInsertUser(insertionUser);
+            if (ds.getId() == null) {
+                ds.setInsertUser(insertionUser);
+            }
 
-            session.save(ds);
+            session.saveOrUpdate(ds);
 
             alog.setDatasetRecordCount(alog.getDatasetRecordCount() + ds.getData().size());
             for (CondBase cb : ds.getData()) {
@@ -334,7 +350,7 @@ public class CondDao extends DaoBase {
 
 
 
-    private void checkDataset(Dataset ds) throws Exception {
+    private Dataset resolveDataset(Dataset ds) throws Exception {
 
         Criteria c = session.createCriteria(Dataset.class)
                 .add(Restrictions.eq("kindOfCondition", ds.getKindOfCondition()))
@@ -359,11 +375,7 @@ public class CondDao extends DaoBase {
             c.add(Restrictions.isNull("subversion"));
         }
 
-        Dataset dbDs = (Dataset) c.uniqueResult();
-
-        if (dbDs != null) {
-            throw new XMLParseException(String.format("Dataset already exists: %s", dbDs));
-        }
+        return (Dataset) c.uniqueResult();
 
     }
 
