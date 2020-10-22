@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -51,6 +53,15 @@ import org.cern.cms.dbloader.model.managemnt.Location;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssemblyStep extends EntityBase {
     
+    public static enum AssemblyStepStatus {
+        
+        IN_PROGRESS,
+        COMPLETED,
+        FAILED,
+        CANCELED
+        
+    }
+    
     @Id
     @XmlTransient
     @Column(name = "ASS_ID")
@@ -78,7 +89,8 @@ public class AssemblyStep extends EntityBase {
     @XmlElement(name = "STATUS")
     @Column(name = "ASS_STATUS")
     @JsonProperty("Status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private AssemblyStepStatus status;
     
     @XmlTransient
     @ManyToOne
