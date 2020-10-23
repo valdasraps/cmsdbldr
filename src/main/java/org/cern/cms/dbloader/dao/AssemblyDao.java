@@ -10,7 +10,6 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
-import javax.persistence.criteria.CriteriaBuilder;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.model.condition.Dataset;
@@ -60,7 +59,7 @@ public class AssemblyDao extends DaoBase {
             
             if (product.getKindOfPartName() == null) {
                 throw new IllegalArgumentException(
-                        String.format("Not existing assembly product does not have Kinf of Part defined: %s", product));
+                        String.format("Not existing assembly product does not have Kind of Part defined: %s", product));
             }
             
             product.setKindOfPart(resolveKindOfPart(product.getKindOfPartName()));
@@ -110,7 +109,7 @@ public class AssemblyDao extends DaoBase {
             throw new IllegalArgumentException(String.format("Assembly step comment is required: %s", step));
         }
         
-        {
+        if (step.getPart().getId() != null) {
             BigInteger _id = (BigInteger) session.createCriteria(AssemblyStep.class)
                         .add(Restrictions.eq("stepDefinition", step.getStepDefinition()))
                         .add(Restrictions.eq("part", step.getPart()))
@@ -137,6 +136,17 @@ public class AssemblyDao extends DaoBase {
         AssemblyStep step = apart.getStep();
         AssemblyStepDefiniton stepDef = step.getStepDefinition();
         Part part = resolvePart(apart.getPart(), false);
+        
+        if (part == null) {
+            
+            part = apart.getPart();
+            if (part.getKindOfPartName() == null) {
+                throw new IllegalArgumentException(
+                        String.format("Not existing assembly part does not have Kind of Part defined: %s", part));
+            } else {
+                part.setKindOfPart(resolveKindOfPart(part.getKindOfPartName()));
+            }
+        }
 
         if (apart.getNumber() == null) {
             throw new IllegalArgumentException(String.format("Assembly step part number is mandatory: %s", apart));

@@ -1,0 +1,59 @@
+{
+    "Root": {
+        "AssemblySteps": [
+            {
+                "AssemblyStep": {
+                    "Product": {
+                        "Part": {
+                            "KindOfPart": "2S Module",
+                            "NameLabel": "2SMODULENO1"
+                        }
+                    },
+                    "Number": 4,
+                    "Status": "COMPLETED",
+                    "CommentDescription": "This is some second step comment",
+                    "AssemblyParts": [
+                        {
+                            "AssemblyPart": {
+                                "Number": 1,
+                                "Part": { 
+                                    "Part": {
+                                        "KindOfPart": "2S Module",
+                                        "NameLabel": "2SMODULENO1"
+                                    }
+                                }
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 2,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 2180
+                                    }
+                                },
+                                "AssemblyData": [
+                                    {
+                                        "AssemblyData": {
+                                            "Number": 1,
+                                            "Version": "1",
+                                            "DataFilename": "some-file-in-same-zip.csv"
+                                        }
+                                    }
+                                ]
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 3,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 15421
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

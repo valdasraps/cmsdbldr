@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+    <ASSEMBLY_STEPS>
+        <ASSEMBLY_STEP>
+            <PART>
+                <KIND_OF_PART>2S Module</KIND_OF_PART>
+                <NAME_LABEL>2SMODULENO1</NAME_LABEL>
+                <COMMENT_DESCRIPTION>2S module created by assembly procedure</COMMENT_DESCRIPTION>
+                <LOCATION>Kansas State University</LOCATION>
+            </PART>
+            <NUMBER>1</NUMBER>
+            <STATUS>COMPLETED</STATUS>
+            <COMMENT_DESCRIPTION>This is some step comment</COMMENT_DESCRIPTION>
+            <ASSEMBLY_PARTS>
+                <ASSEMBLY_PART>
+                    <NUMBER>1</NUMBER>
+                    <PART>
+                        <KIND_OF_PART>2S Module</KIND_OF_PART>
+                        <NAME_LABEL>2SMODULENO1</NAME_LABEL>
+                        <COMMENT_DESCRIPTION>2S module created by assembly procedure</COMMENT_DESCRIPTION>
+                        <LOCATION>Kansas State University</LOCATION>
+                    </PART>
+                </ASSEMBLY_PART>
+                <ASSEMBLY_PART>
+                    <!-- must have Construction phase=Prepared for assembly -->
+                    <NUMBER>2</NUMBER>
+                    <PART>
+                        <PART_ID>2180</PART_ID>
+                        <PREDEFINED_ATTRIBUTES>
+                            <ATTRIBUTE>
+                                <NAME>2S Sensor Posn</NAME>
+                                <VALUE>TOP</VALUE>
+                            </ATTRIBUTE>
+                        </PREDEFINED_ATTRIBUTES>
+                    </PART>
+                </ASSEMBLY_PART>
+                <ASSEMBLY_PART>
+                    <!-- must have Construction phase=Prepared for assembly -->
+                    <NUMBER>3</NUMBER>
+                    <PART>
+                        <PART_ID>2181</PART_ID>
+                        <PREDEFINED_ATTRIBUTES>
+                            <ATTRIBUTE>
+                                <NAME>2S Sensor Posn</NAME>
+                                <VALUE>BOTTOM</VALUE>
+                            </ATTRIBUTE>
+                        </PREDEFINED_ATTRIBUTES>
+                    </PART>
+                    <ASSEMBLY_DATA>
+                        <ASSEMBLY_DATA>
+                            <NUMBER>1</NUMBER>
+                            <VERSION>1</VERSION>
+                            <DATA_FILE_NAME>some-file-in-same-zip.csv</DATA_FILE_NAME>
+                        </ASSEMBLY_DATA>
+                    </ASSEMBLY_DATA>
+                </ASSEMBLY_PART>
+                <ASSEMBLY_PART>
+                    <NUMBER>4</NUMBER>
+                    <PART>
+                        <PART_ID>15421</PART_ID>
+                    </PART>
+                </ASSEMBLY_PART>
+            </ASSEMBLY_PARTS>
+        </ASSEMBLY_STEP>
+    </ASSEMBLY_STEPS>
+</ROOT>
