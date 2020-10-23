@@ -2,6 +2,11 @@ WHENEVER SQLERROR EXIT SQL.SQLCODE
 
 @params
 
+PROMPT Executing CMS_&det._CORE_MANAGEMNT stuff
+connect CMS_&det._CORE_MANAGEMNT/&owner_password@&&1
+
+@00-core_managemnt
+
 PROMPT Executing CMS_&det._CORE_ATTRIBUTE stuff
 connect CMS_&det._CORE_ATTRIBUTE/&owner_password@&&1
 
@@ -43,5 +48,7 @@ PROMPT Executing CMS_&det._&subdet._COND stuff
 connect CMS_&det._&subdet._COND/&owner_password@&&1
 
 @07-hybrids_testing
+
+commit
 
 quit

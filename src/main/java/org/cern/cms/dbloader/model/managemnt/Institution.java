@@ -27,8 +27,8 @@ public class Institution extends DeleteableBase {
 	
 	@Id
 	@Column(name="INSTITUTION_ID")
-    @GeneratedValue(generator = "ANY_INSTITUTION_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ANY_INSTITUTION_ID_SEQ", sequenceName = "ANY_INSTITUTION_ID_SEQ", allocationSize = 20)
+        @GeneratedValue(generator = "ANY_INSTITUTION_ID_SEQ", strategy = GenerationType.SEQUENCE)
+        @SequenceGenerator(name = "ANY_INSTITUTION_ID_SEQ", sequenceName = "ANY_INSTITUTION_ID_SEQ", allocationSize = 20)
 	@XmlTransient
 	private BigInteger id;
 	

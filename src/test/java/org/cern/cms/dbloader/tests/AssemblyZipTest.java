@@ -39,7 +39,7 @@ public class AssemblyZipTest extends TestBase {
 
     @Test
     public void step01Test() throws Throwable {
-        final String datasetVersion = "7.0";
+        final String datasetVersion = "1.0";
 
         stepTest(new Consumer<AssemblyStep>() {
             @Override
