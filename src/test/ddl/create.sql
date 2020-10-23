@@ -1,44 +1,46 @@
 WHENEVER SQLERROR EXIT SQL.SQLCODE
 
-PROMPT Executing CMS_TST_CORE_ATTRIBUTE stuff
-connect CMS_TST_CORE_ATTRIBUTE/testing@&&1
+@params
+
+PROMPT Executing CMS_&det._CORE_ATTRIBUTE stuff
+connect CMS_&det._CORE_ATTRIBUTE/&owner_password@&&1
 
 @01-core_attribute
 
-PROMPT Executing CMS_TST_CORE_CONSTRUCT stuff
-connect CMS_TST_CORE_CONSTRUCT/testing@&&1
+PROMPT Executing CMS_&det._CORE_CONSTRUCT stuff
+connect CMS_&det._CORE_CONSTRUCT/&owner_password@&&1
 
 @02-core_construct
 
-PROMPT Executing CMS_TST_CORE_COND stuff
-connect CMS_TST_CORE_COND/testing@&&1
+PROMPT Executing CMS_&det._CORE_COND stuff
+connect CMS_&det._CORE_COND/&owner_password@&&1
 
-GRANT SELECT ON CMS_TST_CORE_COND.ANY_COND_RECORD_ID_SEQ TO CMS_TST_TEST_COND;
+GRANT SELECT ON CMS_&det._CORE_COND.ANY_COND_RECORD_ID_SEQ TO CMS_&det._&subdet._COND;
 
-PROMPT Executing CMS_TST_TEST_COND stuff
-connect CMS_TST_TEST_COND/testing@&&1
+PROMPT Executing CMS_&det._&subdet._COND stuff
+connect CMS_&det._&subdet._COND/&owner_password@&&1
 
 @03-test_cond
 
-PROMPT Executing CMS_TST_CORE_COND stuff
-connect CMS_TST_CORE_COND/testing@&&1
+PROMPT Executing CMS_&det._CORE_COND stuff
+connect CMS_&det._CORE_COND/&owner_password@&&1
 
 @04-core_cond
 
-PROMPT Executing CMS_TST_CORE_IOV_MGMNT stuff
-connect CMS_TST_CORE_IOV_MGMNT/testing@&&1
+PROMPT Executing CMS_&det._CORE_IOV_MGMNT stuff
+connect CMS_&det._CORE_IOV_MGMNT/&owner_password@&&1
 
 @05-core-iov-mgmnt
 
-PROMPT Executing CMS_TST_TEST_CONSTRUCT stuff
-connect CMS_TST_TEST_CONSTRUCT/testing@&&1
+PROMPT Executing CMS_&det._&subdet._CONSTRUCT stuff
+connect CMS_&det._&subdet._CONSTRUCT/&owner_password@&&1
 
 @06-part_extension
 
 @09-assembly_process
 
-PROMPT Executing CMS_TST_TEST_COND stuff
-connect CMS_TST_TEST_COND/testing@&&1
+PROMPT Executing CMS_&det._&subdet._COND stuff
+connect CMS_&det._&subdet._COND/&owner_password@&&1
 
 @07-hybrids_testing
 

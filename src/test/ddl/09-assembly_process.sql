@@ -3,16 +3,16 @@ delete from ASSEMBLY_STEP_DEFINITIONS;
 delete from ASSEMBLY_PROCESSES;
 
 COLUMN l_product_kop_id NEW_VALUE l_product_kop_id
-select KIND_OF_PART_ID as l_product_kop_id from CMS_TST_CORE_CONSTRUCT.kinds_of_parts where DISPLAY_NAME = 'TEST Tower';
+select KIND_OF_PART_ID as l_product_kop_id from CMS_&det._CORE_CONSTRUCT.kinds_of_parts where DISPLAY_NAME = 'TEST Tower';
 
 COLUMN l_jig_kop_id NEW_VALUE l_jig_kop_id
-select KIND_OF_PART_ID as l_jig_kop_id from CMS_TST_CORE_CONSTRUCT.kinds_of_parts where DISPLAY_NAME = 'TEST Jig';
+select KIND_OF_PART_ID as l_jig_kop_id from CMS_&det._CORE_CONSTRUCT.kinds_of_parts where DISPLAY_NAME = 'TEST Jig';
 
 COLUMN l_iv_koc_id NEW_VALUE l_iv_koc_id
-select KIND_OF_CONDITION_ID as l_iv_koc_id from CMS_TST_CORE_COND.kinds_of_conditions where NAME = 'IV';
+select KIND_OF_CONDITION_ID as l_iv_koc_id from CMS_&det._CORE_COND.kinds_of_conditions where NAME = 'IV';
 
 COLUMN l_prep_attr_id NEW_VALUE l_prep_attr_id
-select ATTRIBUTE_ID as l_prep_attr_id from cms_tst_core_attribute.POSITION_SCHEMAS where NAME = 'Prepared for assembly';
+select ATTRIBUTE_ID as l_prep_attr_id from cms_&det._core_attribute.POSITION_SCHEMAS where NAME = 'Prepared for assembly';
 
 -- Processes
 
