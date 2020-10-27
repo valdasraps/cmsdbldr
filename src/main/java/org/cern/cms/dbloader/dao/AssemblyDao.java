@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.Run;
 import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.construct.ext.AssemblyCurrentStep;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyData;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyDataDefiniton;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyPart;
@@ -49,6 +50,10 @@ public class AssemblyDao extends DaoBase {
     public void saveAssembly(AssemblyStep step, AuditLog alog, DataFile file) throws Exception {
         
         // Lets lookup all stuff in the database and validate input
+
+        if (step.getNumber() == null) {
+            throw new IllegalArgumentException(String.format("Assembly step number is mandatory: %s", step));
+        }
         
         Part product = resolvePart(step.getPart(), false);
 
@@ -63,11 +68,25 @@ public class AssemblyDao extends DaoBase {
             }
             
             product.setKindOfPart(resolveKindOfPart(product.getKindOfPartName()));
+
+            if (step.getNumber() != 1) {
+                throw new IllegalArgumentException(String.format("Assembly step number for new part must be equal to 1: %s", step));
+            }
             
-        }
-        
-        if (step.getNumber() == null) {
-            throw new IllegalArgumentException(String.format("Assembly step number is mandatory: %s", step));
+        } else {
+            
+            AssemblyCurrentStep cstep = (AssemblyCurrentStep) session.createCriteria(AssemblyCurrentStep.class)
+                .add(Restrictions.eq("partId", product.getId()))
+                .uniqueResult();
+            
+            if (cstep == null) {
+                throw new IllegalArgumentException(String.format("Current Assembly step not resolved: %s", step));
+            }
+            
+            if (!Objects.equals(cstep.getNumber(), step.getNumber())) {
+                throw new IllegalArgumentException(String.format("Current Assembly step (%d) does not match: %s ", cstep.getNumber(), step));
+            }
+            
         }
         
         AssemblyProcess process = (AssemblyProcess) session.createCriteria(AssemblyProcess.class)

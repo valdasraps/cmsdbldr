@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,8 +16,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.cern.cms.dbloader.model.construct.Part;
-
 
 @Entity
 @Table(name = "ASSEMBLY_PART_CURRENT_STEPS")
@@ -26,21 +25,17 @@ public class AssemblyCurrentStep {
     
     @Id
     @Column(name = "PART_ID")
-    private BigInteger id;
+    private BigInteger partId;
     
-    @OneToOne
-    @JoinColumn(name = "PART_ID")
-    private Part part;
-    
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "APR_ID")
     private AssemblyProcess assemblyProcess;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ASD_ID")
     private AssemblyStepDefiniton stepDefinition;
     
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ASS_ID")
     private AssemblyStep step;
     

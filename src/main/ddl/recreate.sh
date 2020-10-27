@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+cd "$(dirname "$0")"
 
 sqlplus64 system/rootas@xemif @drop
 sqlplus64 system/rootas@xemif @create xemif
