@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,7 +20,7 @@ import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "ASSEMBLY_ATTRIBUTE_DEFINITIONS", uniqueConstraints = @UniqueConstraint(columnNames = {"AAD_APD_ID", "AAD_ATTRIBUTE_ID"}))
+@Table(name = "ASSEMBLY_ATTRIBUTE_DEFINITIONS", uniqueConstraints = @UniqueConstraint(columnNames = {"AAD_APD_ID", "AAD_ATTRIBUTE_ID", "AAD_STEP_STATUS"}))
 @Getter @Setter @ToString
 @EqualsAndHashCode
 public class AssemblyAttributeDefiniton {
@@ -39,5 +41,10 @@ public class AssemblyAttributeDefiniton {
     @Column(name="AAD_IS_SELECTABLE")
     @Type(type="true_false")
     private Boolean selectable;
+    
+    @Basic
+    @Column(name = "AAD_STEP_STATUS")
+    @Enumerated(EnumType.STRING)
+    private AssemblyStepStatus stepStatus;
 
 }

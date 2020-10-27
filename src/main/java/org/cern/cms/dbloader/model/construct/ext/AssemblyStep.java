@@ -53,14 +53,6 @@ import org.cern.cms.dbloader.model.managemnt.Location;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AssemblyStep extends EntityBase {
     
-    public static enum AssemblyStepStatus {
-        
-        IN_PROGRESS,
-        COMPLETED,
-        FAILED,
-        CANCELED
-        
-    }
     
     @Id
     @XmlTransient

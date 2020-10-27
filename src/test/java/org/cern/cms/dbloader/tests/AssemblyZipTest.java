@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -18,6 +19,7 @@ import org.cern.cms.dbloader.model.construct.ext.AssemblyPart;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyPartDefiniton;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyStep;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyStepDefiniton;
+import org.cern.cms.dbloader.model.construct.ext.AssemblyStepStatus;
 import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import org.cern.cms.dbloader.model.managemnt.UploadStatus;
 import org.cern.cms.dbloader.model.serial.Root;
@@ -36,56 +38,93 @@ public class AssemblyZipTest extends TestBase {
 
     private final static File JSON_FILE_BASE = new File("src/test/zip/assembly_1.json");
     private final static File DATA_FILE_BASE = new File("src/test/zip/assembly_1.csv");
-
+    
+    private final static String DATASET_VERSION = "1.0";
+    
     @Test
     public void step01Test() throws Throwable {
-        final String datasetVersion = "1.0";
 
         stepTest(new Consumer<AssemblyStep>() {
             @Override
             public void accept(AssemblyStep step) {
                 step.setNumber(1);
                 AssemblyPart prod = step.getAssemblyParts().iterator().next();
-                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+                prod.getAssemblyData().iterator().next().setVersion(DATASET_VERSION);
             }
         }, new BiConsumer<AssemblyStep, Session>() {
             @Override
             public void accept(AssemblyStep step, Session session) {
                 AssemblyStepDefiniton stepDef = step.getStepDefinition();
                 Assert.assertEquals((Integer) 1, stepDef.getNumber());
+                Assert.assertEquals(AssemblyStepStatus.COMPLETED, step.getStatus());
             }
         });
+    }
+        
+    @Test
+    public void step02Test() throws Throwable {
         
         stepTest(new Consumer<AssemblyStep>() {
             @Override
             public void accept(AssemblyStep step) {
                 step.setNumber(2);
+                step.setStatus(AssemblyStepStatus.IN_PROGRESS);
                 AssemblyPart prod = step.getAssemblyParts().iterator().next();
-                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+                prod.getAssemblyData().iterator().next().setVersion(DATASET_VERSION);
             }
         }, new BiConsumer<AssemblyStep, Session>() {
             @Override
             public void accept(AssemblyStep step, Session session) {
                 AssemblyStepDefiniton stepDef = step.getStepDefinition();
                 Assert.assertEquals((Integer) 2, stepDef.getNumber());
+                Assert.assertEquals(AssemblyStepStatus.IN_PROGRESS, step.getStatus());
             }
         });
-
+    }
+    
+    @Test
+    public void step03Test() throws Throwable {
+        
+        stepTest(new Consumer<AssemblyStep>() {
+            @Override
+            public void accept(AssemblyStep step) {
+                step.setNumber(2);
+                AssemblyPart prod = step.getAssemblyParts().iterator().next();
+                prod.getAssemblyData().clear();
+            }
+        }, new BiConsumer<AssemblyStep, Session>() {
+            @Override
+            public void accept(AssemblyStep step, Session session) {
+                AssemblyStepDefiniton stepDef = step.getStepDefinition();
+                Assert.assertEquals((Integer) 2, stepDef.getNumber());
+                Assert.assertEquals(AssemblyStepStatus.COMPLETED, step.getStatus());
+            }
+        });
+    }
+        
+    @Test
+    public void step04Test() throws Throwable {
+        
         stepTest(new Consumer<AssemblyStep>() {
             @Override
             public void accept(AssemblyStep step) {
                 step.setNumber(3);
                 AssemblyPart prod = step.getAssemblyParts().iterator().next();
-                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+                prod.getAssemblyData().iterator().next().setVersion(DATASET_VERSION);
             }
         }, new BiConsumer<AssemblyStep, Session>() {
             @Override
             public void accept(AssemblyStep step, Session session) {
                 AssemblyStepDefiniton stepDef = step.getStepDefinition();
                 Assert.assertEquals((Integer) 3, stepDef.getNumber());
+                Assert.assertEquals(AssemblyStepStatus.COMPLETED, step.getStatus());
             }
         });
-
+    }
+        
+    @Test
+    public void step05Test() throws Throwable {
+        
         final Attribute attr = new Attribute();
         attr.setName("Construction phase");
         attr.setValue("Prepared for assembly");
@@ -95,7 +134,7 @@ public class AssemblyZipTest extends TestBase {
             public void accept(AssemblyStep step) {
                 step.setNumber(4);
                 AssemblyPart prod = step.getAssemblyParts().iterator().next();
-                prod.getAssemblyData().iterator().next().setVersion(datasetVersion);
+                prod.getAssemblyData().iterator().next().setVersion(DATASET_VERSION);
                 prod.getPart().addAttributes(attr);
             }
         }, new BiConsumer<AssemblyStep, Session>() {
@@ -150,20 +189,27 @@ public class AssemblyZipTest extends TestBase {
             for (AssemblyPart apart: astep.getAssemblyParts()) {
                 if (apart.getPartDefinition().getType() == AssemblyPartDefiniton.AssemblyPartType.PRODUCT) {
                     
-                    AssemblyData adata = apart.getAssemblyData().iterator().next();
-                    Assert.assertEquals(prod.getAssemblyData().iterator().next().getVersion(), adata.getDataset().getVersion());
+                    Iterator<AssemblyData> it = apart.getAssemblyData().iterator();
+                    if (it.hasNext()) {
+                        AssemblyData adata = it.next();
+                        if (prod.getAssemblyData().iterator().hasNext()) {
+                            Assert.assertEquals(prod.getAssemblyData().iterator().next().getVersion(), adata.getDataset().getVersion());
+                        }
+                    } else {
+                        Assert.assertFalse(prod.getAssemblyData().iterator().hasNext());
+                    }
                     
                 }
             }
             
             check.accept(astep, session);
-                    
-            AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
-                .add(Restrictions.eq("archiveFileName", zipFile.getName()))
-                    .add(Restrictions.eq("version", prod.getAssemblyData().iterator().next().getVersion()))
-                .uniqueResult();
-
-            Assert.assertEquals(UploadStatus.Success, alog.getStatus());
+            if (prod.getAssemblyData().iterator().hasNext()) {
+                AuditLog alog = (AuditLog) session.createCriteria(AuditLog.class)
+                    .add(Restrictions.eq("archiveFileName", zipFile.getName()))
+                        .add(Restrictions.eq("version", prod.getAssemblyData().iterator().next().getVersion()))
+                    .uniqueResult();
+                Assert.assertEquals(UploadStatus.Success, alog.getStatus());
+            }
 
         }
         

@@ -9,7 +9,8 @@ CREATE TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" (
     "AAD_ID" NUMBER, 
     "AAD_APD_ID" NUMBER, 
     "AAD_ATTRIBUTE_ID" NUMBER(38,0), 
-    "AAD_IS_SELECTABLE" CHAR(1 BYTE)
+    "AAD_IS_SELECTABLE" CHAR(1 BYTE),
+    "AAD_STEP_STATUS" VARCHAR2(30 BYTE)
    );
 
   CREATE TABLE "ASSEMBLY_DATA" (
@@ -416,8 +417,11 @@ END;
         'Y',
         'N'
     ) ) ENABLE;
+  ALTER TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" ADD CONSTRAINT "AAD_STEP_STATUS_CK" CHECK 
+    ((AAD_STEP_STATUS in ('IN_PROGRESS','COMPLETED','FAILED','CANCELED') and AAD_IS_SELECTABLE = 'N') or 
+     (AAD_STEP_STATUS is null and AAD_IS_SELECTABLE = 'Y')) ENABLE;
   ALTER TABLE ASSEMBLY_ATTRIBUTE_DEFINITIONS ADD CONSTRAINT AAD_PK PRIMARY KEY (  AAD_ID ) ENABLE;
-  ALTER TABLE ASSEMBLY_ATTRIBUTE_DEFINITIONS ADD CONSTRAINT AAD_UK UNIQUE (  AAD_APD_ID , AAD_ATTRIBUTE_ID ) ENABLE;
+  ALTER TABLE ASSEMBLY_ATTRIBUTE_DEFINITIONS ADD CONSTRAINT AAD_UK UNIQUE (  AAD_APD_ID , AAD_ATTRIBUTE_ID, AAD_STEP_STATUS ) ENABLE;
   ALTER TABLE ASSEMBLY_ATTRIBUTE_DEFINITIONS  MODIFY (AAD_ID NOT NULL);
   ALTER TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" MODIFY ("AAD_APD_ID" NOT NULL ENABLE);
   ALTER TABLE "ASSEMBLY_ATTRIBUTE_DEFINITIONS" MODIFY ("AAD_ATTRIBUTE_ID" NOT NULL ENABLE);
@@ -543,13 +547,51 @@ END;
 	  REFERENCES "CMS_&det._CORE_MANAGEMNT"."LOCATIONS" ("LOCATION_ID") ENABLE;
 
 --------------------------------------------------------
+--  Views
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "ASSEMBLY_PART_CURRENT_STEPS" ("PART_ID", "APR_ID", "ASD_ID", "ASD_NUMBER", "ASS_ID") AS 
+  select 
+    a.PART_ID,
+    a.apr_id,
+    sd.asd_id,
+    a.curr_step_number as asd_number,
+    s.ass_id
+from (
+    select 
+        p.PART_ID,
+        pr.apr_id,
+        CASE WHEN pr.apr_id is null THEN 
+            null 
+        ELSE 
+            nvl(ls.last_closed, 0) + 1
+        END as curr_step_number
+    from 
+        CMS_&det._CORE_CONSTRUCT.PARTS p 
+        left join CMS_&det._&subdet._CONSTRUCT.ASSEMBLY_PROCESSES pr
+            on p.kind_of_part_id = pr.apr_product_kop_id
+        left join (
+            select 
+                s.ASS_PART_ID,
+                sd.asd_apr_id,
+                max(sd.asd_number) last_closed
+            from 
+                CMS_&det._&subdet._CONSTRUCT.ASSEMBLY_STEP_DEFINITIONS sd
+                left join CMS_&det._&subdet._CONSTRUCT.ASSEMBLY_STEPS s 
+                    on sd.asd_id = s.ass_asd_id
+            where
+                s.ASS_STATUS <> 'IN_PROGRESS'
+            group by 
+                s.ASS_PART_ID,
+                sd.asd_apr_id) ls
+            on ls.ASS_PART_ID = p.PART_ID and ls.asd_apr_id = pr.apr_id) a
+    left join CMS_&det._&subdet._CONSTRUCT.ASSEMBLY_STEP_DEFINITIONS sd
+        on sd.asd_apr_id = a.apr_id and sd.asd_number = a.curr_step_number
+    left join CMS_&det._&subdet._CONSTRUCT.ASSEMBLY_STEPS s 
+        on sd.asd_id = s.ass_asd_id and a.part_id = s.ass_part_id;
+
+--------------------------------------------------------
 --  Grants
---------------------------------------------------------
-
-"ANY_ASSEMBLY_ID_SEQ";
-
---------------------------------------------------------
---  Tables
 --------------------------------------------------------
 
 GRANT SELECT ON ANY_ASSEMBLY_ID_SEQ TO CMS_&det._&subdet._CONSTRUCT_WRITER;
@@ -585,3 +627,5 @@ GRANT SELECT, REFERENCES ON ASSEMBLY_STEP_DEFINITIONS TO CMS_&det._&subdet._CONS
 GRANT SELECT ON ASSEMBLY_STEPS TO PUBLIC;
 GRANT INSERT, UPDATE ON ASSEMBLY_STEPS TO CMS_&det._&subdet._CONSTRUCT_WRITER;
 GRANT SELECT, REFERENCES ON ASSEMBLY_STEPS TO CMS_&det._&subdet._CONSTRUCT;
+
+grant SELECT on "ASSEMBLY_PART_CURRENT_STEPS" to "PUBLIC" ;
