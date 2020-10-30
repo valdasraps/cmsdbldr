@@ -24,6 +24,7 @@ do_start() {
       $1 \
       -cp $jarlib \
       -Doracle.net.tns_admin=/etc \
+      -Xms512M -Xmx1024M \
       org.cern.cms.dbloader.rest.Application $properties
     RETVAL=$?
     return $RETVAL
@@ -33,6 +34,7 @@ do_doc() {
     TFOLDER=`mktemp -d`
     java -jar \
       -Doracle.net.tns_admin=/etc \
+      -Xms512M -Xmx1024M \
       $jarlib \
       --properties $properties \
       --schema $TFOLDER >/dev/null

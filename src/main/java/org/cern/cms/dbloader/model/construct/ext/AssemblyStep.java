@@ -40,7 +40,7 @@ import org.cern.cms.dbloader.model.managemnt.Location;
 @Table(name = "ASSEMBLY_STEPS", uniqueConstraints = @UniqueConstraint(columnNames = {"ASS_ASD_ID", "ASS_PART_ID"}))
 @Getter
 @Setter
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"assemblyParts"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ 
     "id",
@@ -94,5 +94,21 @@ public class AssemblyStep extends EntityBase {
     @XmlElement(name = "ASSEMBLY_PART", type = AssemblyPart.class)
     @JsonProperty("AssemblyParts")
     private List<AssemblyPart> assemblyParts = new ArrayList<>();
+    
+    public AssemblyPart findAssemblyPart(AssemblyPartDefiniton partDef) {
+        if (partDef.getStepDefinition().equals(getStepDefinition())) {
+            for (AssemblyPart part: getAssemblyParts()) {
+                if (part.getPartDefinition().equals(partDef)) {
+                    return part;
+                }
+            }
+        }
+        return null;
+    }
+    
+    @Transient
+    public boolean isCompletedStatus() {
+        return status == AssemblyStepStatus.COMPLETED;
+    }
     
 }

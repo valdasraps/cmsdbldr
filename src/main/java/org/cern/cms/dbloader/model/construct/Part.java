@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.*;
+import javax.persistence.OneToMany;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -40,13 +41,14 @@ import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.manager.xml.PartDetailsBaseProxyAdapter;
 import org.cern.cms.dbloader.model.DeleteableBase;
 import org.cern.cms.dbloader.model.managemnt.Location;
+import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
 
 @Entity
 @Table(name = "PARTS", uniqueConstraints = @UniqueConstraint(columnNames = {"BARCODE", "SERIAL_NUMBER", "KIND_OF_PART_ID"}))
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"attrLists"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ "kindOfPart",
         "partTree",
@@ -62,7 +64,8 @@ import org.cern.cms.dbloader.model.serial.map.Attribute;
         "removedDate",
         "mode",
         "serialNumber",
-        "location"
+        "location",
+        "attrLists"
 })
 //@JsonPropertyOrder({"", ""})
 @JsonRootName("PART")
@@ -225,12 +228,25 @@ public class Part extends DeleteableBase {
     @XmlJavaTypeAdapter(value = PartDetailsBaseProxyAdapter.class)
     private PartDetailsBase partDetails;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "part")
+    @XmlTransient
+    private List<PartAttrList> attrLists;
+    
     public void addChild(Part part) {
         this.children.add(part);
     }
 
     public void addAttributes(Attribute atr) {
         this.attributes.add(atr);
+    }
+    
+    public PartAttrList findAttrList(AttrBase attrBase) {
+        for (PartAttrList attrList: getAttrLists()) {
+            if (attrList.getAttrBase().equals(attrBase)) {
+                return attrList;
+            }
+        }
+        return null;
     }
 
 }

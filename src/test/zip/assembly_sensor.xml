@@ -35,7 +35,7 @@
                             <NUMBER>1</NUMBER>
 
                             <!-- Put this file into same zip while submitting -->
-                            <DATA_FILE_NAME>assembly_1.csv</DATA_FILE_NAME>
+                            <DATA_FILE_NAME>assembly_sensor.csv</DATA_FILE_NAME>
 
                         </ASSEMBLY_DATA>
                     </ASSEMBLY_DATA>

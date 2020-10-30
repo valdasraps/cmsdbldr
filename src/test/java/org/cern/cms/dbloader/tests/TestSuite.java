@@ -21,7 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
     TrackRequestLoadTest.class,
     TrackShipmentLoadTest.class,
     AuthTest.class, 
-    AssemblyZipTest.class,
+    AssemblySensorTest.class,
     CondAppendTest.class
 })
 public class TestSuite {

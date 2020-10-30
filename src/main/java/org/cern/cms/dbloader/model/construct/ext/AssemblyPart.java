@@ -35,12 +35,15 @@ import org.cern.cms.dbloader.model.construct.Part;
 @Table(name = "ASSEMBLY_PARTS", uniqueConstraints = @UniqueConstraint(columnNames = {"ASP_APD_ID","ASP_ASS_ID","ASP_PART_ID"}))
 @Getter
 @Setter
-@ToString(exclude = {"step"})
+@ToString(exclude = {"step","assemblyData"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ 
     "id",
     "step",
-    "partDefinition"
+    "partDefinition",
+    "productType",
+    "componentType",
+    "jigType"
 })
 @JsonPropertyOrder({"", ""})
 @JsonRootName("AssemblyPart")
@@ -81,5 +84,34 @@ public class AssemblyPart {
     @XmlElement(name = "ASSEMBLY_DATA", type = AssemblyData.class)
     @JsonProperty("AssemblyData")
     private List<AssemblyData> assemblyData = new ArrayList<>();
+    
+    @Transient
+    @XmlTransient
+    public boolean isProductType() {
+        return partDefinition.isProductType();
+    }
+    
+    @Transient
+    @XmlTransient
+    public boolean isComponentType() {
+        return partDefinition.isComponentType();
+    }
+
+    @Transient
+    @XmlTransient
+    public boolean isJigType() {
+        return partDefinition.isJigType();
+    }
+    
+    public AssemblyData findAssemblyData(AssemblyDataDefiniton dataDef) {
+        if (dataDef.getPartDefinition().equals(getPartDefinition())) {
+            for (AssemblyData adata: getAssemblyData()) {
+                if (adata.getDataDefinition().equals(dataDef)) {
+                    return adata;
+                }
+            }
+        }
+        return null;
+    }
 
 }

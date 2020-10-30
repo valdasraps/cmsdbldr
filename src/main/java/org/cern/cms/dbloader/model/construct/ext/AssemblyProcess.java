@@ -24,7 +24,7 @@ import org.cern.cms.dbloader.model.construct.KindOfPart;
 
 @Entity
 @Table(name = "ASSEMBLY_PROCESSES", uniqueConstraints = @UniqueConstraint(columnNames = {"APR_NAME"}))
-@Getter @Setter @ToString(exclude = {"steps"})
+@Getter @Setter @ToString(exclude = {"stepDefinitions"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 public class AssemblyProcess {
     
@@ -36,8 +36,8 @@ public class AssemblyProcess {
     @JoinColumn(name = "APR_PRODUCT_KOP_ID")
     private KindOfPart kindOfPart;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "assemblyProcess", cascade = CascadeType.ALL)
-    private List<AssemblyStepDefiniton> steps;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process", cascade = CascadeType.ALL)
+    private List<AssemblyStepDefiniton> stepDefinitions;
     
     @Basic
     @Column(name = "APR_NAME")

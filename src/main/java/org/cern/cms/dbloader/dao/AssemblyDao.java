@@ -9,12 +9,16 @@ import com.google.inject.assistedinject.Assisted;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.model.condition.Run;
 import org.cern.cms.dbloader.model.construct.Part;
+import org.cern.cms.dbloader.model.construct.PartAttrList;
+import org.cern.cms.dbloader.model.construct.ext.AssemblyAttributeDefiniton;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyCurrentStep;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyData;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyDataDefiniton;
@@ -25,6 +29,7 @@ import org.cern.cms.dbloader.model.construct.ext.AssemblyStep;
 import org.cern.cms.dbloader.model.construct.ext.AssemblyStepDefiniton;
 import org.cern.cms.dbloader.model.serial.Header;
 import org.cern.cms.dbloader.model.serial.Root;
+import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.cern.cms.dbloader.util.OperatorAuth;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -98,7 +103,7 @@ public class AssemblyDao extends DaoBase {
         }
         
         final Integer stepNumber = step.getNumber();
-        AssemblyStepDefiniton stepDef = process.getSteps().stream()
+        AssemblyStepDefiniton stepDef = process.getStepDefinitions().stream()
                 .filter(s -> Objects.equals(s.getNumber(), stepNumber)).findFirst().get();
 
         if (stepDef == null) {
@@ -107,18 +112,81 @@ public class AssemblyDao extends DaoBase {
             step.setStepDefinition(stepDef);
         }
         
-        step = updateStep(step, alog, file);
+        // Check step
+        
+        step = checkStep(step);
 
+        // First pass to check entries (re-writting product!)
+        
+        product = null;
+        Set<Integer> partNumbers = new HashSet<>();
         for (AssemblyPart apart: step.getAssemblyParts()) {
+            
+            if (apart.getNumber() == null) {
+                throw new IllegalArgumentException(String.format("Assembly step part number is mandatory: %s", apart));
+            }
+            
+            if (partNumbers.contains(apart.getNumber())) {
+                throw new IllegalArgumentException(String.format("Dublicate assembly step part number: %s", apart));
+            }
+            
+            partNumbers.add(apart.getNumber());
             apart.setStep(step);
-            updateAssemblyPart(apart, alog, file);
+            checkAssemblyPart(apart);
+            
+            if (apart.isProductType()) {
+                product = apart.getPart();
+            }
+            
         }
 
+        // Second pass to save parts hierarchy.
+        
+        for (AssemblyPart apart: step.getAssemblyParts()) {
+            Part part = apart.getPart();
+            if (apart.isComponentType() && apart.getPartDefinition().getNewPart()) {
+                if (product != null) {
+                    product.addChild(part);
+                } else {
+                    savePart(part, alog, file);
+                }
+            }
+        }
+        
+        if (product != null) {
+            savePart(product, alog, file);
+        }
+
+        // Third pass to save datasets.
+        
+        for (AssemblyPart apart: step.getAssemblyParts()) {
+            for (AssemblyData adata: apart.getAssemblyData()) {
+                saveDataset(adata, alog, file);
+            }
+        }
+        
+        // Save the step itself.
+        
         session.saveOrUpdate(step);
+        
+        // Ping with database
+        
+        session.flush();
+        session.refresh(step);
+        
+        // Lets validate step
+        
+        validateStep(step);
         
     }
     
-    private AssemblyStep updateStep(AssemblyStep step, AuditLog alog, DataFile file) throws Exception {
+    /**
+     * Checking step consistency.
+     * @param step object to check.
+     * @return checked object.
+     * @throws Exception error.
+     */
+    private AssemblyStep checkStep(AssemblyStep step) throws Exception {
         
         if (step.getStatus() == null) {
             throw new IllegalArgumentException(String.format("Assembly step status have to be defined: %s", step));
@@ -151,7 +219,13 @@ public class AssemblyDao extends DaoBase {
         
     }
     
-    private AssemblyPart updateAssemblyPart(AssemblyPart apart, AuditLog alog, DataFile file) throws Exception {
+    /**
+     * Checking assembly part consistency.
+     * @param apart object to check.
+     * @return checked object.
+     * @throws Exception error.
+     */
+    private AssemblyPart checkAssemblyPart(AssemblyPart apart) throws Exception {
         AssemblyStep step = apart.getStep();
         AssemblyStepDefiniton stepDef = step.getStepDefinition();
         Part part = resolvePart(apart.getPart(), false);
@@ -167,13 +241,9 @@ public class AssemblyDao extends DaoBase {
             }
         }
 
-        if (apart.getNumber() == null) {
-            throw new IllegalArgumentException(String.format("Assembly step part number is mandatory: %s", apart));
-        }
-
         AssemblyPartDefiniton partDef = (AssemblyPartDefiniton) session.createCriteria(AssemblyPartDefiniton.class)
             .add(Restrictions.eq("number", apart.getNumber()))
-            .add(Restrictions.eq("assemblyStepDefinition", stepDef))
+            .add(Restrictions.eq("stepDefinition", stepDef))
             .uniqueResult();
 
         if (partDef == null) {
@@ -184,15 +254,13 @@ public class AssemblyDao extends DaoBase {
             throw new IllegalArgumentException(String.format("Assembly step part kind of part does not match: %s", apart));
         }
         
-        if (partDef.getType().equals(AssemblyPartDefiniton.AssemblyPartType.PRODUCT)) {
+        if (partDef.isProductType()) {
             step.setLocation(part.getLocation());
             if (!part.equals(step.getPart())) {
                 throw new IllegalArgumentException(String.format("Assembly step PRODUCT and part PRODUCT do not match: %s", apart));
             }
         }
         
-        updatePart(apart.getPart(), alog, file);
-
         apart.setPartDefinition(partDef);
         
         if (step.getId() != null) {
@@ -208,20 +276,19 @@ public class AssemblyDao extends DaoBase {
   
         for (AssemblyData adata: apart.getAssemblyData()) {
             adata.setAssemblyPart(apart);
-            updateAssemblyData(adata, alog, file);
+            checkAssemblyData(adata);
         }
         
         return apart;
     }
-    
-    private void updatePart(Part part, AuditLog alog, DataFile file) throws Exception {
-        Root root = new Root();
-        root.setParts(Collections.singletonList(part));
 
-        rf.createPartDao(sm, auth).savePart(root, alog, file);
-    }
-    
-    private AssemblyData updateAssemblyData(AssemblyData adata, AuditLog alog, DataFile file) throws Exception {
+    /**
+     * Check assembly data for consistency.
+     * @param adata object to check.
+     * @return checked object.
+     * @throws Exception error.
+     */
+    private AssemblyData checkAssemblyData(AssemblyData adata) throws Exception {
         AssemblyPart apart = adata.getAssemblyPart();
         AssemblyPartDefiniton partDef = apart.getPartDefinition();
 
@@ -259,13 +326,101 @@ public class AssemblyDao extends DaoBase {
             }
         }
         
-        adata.setDataset(createDataset(adata, alog, file));
+        Dataset dataset = new Dataset();
+        dataset.setVersion(adata.getVersion());
+        dataset.setComment(adata.getDataDefinition().getDescription());
+        dataset.setDataFilename(adata.getDataFilename());
+        
+        adata.setDataset(dataset);
         
         return adata;
         
     }
     
-    private Dataset createDataset(AssemblyData adata, AuditLog alog, DataFile file) throws Exception {
+    /**
+     * Validate step information.
+     * @param step data to validate.
+     * @throws Exception any error.
+     */
+    private void validateStep(AssemblyStep step) throws Exception {
+        AssemblyStepDefiniton stepDef = step.getStepDefinition();
+        for (AssemblyPartDefiniton partDef: stepDef.getPartDefinitions()) {
+            AssemblyPart apart = step.findAssemblyPart(partDef);
+            
+            // For complete step all parts have to be set
+            
+            if (apart == null && step.isCompletedStatus()) {
+                throw new IllegalArgumentException(String.format("Assembly part #%d (%s) is missing for COMPLETED step: %s", 
+                        partDef.getNumber(), partDef.getType(), step));
+            }
+            
+            if (apart != null) {
+                Part part = apart.getPart(); //resolvePart(apart.getPart(), true);
+                
+                // Checking locations
+                
+                if (step.getLocation() == null || 
+                    part.getLocation() == null || 
+                    !step.getLocation().equals(part.getLocation())) {
+                    throw new IllegalArgumentException(String.format("Assembly part #%d (%s) location (%s) does not match step location (%s): %s", 
+                            partDef.getNumber(), partDef.getType(), part.getLocation(),
+                            step.getLocation(), step));
+                }
+
+                // Checking attributes presence
+                
+                for (AssemblyAttributeDefiniton attrDef: partDef.getAttributeDefinitions()) {
+                    if (attrDef.getSelectable() || attrDef.getStepStatus() == step.getStatus()) {
+                        AttrBase attrBase = attrDef.getAttribute();
+                        PartAttrList attrList = part.findAttrList(attrBase);
+                        if (attrList == null || attrList.getDeleted()) {
+                            throw new IllegalArgumentException(
+                                    String.format("Assembly part #%d attribute %s is missing in step #%d (%s): %s", 
+                                            stepDef.getNumber(), attrBase, stepDef.getNumber(), step.getStatus(), step));
+                        }
+                        
+                    }
+                }
+                
+                // Checking dataset presence
+
+                for (AssemblyDataDefiniton dataDef: partDef.getDataDefinitions()) {
+                    if (step.isCompletedStatus()) {
+                        AssemblyData adata = apart.findAssemblyData(dataDef);
+                        if (adata == null) {
+                            throw new IllegalArgumentException(
+                                    String.format("Assembly part #%d dataset #%d is missing in step #%d (%s): %s", 
+                                            stepDef.getNumber(), dataDef.getNumber(), stepDef.getNumber(), step.getStatus(), step));
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+
+    /**
+     * Save part to DB.
+     * @param part part to save.
+     * @param alog audit log entry.
+     * @param file file provided.
+     * @throws Exception error.
+     */
+    private void savePart(Part part, AuditLog alog, DataFile file) throws Exception {
+        Root root = new Root();
+        root.setParts(Collections.singletonList(part));
+
+        rf.createPartDao(sm, auth).savePart(root, alog, file);
+    }
+    
+    /**
+     * Save dataset to DB.
+     * @param adata assembly data (dataset) to save.
+     * @param alog audit log entry.
+     * @param file file provided.
+     * @throws Exception error.
+     */
+    private void saveDataset(AssemblyData adata, AuditLog alog, DataFile file) throws Exception {
         
         AssemblyStepDefiniton stepDef = adata.getAssemblyPart().getStep().getStepDefinition();
         Root root = new Root();
@@ -276,20 +431,15 @@ public class AssemblyDao extends DaoBase {
         
         Run run = new Run();
         run.setBeginTime(new Date());
-        run.setRunType(stepDef.getAssemblyProcess().getName());
+        run.setRunType(stepDef.getProcess().getName());
         run.setNumber(BigInteger.valueOf(stepDef.getNumber()));
-        run.setComment(stepDef.getAssemblyProcess().getDescription());
+        run.setComment(stepDef.getProcess().getDescription());
         header.setRun(run);
-        
-        Dataset dataset = new Dataset();
-        dataset.setVersion(adata.getVersion());
-        dataset.setComment(adata.getDataDefinition().getDescription());
-        dataset.setDataFilename(adata.getDataFilename());
-        root.setDatasets(Collections.singletonList(dataset));
+
+        root.setDatasets(Collections.singletonList(adata.getDataset()));
 
         rf.createCondDao(sm, auth).saveCondition(root, alog, file, null);
-        
-        return dataset;
+
     }
 
 }
