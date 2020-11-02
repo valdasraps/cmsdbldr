@@ -4,7 +4,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.2.00</version>
+    <version>0.2.00b</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -119,7 +119,7 @@
                 <version>2.5.3</version>
             </plugin>
             
-            <plugin>
+<!--            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
                 <version>2.2.0</version>
@@ -144,6 +144,7 @@
                         <require>java-11-openjdk</require>
                         <require>python</require>
                         <require>incron</require>
+                        <require>parallel</require>
                         <require>httpd</require>
                         <require>python</require>
                         <require>oracle-instantclient-tnsnames.ora</require>
@@ -220,7 +221,7 @@
                         <fileEncoding>utf-8</fileEncoding>
                     </postremoveScriptlet>
                 </configuration>
-            </plugin>
+            </plugin>-->
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

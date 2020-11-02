@@ -327,6 +327,7 @@ public class AssemblyDao extends DaoBase {
         }
         
         Dataset dataset = new Dataset();
+        dataset.setPart(apart.getPart());
         dataset.setVersion(adata.getVersion());
         dataset.setComment(adata.getDataDefinition().getDescription());
         dataset.setDataFilename(adata.getDataFilename());
