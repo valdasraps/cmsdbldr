@@ -18,10 +18,12 @@ import org.cern.cms.dbloader.model.DeleteableBase;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name="LOCATIONS")
 @Getter @Setter
+@ToString(of = {"id", "name"})
 public class Location extends DeleteableBase {
    
 	@Id

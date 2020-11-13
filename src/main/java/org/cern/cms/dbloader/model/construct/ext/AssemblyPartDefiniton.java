@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -23,12 +24,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.cern.cms.dbloader.model.construct.KindOfPart;
-import org.hibernate.annotations.Type;
 
 
 @Entity
 @Table(name = "ASSEMBLY_PART_DEFINITIONS", uniqueConstraints = @UniqueConstraint(columnNames = {"APD_ASD_ID", "APD_NAME"}))
-@Getter @Setter @ToString(exclude = {"attributeDefinitions","dataDefinitions"})
+@Getter @Setter @ToString(exclude = {"attributeDefinitions","dataDefinitions", "prevPartDefinition"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 public class AssemblyPartDefiniton {
     
@@ -53,10 +53,9 @@ public class AssemblyPartDefiniton {
     @Enumerated(EnumType.STRING)
     private AssemblyPartType type;
     
-    @Basic
-    @Column(name="APD_IS_NEW")
-    @Type(type="true_false")
-    private Boolean newPart;
+    @OneToOne
+    @JoinColumn(name = "APD_APD_ID")
+    private AssemblyPartDefiniton prevPartDefinition;
     
     @Basic
     @Column(name = "APD_NAME")

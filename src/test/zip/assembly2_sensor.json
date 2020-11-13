@@ -5,7 +5,7 @@
                 "AssemblyStep": {
                     "Product": {
                         "Part": {
-                            "Id": 1160
+                            "Id": 1180
                         }
                     },
                     "Number": 1,
@@ -17,14 +17,14 @@
                                 "Number": 1,
                                 "Part": {
                                     "Part": {
-                                        "Id": 1160
+                                        "Id": 1180
                                     }
                                 },
                                 "AssemblyData": [
                                     {
                                         "AssemblyData": {
                                             "Number": 1,
-                                            "DataFilename": "assembly_sensor.csv"
+                                            "DataFilename": "assembly_data.csv"
                                         }
                                     }
                                 ]
@@ -34,7 +34,7 @@
                                 "Number": 2,
                                 "Part": {
                                     "Part": {
-                                        "Id": 1260
+                                        "Id": 1280
                                     }
                                 }
                             }

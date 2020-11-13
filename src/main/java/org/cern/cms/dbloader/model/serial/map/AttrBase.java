@@ -12,6 +12,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.EqualsAndHashCode;
 
 import org.hibernate.annotations.Type;
 
@@ -24,7 +25,8 @@ import lombok.ToString;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "EXTENSION_TABLE_NAME")
 @Getter @Setter
-@ToString
+@EqualsAndHashCode(callSuper = false, of = {"id"})
+@ToString(of = {"id","extTableName","attrCatalog","deleted"})
 public abstract class AttrBase {
 
     @Id

@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.EqualsAndHashCode;
 
 import org.cern.cms.dbloader.model.DeleteableBase;
 
@@ -20,7 +21,8 @@ import lombok.ToString;
 @Entity
 @Table(name="MANUFACTURERS")
 @Getter @Setter
-@ToString
+@ToString(of = {"id","name"})
+@EqualsAndHashCode(callSuper = false, of = {"id"})
 public class Manufacturer extends DeleteableBase {
     
     @Id

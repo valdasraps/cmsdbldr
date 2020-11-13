@@ -1,0 +1,47 @@
+{
+    "Root": {
+        "AssemblySteps": [
+            {
+                "AssemblyStep": {
+                    "Product": {
+                        "Part": {
+                            "Id": 1160
+                        }
+                    },
+                    "Number": 1,
+                    "Status": "COMPLETED",
+                    "CommentDescription": "This is some step comment",
+                    "AssemblyParts": [
+                        {
+                            "AssemblyPart": {
+                                "Number": 1,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 1160
+                                    }
+                                },
+                                "AssemblyData": [
+                                    {
+                                        "AssemblyData": {
+                                            "Number": 1,
+                                            "DataFilename": "assembly_data.csv"
+                                        }
+                                    }
+                                ]
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 2,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 1260
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

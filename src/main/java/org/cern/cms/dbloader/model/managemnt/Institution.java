@@ -17,12 +17,14 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import org.cern.cms.dbloader.model.DeleteableBase;
 
 @Entity
 @Table(name="INSTITUTIONS")
 @Getter @Setter
+@ToString(of = {"id","name"})
 public class Institution extends DeleteableBase {
 	
 	@Id

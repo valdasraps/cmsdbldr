@@ -1,8 +1,6 @@
 package org.cern.cms.dbloader.tests;
 
 import java.io.File;
-import java.math.BigInteger;
-import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import junit.framework.TestCase;
@@ -23,10 +21,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class AssemblySensorTest extends AssemblyBase {
+public class AssemblySensor2Test extends AssemblyBase {
 
-    private final static File JSON_FILE_BASE = new File("src/test/zip/assembly_sensor.json");
-    private final static File DATA_FILE_BASE = new File("src/test/zip/assembly_sensor.csv");
+    private final static File JSON_FILE_BASE = new File("src/test/zip/assembly2_sensor.json");
+    private final static File DATA_FILE_BASE = new File("src/test/zip/assembly_data.csv");
     
     private final static String DATASET_VERSION = "1.0";
     
@@ -72,38 +70,6 @@ public class AssemblySensorTest extends AssemblyBase {
             // Good!
             TestCase.assertTrue(ex.getMessage().startsWith("Current Assembly step (2) does not match:"));
         }
-    }
-    
-    @Test
-    public void step12Test() throws Throwable {
-
-        final BigInteger prodId = new BigInteger("1180");
-        final BigInteger jigId  = new BigInteger("1280");
-        
-        stepTest(JSON_FILE_BASE, DATA_FILE_BASE, 
-        new Consumer<AssemblyStep>() {
-            @Override
-            public void accept(AssemblyStep step) {
-                step.setNumber(1);
-                step.getPart().setId(prodId);
-                Iterator<AssemblyPart> it = step.getAssemblyParts().iterator();
-                
-                AssemblyPart prod = it.next();
-                prod.getAssemblyData().iterator().next().setVersion(DATASET_VERSION);
-                prod.getPart().setId(prodId);
-
-                AssemblyPart jig = it.next();
-                jig.getPart().setId(jigId);
-                
-            }
-        }, new BiConsumer<AssemblyStep, Session>() {
-            @Override
-            public void accept(AssemblyStep step, Session session) {
-                AssemblyStepDefiniton stepDef = step.getStepDefinition();
-                Assert.assertEquals((Integer) 1, stepDef.getNumber());
-                Assert.assertEquals(AssemblyStepStatus.COMPLETED, step.getStatus());
-            }
-        });
     }
     
     @Test

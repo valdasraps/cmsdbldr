@@ -25,7 +25,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="KINDS_OF_PARTS")
 @Getter @Setter
-@ToString
+@ToString(of = {"id","name"})
 @EqualsAndHashCode(callSuper=false, of={"id"})
 public class KindOfPart extends DeleteableBase {
 	

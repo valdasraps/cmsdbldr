@@ -23,7 +23,7 @@ import lombok.ToString;
 @Table(name = "ATTR_CATALOGS")
 @Getter @Setter
 @EqualsAndHashCode(callSuper=false, of={"id"})
-@ToString(exclude = {"partToAttrRelation", "attrBases"})
+@ToString(of = {"id", "name"})
 public class AttrCatalog extends DeleteableBase {
 
     @Id

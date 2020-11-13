@@ -66,8 +66,10 @@ public class PartDao extends DaoBase {
         
         Stack<PartsPair> pairs = new Stack<>();
 
-        for (Part part : root.getParts()) {
-            resolvePart(part, pairs, file);
+        for (int i = 0; i < root.getParts().size(); i++) {
+            Part part = root.getParts().get(i);
+            part = resolvePart(part, pairs, file);
+            root.getParts().set(i, part);
         }
 
         int count = 0;

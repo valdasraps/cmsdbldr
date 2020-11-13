@@ -48,7 +48,7 @@ import org.cern.cms.dbloader.model.serial.map.Attribute;
 @Table(name = "PARTS", uniqueConstraints = @UniqueConstraint(columnNames = {"BARCODE", "SERIAL_NUMBER", "KIND_OF_PART_ID"}))
 @Getter
 @Setter
-@ToString(exclude = {"attrLists"})
+@ToString(of = {"id", "kindOfPart", "barcode", "serialNumber", "name"})
 @EqualsAndHashCode(callSuper = false, of = {"id"})
 @JsonIgnoreProperties({ "kindOfPart",
         "partTree",

@@ -7,6 +7,7 @@ import org.cern.cms.dbloader.model.managemnt.AuditLog;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -69,9 +70,14 @@ public class AssemblyDao extends DaoBase {
             
             if (product.getKindOfPartName() == null) {
                 throw new IllegalArgumentException(
-                        String.format("Not existing assembly product does not have Kind of Part defined: %s", product));
+                            String.format("Not existing assembly product does not have Kind of Part defined: %s", product));
             }
-            
+
+            if (product.getInstitutionName() == null || product.getLocationName() == null) {
+                throw new IllegalArgumentException(
+                            String.format("Not existing assembly product does not have Institute and/or Location names defined: %s", product));
+            }
+
             product.setKindOfPart(resolveKindOfPart(product.getKindOfPartName()));
 
             if (step.getNumber() != 1) {
@@ -79,19 +85,19 @@ public class AssemblyDao extends DaoBase {
             }
             
         } else {
-            
+        
             AssemblyCurrentStep cstep = (AssemblyCurrentStep) session.createCriteria(AssemblyCurrentStep.class)
                 .add(Restrictions.eq("partId", product.getId()))
                 .uniqueResult();
-            
+
             if (cstep == null) {
                 throw new IllegalArgumentException(String.format("Current Assembly step not resolved: %s", step));
             }
-            
+
             if (!Objects.equals(cstep.getNumber(), step.getNumber())) {
                 throw new IllegalArgumentException(String.format("Current Assembly step (%d) does not match: %s ", cstep.getNumber(), step));
             }
-            
+        
         }
         
         AssemblyProcess process = (AssemblyProcess) session.createCriteria(AssemblyProcess.class)
@@ -101,6 +107,8 @@ public class AssemblyDao extends DaoBase {
         if (process == null) {
             throw new IllegalArgumentException(String.format("Assembly process not found: %s", step));
         }
+        
+        // Get process step
         
         final Integer stepNumber = step.getNumber();
         AssemblyStepDefiniton stepDef = process.getStepDefinitions().stream()
@@ -140,21 +148,31 @@ public class AssemblyDao extends DaoBase {
             
         }
 
-        // Second pass to save parts hierarchy.
+        // Second pass to construct and save parts hierarchy.
         
         for (AssemblyPart apart: step.getAssemblyParts()) {
             Part part = apart.getPart();
-            if (apart.isComponentType() && apart.getPartDefinition().getNewPart()) {
+            if (apart.isComponentType()) {
                 if (product != null) {
                     product.addChild(part);
                 } else {
-                    savePart(part, alog, file);
+                    apart.setPart(savePart(part, alog, file));
                 }
             }
         }
         
         if (product != null) {
-            savePart(product, alog, file);
+            
+            product = savePart(product, alog, file);
+            step.setPart(product);
+            for (AssemblyPart apart: step.getAssemblyParts()) {
+                if (apart.isProductType()) {
+                    apart.setPart(product);
+                }
+            }
+            
+            step.setLocation(product.getLocation());
+            
         }
 
         // Third pass to save datasets.
@@ -234,11 +252,11 @@ public class AssemblyDao extends DaoBase {
             
             part = apart.getPart();
             if (part.getKindOfPartName() == null) {
-                throw new IllegalArgumentException(
+            throw new IllegalArgumentException(
                         String.format("Not existing assembly part does not have Kind of Part defined: %s", part));
             } else {
                 part.setKindOfPart(resolveKindOfPart(part.getKindOfPartName()));
-            }
+        }
         }
 
         AssemblyPartDefiniton partDef = (AssemblyPartDefiniton) session.createCriteria(AssemblyPartDefiniton.class)
@@ -252,13 +270,6 @@ public class AssemblyDao extends DaoBase {
 
         if (!partDef.getKindOfPart().equals(part.getKindOfPart())) {
             throw new IllegalArgumentException(String.format("Assembly step part kind of part does not match: %s", apart));
-        }
-        
-        if (partDef.isProductType()) {
-            step.setLocation(part.getLocation());
-            if (!part.equals(step.getPart())) {
-                throw new IllegalArgumentException(String.format("Assembly step PRODUCT and part PRODUCT do not match: %s", apart));
-            }
         }
         
         apart.setPartDefinition(partDef);
@@ -356,7 +367,37 @@ public class AssemblyDao extends DaoBase {
             }
             
             if (apart != null) {
-                Part part = apart.getPart(); //resolvePart(apart.getPart(), true);
+                
+                Part part = apart.getPart();
+                
+                // Check if product parts match
+                if (partDef.isProductType()) {
+                    if (!part.equals(step.getPart())) {
+                        throw new IllegalArgumentException(String.format("Assembly step PRODUCT and part PRODUCT do not match: %s", apart));
+                    }
+                }
+                    
+                // Check if COMPONENT is a child of PRODUCT?
+                if (partDef.isComponentType()) {
+                    if (part.getPartTree() == null || part.getPartTree().getParentPartTree().getPartId() != step.getPart().getId()) {
+                        throw new IllegalArgumentException(String.format("Assembly step COMPONENT is not assigned to PRODUCT: %s", apart));
+                    }
+                }
+
+                // Check if it is the same part as in previous steps defined?
+                AssemblyPartDefiniton prevPartDef = partDef.getPrevPartDefinition();
+                if (prevPartDef != null) {
+                    Part prevPart = (Part) session.createCriteria(AssemblyPart.class)
+                        .setProjection(Projections.property("part"))
+                        .add(Restrictions.eq("partDefinition", prevPartDef))
+                            .createCriteria("step")
+                                .add(Restrictions.eq("part", step.getPart()))
+                                .uniqueResult();;
+                    if (!part.equals(prevPart)) {
+                        throw new IllegalArgumentException(String.format("Assembly part #%d %s does not match previous %s", 
+                                partDef.getNumber(), part, prevPart));
+                    }
+                }
                 
                 // Checking locations
                 
@@ -377,7 +418,7 @@ public class AssemblyDao extends DaoBase {
                         if (attrList == null || attrList.getDeleted()) {
                             throw new IllegalArgumentException(
                                     String.format("Assembly part #%d attribute %s is missing in step #%d (%s): %s", 
-                                            stepDef.getNumber(), attrBase, stepDef.getNumber(), step.getStatus(), step));
+                                            partDef.getNumber(), attrBase, stepDef.getNumber(), step.getStatus(), step));
                         }
                         
                     }
@@ -407,11 +448,13 @@ public class AssemblyDao extends DaoBase {
      * @param file file provided.
      * @throws Exception error.
      */
-    private void savePart(Part part, AuditLog alog, DataFile file) throws Exception {
+    private Part savePart(Part part, AuditLog alog, DataFile file) throws Exception {
         Root root = new Root();
-        root.setParts(Collections.singletonList(part));
+        root.setParts(Arrays.asList(part));
 
         rf.createPartDao(sm, auth).savePart(root, alog, file);
+
+        return root.getParts().get(0);
     }
     
     /**
