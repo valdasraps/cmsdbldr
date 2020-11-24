@@ -412,12 +412,17 @@ public class AssemblyDao extends DaoBase {
                 // Checking attributes presence
                 
                 for (AssemblyAttributeDefiniton attrDef: partDef.getAttributeDefinitions()) {
-                    if (attrDef.getSelectable() || attrDef.getStepStatus() == step.getStatus()) {
+                    if (attrDef.getSetAction() != null && attrDef.getStepStatus() == step.getStatus()) {
                         AttrBase attrBase = attrDef.getAttribute();
                         PartAttrList attrList = part.findAttrList(attrBase);
-                        if (attrList == null || attrList.getDeleted()) {
+                        if (attrDef.getSetAction() && (attrList == null || attrList.getDeleted())) {
                             throw new IllegalArgumentException(
                                     String.format("Assembly part #%d attribute %s is missing in step #%d (%s): %s", 
+                                            partDef.getNumber(), attrBase, stepDef.getNumber(), step.getStatus(), step));
+                        }
+                        if (!attrDef.getSetAction() && attrList != null && !attrList.getDeleted()) {
+                            throw new IllegalArgumentException(
+                                    String.format("Assembly part #%d attribute %s must be removed in step #%d (%s): %s", 
                                             partDef.getNumber(), attrBase, stepDef.getNumber(), step.getStatus(), step));
                         }
                         

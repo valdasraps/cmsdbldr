@@ -20,9 +20,10 @@ import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "ASSEMBLY_ATTRIBUTE_DEFINITIONS", uniqueConstraints = @UniqueConstraint(columnNames = {"AAD_APD_ID", "AAD_ATTRIBUTE_ID", "AAD_STEP_STATUS"}))
+@Table(name = "ASSEMBLY_ATTRIBUTE_DEFINITIONS", 
+       uniqueConstraints = @UniqueConstraint(columnNames = {"AAD_APD_ID", "AAD_ATTRIBUTE_ID", "AAD_SET_STATUS"}))
 @Getter @Setter @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false, of = {"id"})
 public class AssemblyAttributeDefiniton {
     
     @Id
@@ -38,12 +39,17 @@ public class AssemblyAttributeDefiniton {
     private AttrBase attribute;
     
     @Basic
-    @Column(name="AAD_IS_SELECTABLE")
+    @Column(name="AAD_GET_ACTION")
     @Type(type="true_false")
-    private Boolean selectable;
+    private Boolean getAction;
+
+    @Basic
+    @Column(name="AAD_SET_ACTION")
+    @Type(type="true_false")
+    private Boolean setAction;
     
     @Basic
-    @Column(name = "AAD_STEP_STATUS")
+    @Column(name = "AAD_SET_STATUS")
     @Enumerated(EnumType.STRING)
     private AssemblyStepStatus stepStatus;
 
