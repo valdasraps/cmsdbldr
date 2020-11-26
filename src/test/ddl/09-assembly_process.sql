@@ -253,3 +253,5 @@ values (26,&l_prep_attr_id,'T');
 
 insert into ASSEMBLY_ATTRIBUTE_DEFINITIONS (AAD_APD_ID,AAD_ATTRIBUTE_ID,AAD_GET_ACTION)
 values (26,&l_bottom_attr_id,'T');
+
+insert into ASSEMBLY_SAME_LOCATIONS values (-1, -2);

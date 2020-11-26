@@ -68,7 +68,7 @@ public class PartDao extends DaoBase {
 
         for (int i = 0; i < root.getParts().size(); i++) {
             Part part = root.getParts().get(i);
-            part = resolvePart(part, pairs, file);
+            part = resolvePart(part, pairs, file, null);
             root.getParts().set(i, part);
         }
 
@@ -90,7 +90,7 @@ public class PartDao extends DaoBase {
 
     }
 
-    private Part resolvePart(Part part, Stack<PartsPair> pairs, DataFile file) throws Exception {
+    private Part resolvePart(Part part, Stack<PartsPair> pairs, DataFile file, Part parent) throws Exception {
 
         Part xmlPart = part;
         KindOfPart kop;
@@ -120,10 +120,18 @@ public class PartDao extends DaoBase {
             }
         }
 
-        if (xmlPart.getLocationName() != null || xmlPart.getInstitutionName() != null) {
-            String locationName = part.getLocationName() != null ? part.getLocationName() : part.getInstitutionName();
-            String institutionName = part.getInstitutionName() != null ? part.getInstitutionName() : part.getLocationName();
-            dbPart.setLocation(resolveInstituteLocation(institutionName, locationName, dbPart.getInsertUser()));
+        if (parent != null && parent.getLocation() != null) {
+            
+            dbPart.setLocation(parent.getLocation());
+            
+        } else {
+            
+            if (xmlPart.getLocationName() != null || xmlPart.getInstitutionName() != null) {
+                String locationName = part.getLocationName() != null ? part.getLocationName() : part.getInstitutionName();
+                String institutionName = part.getInstitutionName() != null ? part.getInstitutionName() : part.getLocationName();
+                dbPart.setLocation(resolveInstituteLocation(institutionName, locationName, dbPart.getInsertUser()));
+            }
+            
         }
 
         if (xmlPart.getManufacturerName() != null) {
@@ -147,7 +155,7 @@ public class PartDao extends DaoBase {
 
         if (xmlPart.getChildren() != null) {
             for (Part child : xmlPart.getChildren()) {
-                pairs.push(new PartsPair(resolvePart(child, pairs, file), dbPart));
+                pairs.push(new PartsPair(resolvePart(child, pairs, file, dbPart), dbPart));
             }
         }
 

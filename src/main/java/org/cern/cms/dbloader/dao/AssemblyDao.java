@@ -249,14 +249,13 @@ public class AssemblyDao extends DaoBase {
         Part part = resolvePart(apart.getPart(), false);
         
         if (part == null) {
-            
             part = apart.getPart();
             if (part.getKindOfPartName() == null) {
             throw new IllegalArgumentException(
                         String.format("Not existing assembly part does not have Kind of Part defined: %s", part));
             } else {
                 part.setKindOfPart(resolveKindOfPart(part.getKindOfPartName()));
-        }
+            }
         }
 
         AssemblyPartDefiniton partDef = (AssemblyPartDefiniton) session.createCriteria(AssemblyPartDefiniton.class)

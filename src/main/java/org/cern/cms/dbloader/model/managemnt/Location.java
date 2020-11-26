@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.EqualsAndHashCode;
 
 import org.cern.cms.dbloader.model.DeleteableBase;
 
@@ -24,6 +25,7 @@ import lombok.ToString;
 @Table(name="LOCATIONS")
 @Getter @Setter
 @ToString(of = {"id", "name"})
+@EqualsAndHashCode(of = {"id"})
 public class Location extends DeleteableBase {
    
 	@Id
