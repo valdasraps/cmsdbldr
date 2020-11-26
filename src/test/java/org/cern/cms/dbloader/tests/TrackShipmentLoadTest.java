@@ -44,8 +44,8 @@ public class TrackShipmentLoadTest extends TestBase {
                 //assertEquals(DATE_FORMAT.parse("2019-01-21 00:00:00"), req.getDate());
                 assertEquals(ShipmentStatus.PACKAGING, ship.getStatus());
                 assertEquals("Artiom Poluden", ship.getPerson());
-                assertEquals("FNAL", ship.getFromLocation().getName());
-                assertEquals("FNAL", ship.getFromLocation().getInstitution().getName());
+                assertEquals("University of Iowa", ship.getFromLocation().getName());
+                assertEquals("University of Iowa", ship.getFromLocation().getInstitution().getName());
                 assertEquals("904", ship.getToLocation().getName());
                 assertEquals("CERN", ship.getToLocation().getInstitution().getName());
                 assertNotNull(ship.getInsertTime());
@@ -79,8 +79,8 @@ public class TrackShipmentLoadTest extends TestBase {
                 //assertEquals(DATE_FORMAT.parse("2019-01-21 00:00:00"), req.getDate());
                 assertEquals(ShipmentStatus.PACKAGING, ship.getStatus());
                 assertEquals("Artiom Poluden", ship.getPerson());
-                assertEquals("FNAL", ship.getFromLocation().getName());
-                assertEquals("FNAL", ship.getFromLocation().getInstitution().getName());
+                assertEquals("University of Iowa", ship.getFromLocation().getName());
+                assertEquals("University of Iowa", ship.getFromLocation().getInstitution().getName());
                 assertEquals("904", ship.getToLocation().getName());
                 assertEquals("CERN", ship.getToLocation().getInstitution().getName());
                 assertNotNull(ship.getInsertTime());

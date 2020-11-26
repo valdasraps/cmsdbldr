@@ -10,8 +10,8 @@
             <PERSON>Artiom Poluden</PERSON>
             
             <!-- One of (1+2 or 3) is required -->
-            <FROM_LOCATION>FNAL</FROM_LOCATION>
-            <FROM_INSTITUTION>FNAL</FROM_INSTITUTION>
+            <FROM_LOCATION>University of Iowa</FROM_LOCATION>
+            <FROM_INSTITUTION>University of Iowa</FROM_INSTITUTION>
             <!-- FROM_LOCATION_ID>100</FROM_LOCATION_ID-->
 
             <!-- One of (1+2 or 3) is required -->
