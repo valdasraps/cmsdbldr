@@ -624,7 +624,7 @@ from (
                 left join CMS_&det._&subdet._CONSTRUCT.ASSEMBLY_STEPS s 
                     on sd.asd_id = s.ass_asd_id
             where
-                s.ASS_STATUS <> 'IN_PROGRESS'
+                s.ASS_STATUS = 'COMPLETED'
             group by 
                 s.ASS_PART_ID,
                 sd.asd_apr_id) ls

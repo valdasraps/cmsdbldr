@@ -37,5 +37,6 @@ public class Attribute {
     @Column(name="IS_RECORD_DELETED")
     @Type(type="true_false")
     @XmlElement(name="DELETED")
+    @JsonProperty("Deleted")
     private Boolean deleted = false;
 }

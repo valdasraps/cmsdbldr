@@ -170,6 +170,7 @@ class LoaderClient:
         self.parser.add_option("-k", "--krb",     dest = "krb",     help = "use kerberos login provider", metavar = "krb", action = "store_true", default = False)
         self.parser.add_option("-q", "--quiet",   dest = "quiet",   help = "Do not print error, just return its code. OK = 0", action = "store_true", default = False)
         self.parser.add_option("-v", "--verbose", dest = "verbose", help = "Print debug information (verbose output). Be carefull: this might expose password to terminal!", action = "store_true", default = False)
+        self.parser.add_option("-c", "--loginc",  dest = "loginc",  help = "Specify cache file", metavar = "loginc", default = ".session.cache")
 
     def _allowed_file(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1] in self.ALLOWED_EXTENSIONS
@@ -225,7 +226,7 @@ class LoaderClient:
                 cookies = None
                 if re.search("^https", url):
                     if options.login:
-                        cookies = CernSSO().login_sign_on(url, force_level = force_level)
+                        cookies = CernSSO().login_sign_on(url, cache_file = options.loginc, force_level = force_level)
                     if options.krb:
                         cookies = CernSSO().krb_sign_on(url)
                         force_level = 2
