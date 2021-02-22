@@ -2,8 +2,6 @@ package org.cern.cms.dbloader.model.serial;
 
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.*;
 
@@ -22,7 +20,7 @@ import org.cern.cms.dbloader.model.construct.ext.Request;
 import org.cern.cms.dbloader.model.construct.ext.Shipment;
 import org.cern.cms.dbloader.model.serial.map.Maps;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
-import org.hibernate.annotations.Type;
+import org.cern.cms.dbloader.model.construct.ext.AssemblyStep;
 
 @Getter
 @Setter
@@ -33,44 +31,58 @@ import org.hibernate.annotations.Type;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Root implements DatasetRoot {
 
-	@XmlElement(name = "HEADER")
-	@JsonProperty("Header")
-	private Header header;
+    @Transient
+    @XmlAttribute(name = "operator_name")
+    private String operatorName;
 
-	@XmlElement(name = "ELEMENTS")
-	@JsonProperty("Elements")
-	private Elements elements;
+    // Condition
 
-	@XmlElement(name = "MAPS")
-	@JsonProperty("Maps")
-	private Maps maps;
+    @XmlElement(name = "HEADER")
+    @JsonProperty("Header")
+    private Header header;
 
-	@XmlElement(name = "DATA_SET")
-	@JsonProperty("Datasets")
-	private List<Dataset> datasets;
+    @XmlElement(name = "ELEMENTS")
+    @JsonProperty("Elements")
+    private Elements elements;
 
-	@XmlElementWrapper(name="PARTS")
-	@XmlElement(name="PART", type=Part.class)
-	@JsonProperty("Parts")
-	private List<Part> parts;
+    @XmlElement(name = "MAPS")
+    @JsonProperty("Maps")
+    private Maps maps;
 
-	@XmlElement(name="CHANNEL_UPDATE", type=ChannelUpdate.class)
-	@JsonProperty("ChannelUpdates")
-	private List<ChannelUpdate> channelUpdates;
+    @XmlElement(name = "DATA_SET")
+    @JsonProperty("Datasets")
+    private List<Dataset> datasets;
 
-	@XmlElementWrapper(name="REQUESTS")
-	@XmlElement(name="REQUEST", type=Request.class)
-	@JsonProperty("Requests")
-	private List<Request> requests;
+    // Construct
+    
+    @XmlElementWrapper(name="PARTS")
+    @XmlElement(name="PART", type=Part.class)
+    @JsonProperty("Parts")
+    private List<Part> parts;
 
-	@XmlElementWrapper(name="SHIPMENTS")
-	@XmlElement(name="SHIPMENT", type=Shipment.class)
-	@JsonProperty("Shipments")
-	private List<Shipment> shipments;
+    @XmlElementWrapper(name="ASSEMBLY_STEPS")
+    @XmlElement(name="ASSEMBLY_STEP", type=AssemblyStep.class)
+    @JsonProperty("AssemblySteps")
+    private List<AssemblyStep> assemblySteps;
+    
+    // Channels
+    
+    @XmlElement(name="CHANNEL_UPDATE", type=ChannelUpdate.class)
+    @JsonProperty("ChannelUpdates")
+    private List<ChannelUpdate> channelUpdates;
 
-	@Transient
-	@XmlAttribute(name = "operator_name")
-	private String operatorName;
+    // Shipments
+    
+    @XmlElementWrapper(name="REQUESTS")
+    @XmlElement(name="REQUEST", type=Request.class)
+    @JsonProperty("Requests")
+    private List<Request> requests;
+
+    @XmlElementWrapper(name="SHIPMENTS")
+    @XmlElement(name="SHIPMENT", type=Shipment.class)
+    @JsonProperty("Shipments")
+    private List<Shipment> shipments;
+    
 }
 
 

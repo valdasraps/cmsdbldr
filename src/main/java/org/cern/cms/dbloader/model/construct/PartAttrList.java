@@ -18,9 +18,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlTransient;
+import lombok.EqualsAndHashCode;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import org.cern.cms.dbloader.model.serial.map.AttrBase;
 import org.hibernate.annotations.Type;
@@ -28,6 +30,8 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "PART_ATTR_LISTS")
 @Getter @Setter
+@EqualsAndHashCode(callSuper = false, of = {"id"})
+@ToString(of = {"id","part","attrBase","deleted"})
 public class PartAttrList {
 
     @Id

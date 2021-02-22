@@ -96,8 +96,8 @@ public class PartLoadTest extends TestBase {
                 assertNull(pack.getComment());
                 assertNull(pack.getInstalledDate());
                 assertNull(pack.getManufacturer());
-                assertEquals("FNAL", pack.getLocation().getName());
-                assertEquals("FNAL", pack.getLocation().getInstitution().getName());
+                assertEquals("University of Iowa", pack.getLocation().getName());
+                assertEquals("University of Iowa", pack.getLocation().getInstitution().getName());
                 assertEquals(serialNumber, pack.getSerialNumber());
                 assertNull(pack.getBarcode());
                 assertNull(pack.getVersion());
@@ -130,7 +130,8 @@ public class PartLoadTest extends TestBase {
                         assertEquals("FNAL", pack.getLocation().getName());
                         assertEquals("FNAL", pack.getLocation().getInstitution().getName());
                     } else {
-                        assertNull(child.getLocation());
+                        assertEquals("University of Iowa", pack.getLocation().getName());
+                        assertEquals("University of Iowa", pack.getLocation().getInstitution().getName());
                     }
                     assertNull(child.getSerialNumber());
                     assertNull(child.getBarcode());

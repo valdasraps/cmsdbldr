@@ -4,7 +4,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.1.12</version>
+    <version>0.2.00b</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -144,6 +144,7 @@
                         <require>java-11-openjdk</require>
                         <require>python</require>
                         <require>incron</require>
+                        <require>parallel</require>
                         <require>httpd</require>
                         <require>python</require>
                         <require>oracle-instantclient-tnsnames.ora</require>

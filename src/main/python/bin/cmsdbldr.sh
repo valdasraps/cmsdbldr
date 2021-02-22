@@ -28,7 +28,7 @@ elif [[ -r "/etc/tnsnames.ora" ]];  then
     _args="$_args -Doracle.net.tns_admin=/etc"
 fi
 
-_args="$_args -Djava.security.egd=file:///dev/urandom"
+_args="$_args -Djava.security.egd=file:///dev/urandom -Xms512M -Xmx1024M"
 
 for x in "${@}" ; do
     grep -q "=" <<< "$x" && res="${res} `echo $x | sed 's/^\([^=]*\)=\(.*\)$/\1="\2"/g'`" || res="${res} ${x}"

@@ -18,6 +18,7 @@ public interface ResourceFactory {
     DatasetDao createDatasetDao(SessionManager sm, OperatorAuth auth);
     ChannelDao createChannelDao(SessionManager sm, OperatorAuth auth);
     ConfigDao createConfigDao(SessionManager sm, OperatorAuth auth);
+    AssemblyDao createAssemblyDao(SessionManager sm, OperatorAuth auth);
 
     SessionManager createSessionManager();
     DataFile createDataFile(FileBase archive, File file, DataFile.Type type);

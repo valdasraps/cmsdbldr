@@ -18,6 +18,7 @@ import org.cern.cms.dbloader.model.serial.Root;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -103,7 +104,7 @@ public final class XmlManager {
 
         Run run = new Run();
         header.setRun(run);
-        run.setNumber("123456");
+        run.setNumber(BigInteger.valueOf(123456));
         run.setRunType("example");
         run.setBeginTime(new Date());
         run.setInitiatedByUser("John Data Uploader");
@@ -159,7 +160,7 @@ public final class XmlManager {
 
         Run run = new Run();
         header.setRun(run);
-        run.setNumber(datasetS.getRun().getId().toString());
+        run.setNumber(datasetS.getRun().getId());
         run.setBeginTime(datasetS.getRun().getBeginTime());
         run.setInitiatedByUser(datasetS.getRun().getInitiatedByUser());
         run.setLocation(datasetS.getRun().getLocation());

@@ -57,7 +57,7 @@ public class Load {
         
         binding = Application.injector.getExistingBinding(Key.get(String.class, Application.DOC_NAME));
         if (binding != null) {
-            node.put("doc_uri", "doc/doc");
+            node.put("doc_uri", "/doc/doc");
         }
         
         return Response.ok(node.toString(), MediaType.APPLICATION_JSON).build();

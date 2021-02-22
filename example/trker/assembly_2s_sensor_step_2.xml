@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+    <ASSEMBLY_STEPS>
+        <ASSEMBLY_STEP>
+            
+            <!-- Product part -->
+            <PART>
+                <PART_ID>2186</PART_ID>
+            </PART>
+            
+            <!-- Assembly step number -->
+            <NUMBER>2</NUMBER>
+            
+            <!-- Assembly step status (INPROGRESS, COMPLETE, FAILED) -->
+            <STATUS>COMPLETED</STATUS>
+            
+            <COMMENT_DESCRIPTION>This is some second step comment</COMMENT_DESCRIPTION>
+            
+            <ASSEMBLY_PARTS>
+                
+                <ASSEMBLY_PART>
+                    
+                    <!-- Assembly part number -->
+                    <NUMBER>1</NUMBER>
+                    
+                    <!-- Part definition -->
+                    <PART>
+                        <PART_ID>2186</PART_ID>
+                    </PART>
+                    
+                    <ASSEMBLY_DATA>
+                        <ASSEMBLY_DATA>
+
+                            <!-- Assembly data number -->
+                            <NUMBER>1</NUMBER>
+                            <VERSION>1</VERSION>
+
+                            <!-- Put this file into same zip while submitting -->
+                            <DATA_FILE_NAME>some-file-in-same-zip.csv</DATA_FILE_NAME>
+
+                        </ASSEMBLY_DATA>
+                    </ASSEMBLY_DATA>
+                </ASSEMBLY_PART>
+                
+                <ASSEMBLY_PART>
+                    
+                    <!-- Assembly part number -->
+                    <NUMBER>2</NUMBER>
+                    
+                    <!-- Part definition -->
+                    <PART>
+                        <PART_ID>15421</PART_ID>
+                    </PART>
+                    
+                </ASSEMBLY_PART>
+            </ASSEMBLY_PARTS>
+            
+        </ASSEMBLY_STEP>
+    </ASSEMBLY_STEPS>
+</ROOT>

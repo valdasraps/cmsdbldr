@@ -2,7 +2,6 @@ package org.cern.cms.dbloader.dao;
 
 import com.google.inject.Inject;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 import javax.management.modelmbean.XMLParseException;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -163,6 +162,10 @@ public abstract class DaoBase {
                     .add(Restrictions.eq("id", xmlPart.getId()))
                     .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .uniqueResult();
+            
+            if (dbPart == null) {
+                throw new XMLParseException(String.format("Part for PART_ID not found: %s", xmlPart));
+            }    
 
         }
 

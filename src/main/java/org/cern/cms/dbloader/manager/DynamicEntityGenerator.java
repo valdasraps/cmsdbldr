@@ -96,24 +96,26 @@ public class DynamicEntityGenerator {
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
 
-
-
                         String table = rs.getString(1);
                         String id = rs.getString(2);
                         String kopName = rs.getString(3);
                         String fullTable = props.getExtConstructTable(table);
 
-                        try (PreparedStatement stmt1 = conn.prepareStatement("select * from ".concat(fullTable))) {
-                            ResultSetMetaData md = stmt1.getMetaData();
+                        if (table != null && ! "PARTS".equals(table)) {
+                        
+                            try (PreparedStatement stmt1 = conn.prepareStatement("select * from ".concat(fullTable))) {
+                                ResultSetMetaData md = stmt1.getMetaData();
 
-                            ConstructEntityHandler t = new ConstructEntityHandler(id, kopName, props.getExtConstructSchemaName(), table, md);
+                                ConstructEntityHandler t = new ConstructEntityHandler(id, kopName, props.getExtConstructSchemaName(), table, md);
 
-                            parts_details.add(t);
+                                parts_details.add(t);
 
-                        } catch (Exception ex) {
-                            log.warn(String.format("KOP extension table [%s]: %s. Skipping..",
-                                    fullTable, ex.getMessage()),
-                                    props.getLogLevel().equals(Level.DEBUG) ? ex : null);
+                            } catch (Exception ex) {
+                                log.warn(String.format("KOP extension table [%s]: %s. Skipping..",
+                                        fullTable, ex.getMessage()),
+                                        props.getLogLevel().equals(Level.DEBUG) ? ex : null);
+                            }
+                            
                         }
                     }
                 }

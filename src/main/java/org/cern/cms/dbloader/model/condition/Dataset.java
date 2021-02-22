@@ -66,6 +66,11 @@ import org.cern.cms.dbloader.model.serial.part.PartAssembly;
 //@JsonIgnoreProperties(ignoreUnknown = true)
 public class Dataset extends DeleteableBase {
 
+    @Transient
+    @XmlAttribute(name = "append")
+    @JsonProperty("append")
+    private boolean append = false;
+    
     @Id
     @Column(name = "CONDITION_DATA_SET_ID")
     @XmlAttribute(name = "id", required = false)

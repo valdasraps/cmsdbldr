@@ -85,7 +85,7 @@ public class CondLoadTest extends TestBase {
                             .uniqueResult();
 
                 assertEquals("TEST_CHANNELS", ds.getChannelMap().getExtensionTableName());
-                assertEquals("1", ds.getRun().getNumber());
+                assertEquals("1", ds.getRun().getNumber().toString());
                 assertEquals("1", ds.getRun().getRunType());
                 assertEquals("Test TEST condition entry", ds.getComment());
                 assertEquals("joshi", ds.getCreatedByUser());
@@ -105,7 +105,7 @@ public class CondLoadTest extends TestBase {
                 assertEquals("JUN_7_2011", alog.getVersion());
                 assertEquals((Integer) 2, alog.getSubversion());
                 assertEquals("1", alog.getRunType());
-                assertEquals((Integer) 1, alog.getRunNumber());
+                assertEquals("1", alog.getRunNumber().toString());
                 assertEquals((Integer) 1, alog.getDatasetCount());
                 assertEquals((Integer) 3, alog.getDatasetRecordCount());
                 assertEquals(new BigInteger("1"), alog.getIntervalOfValidityBegin());
@@ -178,7 +178,7 @@ public class CondLoadTest extends TestBase {
                 .uniqueResult();
 
             assertEquals("HYBRID_TEST_METADATA", dsMeta.getExtensionTable());
-            assertEquals("1", dsMeta.getRun().getNumber());
+            assertEquals("1", dsMeta.getRun().getNumber().toString());
             assertEquals("HRT", dsMeta.getRun().getRunType());
             assertEquals("Test METADATA condition entry", dsMeta.getComment());
             assertEquals("Aivaras", dsMeta.getCreatedByUser());
@@ -193,7 +193,7 @@ public class CondLoadTest extends TestBase {
                 .uniqueResult();
 
             assertEquals("HYBRID_TEST_RESULTS", ds.getExtensionTable());
-            assertEquals("1", ds.getRun().getNumber());
+            assertEquals("1", ds.getRun().getNumber().toString());
             assertEquals("HRT", ds.getRun().getRunType());
             assertEquals("Test HYBRIDS condition entry", ds.getComment());
             assertEquals("Aivaras", ds.getCreatedByUser());
@@ -210,7 +210,7 @@ public class CondLoadTest extends TestBase {
                     .uniqueResult();
 
             assertEquals("CBC_TEST_RESULTS", ds.getExtensionTable());
-            assertEquals("1", ds.getRun().getNumber());
+            assertEquals("1", ds.getRun().getNumber().toString());
             assertEquals("HRT", ds.getRun().getRunType());
             assertEquals("Test CBC condition entry", ds.getComment());
             assertEquals("Aivaras", ds.getCreatedByUser());
@@ -230,4 +230,5 @@ public class CondLoadTest extends TestBase {
         }
 
     }
+    
 }

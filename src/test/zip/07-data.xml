@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+    <HEADER>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>TEST_IV</EXTENSION_TABLE_NAME>
+            <NAME>IV</NAME>
+        </TYPE>
+        <RUN>
+            <RUN_TYPE>CSV-FILE-TEST</RUN_TYPE>
+            <RUN_NUMBER>1</RUN_NUMBER>
+            <RUN_BEGIN_TIMESTAMP>2020-10-12</RUN_BEGIN_TIMESTAMP>
+            <COMMENT_DESCRIPTION>Testing CSV file upload</COMMENT_DESCRIPTION>
+            <LOCATION>Vilnius</LOCATION>
+            <INITIATED_BY_USER>Valdas</INITIATED_BY_USER>
+        </RUN>
+    </HEADER>
+    <DATA_SET>
+        <COMMENT_DESCRIPTION>Testing CSV file upload</COMMENT_DESCRIPTION>
+        <DATA_FILE_NAME>07-data.csv</DATA_FILE_NAME>
+        <CREATE_TIMESTAMP>2020-10-12</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>Valdas</CREATED_BY_USER>
+        <VERSION>CSV.1</VERSION>
+    </DATA_SET>
+</ROOT>

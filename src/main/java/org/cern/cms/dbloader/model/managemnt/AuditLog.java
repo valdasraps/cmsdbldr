@@ -112,7 +112,7 @@ public class AuditLog extends EntityBase {
 
     @Basic
     @Column(name = "RUN_NUMBER")
-    private Integer runNumber;
+    private BigInteger runNumber;
 
     @Basic
     @Column(name = "TAG_NAME")

@@ -1,0 +1,77 @@
+{
+    "Root": {
+        "AssemblySteps": [
+            {
+                "AssemblyStep": {
+                    "Product": {
+                        "Part": {
+                            "KindOfPart": "2S Module",
+                            "NameLabel": "2SMODULENO1"
+                        }
+                    },
+                    "Number": 3,
+                    "Status": "COMPLETED",
+                    "CommentDescription": "This is some first step comment",
+                    "AssemblyParts": [
+                        {
+                            "AssemblyPart": {
+                                "Number": 1,
+                                "Part": { 
+                                    "Part": {
+                                        "KindOfPart": "2S Module",
+                                        "NameLabel": "2SMODULENO1"
+                                    }
+                                }
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 2,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 1160
+                                    }
+                                },
+                                "AssemblyData": [
+                                    {
+                                        "AssemblyData": {
+                                            "Number": 1,
+                                            "Version": "1",
+                                            "DataFilename": "assembly_data.csv"
+                                        }
+                                    }
+                                ]
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 3,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 1180
+                                    }
+                                },
+                                "AssemblyData": [
+                                    {
+                                        "AssemblyData": {
+                                            "Number": 1,
+                                            "Version": "1",
+                                            "DataFilename": "assembly_data.csv"
+                                        }
+                                    }
+                                ]
+                            }
+                        }, {
+                            "AssemblyPart": {
+                                "Number": 4,
+                                "Part": {
+                                    "Part": {
+                                        "Id": 1300
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

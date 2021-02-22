@@ -422,7 +422,7 @@ public class PartLoadJsonTest extends TestBase {
                 assertNull(pack.getComment());
                 assertNull(pack.getInstalledDate());
                 assertNull(pack.getManufacturer());
-                assertNull(pack.getLocation());
+                //assertNull(pack.getLocation());
                 assertNull(pack.getBarcode());
                 assertNull(pack.getVersion());
                 assertNull(pack.getName());
@@ -444,7 +444,8 @@ public class PartLoadJsonTest extends TestBase {
                     assertNull(child.getComment());
                     assertNull(child.getInstalledDate());
                     assertNull(child.getManufacturer());
-                    assertNull(child.getLocation());
+                    assertEquals("University of Iowa", child.getLocation().getName());
+                    assertEquals("University of Iowa", child.getLocation().getInstitution().getName());
                     assertNull(child.getSerialNumber());
                     assertNull(child.getBarcode());
                     assertNull(child.getVersion());

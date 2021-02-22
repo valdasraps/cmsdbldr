@@ -65,7 +65,10 @@ public class EntityModificationManager {
         "org.cern.cms.dbloader.model.construct.ext.RequestItem",
         "org.cern.cms.dbloader.model.construct.ext.Shipment",
         "org.cern.cms.dbloader.model.construct.ext.ShipmentItem",
-        "org.cern.cms.dbloader.model.construct.PartDetailsBase"
+        "org.cern.cms.dbloader.model.construct.PartDetailsBase",
+        "org.cern.cms.dbloader.model.construct.ext.AssemblyStep",
+        "org.cern.cms.dbloader.model.construct.ext.AssemblyPart",
+        "org.cern.cms.dbloader.model.construct.ext.AssemblyData"
     };
 
     public static void modify(final PropertiesManager props) throws Exception {

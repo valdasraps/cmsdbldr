@@ -85,6 +85,10 @@ public class DataFile extends FileBase implements Comparable<DataFile> {
 
                 return DataFileType.SHIPMENT;
 
+            } else if (root.getAssemblySteps() != null) {
+
+                return DataFileType.ASSEMBLY_STEP;
+
             }
             
         } else if (root.getMaps().getTags() != null) {

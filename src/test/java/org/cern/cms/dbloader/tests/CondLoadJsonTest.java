@@ -74,7 +74,7 @@ public class CondLoadJsonTest extends TestBase {
 
         //Run
         Run run = new Run();
-        run.setNumber("1");
+        run.setNumber(BigInteger.valueOf(1));
         run.setRunType("1");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = sdf.parse("2015-11-03 19:00:00");
@@ -182,7 +182,7 @@ public class CondLoadJsonTest extends TestBase {
 
         //Run
         Run run = new Run();
-        run.setNumber("2");
+        run.setNumber(BigInteger.valueOf(2));
         run.setRunType("1");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date d = sdf.parse("2015-11-03 19:00:00");
@@ -252,7 +252,7 @@ public class CondLoadJsonTest extends TestBase {
 
         //Run
         Run run = new Run();
-        run.setNumber("164654");
+        run.setNumber(BigInteger.valueOf(164654));
         run.setRunType("LOCAL-RUN");
         Date d = sdf.parse("2009-01-01 00:00:00");
         run.setBeginTime(d);
@@ -327,7 +327,7 @@ public class CondLoadJsonTest extends TestBase {
         assertNotNull(header.getRun());
         // Run
         Run run = header.getRun();
-        assertEquals("1", run.getNumber());
+        assertEquals("1", run.getNumber().toString());
         assertEquals("1", run.getRunType());
         assertEquals(DATE_FORMAT.parse("2015-11-03 19:00:00 GMT"), run.getBeginTime());
         // Hint
@@ -424,7 +424,7 @@ public class CondLoadJsonTest extends TestBase {
         assertNotNull(header.getRun());
         // Run
         Run run = header.getRun();
-        assertEquals("1", run.getNumber());
+        assertEquals("1", run.getNumber().toString());
         assertEquals("1", run.getRunType());
         assertEquals(DATE_FORMAT.parse("2018-08-20 19:00:00 GMT"), run.getBeginTime());
         // Hint
@@ -494,7 +494,7 @@ public class CondLoadJsonTest extends TestBase {
         assertNotNull(header.getRun());
         // Run
         Run run = header.getRun();
-        assertEquals("164654", run.getNumber());
+        assertEquals("164654", run.getNumber().toString());
         assertEquals("LOCAL-RUN", run.getRunType());
         assertEquals(DATE_FORMAT.parse("2009-01-01 00:00:00 GMT"), run.getBeginTime());
         assertEquals("LOCAL-RUN", run.getRunType());
@@ -561,7 +561,7 @@ public class CondLoadJsonTest extends TestBase {
                         .uniqueResult();
 
                 assertEquals("TEST_CHANNELS", ds.getChannelMap().getExtensionTableName());
-                assertEquals("1", ds.getRun().getNumber());
+                assertEquals("1", ds.getRun().getNumber().toString());
                 assertEquals("1", ds.getRun().getRunType());
                 assertEquals("Any comment", ds.getComment());
                 assertEquals("apoluden", ds.getCreatedByUser());
@@ -581,7 +581,7 @@ public class CondLoadJsonTest extends TestBase {
                 assertEquals("AUG_20_2018", alog.getVersion());
                 assertEquals((Integer) 2, alog.getSubversion());
                 assertEquals("1", alog.getRunType());
-                assertEquals((Integer) 1, alog.getRunNumber());
+                assertEquals("1", alog.getRunNumber().toString());
                 assertEquals((Integer) 1, alog.getDatasetCount());
                 assertEquals((Integer) 3, alog.getDatasetRecordCount());
                 assertEquals(new BigInteger("1"), alog.getIntervalOfValidityBegin());

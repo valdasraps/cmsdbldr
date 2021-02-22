@@ -12,6 +12,8 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import com.google.inject.Inject;
+import java.io.FileInputStream;
+import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections.list.TreeList;
 import org.cern.cms.dbloader.manager.file.ArchiveFile;
 
@@ -72,7 +74,7 @@ public class FilesManager {
         return files;
     }
 
-    private Set<File> extractZip(File zipFile) throws ZipException, IOException {
+    public Set<File> extractZip(File zipFile) throws ZipException, IOException {
         Set<File> files = new HashSet<>();
         try (ZipFile zip = new ZipFile(zipFile)) {
 
@@ -106,6 +108,25 @@ public class FilesManager {
 
         }
         return files;
+    }
+    
+    public File createZip(File... files) throws ZipException, IOException {
+        
+        File zipFile = File.createTempFile("temp", ".zip", TMP_FOLDER);
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile));
+        
+        for (File f: files) {
+            out.putNextEntry(new ZipEntry(f.getName()));
+            try (FileInputStream in = new FileInputStream(f)) {
+                byte[] data = in.readAllBytes();
+                out.write(data, 0, data.length);
+            }
+            out.closeEntry();
+        }
+
+        out.close();
+        
+        return zipFile;
     }
 
 }
