@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.math.BigInteger;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,6 +33,7 @@ import org.cern.cms.dbloader.model.EntityBase;
 import org.cern.cms.dbloader.model.condition.ChannelBase;
 import org.cern.cms.dbloader.model.construct.Part;
 import org.cern.cms.dbloader.model.serial.part.PartAssembly;
+import org.hibernate.annotations.Type;
 
 /**
  * Request Item class for tracking.
@@ -70,6 +72,13 @@ public class ShipmentItem extends EntityBase {
     @JsonProperty("RequestId")
     private BigInteger requestId;
     
+    @Basic
+    @Column(name="SHI_IS_PAID")
+    @Type(type="true_false")
+    @XmlElement(name = "SHI_IS_PAID")
+    @JsonProperty("paid")
+    private Boolean paid = false;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SHI_RQI_ID")
     @XmlTransient
@@ -79,7 +88,7 @@ public class ShipmentItem extends EntityBase {
     @JoinColumn(name = "SHI_SHP_ID")
     @XmlTransient
     private Shipment shipment;
-    
+
     // Part definitions
     
     @ManyToOne

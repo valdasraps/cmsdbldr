@@ -41,6 +41,7 @@ import lombok.ToString;
 import org.cern.cms.dbloader.manager.xml.DateAdapter;
 import org.cern.cms.dbloader.model.EntityBase;
 import org.cern.cms.dbloader.model.managemnt.Location;
+import org.hibernate.annotations.Type;
 
 /**
  * Tracking Request model class.
@@ -137,7 +138,32 @@ public class Shipment extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "SHP_TO_LOCATION_ID")
     private Location toLocation;
+    
+    @Basic
+    @Column(name="PAID_BY_INSTITUTION")
+    @XmlElement(name = "PAID_BY_INSTITUTION")
+    @JsonProperty("paidByInstitution")
+    @Type(type="true_false")
+    private Boolean paidByInstitution = false;
+    
+    @Basic
+    @Column(name="EDH_LINK")
+    @XmlElement(name = "EDH_LINK")
+    @JsonProperty("EDHLink")
+    private String edhLink;
+    
+    @Basic
+    @Column(name="BUDGET_CODE")
+    @XmlElement(name = "BUDGET_CODE")
+    @JsonProperty("budgetCode")
+    private String budgetCode;
 
+    @Basic
+    @Column(name="FULL_ADDRESS")
+    @XmlElement(name = "FULL_ADDRESS")
+    @JsonProperty("fullAddress")
+    private String fullAddress;
+    
     @XmlElementWrapper(name="ITEMS")
     @XmlElement(name="ITEM", type = ShipmentItem.class)
     @JsonProperty("Items")

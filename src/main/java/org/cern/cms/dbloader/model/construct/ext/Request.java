@@ -64,7 +64,8 @@ public class Request extends EntityBase {
         
         OPEN,
         CLOSED,
-        CANCELED
+        CANCELED,
+        FULFILLED
         
     }
     
