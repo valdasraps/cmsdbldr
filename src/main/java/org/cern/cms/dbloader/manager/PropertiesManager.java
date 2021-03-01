@@ -98,7 +98,7 @@ public abstract class PropertiesManager {
         }
         this.version = dbloaderp.getProperty(VERSION_KEY);
     }
-    
+
     @SuppressWarnings("unchecked")
     public PropertiesManager(Properties props, String[] files) throws Exception {
         this();
