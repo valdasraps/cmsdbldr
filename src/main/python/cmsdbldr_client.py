@@ -13,6 +13,7 @@ import json
 import warnings
 from base64 import b64encode, b64decode
 import xml.etree.ElementTree as ET
+from ast import literal_eval
 
 import urllib3
 from urllib.parse import urlparse
@@ -37,7 +38,8 @@ class CernSSO:
 
         tfile = tempfile.mktemp()
         cmd = 'auth-get-sso-cookie -u "%s" -o "%s" -v --nocertverify' % (url,tfile)
-        p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
+        with warnings.catch_warnings():
+            p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
         logging.debug("%s returned %s" % (cmd, p.returncode))
         logging.debug(p.stdout.read())
         err = p.stderr.read()
@@ -165,15 +167,29 @@ class LoaderClient:
     def __init__(self):
         
         self.parser = OptionParser(self.USAGE)
-        self.parser.add_option("-u", "--url",     dest = "url",     help = "service URL", metavar = "url")
-        self.parser.add_option("-o", "--login",   dest = "login",   help = "use simple login provider cache (stores pwd in not secure way!)", metavar = "login", action = "store_true", default = False)
-        self.parser.add_option("-k", "--krb",     dest = "krb",     help = "use kerberos login provider", metavar = "krb", action = "store_true", default = False)
-        self.parser.add_option("-q", "--quiet",   dest = "quiet",   help = "Do not print error, just return its code. OK = 0", action = "store_true", default = False)
-        self.parser.add_option("-v", "--verbose", dest = "verbose", help = "Print debug information (verbose output). Be carefull: this might expose password to terminal!", action = "store_true", default = False)
-        self.parser.add_option("-c", "--loginc",  dest = "loginc",  help = "Specify cache file", metavar = "loginc", default = ".session.cache")
+        self.parser.add_option("-u", "--url",      dest = "url",      help = "service URL", metavar = "url")
+        self.parser.add_option("-o", "--login",    dest = "login",    help = "use simple login provider cache (stores pwd in not secure way!)", metavar = "login", action = "store_true", default = False)
+        self.parser.add_option("-k", "--krb",      dest = "krb",      help = "use kerberos login provider", metavar = "krb", action = "store_true", default = False)
+        self.parser.add_option("-q", "--quiet",    dest = "quiet",    help = "Do not print error, just return its code. OK = 0", action = "store_true", default = False)
+        self.parser.add_option("-v", "--verbose",  dest = "verbose",  help = "Print debug information (verbose output). Be carefull: this might expose password to terminal!", action = "store_true", default = False)
+        self.parser.add_option("-a", "--validate", dest = "validate", help = "EXPERIMENTAL! Do not send XML file to loader but validate XML instead!", action = "store_true", default = False)
+        self.parser.add_option("-t", "--test",     dest = "test",     help = "Upload test - proceed with the full upload process but rollback the transaction!", action = "store_true", default = False)
+        self.parser.add_option("-c", "--loginc",   dest = "loginc",   help = "Specify cache file", metavar = "loginc", default = ".session.cache")
 
     def _allowed_file(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1] in self.ALLOWED_EXTENSIONS
+
+    def _validate_xml(self, xml, xsd, quiet = False):
+        cmd = 'xmllint --schema "%s" --noout "%s"' % (xsd,xml)
+        p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
+        logging.debug("%s returned %s" % (cmd, p.returncode))
+        out = p.stdout.read()
+        logging.debug(out)
+        err = p.stderr.read()
+        logging.debug(err)
+        if not quiet and p.returncode != 0:
+            print(err.decode("utf-8"))
+        return p.returncode
 
     def run(self, iargs = []):
 
@@ -204,6 +220,8 @@ class LoaderClient:
                     return 1
 
             load_url = url + "/load/file"
+            if options.test:
+                load_url = load_url + "?test"
             logging.debug("load_url = %s", load_url)
 
             if len(args) != 1:
@@ -231,7 +249,20 @@ class LoaderClient:
                         cookies = CernSSO().krb_sign_on(url)
                         force_level = 2
             
-                r = requests.post(url = load_url, files = files, cookies = cookies, verify = False)
+                if options.validate:
+                    if f.rsplit('.', 1)[1].lower() != 'xml':
+                        self.parser.error('Validation is possible for xml files only')
+                        return 2
+                    else:
+                        r = requests.get(url = url + "/doc/xsd", cookies = cookies, verify = False)
+                        tfile = tempfile.mktemp(suffix='.xsd')
+                        with open(tfile, 'w') as fp:
+                            fp.write(r.text)
+                        return self._validate_xml(f, tfile, options.quiet)
+
+                else:
+
+                    r = requests.post(url = load_url, files = files, cookies = cookies, verify = False)
 
                 if r.status_code == 200 and r.url.startswith(SSO_LOGIN_URL):
                     if force_level < 2:
@@ -246,6 +277,8 @@ class LoaderClient:
                 if not options.quiet:
                     print(r.text)
                     print("Response code: %d" % r.status_code)
+                    if options.test:
+                        print("This was a test run, no changes in DB commited!")
 
                 if r.status_code == requests.codes.ok:
                     return 0

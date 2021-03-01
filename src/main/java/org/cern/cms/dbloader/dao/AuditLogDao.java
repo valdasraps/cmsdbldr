@@ -62,11 +62,11 @@ public class AuditLogDao {
 
     }
     
-    public final void saveProcessing() throws Exception {
-        save(UploadStatus.Processing);
+    public final void saveProcessing(boolean isTest) throws Exception {
+        save(UploadStatus.Processing, isTest);
     }
     
-    public final void saveFailure(Throwable error) throws Exception {
+    public final void saveFailure(Throwable error, boolean isTest) throws Exception {
         StringWriter sw = new StringWriter();
         error.printStackTrace(new PrintWriter(sw));
         String str = sw.toString();
@@ -74,14 +74,14 @@ public class AuditLogDao {
             str = str.substring(0, 4000);
         }
         log.setUploadLogTrace(str);
-        save(UploadStatus.Failure);
+        save(UploadStatus.Failure, isTest);
     }
     
-    public final void saveSuccess() throws Exception {
-        save(UploadStatus.Success);
+    public final void saveSuccess(boolean isTest) throws Exception {
+        save(UploadStatus.Success, isTest);
     }
 
-    private void save(UploadStatus status) throws Exception {
+    private void save(UploadStatus status, boolean isTest) throws Exception {
         try (SessionManager sm = rf.createSessionManager()) {
             
             this.log.setStatus(status);
@@ -110,7 +110,7 @@ public class AuditLogDao {
 
             sm.getSession().saveOrUpdate(this.log);
 
-            if (props.isTest()) {
+            if (isTest) {
                 sm.rollback();
             } else {
                 sm.commit();

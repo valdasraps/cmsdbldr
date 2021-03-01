@@ -145,7 +145,11 @@ public class PartDao extends DaoBase {
             dbPart.setInsertUser(insertUser);
         }
         
+        System.out.print("PART SAVE: " + dbPart.getId());
+        
         session.save(dbPart);
+        
+        System.out.println(" : " + dbPart.getId());
 
         if (xmlPart.getAttributes() != null) {
             for (Attribute attr : xmlPart.getAttributes()) {

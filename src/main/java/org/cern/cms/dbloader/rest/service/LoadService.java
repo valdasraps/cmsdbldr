@@ -55,7 +55,7 @@ public class LoadService {
         return path;
     }
 
-    public final Response load(final InputStream inputStream, final Extension ext, OperatorAuth auth) {
+    public final Response load(final InputStream inputStream, final Extension ext, OperatorAuth auth, boolean isTest) {
         PropertiesManager pm = Application.injector.getInstance(PropertiesManager.class);
         FilesManager fm = Application.injector.getInstance(FilesManager.class);
         try {
@@ -67,7 +67,7 @@ public class LoadService {
             
             DbLoader loader = new DbLoader(pm);
             for (FileBase fb: fm.getFiles(Collections.singletonList(file.toAbsolutePath().toString()))) {
-                loader.loadArchive(Application.injector, fb, auth);
+                loader.loadArchive(Application.injector, fb, auth, isTest);
             }
 
             return Response.status(Response.Status.OK).entity("loaded").type(MediaType.TEXT_PLAIN).build();
@@ -80,7 +80,7 @@ public class LoadService {
         }
     }
 
-    public final Response loadJsonArray(final String data, final Extension ext, OperatorAuth auth)  throws Throwable {
+    public final Response loadJsonArray(final String data, final Extension ext, OperatorAuth auth, boolean isTest)  throws Throwable {
         PropertiesManager pm = Application.injector.getInstance(PropertiesManager.class);
         FilesManager fm = Application.injector.getInstance(FilesManager.class);
 
@@ -94,12 +94,12 @@ public class LoadService {
         }
         DbLoader loader = new DbLoader(pm);
         for (FileBase fb: fm.getFiles(filePaths)) {
-            loader.loadArchive(Application.injector, fb, auth);
+            loader.loadArchive(Application.injector, fb, auth, isTest);
         }
         return Response.status(Response.Status.OK).entity("loaded").type(MediaType.MULTIPART_FORM_DATA).build();
     }
 
-    public final Response load(final String data, final Extension ext, OperatorAuth auth) {
+    public final Response load(final String data, final Extension ext, OperatorAuth auth, boolean isTest) {
         PropertiesManager pm = Application.injector.getInstance(PropertiesManager.class);
         FilesManager fm = Application.injector.getInstance(FilesManager.class);
 
@@ -112,7 +112,7 @@ public class LoadService {
 
             DbLoader loader = new DbLoader(pm);
             for (FileBase fb: fm.getFiles(Collections.singletonList(file.toAbsolutePath().toString()))) {
-                loader.loadArchive(Application.injector, fb, auth);
+                loader.loadArchive(Application.injector, fb, auth, isTest);
             }
 
             return Response.status(Response.Status.OK).entity("loaded").type(MediaType.MULTIPART_FORM_DATA).build();

@@ -77,7 +77,7 @@ public class Part extends DeleteableBase {
     @Column(name = "PART_ID")
     @XmlElement(name = "PART_ID")
     @GeneratedValue(generator = "ANY_PHYSCLPART_ID_SEQ", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "ANY_PHYSCLPART_ID_SEQ", sequenceName = "ANY_PHYSCLPART_ID_SEQ", allocationSize = 20)
+    @SequenceGenerator(name = "ANY_PHYSCLPART_ID_SEQ", sequenceName = "ANY_PHYSCLPART_ID_SEQ", allocationSize = 10)
     @JsonProperty("Id")
     private BigInteger id;
 

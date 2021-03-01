@@ -121,13 +121,17 @@ public class DbLoader {
         // Loop archives
         for (FileBase archive : fm.getFiles(props.getArgs())) {
 
-            loadArchive(injector, archive, auth);
+            loadArchive(injector, archive, auth, props.isTest());
 
         }
 
     }
     
     public void loadArchive(Injector injector, FileBase archive, OperatorAuth auth) throws Throwable {
+        this.loadArchive(injector, archive, auth, false);
+    }
+    
+    public void loadArchive(Injector injector, FileBase archive, OperatorAuth auth, boolean isTest) throws Throwable {
         
         ResourceFactory rf = injector.getInstance(ResourceFactory.class);
         CondApp condApp = injector.getInstance(CondApp.class);
@@ -141,7 +145,7 @@ public class DbLoader {
         AuditLogDao archiveLog = null;
         if (archive.isArchive()) {
             archiveLog = rf.createAuditDao(archive, auth);
-            archiveLog.saveProcessing();
+            archiveLog.saveProcessing(isTest);
         }
         
         Throwable error = null;
@@ -157,7 +161,7 @@ public class DbLoader {
 
                 // Start datafile log
                 AuditLogDao dataLog = rf.createAuditDao(data, auth);
-                dataLog.saveProcessing();
+                dataLog.saveProcessing(isTest);
 
                 try {
 
@@ -193,7 +197,7 @@ public class DbLoader {
                         
                         app.checkPermission(auth);
                         app.handleData(sm, data, dataLog.getLog(), auth);
-                        dataLog.saveSuccess();
+                        dataLog.saveSuccess(isTest);
                         
                     }
 
@@ -212,7 +216,7 @@ public class DbLoader {
                 } finally {
                     
                     if (error != null) {
-                        dataLog.saveFailure(error);
+                        dataLog.saveFailure(error, isTest);
                         throw error;
                     }
                     
@@ -220,7 +224,7 @@ public class DbLoader {
 
             }
 
-            if (props.isTest()) {
+            if (isTest) {
 
                 log.info("Rollback transaction (loader test)");
                 sm.rollback();
@@ -248,12 +252,12 @@ public class DbLoader {
         
             if (error != null) {
                 if (archiveLog != null) {
-                    archiveLog.saveFailure(error);
+                    archiveLog.saveFailure(error, isTest);
                 }
                 throw error;
             } else {
                 if (archiveLog != null) {
-                    archiveLog.saveSuccess();
+                    archiveLog.saveSuccess(isTest);
                 }
             }
             

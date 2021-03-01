@@ -34,7 +34,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @Path("/")
 public class Load {
     
-    
+    private final static String TEST_PARAM_NAME = "test";
     private final PropertiesManager pm = Application.injector.getInstance(PropertiesManager.class);
     private final LoadService loader = Application.injector.getInstance(LoadService.class);
     private final AuthService aservice = Application.injector.getInstance(AuthService.class);
@@ -65,20 +65,22 @@ public class Load {
     
     @POST
     @Path("/load/json")
-    public final Response loadJson(String data, @Context HttpHeaders headers) throws Throwable {
+    public final Response loadJson(String data, @Context HttpHeaders headers, @Context UriInfo info) throws Throwable {
+        boolean isTest = info.getQueryParameters().containsKey(TEST_PARAM_NAME);
         OperatorAuth auth = aservice.getOperatorAuth(headers);
         if (data.startsWith("[") && data.endsWith("]")) {
-            return loader.loadJsonArray(data, LoadService.Extension.JSON, auth);
+            return loader.loadJsonArray(data, LoadService.Extension.JSON, auth, isTest);
         } else {
-            return loader.load(data, LoadService.Extension.JSON, auth);
+            return loader.load(data, LoadService.Extension.JSON, auth, isTest);
         }
     }
 
     @POST
     @Path("/load/xml")
-    public final Response loadXml(String data, @Context HttpHeaders headers) {
+    public final Response loadXml(String data, @Context HttpHeaders headers, @Context UriInfo info) {
+        boolean isTest = info.getQueryParameters().containsKey(TEST_PARAM_NAME);
         OperatorAuth auth = aservice.getOperatorAuth(headers);
-        return loader.load(data, LoadService.Extension.XML, auth);
+        return loader.load(data, LoadService.Extension.XML, auth, isTest);
     }
 
     @POST
@@ -86,10 +88,11 @@ public class Load {
     @Consumes({MediaType.MULTIPART_FORM_DATA})
     public final Response loadZip(@FormDataParam("uploadFile") InputStream fileInputStream,
                                   @FormDataParam("uploadFile") FormDataContentDisposition fileFormDataContentDisposition,
-                                  @Context HttpHeaders headers) {
+                                  @Context HttpHeaders headers, @Context UriInfo info) {
+        boolean isTest = info.getQueryParameters().containsKey(TEST_PARAM_NAME);
         OperatorAuth auth = aservice.getOperatorAuth(headers);
         String ext = FilenameUtils.getExtension(fileFormDataContentDisposition.getFileName());
-        return loader.load(fileInputStream, LoadService.Extension.get(ext), auth);
+        return loader.load(fileInputStream, LoadService.Extension.get(ext), auth, isTest);
     }
 
 }
