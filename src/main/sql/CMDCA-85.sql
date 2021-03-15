@@ -166,6 +166,14 @@ end if;
 END;
 /
 
+create or replace package pck_tracking as 
+
+  PROCEDURE do_shp_status_update(shp_id NUMBER);
+  PROCEDURE do_shp_item_payment_update(req_id NUMBER);
+
+end pck_tracking;
+/
+
 create or replace PACKAGE BODY PCK_TRACKING AS
 
   PROCEDURE do_shp_status_update(shp_id NUMBER) AS
@@ -200,11 +208,11 @@ create or replace PACKAGE BODY PCK_TRACKING AS
         ) and
         r.req_status = 'OPEN';
     
-END do_shp_status_update;
-/
+  END do_shp_status_update;
 
-PROCEDURE do_shp_item_payment_update(req_id NUMBER) AS
-BEGIN
+
+  PROCEDURE do_shp_item_payment_update(req_id NUMBER) AS
+  BEGIN
 
     /**
     Move Request to FULFILLED state if state is not CLOSED anymore
@@ -240,7 +248,7 @@ END PCK_TRACKING;
 /
 
 
-CREATE OR REPLACE FORCE VIEW "CMS_TST_TEST_CONSTRUCT"."REQUEST_STATS" ("REQ_ID", "REQUESTED", "IS_PAID", "NOT_IS_PAID", "PACKAGING", "SHIPPED", "RECEIVED", "CANCELED") AS 
+CREATE OR REPLACE FORCE VIEW "REQUEST_STATS" ("REQ_ID", "REQUESTED", "IS_PAID", "NOT_IS_PAID", "PACKAGING", "SHIPPED", "RECEIVED", "CANCELED") AS 
 SELECT
     A.RQI_REQ_ID REQ_ID,
     A.REQUESTED,
@@ -287,3 +295,5 @@ FROM
                     ON REQUESTS.REQ_ID = REQUEST_ITEMS.RQI_REQ_ID
                 ) PIVOT (COUNT(*) FOR (SHP_STATUS) IN ('PACKAGING' AS PACKAGING, 'SHIPPED' AS SHIPPED, 'RECEIVED' AS RECEIVED, 'CANCELED' AS CANCELED))) B
         on A.RQI_REQ_ID = B.REQ_ID;
+
+grant EXECUTE on "PCK_TRACKING" to "CMS_&det._PRTTYPE_&subdet._WRITER";
