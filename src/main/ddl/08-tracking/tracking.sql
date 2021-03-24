@@ -739,23 +739,45 @@ GRANT SELECT ON ANY_SHIPMENT_ITM_ID_SEQ TO CMS_&det._&subdet._CONSTRUCT_WRITER;
 GRANT SELECT ON ANY_SHIPMENTS_HISTORY_ID_SEQ TO CMS_&det._&subdet._CONSTRUCT_WRITER;
 GRANT SELECT ON ANY_SHIPMENTS_ID_SEQ TO CMS_&det._&subdet._CONSTRUCT_WRITER;
 
-CREATE OR REPLACE VIEW REQUEST_STATS AS
-SELECT 
+CREATE OR REPLACE VIEW "REQUEST_STATS" ("REQ_ID", "REQUESTED", "IS_PAID", "NOT_IS_PAID", "PACKAGING", "SHIPPED", "RECEIVED", "CANCELED") AS 
+SELECT
     A.RQI_REQ_ID REQ_ID,
     A.REQUESTED,
+    A.IS_PAID,
+    A.NOT_IS_PAID,
     NVL(B.PACKAGING, 0) PACKAGING,
     NVL(B.SHIPPED, 0) SHIPPED,
     NVL(B.RECEIVED, 0) RECEIVED,
     NVL(B.CANCELED, 0) CANCELED
-FROM 
-    (SELECT RQI_REQ_ID, SUM(RQI_QUANTITY) AS REQUESTED FROM REQUEST_ITEMS GROUP BY RQI_REQ_ID) A
-    left join 
+FROM
+    (SELECT 
+        RQI_REQ_ID, 
+        SUM(RQI_QUANTITY) AS REQUESTED,
+        NVL(SUM(IS_PAID), 0) AS IS_PAID,
+        NVL(SUM(NOT_IS_PAID), 0) AS NOT_IS_PAID
+    FROM 
+        REQUEST_ITEMS 
+        LEFT JOIN (
+            select 
+                SHI_RQI_ID, 
+                SUM(case when SHI_IS_PAID = 'T' then 1 else 0 end) IS_PAID,
+                SUM(case when SHI_IS_PAID = 'T' then 0 else 1 end) NOT_IS_PAID 
+            from 
+                SHIPMENT_ITEMS 
+            where 
+                SHI_RQI_ID is not null
+            group by 
+                SHI_RQI_ID)
+            ON SHI_RQI_ID = RQI_ID
+    GROUP BY 
+        RQI_REQ_ID) A
+    left join
         (SELECT * FROM (
-            SELECT 
+            SELECT
                 REQUESTS.REQ_ID,
                 SHIPMENTS.SHP_STATUS
-            FROM 
-                SHIPMENTS 
+            FROM
+                SHIPMENTS
                 JOIN SHIPMENT_ITEMS
                     ON SHIPMENT_ITEMS.SHI_SHP_ID = SHIPMENTS.SHP_ID
                 JOIN REQUEST_ITEMS
@@ -806,3 +828,86 @@ from (
     desc_rank = 1;
     
 grant SELECT on SHIPMENT_STATUS_COMMENTS to PUBLIC;
+
+create or replace package pck_tracking as 
+
+  PROCEDURE do_shp_status_update(shp_id NUMBER);
+  PROCEDURE do_shp_item_payment_update(req_id NUMBER);
+
+end pck_tracking;
+/
+
+create or replace PACKAGE BODY PCK_TRACKING AS
+
+  PROCEDURE do_shp_status_update(shp_id NUMBER) AS
+  BEGIN
+    
+    
+    /**
+    Move request to FULFILLED state if all requested items have been received by the recipient.
+    **/
+    update 
+        requests r
+    set 
+        req_status = 'FULFILLED'
+    where
+        r.req_id in (
+            select
+                rqi_req_id
+            from 
+                request_items 
+            where 
+                rqi_id in (
+                    select
+                        shi_rqi_id 
+                    from 
+                        shipment_items 
+                    where 
+                        shi_shp_id = shp_id and 
+                        shi_rqi_id is not null)
+        ) and
+        r.req_id in (
+            select req_id from request_stats where requested = received
+        ) and
+        r.req_status = 'OPEN';
+    
+  END do_shp_status_update;
+
+
+  PROCEDURE do_shp_item_payment_update(req_id NUMBER) AS
+  BEGIN
+
+    /**
+    Move Request to FULFILLED state if state is not CLOSED anymore
+    **/
+    update requests r
+    set req_status = 'FULFILLED'
+    where
+        r.req_id = req_id and
+        r.req_id in (
+            select req_id from request_stats where requested = received and requested > is_paid
+        ) and
+        r.req_status = 'CLOSED';
+    
+    if SQL%rowcount = 0 then
+    
+        /**
+        Move Request to CLOSED if all items are shipped and paid
+        **/
+        update requests r
+        set req_status = 'CLOSED'
+        where
+            r.req_id = req_id and
+            r.req_id in (
+                select req_id from request_stats where requested = received and requested = is_paid
+            ) and
+            r.req_status = 'FULFILLED';
+    
+    end if;
+    
+  END do_shp_item_payment_update;
+
+END PCK_TRACKING;
+/
+
+grant EXECUTE on "PCK_TRACKING" to "CMS_&det._PRTTYPE_&subdet._WRITER";
