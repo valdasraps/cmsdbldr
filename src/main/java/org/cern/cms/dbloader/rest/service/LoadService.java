@@ -6,8 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -19,6 +24,7 @@ import org.cern.cms.dbloader.manager.JsonManager;
 import org.cern.cms.dbloader.manager.PropertiesManager;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.rest.Application;
+import org.cern.cms.dbloader.rest.RestPropertiesManager;
 import org.cern.cms.dbloader.util.OperatorAuth;
 
 /**
@@ -27,6 +33,9 @@ import org.cern.cms.dbloader.util.OperatorAuth;
  */
 @Log4j
 public class LoadService {
+    
+    public static final String WORK_BASE_FOLDER = "/var/cmsdbldr/work/";
+    public static final Path JOBS_LOG_FILE = Paths.get("/var/cmsdbldr/jobs.log");
     
     public enum Extension {
         
@@ -40,7 +49,15 @@ public class LoadService {
         
     }
     
-    private static String writeToFileServer(InputStream inputStream, String path) throws IOException {
+    private final PropertiesManager pm;
+    private final Path workFolder;
+    
+    public LoadService(final RestPropertiesManager pm) {
+        this.pm = pm;
+        this.workFolder = Paths.get(WORK_BASE_FOLDER, pm.getDetName(), pm.getDbName());
+    }
+    
+    private static String writeToFile(InputStream inputStream, String path) throws IOException {
 
         try (OutputStream outputStream = new FileOutputStream(new File(path))) {
             
@@ -54,14 +71,31 @@ public class LoadService {
         }
         return path;
     }
+    
+    private static void appendToWorkLog(final Path folder) throws IOException {
+        
+        // Get current time, i.e. 2021-03-08 16:20:46.049266
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date());
+        String logLine = timeStamp + "\t" + folder.toAbsolutePath().toString() + "\n";
+        
+        Files.write(JOBS_LOG_FILE, logLine.getBytes(), StandardOpenOption.APPEND);
+        
+    }
+    
+    private Path createWorkFile(final Extension ext) throws IOException {
+        Path folder = Files.createTempDirectory(this.workFolder, "LoadService.".concat(ext.toString()).concat("-"));
+        appendToWorkLog(folder);
+        final Path file = Files.createTempFile(folder, "LoadServiceFile", ".".concat(ext.toString()));
+        return file;
+    }
 
     public final Response load(final InputStream inputStream, final Extension ext, OperatorAuth auth, boolean isTest) {
         PropertiesManager pm = Application.injector.getInstance(PropertiesManager.class);
         FilesManager fm = Application.injector.getInstance(FilesManager.class);
         try {
 
-            final java.nio.file.Path file = Files.createTempFile("Load.", ".".concat(ext.toString()));
-            writeToFileServer(inputStream, file.toAbsolutePath().toString());
+            final Path file = createWorkFile(ext);
+            writeToFile(inputStream, file.toAbsolutePath().toString());
 
             log.info(String.format("Load request: %s", file.toAbsolutePath()));
             
@@ -88,7 +122,7 @@ public class LoadService {
         List<String> roots = jmnger.deserilizeRootArray(data);
         List<String> filePaths = new ArrayList<>();
         for (String root: roots) {
-            final java.nio.file.Path file = Files.createTempFile("Load.", ".".concat(ext.toString()));
+            final Path file = createWorkFile(ext);
             Files.write(file, root.getBytes());
             filePaths.add(file.toAbsolutePath().toString());
         }
@@ -105,7 +139,7 @@ public class LoadService {
 
         try {
 
-            final java.nio.file.Path file = Files.createTempFile("Load.", ".".concat(ext.toString()));
+            final Path file = createWorkFile(ext);
             Files.write(file, data.getBytes());
 
             log.info(String.format("Load request: %s", file.toAbsolutePath()));
