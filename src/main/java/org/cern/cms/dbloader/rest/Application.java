@@ -87,6 +87,8 @@ public class Application implements Daemon {
 
         LogManager.setLogging(pm);
         EntityModificationManager.modify(pm);
+        
+        LoadService loadService = new LoadService(pm);
 
         injector = Guice.createInjector(new AbstractModule() {
             @Override
@@ -94,7 +96,7 @@ public class Application implements Daemon {
 
                 bind(PropertiesManager.class).toInstance(pm);
                 bind(AuthService.class).toInstance(new AuthService(props));
-                bind(LoadService.class).toInstance(new LoadService(pm));
+                bind(LoadService.class).toInstance(loadService);
                 install(new FactoryModuleBuilder().build(ResourceFactory.class));
                 
                 if (props.getProperty(XSD_FILE_KEY) != null) {
