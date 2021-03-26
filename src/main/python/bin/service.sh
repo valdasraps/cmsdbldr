@@ -14,12 +14,22 @@ pidfile="/var/run/cmsdbldr_${det}_${dat}.pid"
 properties="/opt/cmsdbldr/properties/${det}_${dat}.properties"
 jarlib=/opt/cmsdbldr/bin/cmsdbldr.jar
 
+workdir=/var/cmsdbldr/work/${det}/${dat}
+outfile=/var/cmsdbldr/rest_${det}_${dat}.out.log
+errfile=/var/cmsdbldr/rest_${det}_${dat}.err.log
+jobslog=/var/cmsdbldr/jobs.log
+
 do_start() {
     echo "$name $1"
+
+    # Pre-create infra
+    mkdir -p ${workdir}
+    touch ${jobslog} ${outfile} ${errfile}
+
     /usr/bin/jsvc -server \
       -pidfile ${pidfile} \
-      -outfile /var/cmsdbldr/rest_${det}_${dat}.out.log \
-      -errfile /var/cmsdbldr/rest_${det}_${dat}.err.log \
+      -outfile ${outfile} \
+      -errfile ${errfile} \
       -wait 30 \
       $1 \
       -cp $jarlib \

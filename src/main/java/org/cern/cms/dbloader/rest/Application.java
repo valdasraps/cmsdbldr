@@ -36,6 +36,8 @@ import org.glassfish.jersey.server.ServerProperties;
 public class Application implements Daemon {
     
     private final static String PORT_KEY = "api-port";
+    private final static String DET_NAME_KEY = "det-name";
+    private final static String DB_NAME_KEY = "db-name";
     private final static String XSD_FILE_KEY = "xsd-file";
     private final static String DOC_FILE_KEY = "doc-file";
     public final static Named XSD_NAME = Names.named(XSD_FILE_KEY);
@@ -59,29 +61,34 @@ public class Application implements Daemon {
         if (!props.containsKey(PORT_KEY)) {
             throw new IllegalArgumentException(String.format("API port key not defined: %s", PORT_KEY));
         }
+
+        if (!props.containsKey(DET_NAME_KEY)) {
+            throw new IllegalArgumentException(String.format("Detector name key not defined: %s", DET_NAME_KEY));
+        }
+
+        if (!props.containsKey(DB_NAME_KEY)) {
+            throw new IllegalArgumentException(String.format("Database name key not defined: %s", DB_NAME_KEY));
+        }
         
         int port = Integer.parseInt(props.getProperty(PORT_KEY));
+        String detName = props.getProperty(DET_NAME_KEY);
+        String dbName = props.getProperty(DB_NAME_KEY);
 
         log.info(String.format("Loading API on %d for %s..", port, propsFileName));
         
-        initLoader(props);
+        initLoader(props, detName, dbName);
         initServer(port);
         
     }
     
-    private void initLoader(final Properties props) throws Exception {
+    private void initLoader(final Properties props, final String detName, final String dbName) throws Exception {
         
-        PropertiesManager pm = new PropertiesManager(props, new String[]{ }) {
-            
-            @Override
-            public boolean printHelp() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-            
-        };
+        RestPropertiesManager pm = new RestPropertiesManager(props, detName, dbName);
 
         LogManager.setLogging(pm);
         EntityModificationManager.modify(pm);
+        
+        LoadService loadService = new LoadService(pm);
 
         injector = Guice.createInjector(new AbstractModule() {
             @Override
@@ -89,7 +96,7 @@ public class Application implements Daemon {
 
                 bind(PropertiesManager.class).toInstance(pm);
                 bind(AuthService.class).toInstance(new AuthService(props));
-                bind(LoadService.class).toInstance(new LoadService());
+                bind(LoadService.class).toInstance(loadService);
                 install(new FactoryModuleBuilder().build(ResourceFactory.class));
                 
                 if (props.getProperty(XSD_FILE_KEY) != null) {
