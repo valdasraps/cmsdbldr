@@ -132,10 +132,10 @@ class Loader:
             os.makedirs(logs)
             
         work = mkdtemp(prefix = filename + '-', dir = logs)
+        subprocess.call(['chmod', '0755', work])
         self.vprint("Work: %s", work)
         
-        with open(JOBS_LOG,'w+') as f:
-            f.seek(0, 2)
+        with open(JOBS_LOG,'a') as f:
             f.write("%s\t%s\n" % (unicode(datetime.now()), work))
 
         log = os.path.join(work, "output.log")
@@ -176,6 +176,7 @@ class Loader:
             
             status = subprocess.call(command_line, stdout = f, stderr = subprocess.STDOUT, shell = True)
 
+        subprocess.call(['chmod', '0664', log])
         copyfile(log, logs)
         
         with open(state, "w") as f:

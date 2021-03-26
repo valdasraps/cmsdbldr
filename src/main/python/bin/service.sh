@@ -25,8 +25,10 @@ do_start() {
     # Pre-create infra
     mkdir -p ${workdir}
     touch ${jobslog} ${outfile} ${errfile}
+    chown -R dbspool:dbspool ${workdir} ${jobslog} ${outfile} ${errfile}
 
     /usr/bin/jsvc -server \
+      -user dbspool \
       -pidfile ${pidfile} \
       -outfile ${outfile} \
       -errfile ${errfile} \
