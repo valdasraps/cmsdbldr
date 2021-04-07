@@ -145,7 +145,7 @@ public class CondLoadZipTest extends TestBase {
             if (alogFile1.getStatus() != UploadStatus.Failure) {
                 assertEquals(UploadStatus.Failure, alogFile2.getStatus());
             } else {
-                assertEquals(UploadStatus.Success, alogFile2.getStatus());
+                assertEquals(UploadStatus.Failure, alogFile2.getStatus());
             }
         }
                 

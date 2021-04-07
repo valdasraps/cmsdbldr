@@ -20,6 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
@@ -141,11 +142,17 @@ public class DbLoader {
         TrackingApp trackingApp = injector.getInstance(TrackingApp.class);
         AssemblyApp assemblyApp = injector.getInstance(AssemblyApp.class);
         
+        // Array of audit logs to handle
+        List<AuditLogDao> auditLogs = new ArrayList<>();
+        
         // Start archive log if needed
         AuditLogDao archiveLog = null;
         if (archive.isArchive()) {
+            
             archiveLog = rf.createAuditDao(archive, auth);
             archiveLog.saveProcessing(isTest);
+            auditLogs.add(archiveLog);
+            
         }
         
         Throwable error = null;
@@ -162,6 +169,7 @@ public class DbLoader {
                 // Start datafile log
                 AuditLogDao dataLog = rf.createAuditDao(data, auth);
                 dataLog.saveProcessing(isTest);
+                auditLogs.add(dataLog);
 
                 try {
 
@@ -216,8 +224,18 @@ public class DbLoader {
                 } finally {
                     
                     if (error != null) {
+                        
                         dataLog.saveFailure(error, isTest);
+                        
+                        // Force rollback, not needed but in any case
+                        try {
+                            sm.rollback();
+                        } catch (Exception ex) {
+                            log.error(ex);
+                        }
+                            
                         throw error;
+                        
                     }
                     
                 }
@@ -251,14 +269,19 @@ public class DbLoader {
         } finally {
         
             if (error != null) {
-                if (archiveLog != null) {
-                    archiveLog.saveFailure(error, isTest);
+                
+                for (AuditLogDao auditLog: auditLogs) {
+                    auditLog.saveFailure(error, isTest);
                 }
+                
                 throw error;
+                
             } else {
+                
                 if (archiveLog != null) {
                     archiveLog.saveSuccess(isTest);
                 }
+                
             }
             
         }
