@@ -4,7 +4,7 @@
     
     <groupId>org.cern.cms</groupId>
     <artifactId>cmsdbldr</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
 
     <inceptionYear>2012</inceptionYear>
     <organization>
@@ -262,6 +262,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>4.1.0.Final</version>
+            <exclusions>
+              <exclusion>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+              </exclusion>
+            </exclusions> 
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

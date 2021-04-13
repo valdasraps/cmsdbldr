@@ -59,6 +59,11 @@ public class Load {
         if (binding != null) {
             node.put("doc_uri", "/doc/doc");
         }
+
+        binding = Application.injector.getExistingBinding(Key.get(String.class, Application.XML_NAME));
+        if (binding != null) {
+            node.put("xml_uri", "/doc/xml");
+        }
         
         return Response.ok(node.toString(), MediaType.APPLICATION_JSON).build();
     }

@@ -17,7 +17,7 @@ import org.cern.cms.dbloader.manager.SessionManager;
 import org.cern.cms.dbloader.util.OperatorAuth;
 
 public class DatasetDao extends DaoBase {
-
+    
     @Inject
     public DatasetDao(@Assisted SessionManager sm, @Assisted OperatorAuth auth) throws Exception {
         super(sm, auth);
@@ -27,10 +27,21 @@ public class DatasetDao extends DaoBase {
     public List<Dataset> getCondDatasets(EntityHandler<CondBase> tm) throws Exception {
         return (List<Dataset>) session.createCriteria(tm.getEntityClass().getC())
                 .setProjection(Projections.distinct(Projections.property("dataset")))
-                .add(Restrictions.eq("deleted", Boolean.FALSE))
+                .createCriteria("dataset")
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
                 .list();
     }
 
+    @SuppressWarnings("unchecked")
+    public Dataset getCondDatasetSample(EntityHandler<CondBase> tm) throws Exception {
+        return (Dataset) session.createCriteria(tm.getEntityClass().getC())
+                .setProjection(Projections.distinct(Projections.property("dataset")))
+                .createCriteria("dataset")
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+    
     @SuppressWarnings("unchecked")
     public List<Dataset> getCondDatasets(KindOfCondition koc) throws Exception {
         return (List<Dataset>) session.createCriteria(Dataset.class)

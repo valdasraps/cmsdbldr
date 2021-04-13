@@ -61,6 +61,7 @@ public abstract class PropertiesManager {
         COND_CLASS("print generated condition class", true, false),
         COND_DATASETS("list condition dataset", true, false),
         COND_DATASET("get XML stream data", true, false),
+        COND_DATASET_SAMPLES("get dataset example XMLs", true, false),
         CHANNEL_LIST("list available channels", false, false),
         CHANNEL_DESC("describe single channel", true, false),
         CHANNEL_CLASS("print generated channel class", true, false),
@@ -198,6 +199,14 @@ public abstract class PropertiesManager {
         return new BigInteger(this.values.get(UserOption.COND_DATASET));
     }
 
+    public boolean isCondDatasetSamples() {
+        return this.values.containsKey(UserOption.COND_DATASET_SAMPLES);
+    }
+
+    public String getCondDatasetSamples() {
+        return this.values.get(UserOption.COND_DATASET_SAMPLES);
+    }
+    
     public boolean isConditionClass() {
         return this.values.containsKey(UserOption.COND_CLASS);
     }

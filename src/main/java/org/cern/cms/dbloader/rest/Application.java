@@ -40,8 +40,10 @@ public class Application implements Daemon {
     private final static String DB_NAME_KEY = "db-name";
     private final static String XSD_FILE_KEY = "xsd-file";
     private final static String DOC_FILE_KEY = "doc-file";
+    private final static String XML_FILE_KEY = "xml-file";
     public final static Named XSD_NAME = Names.named(XSD_FILE_KEY);
     public final static Named DOC_NAME = Names.named(DOC_FILE_KEY);
+    public final static Named XML_NAME = Names.named(XML_FILE_KEY);
     
     public static Injector injector;
     private Server server;
@@ -102,10 +104,15 @@ public class Application implements Daemon {
                 if (props.getProperty(XSD_FILE_KEY) != null) {
                     bindConstant().annotatedWith(XSD_NAME).to(props.getProperty(XSD_FILE_KEY));
                 }
+
                 if (props.getProperty(DOC_FILE_KEY) != null) {
                     bindConstant().annotatedWith(DOC_NAME).to(props.getProperty(DOC_FILE_KEY));
                 }
 
+                if (props.getProperty(XML_FILE_KEY) != null) {
+                    bindConstant().annotatedWith(XML_NAME).to(props.getProperty(XML_FILE_KEY));
+                }
+                
             }
         });
 

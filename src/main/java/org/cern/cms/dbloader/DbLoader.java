@@ -1,18 +1,12 @@
 package org.cern.cms.dbloader;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.cern.cms.dbloader.app.*;
 import org.cern.cms.dbloader.dao.AuditLogDao;
-import org.cern.cms.dbloader.dao.DatasetDao;
 import org.cern.cms.dbloader.manager.*;
 
 import org.cern.cms.dbloader.manager.file.DataFile;
-import org.cern.cms.dbloader.metadata.CondEntityHandler;
-import org.cern.cms.dbloader.model.OptId;
-import org.cern.cms.dbloader.model.condition.CondBase;
-import org.cern.cms.dbloader.model.condition.Dataset;
 import org.cern.cms.dbloader.util.PropertiesException;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -24,6 +18,8 @@ import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.cern.cms.dbloader.manager.file.FileBase;
 import org.cern.cms.dbloader.util.OperatorAuth;
 
@@ -62,8 +58,6 @@ public class DbLoader {
             return;
         }
         
-        OperatorAuth auth = props.getOperatorAuth();
-
         CondApp condApp = injector.getInstance(CondApp.class);
         if (condApp.handleInfo()) {
             return;
@@ -74,41 +68,8 @@ public class DbLoader {
             return;
         }
 
-        if (props.isCondDatasets()) {
-            OptId optId = props.getCondDatasets();
-            DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
-            CondEntityHandler ch = enG.getConditionHandler(optId);
-            try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-                DatasetDao dao = rf.createDatasetDao(sm, auth);
-                HelpPrinter.outputDatasetList(System.out, dao.getCondDatasets(ch));
-            }
-            return;
-        }
-
-        if (props.isCondDataset()) {
-            BigInteger dataSetId = props.getCondDataset();
-            DynamicEntityGenerator enG = injector.getInstance(DynamicEntityGenerator.class);
-
-            try (SessionManager sm = injector.getInstance(SessionManager.class)) {
-                    
-                DatasetDao dao = rf.createDatasetDao(sm, auth);
-                Dataset dataset = dao.getDataset(dataSetId);
-                BigInteger id = dataset.getKindOfCondition().getId();
-                CondEntityHandler ceh = enG.getConditionHandler(id);
-                if (ceh == null) {
-                    throw new IllegalArgumentException(String.format("[%s] dataset not found!", dataSetId));
-                }
-
-                List<? extends CondBase> dataSetData = dao.getDatasetData(ceh, dataset);
-                if (dataSetData.isEmpty()) {
-                    throw new IllegalArgumentException(String.format("[%s] dataset data not found!", dataSetId));
-                }
-
-                XmlManager xmlm = injector.getInstance(XmlManager.class);
-                xmlm.printDatasetDataXML(dataset, ceh, dataSetData);
-
-            }
-
+        DatasetApp datasetApp = injector.getInstance(DatasetApp.class);
+        if (datasetApp.handleInfo()) {
             return;
         }
 
@@ -119,6 +80,8 @@ public class DbLoader {
             throw new IllegalArgumentException("No input files provided");
         }
 
+        OperatorAuth auth = props.getOperatorAuth();
+        
         // Loop archives
         for (FileBase archive : fm.getFiles(props.getArgs())) {
 
@@ -289,6 +252,8 @@ public class DbLoader {
 
     public static void main(String[] args) {
 
+        Logger.getRootLogger().setLevel(Level.OFF);
+        
         // Install SLF4J logger to direct all java.util.logging messages to log4j
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();

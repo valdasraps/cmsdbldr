@@ -43,15 +43,25 @@ do_start() {
 }
 
 do_doc() {
+
     TFOLDER=`mktemp -d`
     java -jar \
       -Doracle.net.tns_admin=/etc \
       -Xms512M -Xmx1024M \
       $jarlib \
       --properties $properties \
-      --schema $TFOLDER >/dev/null
+      --schema $TFOLDER >/dev/null 2>&1
     mv $TFOLDER/schema1.xsd /opt/cmsdbldr/doc/${det}_${dat}.xsd
     xsltproc -o /opt/cmsdbldr/doc/${det}_${dat}.html /opt/cmsdbldr/doc/xs3p.xsl /opt/cmsdbldr/doc/${det}_${dat}.xsd
+
+    mkdir -p /opt/cmsdbldr/doc/${det}_${dat}
+    java -jar \
+      -Doracle.net.tns_admin=/etc \
+      -Xms512M -Xmx1024M \
+      $jarlib \
+      --properties $properties \
+      --cond-dataset-samples /opt/cmsdbldr/doc/${det}_${dat}
+
 }
 
 case "$com" in
