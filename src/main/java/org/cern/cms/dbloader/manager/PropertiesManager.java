@@ -72,7 +72,9 @@ public abstract class PropertiesManager {
         OPERATOR_FULLNAME("operator fullname, DEFAULT: operator user", true, false),
         OPERATOR_CONSTRUCT_PERMISSION("operator construct permission", false, false),
         OPERATOR_CONDITION_PERMISSION("operator condition permission", false, false),
-        OPERATOR_TRACKING_PERMISSION("operator tracking permission", false, false);
+        OPERATOR_TRACKING_PERMISSION("operator tracking permission", false, false),
+        RESTRICT_LOCATION_INSERTION("possibility to restrict part insertion", false, false);
+
 
         public final String key;
         public final String description;
@@ -158,6 +160,9 @@ public abstract class PropertiesManager {
     public BigInteger getRootPartId() {
         return new BigInteger(this.values.get(UserOption.ROOT_PART_ID));
     }
+
+    public Boolean isLocationInsertionRestricted() {
+        return Boolean.parseBoolean(this.values.get(UserOption.RESTRICT_LOCATION_INSERTION));}
 
     public boolean isConditionsList() {
         return this.values.containsKey(UserOption.COND_LIST);

@@ -84,7 +84,7 @@ public abstract class DaoBase {
 
     }
     
-    protected final Location resolveInstituteLocation(String institutionName, String locationName, String insertionUsr) {
+    protected final Location resolveInstituteLocation(String institutionName, String locationName, String insertionUsr) throws XMLParseException {
 
         Institution institution = (Institution) session.createCriteria(Institution.class)
                 .add(Restrictions.eq("deleted", Boolean.FALSE))
@@ -100,15 +100,20 @@ public abstract class DaoBase {
                     .add(Restrictions.eq("institution", institution))
                     .uniqueResult();
         } else {
-            institution = new Institution();
-            institution.setName(institutionName);
-            institution.setInstituteCode(0); // Hard Coded
-            institution.setLastUpdateUser(resolveInsertionUser(insertionUsr));
-            institution.setInsertUser(resolveInsertionUser(insertionUsr));
-            session.save(institution);
+            if (props.isLocationInsertionRestricted()){
+                throw new XMLParseException(String.format("Possibility to insert location switched off. Institution wasn't resolved: %s", institutionName));
+            } else {
+                institution = new Institution();
+                institution.setName(institutionName);
+                institution.setInstituteCode(0); // Hard Coded
+                institution.setLastUpdateUser(resolveInsertionUser(insertionUsr));
+                institution.setInsertUser(resolveInsertionUser(insertionUsr));
+                session.save(institution);
+            }
+
         }
 
-        if (location == null) {
+        if (location == null && !props.isLocationInsertionRestricted()) {
             location = new Location();
             location.setName(locationName);
             location.setInstitution(institution);
@@ -116,6 +121,8 @@ public abstract class DaoBase {
             location.setInsertUser(resolveInsertionUser(insertionUsr));
             session.save(location);
             institution.getLocations().add(location);
+        } else {
+            throw new XMLParseException(String.format("Possibility to insert location switched off. Location wasn't resolved: %s", locationName));
         }
 
         log.info(String.format("Resolved: %s", location));

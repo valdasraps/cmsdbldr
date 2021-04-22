@@ -100,6 +100,9 @@ public class PropertiesTest extends TestBase {
         assertEquals(props.getProperty("construct-ext-schema") + ".TABLE", pm.getExtConstructTable("TABLE"));
         assertEquals(props.getProperty("iov-core-schema"), pm.getIovCoreSchemaName());
         assertEquals(props.getProperty("view-ext-schema"), pm.getExtViewSchemaName());
+
+        Boolean loc_restrict = Boolean.parseBoolean(props.getProperty("restrict-location-insertion"));
+        assertEquals(loc_restrict, pm.isLocationInsertionRestricted());
         
         log_lvl = props.getProperty("log-level");
         assertEquals(InetAddress.getLocalHost().getHostName(), pm.getHostName());
