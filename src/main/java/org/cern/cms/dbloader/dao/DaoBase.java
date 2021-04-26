@@ -121,7 +121,7 @@ public abstract class DaoBase {
             location.setInsertUser(resolveInsertionUser(insertionUsr));
             session.save(location);
             institution.getLocations().add(location);
-        } else {
+        } else if (location == null && props.isLocationInsertionRestricted()){
             throw new XMLParseException(String.format("Possibility to insert location switched off. Location wasn't resolved: %s", locationName));
         }
 
