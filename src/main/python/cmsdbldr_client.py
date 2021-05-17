@@ -4,8 +4,6 @@ import requests
 import sys
 import os
 import re
-import importlib
-import getpass
 import logging
 import tempfile
 import subprocess
@@ -13,7 +11,6 @@ import json
 import warnings
 from base64 import b64encode, b64decode
 import xml.etree.ElementTree as ET
-from ast import literal_eval
 
 import urllib3
 from urllib.parse import urlparse
@@ -21,9 +18,10 @@ from urllib.parse import urlparse
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 if sys.version_info < (3,):
-    from cookielib import Cookie, MozillaCookieJar
+    from cookielib import MozillaCookieJar
 else:
-    from http.cookiejar import Cookie, MozillaCookieJar
+    from http.cookiejar import MozillaCookieJar
+
 
 class CernSSO:
 
@@ -159,6 +157,7 @@ class CernSSO:
 
             return cache['cookies']
 
+
 class LoaderClient:
 
     USAGE = 'usage: %prog --url=URL FILE'
@@ -228,41 +227,43 @@ class LoaderClient:
                 self.parser.error('Please provide one data file?')
                 return 1
 
-            f = args[0]
-            if not (os.path.isfile(f) and os.path.exists(f)):
-                self.parser.error('File [%s] not found or is not a file?' % f)
+            filename = args[0]
+            if not (os.path.isfile(filename) and os.path.exists(filename)):
+                self.parser.error('File [%s] not found or is not a file?' % filename)
                 return 2
 
-            if not self._allowed_file(f):
-                self.parser.error('File [%s] allowed? Allowed extensions are (%s)' % (f, ','.join(self.ALLOWED_EXTENSIONS)))
+            if not self._allowed_file(filename):
+                self.parser.error('File [%s] allowed? Allowed extensions are (%s)' % (filename, ','.join(self.ALLOWED_EXTENSIONS)))
                 return 2
 
-            files = {'uploadFile': open(f, 'rb')}
             force_level = 0
             while True:
 
                 cookies = None
                 if re.search("^https", url):
+
                     if options.login:
                         cookies = CernSSO().login_sign_on(url, cache_file = options.loginc, force_level = force_level)
-                    if options.krb:
+
+                    elif options.krb:
                         cookies = CernSSO().krb_sign_on(url)
                         force_level = 2
-            
+
                 if options.validate:
-                    if f.rsplit('.', 1)[1].lower() != 'xml':
+                    if filename.rsplit('.', 1)[1].lower() != 'xml':
                         self.parser.error('Validation is possible for xml files only')
                         return 2
                     else:
                         r = requests.get(url = url + "/doc/xsd", cookies = cookies, verify = False)
-                        tfile = tempfile.mktemp(suffix='.xsd')
-                        with open(tfile, 'w') as fp:
+                        temp_file = tempfile.mktemp(suffix='.xsd')
+                        with open(temp_file, 'w') as fp:
                             fp.write(r.text)
-                        return self._validate_xml(f, tfile, options.quiet)
+                        return self._validate_xml(filename, temp_file, options.quiet)
 
                 else:
 
-                    r = requests.post(url = load_url, files = files, cookies = cookies, verify = False)
+                    with open(filename, 'rb') as fp:
+                        r = requests.post(url = load_url, files = {'uploadFile': fp}, cookies = cookies, verify = False)
 
                 if r.status_code == 200 and r.url.startswith(SSO_LOGIN_URL):
                     if force_level < 2:
@@ -292,6 +293,7 @@ class LoaderClient:
             traceback.print_exc()
 
             print("ERROR: %s\nDetails: %s" % (type(e).__name__, e))
+
 
 if __name__ == '__main__':
 
