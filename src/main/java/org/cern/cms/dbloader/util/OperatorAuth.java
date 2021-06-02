@@ -1,7 +1,5 @@
 package org.cern.cms.dbloader.util;
 
-import jdk.nashorn.internal.objects.annotations.Setter;
-
 /**
  * Operator authentication data.
  * @author valdo

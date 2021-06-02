@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<ROOT>
+    <PARTS>
+        <PART>
+            <BARCODE>Part with attribute</BARCODE>
+            <PREDEFINED_ATTRIBUTES>
+                <ATTRIBUTE>
+                    <NAME>Foil Position</NAME>
+                    <VALUE>GEM1</VALUE>
+                    <DELETED>false</DELETED>
+                </ATTRIBUTE>
+            </PREDEFINED_ATTRIBUTES>
+        </PART>
+    </PARTS>
+</ROOT>

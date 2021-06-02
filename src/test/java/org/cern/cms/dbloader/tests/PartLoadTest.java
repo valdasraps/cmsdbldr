@@ -329,6 +329,35 @@ Test check if Part has attribute, after that we upload xml file to mark attribut
 
              assertNull(attrList);
         }
+
+        // Upload XML file and mark attribute as NOT deleted
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/19_markAttributeNotDeleted.xml"))) {
+
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+
+        }
+
+        // Check if Part does have attributes again
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Part prt = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("barcode", "Part with attribute"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "GEM Foil"))
+                    .uniqueResult();
+
+            PartAttrList attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                    .add(Restrictions.eq("part.id", prt.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
+            assertEquals("Vavukas", attrList.getInsertUser());
+            assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
+            assertNotNull(attrList);
+
+        }
+
     }
 
 }

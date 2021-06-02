@@ -45,12 +45,14 @@ public class CondLoadTest extends TestBase {
         FileOutputStream out = new FileOutputStream(exampleFile);
         xmlm.printCondExample(pm, ch, out);
 
-        DbLoader loader = new DbLoader(pm);
-        for (FileBase df: fm.getFiles(Collections.singletonList(exampleFile))) {
+//        Do not try to load as it is artificial (fake) data!
 
-            loader.loadArchive(injector, df, pm.getOperatorAuth());
-
-        }
+//        DbLoader loader = new DbLoader(pm);
+//        for (FileBase df: fm.getFiles(Collections.singletonList(exampleFile))) {
+//
+//            loader.loadArchive(injector, df, pm.getOperatorAuth());
+//
+//        }
                 
     }
     

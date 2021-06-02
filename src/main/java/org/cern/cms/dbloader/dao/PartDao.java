@@ -323,26 +323,35 @@ public class PartDao extends DaoBase {
 
 
         PartAttrList partAttrList = (PartAttrList) session.createCriteria(PartAttrList.class)
-                .add(Restrictions.eq("deleted", Boolean.FALSE))
+                //.add(Restrictions.eq("deleted", Boolean.FALSE))
                 .add(Restrictions.eq("partToAttrRtlSh", partlship))
                 .add(Restrictions.eq("attrBase", attrbase))
                 .add(Restrictions.eq("part", part))
                 .uniqueResult();
 
-        if (partAttrList != null && attr.getDeleted() == true) {
-            partAttrList.setDeleted(Boolean.TRUE);
-            session.save(partAttrList);
+        if (partAttrList == null) {
 
-        } else if (partAttrList == null) {
+            if (attr.getDeleted() == Boolean.FALSE) {
 
-            partAttrList = new PartAttrList();
-            partAttrList.setPartToAttrRtlSh(partlship);
-            partAttrList.setAttrBase(attrbase);
-            partAttrList.setPart(part);
-            partAttrList.setDeleted(Boolean.FALSE);
-            partAttrList.setInsertUser(resolveInsertionUser(part.getInsertUser()));
+                partAttrList = new PartAttrList();
+                partAttrList.setPartToAttrRtlSh(partlship);
+                partAttrList.setAttrBase(attrbase);
+                partAttrList.setPart(part);
+                partAttrList.setDeleted(Boolean.FALSE);
+                partAttrList.setInsertUser(resolveInsertionUser(part.getInsertUser()));
 
-            session.save(partAttrList);
+                session.save(partAttrList);
+
+            }
+
+        } else {
+
+            if (partAttrList.getDeleted() != attr.getDeleted()) {
+
+                partAttrList.setDeleted(attr.getDeleted());
+                session.save(partAttrList);
+
+            }
 
         }
 
