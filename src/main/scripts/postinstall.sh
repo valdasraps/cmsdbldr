@@ -5,6 +5,19 @@ CENTOS=$?
 
 chown dbspool:dbspool /var/cmsdbldr
 
+# Compile and copy newer jsvc
+
+JAVA_HOME=`java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | sed 's/^.*= *//g'`
+
+cd /opt/cmsdbldr/ext/
+tar xvfz commons-daemon-*-src.tar.gz 
+cd commons-daemon-*-src/src/native/unix/
+./configure --with-java=${JAVA_HOME}
+make
+cp jsvc /opt/cmsdbldr/bin
+cd /opt/cmsdbldr/ext/
+rm -fR commons-daemon-*-src
+
 # Install service and restart
 
 if [ "$CENTOS" == 0 ]; then

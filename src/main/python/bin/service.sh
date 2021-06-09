@@ -19,6 +19,8 @@ outfile=/var/cmsdbldr/rest_${det}_${dat}.out.log
 errfile=/var/cmsdbldr/rest_${det}_${dat}.err.log
 jobslog=/var/cmsdbldr/jobs.log
 
+java_home=`java -XshowSettings:properties -version 2>&1 > /dev/null | grep 'java.home' | sed 's/^.*= *//g'`
+
 do_start() {
     echo "$name $1"
 
@@ -27,8 +29,9 @@ do_start() {
     touch ${jobslog} ${outfile} ${errfile}
     chown -R dbspool:dbspool ${workdir} ${jobslog} ${outfile} ${errfile}
 
-    /usr/bin/jsvc -server \
+    /opt/cmsdbldr/bin/jsvc -server \
       -user dbspool \
+      -java-home ${java_home} \
       -pidfile ${pidfile} \
       -outfile ${outfile} \
       -errfile ${errfile} \

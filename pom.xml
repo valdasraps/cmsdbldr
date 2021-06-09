@@ -142,11 +142,11 @@
                     </provides>
                     <requires>
                         <require>java-11-openjdk</require>
+                        <require>java-11-openjdk-devel</require>
                         <require>python</require>
                         <require>incron</require>
                         <require>parallel</require>
                         <require>httpd</require>
-                        <require>python</require>
                         <require>oracle-instantclient-tnsnames.ora</require>
                         <require>apache-commons-daemon-jsvc</require>
                         <require>log4shib</require>
@@ -163,6 +163,17 @@
                             <filemode>755</filemode>
                             <username>dbspool</username>
                             <groupname>dbspool</groupname>
+                        </mapping>
+                        <mapping>
+                            <directory>/opt/cmsdbldr/ext</directory>
+                            <filemode>755</filemode>
+                            <username>dbspool</username>
+                            <groupname>dbspool</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/ext</location>
+                                </source>
+                            </sources>
                         </mapping>
                         <mapping>
                             <directory>/opt/cmsdbldr/bin</directory>
@@ -358,12 +369,12 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.4.17.v20190418</version>
+            <version>9.4.41.v20210516</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
-            <version>9.4.17.v20190418</version>
+            <version>9.4.41.v20210516</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
