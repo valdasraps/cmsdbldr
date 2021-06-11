@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +41,12 @@ import org.cern.cms.dbloader.model.DeleteableBase;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Run extends DeleteableBase {
 
+    public static enum RunMode {
+        
+        AUTO_NUMBER
+        
+    }
+    
     @Id
     @Column(name = "COND_RUN_ID")
     @GeneratedValue(generator = "COND_RUN_ID_SEQ", strategy = GenerationType.SEQUENCE)
@@ -97,6 +105,7 @@ public class Run extends DeleteableBase {
     @Transient
     @XmlAttribute(name = "mode")
     @JsonProperty("Mode")
-    private String mode;
-
+    @Enumerated(EnumType.STRING)
+    private RunMode mode;
+    
 }
