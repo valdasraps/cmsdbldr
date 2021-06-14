@@ -1,5 +1,6 @@
 package org.cern.cms.dbloader.dao;
 
+import java.util.List;
 import java.util.Stack;
 
 import javax.management.modelmbean.XMLParseException;
@@ -284,6 +285,7 @@ public class PartDao extends DaoBase {
     private PartAttrList resolveAttribute(Attribute attr, Part part) throws Exception {
 
         KindOfPart kop = part.getKindOfPart();
+        boolean saveAttr = false;
 
         AttrCatalog catalog = null;
         try {
@@ -340,7 +342,7 @@ public class PartDao extends DaoBase {
                 partAttrList.setDeleted(Boolean.FALSE);
                 partAttrList.setInsertUser(resolveInsertionUser(part.getInsertUser()));
 
-                session.save(partAttrList);
+                saveAttr = true;
 
             }
 
@@ -349,7 +351,29 @@ public class PartDao extends DaoBase {
             if (partAttrList.getDeleted() != attr.getDeleted()) {
 
                 partAttrList.setDeleted(attr.getDeleted());
-                session.save(partAttrList);
+                saveAttr = true;
+
+            }
+
+        }
+
+        if (saveAttr) {
+
+            session.save(partAttrList);
+
+            if (partAttrList.getDeleted() == false) {
+
+                for (PartAttrList siblAttrList: (List<PartAttrList>) session.createCriteria(PartAttrList.class)
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
+                        .add(Restrictions.eq("partToAttrRtlSh", partlship))
+                        .add(Restrictions.eq("part", part))
+                        .add(Restrictions.ne("attrBase", attrbase))
+                        .list()) {
+
+                    siblAttrList.setDeleted(true);
+                    session.save(partAttrList);
+
+                }
 
             }
 

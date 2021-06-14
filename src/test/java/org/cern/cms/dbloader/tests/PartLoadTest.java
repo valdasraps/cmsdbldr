@@ -285,6 +285,8 @@ Test check if Part has attribute, after that we upload xml file to mark attribut
 
         DbLoader loader = new DbLoader(pm);
 
+        BigInteger attributeId01;
+
         // Check if Part has attribute. It should.
         try (SessionManager sm = injector.getInstance(SessionManager.class)) {
             Session session = sm.getSession();
@@ -299,6 +301,8 @@ Test check if Part has attribute, after that we upload xml file to mark attribut
                     .add(Restrictions.eq("part.id", prt.getId()))
                     .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .uniqueResult();
+
+            attributeId01 = attrList.getAttrBase().getId();
 
             assertEquals("Vavukas", attrList.getInsertUser());
             assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
@@ -352,9 +356,97 @@ Test check if Part has attribute, after that we upload xml file to mark attribut
                     .add(Restrictions.eq("deleted", Boolean.FALSE))
                     .uniqueResult();
 
+            assertNotNull(attrList);
+            assertEquals(attributeId01, attrList.getAttrBase().getId());
             assertEquals("Vavukas", attrList.getInsertUser());
             assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
+
+        }
+
+        // Upload XML file and mark PREVIOUS attribute as deleted
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/20_changeAttributeDeleteOther.xml"))) {
+
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+
+        }
+
+        // Check if Part does have attributes again
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Part prt = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("barcode", "Part with attribute"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "GEM Foil"))
+                    .uniqueResult();
+
+            PartAttrList attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                    .add(Restrictions.eq("part.id", prt.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
             assertNotNull(attrList);
+            assertFalse(attributeId01 == attrList.getAttrBase().getId());
+            assertEquals("Vavukas", attrList.getInsertUser());
+            assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
+
+        }
+
+        // Upload XML file and mark attribute as NOT deleted again and mark CURRENT as deleted!
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/19_markAttributeNotDeleted.xml"))) {
+
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+
+        }
+
+        // Check if Part does have attributes again
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Part prt = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("barcode", "Part with attribute"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "GEM Foil"))
+                    .uniqueResult();
+
+            PartAttrList attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                    .add(Restrictions.eq("part.id", prt.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
+            assertNotNull(attrList);
+            assertEquals(attributeId01, attrList.getAttrBase().getId());
+            assertEquals("Vavukas", attrList.getInsertUser());
+            assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
+
+        }
+
+        // Upload XML file and mark PREVIOUS attribute as deleted
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/20_changeAttributeDeleteOther.xml"))) {
+
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+
+        }
+
+        // Check if Part does have attributes again
+        try (SessionManager sm = injector.getInstance(SessionManager.class)) {
+            Session session = sm.getSession();
+
+            Part prt = (Part) session.createCriteria(Part.class)
+                    .add(Restrictions.eq("barcode", "Part with attribute"))
+                    .createCriteria("kindOfPart")
+                    .add(Restrictions.eq("name", "GEM Foil"))
+                    .uniqueResult();
+
+            PartAttrList attrList = (PartAttrList) session.createCriteria(PartAttrList.class)
+                    .add(Restrictions.eq("part.id", prt.getId()))
+                    .add(Restrictions.eq("deleted", Boolean.FALSE))
+                    .uniqueResult();
+
+            assertNotNull(attrList);
+            assertFalse(attributeId01 == attrList.getAttrBase().getId());
+            assertEquals("Vavukas", attrList.getInsertUser());
+            assertEquals("TEST Foil Position", attrList.getPartToAttrRtlSh().getName());
 
         }
 
