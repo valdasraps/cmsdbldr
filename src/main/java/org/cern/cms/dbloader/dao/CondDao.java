@@ -1,8 +1,7 @@
 package org.cern.cms.dbloader.dao;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.management.modelmbean.XMLParseException;
 
@@ -31,8 +30,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
+
 import org.apache.commons.io.FilenameUtils;
 import org.cern.cms.dbloader.manager.CsvManager;
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
@@ -330,7 +328,7 @@ public class CondDao extends DaoBase {
             
             idType = 2;
             
-        } else if (xmRun.getNumber() == null && xmRun.getRunType() != null && xmRun.getMode() != null && Run.RunMode.AUTO_NUMBER != xmRun.getMode()) {
+        } else if (xmRun.getNumber() == null && xmRun.getRunType() != null && xmRun.getMode() != null && Run.RunMode.AUTO_NUMBER == xmRun.getMode()) {
             
             idType = 3;
             
@@ -381,8 +379,11 @@ public class CondDao extends DaoBase {
         }
 
         if (dbRun != null) {
-            
+
+            String insertionUser = resolveInsertionUser(xmRun.getInsertUser());
+            dbRun.setLastUpdateUser(insertionUser);
             header.setRun(dbRun);
+
             log.info(String.format("Resolved: %s", dbRun));
             
         } else {
@@ -391,6 +392,10 @@ public class CondDao extends DaoBase {
             String insertionUser = resolveInsertionUser(dbRun.getInsertUser());
             dbRun.setLastUpdateUser(insertionUser);
             dbRun.setInsertUser(insertionUser);
+            if (dbRun.getBeginTime() == null) {
+                dbRun.setBeginTime(new Date());
+            }
+
             log.info(String.format("Not resolved: %s. Will attempt to create.", dbRun));
             
         }

@@ -24,7 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
     CondAppendTest.class,
     AssemblySensor1Test.class,
     AssemblySensor2Test.class,
-    AssemblyModuleTest.class
+    AssemblyModuleTest.class,
+    CondAutoRunLoadTest.class
 })
 public class TestSuite {
 
