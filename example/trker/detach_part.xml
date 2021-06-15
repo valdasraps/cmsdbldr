@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT>
+	<PARTS>
+		<PART>
+			<KIND_OF_PART>Tracker Detector ROOT</KIND_OF_PART>
+			<NAME_LABEL>ROOT</NAME_LABEL>
+			<CHILDREN>
+				<PART>
+					<!-- PART identification information to be attached to ROOT, i.e. -->
+					<BARCODE>123000000001</BARCODE>
+				</PART>
+				<PART>
+					<!-- PART identification information to be attached to ROOT, i.e. -->
+					<BARCODE>123000000002</BARCODE>
+				</PART>
+			</CHILDREN>
+		</PART>
+	</PARTS>
+</ROOT>

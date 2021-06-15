@@ -480,53 +480,66 @@ SHOW ERROR
 
 
 PROMPT Creating Trigger 'TR_INS_PART_ATTR_LISTS'
-CREATE OR REPLACE TRIGGER TR_INS_PART_ATTR_LISTS
- BEFORE INSERT
- ON PART_ATTR_LISTS
- REFERENCING OLD AS OLD NEW AS NEW
- FOR EACH ROW
+create or replace TRIGGER TR_INS_PART_ATTR_LISTS
+    BEFORE INSERT
+    ON PART_ATTR_LISTS
+    REFERENCING OLD AS OLD NEW AS NEW
+    FOR EACH ROW
+
 DECLARE
 
+    l_id NUMBER(38,0);
 
-tmpVar NUMBER(38,0);
-tmpRel NUMBER(38,0);
 BEGIN
-   tmpVar := 0;
-   tmpRel :=0;
-   
-  SELECT CMS_&det._CORE_ATTRIBUTE.ANY_ATTR_LIST_REC_ID_SEQ.NEXTVAL INTO tmpVar FROM dual;
 
-  SELECT max(R.RELATIONSHIP_ID) into tmpRel 
-	FROM CMS_&det._CORE_ATTRIBUTE.ATTR_CATALOGS B
-  		INNER JOIN CMS_&det._CORE_ATTRIBUTE.ATTR_BASES A
-	   		ON A.ATTR_CATALOG_ID = B.ATTR_CATALOG_ID and 
-			       A.IS_RECORD_DELETED = 'F' and B.IS_RECORD_DELETED = 'F'
-		INNER JOIN CMS_&det._CORE_CONSTRUCT.PART_TO_ATTR_RLTNSHPS  R
-	   		 ON R.ATTR_CATALOG_ID = B.ATTR_CATALOG_ID and R.IS_RECORD_DELETED = 'F'
-		INNER JOIN CMS_&det._CORE_CONSTRUCT.PARTS D
-	   		 ON R.KIND_OF_PART_ID = D.KIND_OF_PART_ID and D.IS_RECORD_DELETED = 'F'
-	   WHERE
-	   	A.ATTRIBUTE_ID = :new.ATTRIBUTE_ID  AND D.PART_ID =  :new.PART_ID;
-	   	   	   
-  update  CMS_&det._CORE_CONSTRUCT.PART_ATTR_LISTS   
-	set IS_RECORD_DELETED = 'T' 
-	   	 where PART_ID = :new.PART_ID and RELATIONSHIP_ID = tmpRel  
-		               and IS_RECORD_DELETED = 'F';
-	   
-   :NEW.RECORD_INSERTION_TIME := SYSDATE;
+    -- Lookup relationship if needed
 
-   if :new.RECORD_INSERTION_USER is null then
-     :NEW.RECORD_INSERTION_USER  := USER;
-   end if;
+    if :NEW.RELATIONSHIP_ID is null then
 
-   :NEW.RELATIONSHIP_ID :=tmpRel;
+        SELECT
+            max(R.RELATIONSHIP_ID) into l_id
+        FROM
+            CMS_&det._CORE_ATTRIBUTE.ATTR_CATALOGS B
+                INNER JOIN CMS_&det._CORE_ATTRIBUTE.ATTR_BASES A
+                           ON A.ATTR_CATALOG_ID = B.ATTR_CATALOG_ID and A.IS_RECORD_DELETED = 'F' and B.IS_RECORD_DELETED = 'F'
+                INNER JOIN CMS_&det._CORE_CONSTRUCT.PART_TO_ATTR_RLTNSHPS  R
+                           ON R.ATTR_CATALOG_ID = B.ATTR_CATALOG_ID and R.IS_RECORD_DELETED = 'F'
+                INNER JOIN CMS_&det._CORE_CONSTRUCT.PARTS D
+                           ON R.KIND_OF_PART_ID = D.KIND_OF_PART_ID and D.IS_RECORD_DELETED = 'F'
+        WHERE
+                A.ATTRIBUTE_ID = :new.ATTRIBUTE_ID AND D.PART_ID =  :new.PART_ID;
 
+        :NEW.RELATIONSHIP_ID := l_id;
 
-   EXCEPTION
-     WHEN OTHERS THEN
-       -- Consider logging the error and then re-raise
-       RAISE;
-END ;
+    end if;
+
+    if :NEW.ATTR_LIST_RECORD_ID is null then
+
+        SELECT CMS_&det._CORE_ATTRIBUTE.ANY_ATTR_LIST_REC_ID_SEQ.NEXTVAL INTO l_id FROM dual;
+        :NEW.ATTR_LIST_RECORD_ID := l_id;
+
+    end if;
+
+    if :NEW.IS_RECORD_DELETED = 'F' then
+
+        update
+            CMS_&det._CORE_CONSTRUCT.PART_ATTR_LISTS
+        set
+            IS_RECORD_DELETED = 'T'
+        where
+                PART_ID = :new.PART_ID and
+                RELATIONSHIP_ID = :NEW.RELATIONSHIP_ID and
+                IS_RECORD_DELETED = 'F';
+
+    end if;
+
+    :NEW.RECORD_INSERTION_TIME := SYSDATE;
+
+    if :new.RECORD_INSERTION_USER is null then
+        :NEW.RECORD_INSERTION_USER  := USER;
+    end if;
+
+END;
 /
 SHOW ERROR
 

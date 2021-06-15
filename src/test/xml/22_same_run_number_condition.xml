@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ROOT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <HEADER>
+        <TYPE>
+            <EXTENSION_TABLE_NAME>TEST_IV</EXTENSION_TABLE_NAME>
+            <NAME>IV</NAME>
+        </TYPE>
+        <RUN mode="AUTO_NUMBER">
+            <RUN_NUMBER>1</RUN_NUMBER>
+            <RUN_TYPE>SOME_AUTO_NUMBER</RUN_TYPE>
+        </RUN>
+    </HEADER>
+
+    <DATA_SET append="true">
+        <COMMENT_DESCRIPTION>Testing run auto number</COMMENT_DESCRIPTION>
+        <CREATE_TIMESTAMP>2021-06-15</CREATE_TIMESTAMP>
+        <CREATED_BY_USER>valdo</CREATED_BY_USER>
+        <VERSION>autonumber</VERSION>
+        <SUBVERSION>2</SUBVERSION>
+        <PREDEFINED_ATTRIBUTES>
+            <ATTRIBUTE>
+                <NAME>TEST Dataset status</NAME>
+                <VALUE>VALID</VALUE>
+            </ATTRIBUTE>
+        </PREDEFINED_ATTRIBUTES>
+        <PART>
+            <KIND_OF_PART>TEST Board</KIND_OF_PART>
+            <NAME_LABEL>B03</NAME_LABEL>
+        </PART>
+        <DATA>
+            <VOLTAGE>4.04</VOLTAGE>
+            <CURR>0.004</CURR>
+            <COMMENT_DESCRIPTION>Testing 4.04</COMMENT_DESCRIPTION>
+        </DATA>
+        <DATA>
+            <VOLTAGE>5.05</VOLTAGE>
+            <CURR>0.005</CURR>
+            <COMMENT_DESCRIPTION>Testing 5.05</COMMENT_DESCRIPTION>
+        </DATA>
+        <DATA>
+            <VOLTAGE>6.06</VOLTAGE>
+            <CURR>0.006</CURR>
+            <COMMENT_DESCRIPTION>Testing 6.06</COMMENT_DESCRIPTION>
+        </DATA>
+    </DATA_SET>
+</ROOT>

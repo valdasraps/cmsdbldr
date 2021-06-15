@@ -1,8 +1,7 @@
 package org.cern.cms.dbloader.dao;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.management.modelmbean.XMLParseException;
 
@@ -31,8 +30,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
+
 import org.apache.commons.io.FilenameUtils;
 import org.cern.cms.dbloader.manager.CsvManager;
 import org.cern.cms.dbloader.manager.DynamicEntityGenerator;
@@ -49,6 +47,7 @@ import org.cern.cms.dbloader.model.serial.map.AttrCatalog;
 import org.cern.cms.dbloader.model.serial.map.Attribute;
 import org.cern.cms.dbloader.model.condition.DatasetRoot;
 import org.cern.cms.dbloader.util.OperatorAuth;
+import org.hibernate.criterion.Projections;
 
 @Log4j
 public class CondDao extends DaoBase {
@@ -114,7 +113,7 @@ public class CondDao extends DaoBase {
 
         }
 
-        boolean newRun = (dbRun == null ? null : dbRun.getId() == null);
+        boolean newRun = (dbRun == null ? false : dbRun.getId() == null);
 
         alog.setDatasetCount(root.getDatasets().size());
         alog.setDatasetRecordCount(0);
@@ -223,6 +222,7 @@ public class CondDao extends DaoBase {
 
                 ds.setChannelMap(resolveChannelMap(ds.getChannel(), true));
             }
+            
             ds.setRun(root.getHeader().getRun());
             ds.setKindOfCondition(root.getHeader().getKindOfCondition());
             ds.setExtensionTable(root.getHeader().getKindOfCondition().getExtensionTable());
@@ -236,6 +236,7 @@ public class CondDao extends DaoBase {
 
             // Check if the dataset does not exist?
             if (!newRun) {
+                
                 Dataset _ds = resolveDataset(ds);
                 if(_ds != null) {
                     if (!ds.isAppend()) {
@@ -315,48 +316,106 @@ public class CondDao extends DaoBase {
     private Run resolveRun(Header header) throws Exception {
         Run xmRun = header.getRun();
         Run dbRun = null;
-
-        if (xmRun.getName() == null && (xmRun.getNumber() == null || xmRun.getRunType() == null)) {
-            throw new XMLParseException(String.format("%s identification not correct: (name or (number and type)) must be provided", xmRun));
+        
+        short idType = 0;
+        
+        // Specify run identification type
+        if (xmRun.getName() != null) {
+            
+            idType = 1;
+            
+        } else if (xmRun.getNumber() != null && xmRun.getRunType() != null) {
+            
+            idType = 2;
+            
+        } else if (xmRun.getNumber() == null && xmRun.getRunType() != null && xmRun.getMode() != null && Run.RunMode.AUTO_NUMBER == xmRun.getMode()) {
+            
+            idType = 3;
+            
+        } else {
+            
+            throw new XMLParseException(String.format("%s identification not correct: (name or (number and type) or (AUTO_NUMBER mode and type)) must be provided", xmRun));
+            
         }
 
-        if (xmRun.getName() != null) {
-            dbRun = (Run) session.createCriteria(Run.class)
-                    .add(Restrictions.eq("name", xmRun.getName()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
-        } else {
-            dbRun = (Run) session.createCriteria(Run.class)
-                    .add(Restrictions.eq("number", xmRun.getNumber()))
-                    .add(Restrictions.eq("runType", xmRun.getRunType()))
-                    .add(Restrictions.eq("deleted", Boolean.FALSE))
-                    .uniqueResult();
+        switch (idType) {
+            
+            case 1:
+            
+                dbRun = (Run) session.createCriteria(Run.class)
+                        .add(Restrictions.eq("name", xmRun.getName()))
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
+                        .uniqueResult();
+                
+                break;
+            
+            case 2:
+            
+                dbRun = (Run) session.createCriteria(Run.class)
+                        .add(Restrictions.eq("number", xmRun.getNumber()))
+                        .add(Restrictions.eq("runType", xmRun.getRunType()))
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
+                        .uniqueResult();
+                break;
+                
+            case 3:
+         
+                
+                BigInteger runNumber = (BigInteger) session.createCriteria(Run.class)
+                        .add(Restrictions.eq("runType", xmRun.getRunType()))
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
+                        .add(Restrictions.isNotNull("number"))
+                        .setProjection(Projections.max("number"))
+                        .uniqueResult();
+                
+                if (runNumber == null) {
+                    runNumber = BigInteger.ONE;
+                } else {
+                    runNumber = runNumber.add(BigInteger.ONE);
+                }
+                
+                xmRun.setNumber(runNumber);
+            
         }
 
         if (dbRun != null) {
+
+            String insertionUser = resolveInsertionUser(xmRun.getInsertUser());
+            dbRun.setLastUpdateUser(insertionUser);
             header.setRun(dbRun);
+
             log.info(String.format("Resolved: %s", dbRun));
+            
         } else {
+            
             dbRun = xmRun;
             String insertionUser = resolveInsertionUser(dbRun.getInsertUser());
             dbRun.setLastUpdateUser(insertionUser);
             dbRun.setInsertUser(insertionUser);
+            if (dbRun.getBeginTime() == null) {
+                dbRun.setBeginTime(new Date());
+            }
+
             log.info(String.format("Not resolved: %s. Will attempt to create.", dbRun));
+            
         }
 
         return dbRun;
 
     }
 
-
-
     private Dataset resolveDataset(Dataset ds) throws Exception {
 
         Criteria c = session.createCriteria(Dataset.class)
                 .add(Restrictions.eq("kindOfCondition", ds.getKindOfCondition()))
                 .add(Restrictions.eq("deleted", Boolean.FALSE))
-                .add(Restrictions.eq("version", ds.getVersion()))
-                .add(Restrictions.eq("run", ds.getRun()));
+                .add(Restrictions.eq("version", ds.getVersion()));
+        
+        if (ds.getRun() != null) {
+            c.add(Restrictions.eq("run", ds.getRun()));
+        } else{
+            c.add(Restrictions.isNull("run"));
+        }
 
         if (ds.getPart() != null) {
             c.add(Restrictions.eq("part", ds.getPart()))
