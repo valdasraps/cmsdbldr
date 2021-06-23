@@ -19,13 +19,13 @@ import java.util.List;
 
 public class CondAutoRunLoadTest extends TestBase {
 
-    private BigInteger getMaxRun() throws Throwable {
+    private BigInteger getMaxRun(String runType) throws Throwable {
         try (HbmManager hbm = injector.getInstance(HbmManager.class)) {
             Session session = hbm.getSession();
             try {
 
                 return (BigInteger) session.createCriteria(Run.class)
-                        .add(Restrictions.eq("runType", "SOME_AUTO_NUMBER"))
+                        .add(Restrictions.eq("runType", runType))
                         .add(Restrictions.eq("deleted", Boolean.FALSE))
                         .add(Restrictions.isNotNull("number"))
                         .setProjection(Projections.max("number"))
@@ -43,7 +43,7 @@ public class CondAutoRunLoadTest extends TestBase {
         FilesManager fm = injector.getInstance(FilesManager.class);
         DbLoader loader = new DbLoader(pm);
 
-        BigInteger maxRunNumber = getMaxRun();
+        BigInteger maxRunNumber = getMaxRun("SOME_AUTO_NUMBER");
 
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/21_auto_run_number_condition.xml"))) {
             loader.loadArchive(injector, fb, pm.getOperatorAuth());
@@ -55,21 +55,57 @@ public class CondAutoRunLoadTest extends TestBase {
             maxRunNumber = maxRunNumber.add(BigInteger.ONE);
         }
 
-        TestCase.assertTrue(maxRunNumber.equals(getMaxRun()));
+        TestCase.assertTrue(maxRunNumber.equals(getMaxRun("SOME_AUTO_NUMBER")));
 
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/21_auto_run_number_condition.xml"))) {
             loader.loadArchive(injector, fb, pm.getOperatorAuth());
         }
 
         maxRunNumber = maxRunNumber.add(BigInteger.ONE);
-        TestCase.assertTrue(maxRunNumber.equals(getMaxRun()));
+        TestCase.assertTrue(maxRunNumber.equals(getMaxRun("SOME_AUTO_NUMBER")));
 
         for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/22_same_run_number_condition.xml"))) {
             loader.loadArchive(injector, fb, pm.getOperatorAuth());
         }
 
-        TestCase.assertTrue(maxRunNumber.equals(getMaxRun()));
+        TestCase.assertTrue(maxRunNumber.equals(getMaxRun("SOME_AUTO_NUMBER")));
 
     }
-    
+
+    @Test
+    public void loadConditionRunSeqNumber() throws Throwable {
+
+        FilesManager fm = injector.getInstance(FilesManager.class);
+        DbLoader loader = new DbLoader(pm);
+
+        BigInteger maxRunNumber = getMaxRun("SOME_SEQ_NUMBER");
+
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/23_sequence_run_number_condition.xml"))) {
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+        }
+
+        if (maxRunNumber == null) {
+            maxRunNumber = BigInteger.ONE;
+        } else {
+            maxRunNumber = maxRunNumber.add(BigInteger.ONE);
+        }
+
+        TestCase.assertTrue(maxRunNumber.equals(getMaxRun("SOME_SEQ_NUMBER")));
+
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/23_sequence_run_number_condition.xml"))) {
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+        }
+
+        maxRunNumber = maxRunNumber.add(BigInteger.ONE);
+        TestCase.assertTrue(maxRunNumber.equals(getMaxRun("SOME_SEQ_NUMBER")));
+
+        for (FileBase fb: fm.getFiles(Collections.singletonList("src/test/xml/23_sequence_run_number_condition.xml"))) {
+            loader.loadArchive(injector, fb, pm.getOperatorAuth());
+        }
+
+        maxRunNumber = maxRunNumber.add(BigInteger.ONE);
+        TestCase.assertTrue(maxRunNumber.equals(getMaxRun("SOME_SEQ_NUMBER")));
+
+    }
+
 }

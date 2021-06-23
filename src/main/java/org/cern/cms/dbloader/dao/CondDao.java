@@ -21,6 +21,7 @@ import org.cern.cms.dbloader.model.serial.map.MapIov;
 import org.cern.cms.dbloader.model.serial.map.MapTag;
 import org.cern.cms.dbloader.model.serial.map.Maps;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
 
 import com.google.inject.Inject;
@@ -320,21 +321,36 @@ public class CondDao extends DaoBase {
         short idType = 0;
         
         // Specify run identification type
-        if (xmRun.getName() != null) {
+
+        if (xmRun.getName() != null &&
+                xmRun.getNumber() == null && xmRun.getRunType() == null &&
+                xmRun.getMode() == null && xmRun.getSequence() == null) {
             
             idType = 1;
             
-        } else if (xmRun.getNumber() != null && xmRun.getRunType() != null) {
+        } else if (xmRun.getName() == null &&
+                xmRun.getNumber() != null && xmRun.getRunType() != null &&
+                xmRun.getMode() == null && xmRun.getSequence() == null) {
             
             idType = 2;
             
-        } else if (xmRun.getNumber() == null && xmRun.getRunType() != null && xmRun.getMode() != null && Run.RunMode.AUTO_NUMBER == xmRun.getMode()) {
+        } else if (xmRun.getName() == null &&
+                xmRun.getNumber() == null && xmRun.getRunType() != null &&
+                xmRun.getMode() != null && Run.RunMode.AUTO_INC_NUMBER == xmRun.getMode() &&
+                xmRun.getSequence() == null) {
             
             idType = 3;
-            
+
+        } else if (xmRun.getName() == null &&
+                xmRun.getNumber() == null && xmRun.getRunType() != null &&
+                xmRun.getMode() != null && Run.RunMode.SEQUENCE_NUMBER == xmRun.getMode() &&
+                xmRun.getSequence() != null) {
+
+            idType = 4;
+
         } else {
             
-            throw new XMLParseException(String.format("%s identification not correct: (name or (number and type) or (AUTO_NUMBER mode and type)) must be provided", xmRun));
+            throw new XMLParseException(String.format("%s identification not correct: (name or (number and type) or (AUTO_INC_NUMBER and type) or (SEQUENCE_NUMBER, sequence and type)) must be provided", xmRun));
             
         }
 
@@ -359,23 +375,37 @@ public class CondDao extends DaoBase {
                 break;
                 
             case 3:
-         
-                
-                BigInteger runNumber = (BigInteger) session.createCriteria(Run.class)
-                        .add(Restrictions.eq("runType", xmRun.getRunType()))
-                        .add(Restrictions.eq("deleted", Boolean.FALSE))
-                        .add(Restrictions.isNotNull("number"))
-                        .setProjection(Projections.max("number"))
-                        .uniqueResult();
-                
-                if (runNumber == null) {
-                    runNumber = BigInteger.ONE;
-                } else {
-                    runNumber = runNumber.add(BigInteger.ONE);
+                {
+
+                    BigInteger runNumber = (BigInteger) session.createCriteria(Run.class)
+                            .add(Restrictions.eq("runType", xmRun.getRunType()))
+                            .add(Restrictions.eq("deleted", Boolean.FALSE))
+                            .add(Restrictions.isNotNull("number"))
+                            .setProjection(Projections.max("number"))
+                            .uniqueResult();
+
+                    if (runNumber == null) {
+                        runNumber = BigInteger.ONE;
+                    } else {
+                        runNumber = runNumber.add(BigInteger.ONE);
+                    }
+
+                    xmRun.setNumber(runNumber);
+
                 }
-                
-                xmRun.setNumber(runNumber);
-            
+                break;
+
+            case 4:
+                {
+
+                    String sql = String.format("select %s.nextval as RUN_NUMBER from dual", props.getExtConditionTable(xmRun.getSequence()));
+                    SQLQuery query = session.createSQLQuery(sql);
+                    query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+
+                    BigDecimal runNumber = ((Map<String, BigDecimal>) query.uniqueResult()).get("RUN_NUMBER");
+                    xmRun.setNumber(runNumber.toBigInteger());
+
+                }
         }
 
         if (dbRun != null) {

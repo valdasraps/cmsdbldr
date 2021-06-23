@@ -6,7 +6,7 @@
             <EXTENSION_TABLE_NAME>TEST_IV</EXTENSION_TABLE_NAME>
             <NAME>IV</NAME>
         </TYPE>
-        <RUN mode="AUTO_NUMBER">
+        <RUN>
             <RUN_NUMBER>1</RUN_NUMBER>
             <RUN_TYPE>SOME_AUTO_NUMBER</RUN_TYPE>
         </RUN>
