@@ -43,7 +43,8 @@ public class Run extends DeleteableBase {
 
     public static enum RunMode {
         
-        AUTO_NUMBER
+        AUTO_INC_NUMBER,
+        SEQUENCE_NUMBER
         
     }
     
@@ -107,5 +108,9 @@ public class Run extends DeleteableBase {
     @JsonProperty("Mode")
     @Enumerated(EnumType.STRING)
     private RunMode mode;
-    
+
+    @Transient
+    @XmlAttribute(name = "sequence")
+    @JsonProperty("Sequence")
+    private String sequence;
 }

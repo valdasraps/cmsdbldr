@@ -49,6 +49,8 @@ connect CMS_&det._&subdet._COND/&owner_password@&&1
 
 @07-hybrids_testing
 
+@10-run_number.sql
+
 commit
 
 quit

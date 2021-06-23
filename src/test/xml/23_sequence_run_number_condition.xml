@@ -6,8 +6,8 @@
             <EXTENSION_TABLE_NAME>TEST_IV</EXTENSION_TABLE_NAME>
             <NAME>IV</NAME>
         </TYPE>
-        <RUN mode="AUTO_INC_NUMBER">
-            <RUN_TYPE>SOME_AUTO_NUMBER</RUN_TYPE>
+        <RUN mode="SEQUENCE_NUMBER" sequence="LOG_RUN_SEQ">
+            <RUN_TYPE>SOME_SEQ_NUMBER</RUN_TYPE>
         </RUN>
     </HEADER>
 
@@ -16,7 +16,7 @@
         <CREATE_TIMESTAMP>2021-06-15</CREATE_TIMESTAMP>
         <CREATED_BY_USER>valdo</CREATED_BY_USER>
         <VERSION>autonumber</VERSION>
-        <SUBVERSION>1</SUBVERSION>
+        <SUBVERSION>2</SUBVERSION>
         <PREDEFINED_ATTRIBUTES>
             <ATTRIBUTE>
                 <NAME>TEST Dataset status</NAME>
