@@ -434,9 +434,14 @@ public class AssemblyDao extends DaoBase {
                     if (step.isCompletedStatus()) {
                         AssemblyData adata = apart.findAssemblyData(dataDef);
                         if (adata == null) {
-                            throw new IllegalArgumentException(
-                                    String.format("Assembly part #%d dataset #%d is missing in step #%d (%s): %s", 
-                                            stepDef.getNumber(), dataDef.getNumber(), stepDef.getNumber(), step.getStatus(), step));
+                            log.warn(new IllegalArgumentException(
+                                    String.format("Assembly part #%d dataset #%d is missing in step #%d (%s): %s",
+                                    stepDef.getNumber(), dataDef.getNumber(), stepDef.getNumber(), step.getStatus(), step)));
+
+
+//                            throw new IllegalArgumentException(
+//                                    String.format("Assembly part #%d dataset #%d is missing in step #%d (%s): %s",
+//                                            stepDef.getNumber(), dataDef.getNumber(), stepDef.getNumber(), step.getStatus(), step));
                         }
                     }
                 }
