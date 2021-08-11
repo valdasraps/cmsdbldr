@@ -314,39 +314,51 @@ public class CondDao extends DaoBase {
         return dbKoc;
     }
 
+    private enum ResolveRunBy {
+        RUN_BY_ID,
+        RUN_BY_NAME,
+        RUN_BY_NUMBER_AND_TYPE,
+        RUN_BY_AUTO_INC,
+        RUN_BY_SEQ
+    }
+
     private Run resolveRun(Header header) throws Exception {
         Run xmRun = header.getRun();
         Run dbRun = null;
-        
-        short idType = 0;
+
+        ResolveRunBy resolveRunBy;
         
         // Specify run identification type
 
-        if (xmRun.getName() != null &&
+        if (xmRun.getId() != null) {
+
+            resolveRunBy = ResolveRunBy.RUN_BY_ID;
+
+        } else if (xmRun.getName() != null &&
                 xmRun.getNumber() == null && xmRun.getRunType() == null &&
                 xmRun.getMode() == null && xmRun.getSequence() == null) {
             
-            idType = 1;
+            resolveRunBy = ResolveRunBy.RUN_BY_NAME;
             
         } else if (xmRun.getName() == null &&
                 xmRun.getNumber() != null && xmRun.getRunType() != null &&
                 xmRun.getMode() == null && xmRun.getSequence() == null) {
             
-            idType = 2;
+            resolveRunBy = ResolveRunBy.RUN_BY_NUMBER_AND_TYPE;
             
         } else if (xmRun.getName() == null &&
                 xmRun.getNumber() == null && xmRun.getRunType() != null &&
                 xmRun.getMode() != null && Run.RunMode.AUTO_INC_NUMBER == xmRun.getMode() &&
                 xmRun.getSequence() == null) {
             
-            idType = 3;
+            resolveRunBy = ResolveRunBy.RUN_BY_AUTO_INC;
 
         } else if (xmRun.getName() == null &&
                 xmRun.getNumber() == null && xmRun.getRunType() != null &&
                 xmRun.getMode() != null && Run.RunMode.SEQUENCE_NUMBER == xmRun.getMode() &&
                 xmRun.getSequence() != null) {
 
-            idType = 4;
+            resolveRunBy = ResolveRunBy.RUN_BY_SEQ;
 
         } else {
             
@@ -354,9 +366,18 @@ public class CondDao extends DaoBase {
             
         }
 
-        switch (idType) {
-            
-            case 1:
+        switch (resolveRunBy) {
+
+            case RUN_BY_ID:
+
+                dbRun = (Run) session.createCriteria(Run.class)
+                        .add(Restrictions.eq("id", xmRun.getId()))
+                        .add(Restrictions.eq("deleted", Boolean.FALSE))
+                        .uniqueResult();
+
+                break;
+
+            case RUN_BY_NAME:
             
                 dbRun = (Run) session.createCriteria(Run.class)
                         .add(Restrictions.eq("name", xmRun.getName()))
@@ -365,7 +386,7 @@ public class CondDao extends DaoBase {
                 
                 break;
             
-            case 2:
+            case RUN_BY_NUMBER_AND_TYPE:
             
                 dbRun = (Run) session.createCriteria(Run.class)
                         .add(Restrictions.eq("number", xmRun.getNumber()))
@@ -374,7 +395,7 @@ public class CondDao extends DaoBase {
                         .uniqueResult();
                 break;
                 
-            case 3:
+            case RUN_BY_AUTO_INC:
                 {
 
                     BigInteger runNumber = (BigInteger) session.createCriteria(Run.class)
@@ -395,7 +416,7 @@ public class CondDao extends DaoBase {
                 }
                 break;
 
-            case 4:
+            case RUN_BY_SEQ:
                 {
 
                     String sql = String.format("select %s.nextval as RUN_NUMBER from dual", props.getExtConditionTable(xmRun.getSequence()));
