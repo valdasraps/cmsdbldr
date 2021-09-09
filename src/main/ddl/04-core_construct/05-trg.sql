@@ -475,8 +475,24 @@ END ;
 SHOW ERROR
 
 
+CREATE OR REPLACE PROCEDURE DELETE_PART_ATTR_LISTS (P_PART_ID IN NUMBER, P_RELATIONSHIP_ID IN NUMBER) AS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
 
+    update
+        CMS_&det._CORE_CONSTRUCT.PART_ATTR_LISTS
+    set
+        IS_RECORD_DELETED = 'T'
+    where
+            PART_ID = P_PART_ID and
+            RELATIONSHIP_ID = P_RELATIONSHIP_ID and
+            IS_RECORD_DELETED = 'F';
 
+    commit;
+
+END DELETE_PART_ATTR_LISTS;
+/
+SHOW ERROR
 
 
 PROMPT Creating Trigger 'TR_INS_PART_ATTR_LISTS'
@@ -522,14 +538,7 @@ BEGIN
 
     if :NEW.IS_RECORD_DELETED = 'F' then
 
-        update
-            CMS_&det._CORE_CONSTRUCT.PART_ATTR_LISTS
-        set
-            IS_RECORD_DELETED = 'T'
-        where
-                PART_ID = :new.PART_ID and
-                RELATIONSHIP_ID = :NEW.RELATIONSHIP_ID and
-                IS_RECORD_DELETED = 'F';
+        DELETE_PART_ATTR_LISTS(:new.PART_ID, :NEW.RELATIONSHIP_ID);
 
     end if;
 
