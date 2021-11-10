@@ -481,13 +481,13 @@ CREATE OR REPLACE PROCEDURE DELETE_PART_ATTR_LISTS (P_PART_ID IN NUMBER, P_RELAT
 BEGIN
 
     select
-        nvl(CAT.IS_MULTIPLE_ATTRS,'F') into l_is_multiple_attrs
+        nvl(b.IS_MULTIPLE_ATTRS,'F') into l_is_multiple_attrs
     from
-        CMS_&det._CORE_CONSTRUCT.PART_TO_ATTR_RLTNSHPS as REL
-        join CMS_&det._CORE_ATTRIBUTE.ATTR_CATALOGS as CAT
-            on REL.ATTR_CATALOG_ID = CAT.ATTR_CATALOG_ID
+        CMS_&det._CORE_CONSTRUCT.PART_TO_ATTR_RLTNSHPS a
+        join CMS_&det._CORE_ATTRIBUTE.ATTR_CATALOGS b
+            on a.ATTR_CATALOG_ID = b.ATTR_CATALOG_ID
     where
-        REL.RELATIONSHIP_ID = P_RELATIONSHIP_ID;
+        a.RELATIONSHIP_ID = P_RELATIONSHIP_ID;
 
     if l_is_multiple_attrs = 'F' then
         update
