@@ -477,18 +477,30 @@ SHOW ERROR
 
 CREATE OR REPLACE PROCEDURE DELETE_PART_ATTR_LISTS (P_PART_ID IN NUMBER, P_RELATIONSHIP_ID IN NUMBER) AS
     PRAGMA AUTONOMOUS_TRANSACTION;
+    l_is_multiple_attrs char(1);
 BEGIN
 
-    update
-        CMS_&det._CORE_CONSTRUCT.PART_ATTR_LISTS
-    set
-        IS_RECORD_DELETED = 'T'
+    select
+        nvl(CAT.IS_MULTIPLE_ATTRS,'F') into l_is_multiple_attrs
+    from
+        CMS_&det._CORE_CONSTRUCT.PART_TO_ATTR_RLTNSHPS as REL
+        join CMS_&det._CORE_ATTRIBUTE.ATTR_CATALOGS as CAT
+            on REL.ATTR_CATALOG_ID = CAT.ATTR_CATALOG_ID
     where
-            PART_ID = P_PART_ID and
-            RELATIONSHIP_ID = P_RELATIONSHIP_ID and
-            IS_RECORD_DELETED = 'F';
+        REL.RELATIONSHIP_ID = P_RELATIONSHIP_ID;
 
-    commit;
+    if l_is_multiple_attrs = 'F' then
+        update
+            CMS_&det._CORE_CONSTRUCT.PART_ATTR_LISTS
+        set
+            IS_RECORD_DELETED = 'T'
+        where
+                PART_ID = P_PART_ID and
+                RELATIONSHIP_ID = P_RELATIONSHIP_ID and
+                IS_RECORD_DELETED = 'F';
+
+        commit;
+    end if;
 
 END DELETE_PART_ATTR_LISTS;
 /
