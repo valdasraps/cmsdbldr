@@ -464,7 +464,11 @@ BEGIN
    end if;
       
    :NEW.RELATIONSHIP_ID :=tmpRel;
-   
+
+   if :NEW.IS_RECORD_DELETED = 'F' then
+
+       DELETE_COND_ATTR_LISTS(:new.CONDITION_DATA_SET_ID, :NEW.RELATIONSHIP_ID);
+
    EXCEPTION
      WHEN OTHERS THEN
        -- Consider logging the error and then re-raise
