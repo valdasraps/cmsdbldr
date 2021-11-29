@@ -64,9 +64,36 @@ END ;
 /
 SHOW ERROR
 
+CREATE OR REPLACE PROCEDURE DELETE_COND_ATTR_LISTS (P_CONDITION_DATA_SET_ID IN NUMBER, P_RELATIONSHIP_ID IN NUMBER) AS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    l_is_multiple_attrs char(1);
+BEGIN
 
+select
+    nvl(b.IS_MULTIPLE_ATTRS,'F') into l_is_multiple_attrs
+from
+    CMS_&det._CORE_COND.COND_TO_ATTR_RLTNSHPS a
+            join CMS_&det._CORE_ATTRIBUTE.ATTR_CATALOGS b
+on a.ATTR_CATALOG_ID = b.ATTR_CATALOG_ID
+where
+    a.RELATIONSHIP_ID = P_RELATIONSHIP_ID;
 
+if l_is_multiple_attrs = 'F' then
+update
+    CMS_&det._CORE_COND.COND_ATTR_LISTS a
+set
+    a.IS_RECORD_DELETED = 'T'
+where
+    a.CONDITION_DATA_SET_ID = P_CONDITION_DATA_SET_ID and
+    a.RELATIONSHIP_ID = P_RELATIONSHIP_ID and
+    a.IS_RECORD_DELETED = 'F';
 
+commit;
+end if;
+
+END DELETE_COND_ATTR_LISTS;
+/
+SHOW ERROR
 
 
 PROMPT Creating Trigger 'TR_INS_COND_KOP_REL'
@@ -437,7 +464,13 @@ BEGIN
    end if;
       
    :NEW.RELATIONSHIP_ID :=tmpRel;
-   
+
+   if :NEW.IS_RECORD_DELETED = 'F' then
+
+       CMS_&det._CORE_COND.DELETE_COND_ATTR_LISTS(:new.CONDITION_DATA_SET_ID, :NEW.RELATIONSHIP_ID);
+
+   end if;
+
    EXCEPTION
      WHEN OTHERS THEN
        -- Consider logging the error and then re-raise

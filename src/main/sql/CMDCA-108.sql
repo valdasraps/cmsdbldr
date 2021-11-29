@@ -1,0 +1,133 @@
+-- CMS_TRK_CORE_ATTRIBUTE
+
+ALTER TABLE ATTR_CATALOGS
+    ADD (IS_MULTIPLE_ATTRS CHAR(1) DEFAULT 'F' );
+
+ALTER TABLE ATTR_CATALOGS
+    ADD CONSTRAINT ATTR_CATALOGS_CHK1 CHECK
+        (IS_MULTIPLE_ATTRS BETWEEN 'F'
+             AND 'F' OR IS_MULTIPLE_ATTRS BETWEEN 'T' AND 'T')
+        ENABLE;
+
+
+ALTER TABLE ATTR_CATALOGS_HST
+    ADD (IS_MULTIPLE_ATTRS CHAR(1) DEFAULT 'F' );
+
+ALTER TABLE ATTR_CATALOGS_HST
+    ADD CONSTRAINT ATTR_CATALOGS_HST_CHK1 CHECK
+        (IS_MULTIPLE_ATTRS BETWEEN 'F'
+             AND 'F' OR IS_MULTIPLE_ATTRS BETWEEN 'T' AND 'T')
+    ENABLE;
+
+-- CMS_TRK_CORE_CONSTRUCT
+
+create or replace PROCEDURE DELETE_PART_ATTR_LISTS (P_PART_ID IN NUMBER, P_RELATIONSHIP_ID IN NUMBER) AS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    l_is_multiple_attrs char(1);
+BEGIN
+
+    select
+        nvl(b.IS_MULTIPLE_ATTRS,'F') into l_is_multiple_attrs
+    from
+        CMS_TRK_CORE_CONSTRUCT.PART_TO_ATTR_RLTNSHPS a
+            join CMS_TRK_CORE_ATTRIBUTE.ATTR_CATALOGS b
+                 on a.ATTR_CATALOG_ID = b.ATTR_CATALOG_ID
+    where
+            a.RELATIONSHIP_ID = P_RELATIONSHIP_ID;
+
+    if l_is_multiple_attrs = 'F' then
+        update
+            CMS_TRK_CORE_CONSTRUCT.PART_ATTR_LISTS
+        set
+            IS_RECORD_DELETED = 'T'
+        where
+                PART_ID = P_PART_ID and
+                RELATIONSHIP_ID = P_RELATIONSHIP_ID and
+                IS_RECORD_DELETED = 'F';
+
+        commit;
+    end if;
+
+END DELETE_PART_ATTR_LISTS;
+/
+
+-- CMS_TRK_CORE_COND
+
+create or replace PROCEDURE DELETE_COND_ATTR_LISTS (P_CONDITION_DATA_SET_ID IN NUMBER, P_RELATIONSHIP_ID IN NUMBER) AS
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    l_is_multiple_attrs char(1);
+BEGIN
+
+    select
+        nvl(b.IS_MULTIPLE_ATTRS,'F') into l_is_multiple_attrs
+    from
+        CMS_TRK_CORE_COND.COND_TO_ATTR_RLTNSHPS a
+            join CMS_TRK_CORE_ATTRIBUTE.ATTR_CATALOGS b
+                 on a.ATTR_CATALOG_ID = b.ATTR_CATALOG_ID
+    where
+            a.RELATIONSHIP_ID = P_RELATIONSHIP_ID;
+
+    if l_is_multiple_attrs = 'F' then
+        update
+            CMS_TRK_CORE_COND.COND_ATTR_LISTS a
+        set
+            a.IS_RECORD_DELETED = 'T'
+        where
+                a.CONDITION_DATA_SET_ID = P_CONDITION_DATA_SET_ID and
+                a.RELATIONSHIP_ID = P_RELATIONSHIP_ID and
+                a.IS_RECORD_DELETED = 'F';
+
+        commit;
+    end if;
+
+END DELETE_COND_ATTR_LISTS;
+/
+
+create or replace TRIGGER TR_INS_COND_ATTR_LISTS
+    BEFORE INSERT
+    ON COND_ATTR_LISTS
+    REFERENCING OLD AS OLD NEW AS NEW
+    FOR EACH ROW
+DECLARE
+
+    tmpRel NUMBER(38,0);
+BEGIN
+    tmpRel := 0;
+
+    if :new.ATTR_LIST_RECORD_ID  is null then
+        SELECT CMS_TRK_CORE_ATTRIBUTE.ANY_ATTR_LIST_REC_ID_SEQ.NEXTVAL INTO :new.ATTR_LIST_RECORD_ID FROM dual;
+    end if;
+
+    SELECT R.RELATIONSHIP_ID into tmpRel
+    FROM CMS_TRK_CORE_ATTRIBUTE.ATTR_CATALOGS B
+             INNER JOIN CMS_TRK_CORE_ATTRIBUTE.ATTR_BASES A
+                        ON A.ATTR_CATALOG_ID = B.ATTR_CATALOG_ID and A.IS_RECORD_DELETED = 'F' and B.IS_RECORD_DELETED = 'F'
+             INNER JOIN CMS_TRK_CORE_COND.COND_TO_ATTR_RLTNSHPS R
+                        ON R.ATTR_CATALOG_ID = B.ATTR_CATALOG_ID and R.IS_RECORD_DELETED = 'F'
+             INNER JOIN CMS_TRK_CORE_COND.COND_DATA_SETS D
+                        ON R.KIND_OF_CONDITION_ID = D.KIND_OF_CONDITION_ID and D.IS_RECORD_DELETED = 'F'
+    WHERE
+            A.ATTRIBUTE_ID = :new.ATTRIBUTE_ID
+      AND D.CONDITION_DATA_SET_ID =  :new.CONDITION_DATA_SET_ID;
+
+
+    :NEW.RECORD_INSERTION_TIME := SYSDATE;
+
+    if :new.RECORD_INSERTION_USER is null then
+        :NEW.RECORD_INSERTION_USER  := USER;
+    end if;
+
+    :NEW.RELATIONSHIP_ID :=tmpRel;
+
+    if :NEW.IS_RECORD_DELETED = 'F' then
+
+        DELETE_COND_ATTR_LISTS(:new.CONDITION_DATA_SET_ID, :NEW.RELATIONSHIP_ID);
+
+    end if;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Consider logging the error and then re-raise
+        RAISE;
+END ;
+/
